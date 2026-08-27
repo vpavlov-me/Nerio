@@ -15,6 +15,8 @@ const componentLedes: Record<string, string> = {
     "Buttons trigger user actions with clear intent, accessible focus treatment, loading states, and icon support.",
   toggle:
     "Toggle represents one independent button state that remains pressed or not pressed with a stable accessible name.",
+  "toggle-group":
+    "ToggleGroup coordinates a small visible set of retained button states with single or multiple values and roving focus.",
   badge: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   alert: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
   spinner:
@@ -33,15 +35,29 @@ const componentLedes: Record<string, string> = {
   label: "Labels provide accessible names and stable form hierarchy.",
   checkbox:
     "Checkboxes select zero or more options in a visible group and support checked, unchecked, indeterminate, invalid, disabled, and read-only states.",
+  "checkbox-group":
+    "CheckboxGroup coordinates independently submitted checkbox options with one string-array value, visible group context, and form reset behavior.",
   "radio-group":
     "Radio groups let people choose one option from a short visible set through options or RadioGroupItem composition.",
   switch:
     "Switches toggle immediate settings with clear on and off affordances, including read-only and invalid states.",
   dialog: "Dialogs focus a short decision or task above the current product surface.",
+  "alert-dialog":
+    "Alert dialogs require an explicit response before a consequential action proceeds.",
   sheet:
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
+  combobox:
+    "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
+  "multi-select":
+    "MultiSelect selects zero or more string values from one finite local filterable option set with removable text values and repeated form values.",
+  "search-field":
+    "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
+  "number-field":
+    "NumberField collects one localized decimal value with deliberate stepping, bounds, form behavior, and consumer-owned business rules.",
+  "otp-field":
+    "OTPField collects one verification code with predictable paste, deletion, autofill, form behavior, and accessible slot context.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -65,6 +81,10 @@ const componentLedes: Record<string, string> = {
   list: "Lists present simple structured items with descriptions, metadata, and native links.",
   item: "Items compose compact content, media, and actions while leaving semantics and interactions to the consumer.",
   tabs: "Tabs switch between related panels without leaving the current product context.",
+  collapsible:
+    "Collapsible reveals one independent panel when controlled state, shared anatomy, or maintained motion adds value beyond native disclosure.",
+  accordion:
+    "Accordion groups related disclosure items with single or multiple expansion while keeping content and product policy consumer-owned.",
   breadcrumbs:
     "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",
   pagination:
@@ -80,6 +100,7 @@ const componentLedes: Record<string, string> = {
 
 const componentTitles: Record<string, string> = {
   "button-group": "ButtonGroup",
+  "alert-dialog": "AlertDialog",
   "command-primitive": "Command",
   "dropdown-menu": "DropdownMenu",
   "empty-state": "EmptyState",
@@ -89,7 +110,14 @@ const componentTitles: Record<string, string> = {
   "file-input": "FileInput",
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
+  "checkbox-group": "CheckboxGroup",
+  "toggle-group": "ToggleGroup",
   "sidebar-primitive": "Sidebar",
+  combobox: "Combobox",
+  "multi-select": "MultiSelect",
+  "search-field": "SearchField",
+  "number-field": "NumberField",
+  "otp-field": "OTPField",
 };
 
 function getComponentTitle(slug: string) {

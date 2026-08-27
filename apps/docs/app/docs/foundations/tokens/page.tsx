@@ -1,13 +1,9 @@
 import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Design tokens",
-  description:
-    "Learn how Nerio primitive, semantic, and component tokens support adaptable themes, modes, density, and product overrides.",
-  path: "/docs/foundations/tokens",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/tokens"));
 
 const tokenLayers = [
   {
@@ -194,6 +190,16 @@ export default function Page() {
             </tbody>
           </Table>
         </TableContainer>
+        <p>
+          Use the <a href="/docs/foundations/accessibility">Accessibility foundation</a> to review
+          focus, non-color communication, custom-theme responsibility, and the evidence that token
+          ratios alone cannot establish. Use the{" "}
+          <a href="/docs/foundations/color">Color foundation</a> for the complete semantic role
+          inventory, pairing guidance, and state validation matrix. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> explains
+          when to choose component contracts, density aliases, primitive steps, or product-owned
+          composition tokens.
+        </p>
       </section>
 
       <section className="doc-section">

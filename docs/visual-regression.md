@@ -36,6 +36,9 @@ pnpm test:visual
 
 On failure, inspect the expected, actual, and diff images plus the retained trace and video under
 `test-results/visual`. CI uploads the same evidence as the `visual-regression-artifacts` artifact.
+These files are ephemeral under the [artifact retention policy](./artifact-retention.md); do not
+copy them into the tracked tree.
+
 The suite permits at most 100 changed pixels per image with a 0.15 per-pixel color threshold; do not
 raise these limits to make a material visual change pass.
 

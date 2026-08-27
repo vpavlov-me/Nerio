@@ -25,6 +25,8 @@ pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test:ci-scopes
+pnpm test:repo-artifacts
+pnpm validate:repo-artifacts
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
@@ -71,6 +73,7 @@ pnpm test:consumer:vite
 pnpm test:consumer-matrix
 pnpm validate:route-budgets
 pnpm audit:prod
+pnpm validate:package-output
 pnpm validate:package-budgets
 pnpm validate:release:metadata
 pnpm pack:check
@@ -130,7 +133,9 @@ interaction evidence exists.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
 CI, and the documented policy aligned. `audit:prod` blocks known production dependency
-vulnerabilities before a release candidate can pass. `validate:package-budgets` enforces
+vulnerabilities before a release candidate can pass. `validate:package-output` proves that two
+identical builds produce the same export-complete, map-free artifacts and verifies the
+self-contained Registry source integrity. `validate:package-budgets` enforces
 packed/unpacked package, CSS, named component/icon import, and optional adapter budgets. Threshold
 changes follow the reviewed override policy in `docs/quality-gates.md`.
 
@@ -180,8 +185,9 @@ approved version. Publish in dependency order:
 6. `@nerio-ui/mcp`
 
 The six public package manifests use `private: false` only after the dedicated release PR and
-explicit maintainer approval. Package consumers receive TypeScript source; supported Next.js
-consumers configure `transpilePackages` as documented in Getting started.
+explicit maintainer approval. Package consumers receive unbundled JavaScript plus declarations;
+supported Next.js consumers do not configure Nerio in `transpilePackages`. Editable source remains
+inside the self-contained Registry artifact and is installed through the CLI.
 
 ## Credentials and dry run
 

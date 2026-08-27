@@ -16,8 +16,8 @@ import { fileURLToPath } from "node:url";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const packageNames = [
   "@nerio-ui/tokens",
-  "@nerio-ui/ui",
   "@nerio-ui/adapters",
+  "@nerio-ui/ui",
   "@nerio-ui/registry",
   "@nerio-ui/cli",
   "@nerio-ui/mcp",
@@ -31,7 +31,9 @@ const packageContracts = {
     exports: [".", "./styles.css", "./tailwind.css"],
     dependencies: [],
     peers: [],
-    sideEffects: ["./src/styles.css", "./src/tailwind.css"],
+    sideEffects: ["./dist/styles.css", "./dist/tailwind.css"],
+    files: "dist",
+    type: "module",
   },
   "@nerio-ui/ui": {
     homepage: "https://nerio.vpavlov.com/docs/components/button",
@@ -44,7 +46,9 @@ const packageContracts = {
       "tailwind-merge",
     ],
     peers: ["react", "react-dom", "tailwindcss"],
-    sideEffects: ["./src/styles.css"],
+    sideEffects: ["./dist/styles.css"],
+    files: "dist",
+    type: "module",
   },
   "@nerio-ui/adapters": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/icons",
@@ -52,12 +56,15 @@ const packageContracts = {
     dependencies: ["lucide-react"],
     peers: ["@tanstack/react-table", "motion", "react", "react-hook-form", "recharts", "zod"],
     sideEffects: false,
+    files: "dist",
+    type: "module",
   },
   "@nerio-ui/registry": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
     exports: [".", "./manifest.json", "./public-commands.json"],
-    dependencies: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
+    dependencies: [],
     peers: [],
+    files: "dist",
   },
   "@nerio-ui/cli": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
@@ -133,6 +140,7 @@ function validatePackedPackage(name, tarball) {
   const entries = run("tar", ["-tzf", tarball]).trim().split("\n");
   const directory = packageDirectories[name];
   const contract = packageContracts[name];
+  const filesDirectory = contract.files ?? "src";
   const expectedPrivate = !expectPublicPackages;
 
   if (packageJson.version !== expectedVersion) {
@@ -160,18 +168,21 @@ function validatePackedPackage(name, tarball) {
   if (
     entries.some(
       (entry) =>
-        !entry.startsWith("package/src/") &&
+        !entry.startsWith(`package/${filesDirectory}/`) &&
         entry !== "package/package.json" &&
         entry !== "package/LICENSE" &&
         entry !== "package/README.md" &&
         entry !== "package/",
     )
   ) {
-    throw new Error(`${name} includes files outside its public src and package manifest surface.`);
+    throw new Error(`${name} includes files outside its public package surface.`);
   }
 
-  if (JSON.stringify(packageJson.files) !== JSON.stringify(["src"])) {
-    throw new Error(`${name} must pack only its src directory.`);
+  if (JSON.stringify(packageJson.files) !== JSON.stringify([filesDirectory])) {
+    throw new Error(`${name} must pack only its ${filesDirectory} directory.`);
+  }
+  if ((packageJson.type ?? null) !== (contract.type ?? null)) {
+    throw new Error(`${name} package type must be ${contract.type ?? "unset"}.`);
   }
   if (!Array.isArray(packageJson.keywords) || packageJson.keywords.length < 3) {
     throw new Error(`${name} must include public npm discovery keywords.`);
@@ -201,7 +212,7 @@ function validatePackedPackage(name, tarball) {
     throw new Error(`${name} includes forbidden internal or Pro content: ${forbiddenEntry}.`);
   }
   for (const entry of entries.filter(
-    (item) => item.startsWith("package/src/") && !item.endsWith("/"),
+    (item) => item.startsWith(`package/${filesDirectory}/`) && !item.endsWith("/"),
   )) {
     const content = run("tar", ["-xOf", tarball, entry]);
     if (/BEGIN [A-Z ]*PRIVATE KEY|(?:NPM|GITHUB|VERCEL)_TOKEN\s*=/i.test(content)) {
@@ -227,7 +238,7 @@ function validatePackedPackage(name, tarball) {
     }
   }
   if (name === "@nerio-ui/registry") {
-    const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/src/manifest.json"]));
+    const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/dist/manifest.json"]));
     if (
       manifest.schemaVersion !== "1.1.0" ||
       manifest.version !== expectedVersion ||
@@ -245,6 +256,15 @@ function validatePackedPackage(name, tarball) {
           throw new Error(
             `@nerio-ui/registry packed manifest is missing SHA-256 integrity for ${item.name}:${file.target}.`,
           );
+        }
+        if (!file.source.startsWith("./source/packages/")) {
+          throw new Error(
+            `@nerio-ui/registry source must be self-contained for ${item.name}:${file.target}.`,
+          );
+        }
+        const packedSource = `package/dist/${file.source.slice(2)}`;
+        if (!entries.includes(packedSource)) {
+          throw new Error(`@nerio-ui/registry is missing ${packedSource}.`);
         }
       }
     }
@@ -363,6 +383,8 @@ try {
     "radio-group",
     "switch",
     "select",
+    "number-field",
+    "otp-field",
     "sheet",
     "toast",
     "sidebar-primitive",
@@ -440,7 +462,7 @@ try {
       '@import "tailwindcss";',
       '@import "@nerio-ui/tokens/tailwind.css";',
       '@import "@nerio-ui/ui/styles.css";',
-      '@source "../node_modules/@nerio-ui/ui/src";',
+      '@source "../node_modules/@nerio-ui/ui/dist";',
       "",
     ].join("\n"),
   );

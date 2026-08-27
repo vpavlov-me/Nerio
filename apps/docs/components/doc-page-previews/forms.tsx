@@ -2,6 +2,9 @@
 
 import {
   Checkbox,
+  CheckboxGroup,
+  CheckboxGroupItem,
+  Combobox,
   Field,
   FileInput,
   FormGroup,
@@ -12,8 +15,12 @@ import {
   LabelHint,
   LabelRequired,
   LabelRow,
+  MultiSelect,
+  NumberField,
+  OTPField,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   Switch,
   Textarea,
@@ -102,6 +109,24 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
           </label>
         </div>
       ) : null}
+      {kind === "checkbox-group" ? (
+        <CheckboxGroup
+          label="Notifications"
+          description="Choose every update channel that applies."
+          name="notification-preview"
+          defaultValue={["email"]}
+        >
+          <CheckboxGroupItem value="email" description="A weekly project summary.">
+            Email
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="security" description="Important account changes.">
+            Security alerts
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="sms" disabled>
+            SMS
+          </CheckboxGroupItem>
+        </CheckboxGroup>
+      ) : null}
       {kind === "radio-group" ? (
         <RadioGroup
           label="Visibility"
@@ -145,6 +170,90 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
               { label: "Published", value: "published" },
               { label: "Archived", value: "archived", disabled: true },
             ]}
+          />
+        </div>
+      ) : null}
+      {kind === "combobox" ? (
+        <div className="form-preview-stack">
+          <Combobox
+            label="City"
+            name="city"
+            description="Filter the supported destinations and choose one value."
+            options={[
+              { value: "paris", label: "Paris", textValue: "Paris" },
+              { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+              { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
+              {
+                value: "unavailable",
+                label: "Unavailable",
+                textValue: "Unavailable",
+                disabled: true,
+              },
+            ]}
+          />
+        </div>
+      ) : null}
+      {kind === "multi-select" ? (
+        <form className="form-preview-stack multi-select-preview" data-slot="multi-select-form">
+          <MultiSelect
+            defaultValue={["design"]}
+            label="Disciplines"
+            name="disciplines"
+            options={[
+              { value: "design", label: "Design systems", textValue: "Design systems" },
+              { value: "research", label: "Research", textValue: "Research" },
+              { value: "writing", label: "Technical writing", textValue: "Technical writing" },
+              {
+                value: "unavailable",
+                label: "Unavailable",
+                textValue: "Unavailable",
+                disabled: true,
+              },
+            ]}
+          />
+        </form>
+      ) : null}
+      {kind === "search-field" ? (
+        <div className="form-preview-stack">
+          <SearchField
+            label="Search projects"
+            name="query"
+            defaultValue="Roadmap"
+            description="Submit one query; results and requests stay in the product."
+          />
+          <SearchField label="Search activity" loading loadingLabel="Searching activity" />
+        </div>
+      ) : null}
+      {kind === "number-field" ? (
+        <div className="form-preview-stack">
+          <NumberField
+            label="Quantity"
+            name="quantity"
+            defaultValue={12.5}
+            min={0}
+            max={100}
+            step={0.5}
+            locale="en-US"
+            description="Enter a decimal quantity from 0 to 100."
+          />
+          <NumberField label="Read-only quantity" defaultValue={24} readOnly />
+        </div>
+      ) : null}
+      {kind === "otp-field" ? (
+        <div className="form-preview-stack">
+          <OTPField
+            label="Verification code"
+            length={6}
+            name="verification-code"
+            defaultValue="247"
+            description="Enter the six-digit code sent to your device."
+          />
+          <OTPField
+            label="Recovery code"
+            length={6}
+            validationType="alphanumeric"
+            defaultValue="A7C"
+            description="Letters and numbers are accepted."
           />
         </div>
       ) : null}

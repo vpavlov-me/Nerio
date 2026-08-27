@@ -45,6 +45,8 @@ export const snippets: Record<string, string> = {
     'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   toggle:
     "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
+  "toggle-group":
+    'import { ToggleGroup } from \'@nerio-ui/ui/client\';\n\n<ToggleGroup\n  aria-label="Text alignment"\n  defaultValue={["left"]}\n  options={[\n    { value: "left", label: "Left" },\n    { value: "center", label: "Center" },\n    { value: "right", label: "Right" },\n  ]}\n/>',
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -78,6 +80,8 @@ export const snippets: Record<string, string> = {
     'import { Field, FormGroup } from \'@nerio-ui/ui\';\nimport { Checkbox } from \'@nerio-ui/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
     'import { Checkbox } from \'@nerio-ui/ui/client\';\n\n<Checkbox\n  defaultChecked\n  name="includeArchived"\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
+  "checkbox-group":
+    'import { CheckboxGroup, CheckboxGroupItem } from \'@nerio-ui/ui/client\';\n\n<CheckboxGroup label="Notifications" name="notifications" defaultValue={["email"]}>\n  <CheckboxGroupItem value="email" description="Weekly project summary.">Email</CheckboxGroupItem>\n  <CheckboxGroupItem value="security">Security alerts</CheckboxGroupItem>\n</CheckboxGroup>\n\n// Options remains available for concise data-driven groups.\n<CheckboxGroup label="Topics" options={[{ value: "product", label: "Product updates" }]} />',
   "radio-group":
     'import { RadioGroup, RadioGroupItem } from \'@nerio-ui/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
@@ -89,7 +93,9 @@ export const snippets: Record<string, string> = {
   "date-picker":
     'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date">\n  <DatePicker defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
-    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
+    'import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>\n\n<DialogRoot>\n  <DialogTrigger render={<Button>Open custom dialog</Button>} />\n  <DialogPortal>\n    <DialogContent>\n      <DialogHeader>\n        <DialogTitle>Move collection</DialogTitle>\n        <DialogDescription>Choose a destination workspace.</DialogDescription>\n      </DialogHeader>\n      ...\n      <DialogFooter>\n        <DialogClose render={<Button variant="secondary">Cancel</Button>} />\n        <Button>Move collection</Button>\n      </DialogFooter>\n    </DialogContent>\n  </DialogPortal>\n</DialogRoot>',
+  "alert-dialog":
+    'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
@@ -98,15 +104,29 @@ export const snippets: Record<string, string> = {
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
     "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
+  combobox:
+    "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
+  "multi-select":
+    "import { MultiSelect } from '@nerio-ui/ui/client';\n\n<MultiSelect\n  label=\"Disciplines\"\n  name=\"disciplines\"\n  defaultValue={['design']}\n  options={[\n    { value: 'design', label: 'Design systems', textValue: 'Design systems' },\n    { value: 'research', label: 'Research', textValue: 'Research' },\n    { value: 'writing', label: 'Technical writing', textValue: 'Technical writing' },\n  ]}\n/>",
+  "search-field":
+    'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
+  "number-field":
+    'import { NumberField } from \'@nerio-ui/ui/client\';\n\n<NumberField\n  label="Quantity"\n  name="quantity"\n  defaultValue={12.5}\n  min={0}\n  max={100}\n  step={0.5}\n  locale="en-US"\n/>',
+  "otp-field":
+    'import { OTPField } from \'@nerio-ui/ui/client\';\n\n<OTPField\n  label="Verification code"\n  length={6}\n  name="code"\n  description="Enter the code sent to your device."\n  onValueComplete={(code) => verifyCode(code)}\n/>',
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
+  collapsible:
+    'import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@nerio-ui/ui/client";\n\n<Collapsible>\n  <CollapsibleTrigger>Recovery keys</CollapsibleTrigger>\n  <CollapsiblePanel>Generate and store recovery keys securely.</CollapsiblePanel>\n</Collapsible>',
+  accordion:
+    'import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, AccordionTrigger } from "@nerio-ui/ui/client";\n\n<Accordion defaultValue={["billing"]}>\n  <AccordionItem value="billing">\n    <AccordionHeader>\n      <AccordionTrigger>How does billing work?</AccordionTrigger>\n    </AccordionHeader>\n    <AccordionPanel>Plans renew monthly unless cancelled.</AccordionPanel>\n  </AccordionItem>\n</Accordion>',
   tooltip:
     'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
+    "import { Copy, UserPlus } from '@nerio-ui/adapters/icons';\nimport { Button, DropdownMenuCheckboxItem, DropdownMenuCheckboxItemIndicator, DropdownMenuContent, DropdownMenuItem, DropdownMenuItemDescription, DropdownMenuItemLabel, DropdownMenuLinkItem, DropdownMenuPortal, DropdownMenuPositioner, DropdownMenuRoot, DropdownMenuSubContent, DropdownMenuSubmenu, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@nerio-ui/ui/client';\n\n<DropdownMenuRoot>\n  <DropdownMenuTrigger render={<Button variant=\"secondary\">Complex menu</Button>} />\n  <DropdownMenuPortal>\n    <DropdownMenuPositioner>\n      <DropdownMenuContent>\n        <DropdownMenuLinkItem href=\"/workspace/invite\">\n          <UserPlus aria-hidden />\n          <DropdownMenuItemLabel>Invite members</DropdownMenuItemLabel>\n          <DropdownMenuItemDescription>Add people to this workspace</DropdownMenuItemDescription>\n        </DropdownMenuLinkItem>\n        <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>\n          <DropdownMenuCheckboxItemIndicator /> Show sidebar\n        </DropdownMenuCheckboxItem>\n        <DropdownMenuSubmenu>\n          <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>\n          <DropdownMenuSubContent><DropdownMenuItem><Copy aria-hidden /> Duplicate workspace</DropdownMenuItem></DropdownMenuSubContent>\n        </DropdownMenuSubmenu>\n      </DropdownMenuContent>\n    </DropdownMenuPositioner>\n  </DropdownMenuPortal>\n</DropdownMenuRoot>",
   card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="div">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle>Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -122,6 +142,9 @@ export const snippets: Record<string, string> = {
   list: 'import { Heading, List } from \'@nerio-ui/ui\';\n\n<Heading as="h2" id="setup-steps-title" size="sm">Setup steps</Heading>\n<List\n  aria-labelledby="setup-steps-title"\n  marker="decimal"\n  items={[\n    { id: "install", title: "Install tokens" },\n    { id: "source", title: "Register Tailwind source" },\n    { id: "components", title: "Add your first component" },\n  ]}\n/>',
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio-ui/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
+
+export const alertDialogConfirmationSnippet =
+  'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogBody, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button, Field, Input } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n  const projectName = "Nerio";\n  const [confirmation, setConfirmation] = React.useState("");\n  const isConfirmed = confirmation === projectName;\n\n  return (\n    <AlertDialog onOpenChange={(open) => !open && setConfirmation("")}>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogBody>\n            <Field label={`Type “${projectName}” to confirm`} description="The project name is case-sensitive.">\n              <Input autoComplete="off" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />\n            </Field>\n          </AlertDialogBody>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction disabled={!isConfirmed} render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}';
 
 export const sharedTokens = [
   "--n-color-surface",
@@ -189,6 +212,44 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "visible focus ring",
     ],
   },
+  "toggle-group": {
+    name: "ToggleGroup",
+    description:
+      "Groups related retained button states with single or multiple values and orientation-aware roving focus.",
+    status: "beta",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Toggle", "CheckboxGroup", "RadioGroup", "Tabs"],
+    anatomy: ["group", "item", "toggle-icon", "toggle-label"],
+    motion: ["inherits Toggle hover, press, focus, and reduced motion"],
+    accessibility: [
+      "Base UI ToggleGroup and Toggle primitives",
+      "required accessible group name",
+      "orientation-aware roving focus",
+      "aria-pressed item state",
+    ],
+  },
+  "checkbox-group": {
+    name: "CheckboxGroup",
+    description:
+      "Coordinates independent checkbox options with one controlled or uncontrolled string-array value.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Checkbox", "RadioGroup", "ToggleGroup", "FormGroup"],
+    anatomy: ["root", "label", "description", "group", "field", "message"],
+    motion: ["inherits Checkbox state and reduced-motion behavior"],
+    accessibility: [
+      "Base UI CheckboxGroup and Checkbox primitives",
+      "visible group label",
+      "independent native checkbox keyboard behavior",
+      "associated descriptions and validation message",
+    ],
+  },
   "button-group": {
     name: "ButtonGroup",
     description:
@@ -202,6 +263,62 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
     accessibility: ["group role", "aria-label", "child Button semantics"],
+  },
+  dialog: {
+    name: "Dialog",
+    description:
+      "A compatible convenience modal with additive compound anatomy for focused tasks and decisions.",
+    status: "stable",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["AlertDialog", "Sheet", "Popover", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "close",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
+  },
+  "alert-dialog": {
+    name: "AlertDialog",
+    description:
+      "A conservative confirmation primitive with explicit cancel and action boundaries.",
+    status: "beta",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Dialog", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "cancel",
+      "action",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: [
+      "Base UI alertdialog semantics",
+      "pointer dismissal disabled",
+      "deliberate initial focus",
+      "explicit cancel and action controls",
+    ],
   },
   sheet: {
     name: "Sheet",
@@ -384,6 +501,40 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "native form value, required, disabled, and reset behavior",
     ],
   },
+  collapsible: {
+    name: "Collapsible",
+    description: "Reveals one independent controlled or uncontrolled panel.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Accordion", "Button", "Card"],
+    anatomy: ["root", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "native button trigger",
+      "hidden descendants removed from focus order",
+    ],
+  },
+  accordion: {
+    name: "Accordion",
+    description: "Groups related disclosure items with single or multiple expansion.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Collapsible", "Card", "Tabs"],
+    anatomy: ["root", "item", "header", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "semantic heading and native button trigger",
+      "hidden descendants removed from focus order",
+    ],
+  },
   "input-group": {
     name: "InputGroup",
     description:
@@ -491,6 +642,146 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "no implicit role",
       "native rendered link or button",
       "static root remains unfocusable",
+    ],
+  },
+  combobox: {
+    name: "Combobox",
+    description: "Filters one bounded synchronous option set and commits one selected value.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Select", "Command Primitive", "Input", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "input",
+      "clear",
+      "trigger",
+      "content",
+      "list",
+      "item",
+      "group",
+      "empty",
+      "loading",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI combobox and listbox semantics",
+      "native visible label",
+      "active descendant keyboard navigation",
+      "polite empty and loading regions",
+    ],
+  },
+  "multi-select": {
+    name: "MultiSelect",
+    description: "Selects zero or more string values from one finite local filterable option set.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Combobox", "CheckboxGroup", "Select", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "selected-values",
+      "value",
+      "remove",
+      "input",
+      "clear",
+      "trigger",
+      "content",
+      "list",
+      "item",
+      "group",
+      "empty",
+      "announcement",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI multiple combobox and listbox semantics",
+      "native visible label",
+      "logical keyboard navigation across options and selected values",
+      "polite selection announcements",
+    ],
+  },
+  "search-field": {
+    name: "SearchField",
+    description:
+      "Collects one native search query with accessible clear and deliberate Enter behavior.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Combobox", "Command Primitive", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "search-icon",
+      "input",
+      "actions",
+      "loading",
+      "clear",
+      "description",
+      "message",
+    ],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "native searchbox semantics",
+      "visible Field label and associated supporting content",
+      "localizable clear action with input focus restoration",
+      "IME-safe Enter search event without suppressed form submission",
+    ],
+  },
+  "number-field": {
+    name: "NumberField",
+    description: "Collects one localized decimal value with deliberate stepping and bounds.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Slider", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "decrement",
+      "input",
+      "increment",
+      "description",
+      "message",
+    ],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI Number Field semantics and localized text entry",
+      "visible Field label and associated supporting content",
+      "localizable increment and decrement action labels",
+      "read-only and disabled stepping protection",
+    ],
+  },
+  "otp-field": {
+    name: "OTPField",
+    description: "Collects one verification code with predictable input and form behavior.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Field", "FormMessage"],
+    anatomy: ["root", "label", "input-group", "input", "separator", "description", "message"],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI OTP Field keyboard, paste, deletion, and autofill behavior",
+      "named group and localizable positional labels for following slots",
+      "associated supporting and validation content",
+      "decorative separator hidden from assistive technology",
     ],
   },
 };
@@ -808,7 +1099,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "size", description: "sm, md, or lg through shared control-height contracts." },
       {
         title: "value",
-        description: "Stable identifier reserved for future direct ToggleGroup composition.",
+        description:
+          "Exposes the underlying Base UI value. Use ToggleGroupItem, not Toggle, for grouped composition.",
       },
       {
         title: "render / nativeButton",
@@ -844,6 +1136,77 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toggle-border-pressed",
       "--n-toggle-border-pressed-hover",
       "--n-toggle-border-pressed-active",
+      "--n-toggle-foreground-pressed",
+      "--n-focus-ring",
+    ],
+  },
+  "toggle-group": {
+    category: "Actions",
+    purpose:
+      "Use ToggleGroup for a small visible set of related retained button states, such as text alignment or independently visible canvas layers.",
+    anatomy: [
+      { title: "group", description: "Named Base UI ToggleGroup and value-state owner." },
+      { title: "item", description: "Toggle button with a stable string value." },
+      {
+        title: "toggle-icon / toggle-label",
+        description: "Existing Toggle icon and visible-label anatomy.",
+      },
+    ],
+    variants: [
+      { title: "Single", description: "Keeps at most one item pressed at a time." },
+      { title: "Multiple", description: "Allows independent pressed values in one group." },
+      { title: "Horizontal / vertical", description: "Sets layout and arrow-key direction." },
+      { title: "Ghost / outline", description: "Reuses the existing Toggle variants." },
+      { title: "Small, medium, large", description: "Reuses shared Toggle control heights." },
+    ],
+    states: [
+      { title: "Unpressed / pressed", description: "Each item exposes truthful aria-pressed." },
+      { title: "Disabled item", description: "Is skipped by focus movement and cannot change." },
+      { title: "Disabled group", description: "Blocks interaction for every item." },
+      { title: "Controlled", description: "The value array remains consumer-owned." },
+    ],
+    motion: [
+      "Items inherit Toggle interaction motion.",
+      "Selection and focus never depend on animation.",
+    ],
+    accessibility: [
+      "Provide aria-label or aria-labelledby for the complete group.",
+      "Arrow keys follow orientation and inherited RTL direction while skipping disabled items.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
+      "Icon-only items require a stable aria-label.",
+      "Use RadioGroup for one form choice and CheckboxGroup for independently submitted options.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string values.",
+      },
+      { title: "multiple", description: "Allows more than one pressed item when true." },
+      {
+        title: "orientation / loopFocus",
+        description: "Controls roving-focus direction and whether focus wraps.",
+      },
+      {
+        title: "options / ToggleGroupItem",
+        description: "Concise data-driven or composed item APIs.",
+      },
+    ],
+    designNotes: [
+      "ToggleGroup inherits Toggle visuals and does not create a parallel segmented-control family.",
+      "Wrapping is allowed in narrow containers; orientation continues to own keyboard behavior.",
+    ],
+    related: ["toggle", "radio-group", "tabs", "checkbox"],
+    guidance: {
+      do: ["Use a small, visible set with stable labels and values."],
+      dont: ["Do not use ToggleGroup for navigation, form-backed choices, tags, or filters."],
+    },
+    tokens: [
+      "--n-toggle-height-sm",
+      "--n-toggle-height-md",
+      "--n-toggle-height-lg",
+      "--n-toggle-radius",
+      "--n-toggle-background-pressed",
+      "--n-toggle-border-pressed",
       "--n-toggle-foreground-pressed",
       "--n-focus-ring",
     ],
@@ -1848,6 +2211,75 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-focus-ring",
     ],
   },
+  "checkbox-group": {
+    category: "Forms",
+    purpose:
+      "Use CheckboxGroup when zero or more independent options may be selected from a short visible set.",
+    anatomy: [
+      { title: "root", description: "Field wrapper with group metadata and message." },
+      { title: "label", description: "Required visible name for the complete group." },
+      { title: "description", description: "Optional group-level supporting text." },
+      { title: "group", description: "Base UI group and string-array value owner." },
+      { title: "field", description: "One labelled CheckboxGroupItem row." },
+      { title: "message", description: "Optional helper or validation message." },
+    ],
+    variants: [
+      { title: "Options", description: "Concise data-driven visible items." },
+      { title: "Composed", description: "CheckboxGroupItem children for explicit structure." },
+    ],
+    states: [
+      { title: "Unchecked / checked", description: "Items change independently." },
+      { title: "Disabled item", description: "One option is unavailable." },
+      { title: "Disabled group", description: "Every option is unavailable." },
+      { title: "Read-only", description: "Values remain visible and submitted without changing." },
+      { title: "Invalid", description: "Group and items expose explicit invalid state." },
+      {
+        title: "Required",
+        description: "Exposes a group requirement hook for validation composition.",
+      },
+    ],
+    accessibility: [
+      "CheckboxGroup is interactive and imports from @nerio-ui/ui/client.",
+      "A visible label names the complete Base UI group.",
+      "Each item keeps native checkbox Space-key and Tab behavior.",
+      "Descriptions and messages are connected through stable accessible ids.",
+      "Disabled and read-only groups preserve values without accepting changes.",
+      "Selection remains visible in forced-colors mode and does not depend on motion.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string values.",
+      },
+      {
+        title: "options / CheckboxGroupItem",
+        description: "Concise data-driven or explicit composed item APIs.",
+      },
+      {
+        title: "label / description / message",
+        description: "Visible group context and associated supporting text.",
+      },
+      {
+        title: "name / form / disabled / readOnly / invalid / required",
+        description: "Shared form metadata and semantic group states.",
+      },
+    ],
+    guidance: {
+      do: ["Use a short visible set of independent form-backed choices."],
+      dont: [
+        "Do not use CheckboxGroup for one exclusive choice, pressed buttons, a popup MultiSelect, filters, tags, or persistence.",
+      ],
+    },
+    related: ["checkbox", "radio-group", "toggle-group", "form-group"],
+    tokens: [
+      "--n-checkbox-size",
+      "--n-checkbox-radius",
+      "--n-color-action-primary",
+      "--n-color-action-on-primary",
+      "--n-input-border-danger",
+      "--n-focus-ring",
+    ],
+  },
   "radio-group": {
     category: "Forms",
     purpose: "Use RadioGroup when one choice must be selected from a short, visible set.",
@@ -2043,6 +2475,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Slider is interactive and imports from @nerio-ui/ui/client.",
       "Provide exactly one visible label, aria-label, or aria-labelledby.",
       "Base UI owns Arrow keys, Home, End, Page Up, Page Down, pointer, touch, RTL, and orientation behavior.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Use aria-valuetext or getAriaValueText when the numeric value alone does not communicate units or meaning.",
       "Read-only remains keyboard focusable but cancels value changes; disabled removes interaction.",
       "The nested native range input preserves name, form, min, max, step, required, and ref access.",
@@ -2420,11 +2853,12 @@ export const componentReference: Record<string, ComponentReference> = {
       'Error messages use role="alert" only when invalid is true.',
       "Use name, required, form, and autoComplete when the select participates in native form submission.",
       "Base UI manages combobox roles, focus restoration, Arrow key navigation, Home, End, Escape, and typeahead.",
+      "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
     ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
       dont: [
-        "Do not use Select for large, searchable, async, or remotely loaded datasets; use a future Combobox.",
+        "Do not use Select for a searchable set; use Combobox for bounded synchronous filtering.",
         "Do not use Select for multiple selection, tags, or creatable values.",
       ],
     },
@@ -2444,6 +2878,300 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-shadow",
     ],
+  },
+  combobox: {
+    category: "Forms",
+    purpose:
+      "Use Combobox when one value must be selected from a bounded synchronous set that benefits from filtering.",
+    anatomy: [
+      { title: "input", description: "Editable query field that retains DOM focus." },
+      {
+        title: "clear / trigger",
+        description: "Localizable icon-only actions for clearing and toggling options.",
+      },
+      { title: "list / item", description: "Filtered listbox and one selectable option." },
+      { title: "group / group-label", description: "Optional labelled option grouping." },
+      { title: "empty / loading", description: "Polite consumer-provided presentation regions." },
+    ],
+    variants: [
+      { title: "Options", description: "Concise flat or grouped data-driven items." },
+      {
+        title: "Composed",
+        description: "Curated ComboboxItem and group children paired with canonical item data.",
+      },
+    ],
+    states: [
+      { title: "Query", description: "Filters items without becoming the selected form value." },
+      {
+        title: "Open",
+        description: "Shows a collision-aware popup while input focus remains stable.",
+      },
+      {
+        title: "Highlighted / selected",
+        description: "Separates navigation focus from the committed value.",
+      },
+      {
+        title: "Empty / loading",
+        description: "Presents consumer-owned data state without fetching.",
+      },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Exposes truthful form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label; placeholder text is only a hint.",
+      "Base UI owns active-descendant focus, Arrow navigation, Enter selection, Escape, pointer selection, and disabled-item skipping.",
+      "Localize clearLabel, toggleLabel, emptyMessage, and loadingMessage when the product locale is not English.",
+      "Pair document dir with Base UI DirectionProvider so positioning and navigation follow LTR or RTL.",
+      "Keep Empty and Status regions mounted so polite announcements remain reliable.",
+    ],
+    api: [
+      {
+        title: "query / value / open",
+        description: "Independent controlled and uncontrolled state pairs.",
+      },
+      {
+        title: "filter / locale",
+        description:
+          "Locale-aware contains matching by default, a consumer predicate, or false for no filtering.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hint.",
+      },
+    ],
+    guidance: {
+      do: ["Use for one selected city, owner, category, or other bounded synchronous option set."],
+      dont: [
+        "Do not add remote fetching, debounce, ranking, creation, virtualization, multiple selection, routing, analytics, or persistence.",
+      ],
+    },
+    related: ["select", "command-primitive", "input", "field"],
+    tokens: [
+      "--n-select-height-md",
+      "--n-select-padding-inline",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-focus-ring",
+    ],
+  },
+  "multi-select": {
+    category: "Forms",
+    purpose:
+      "Use MultiSelect for zero or more string values from a finite local set that benefits from synchronous filtering.",
+    anatomy: [
+      { title: "input", description: "Editable query that retains DOM focus." },
+      {
+        title: "selected-values / value / remove",
+        description: "Keyboard-navigable removable text values inside the wrapping field.",
+      },
+      { title: "clear / trigger", description: "Localizable clear-all and popup actions." },
+      { title: "list / item", description: "Finite local multi-select listbox and options." },
+      { title: "announcement", description: "Permanently mounted polite selection updates." },
+    ],
+    variants: [
+      { title: "Flat", description: "One concise data-driven option collection." },
+      { title: "Grouped", description: "Labelled groups over the same options-only contract." },
+    ],
+    states: [
+      { title: "Selection", description: "Ordered unique known string values." },
+      { title: "Query", description: "Filters options without changing selection." },
+      { title: "Open", description: "Remains open while options are toggled." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves truthful interaction and form state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label; placeholder text is only a hint.",
+      "Base UI owns active-descendant option navigation and logical selected-value traversal.",
+      "Localize every labels string when the product locale is not English.",
+      "Keep the polite announcement region mounted and do not announce query navigation.",
+      "Pair document dir with Base UI DirectionProvider for LTR or RTL behavior.",
+    ],
+    api: [
+      {
+        title: "value / query / open",
+        description: "Three independent controlled and uncontrolled state pairs.",
+      },
+      {
+        title: "options / filter / locale",
+        description: "Finite flat or grouped data and synchronous locale-aware filtering.",
+      },
+      {
+        title: "name / form / required",
+        description: "Repeated ordered form values, reset, and at-least-one validity.",
+      },
+    ],
+    guidance: {
+      do: ["Use for a bounded local set of disciplines, skills, labels, or recipients."],
+      dont: [
+        "Do not add fetching, creation, virtualization, quotas, rich product chips, persistence, analytics, or FilterBar policy.",
+      ],
+    },
+    related: ["combobox", "checkbox-group", "select", "field"],
+    tokens: [
+      "--n-select-height-md",
+      "--n-select-padding-inline",
+      "--n-multi-select-value-background",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-focus-ring",
+    ],
+  },
+  "search-field": {
+    category: "Forms",
+    purpose:
+      "Use SearchField for one free-form query that needs accessible clear and explicit Enter search behavior.",
+    anatomy: [
+      { title: "input", description: "One native search input and form value." },
+      { title: "search-icon", description: "Decorative default or consumer-provided icon." },
+      {
+        title: "clear",
+        description: "Localizable native button that restores focus to the same input.",
+      },
+      {
+        title: "loading",
+        description: "Localizable default status or consumer-provided indicator slot.",
+      },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      { title: "LTR and RTL", description: "Logical addon placement follows document direction." },
+    ],
+    states: [
+      { title: "Value", description: "One controlled or uncontrolled string query." },
+      { title: "Loading", description: "Presentation only; requests remain consumer-owned." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves native form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide the visible label and localize clearLabel and loadingLabel for the product locale.",
+      "Enter emits onSearch without suppressing native form submission and ignores IME composition.",
+      "The clear action is unavailable while disabled or read-only and restores input focus.",
+      "A custom loadingIndicator must provide semantics equivalent to the default status.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "One controlled or uncontrolled query and bounded input or clear reason.",
+      },
+      {
+        title: "onSearch",
+        description: "Receives the current query and an IME-safe Enter event detail.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hints.",
+      },
+    ],
+    guidance: {
+      do: ["Use for a free-form project, documentation, or catalog query."],
+      dont: [
+        "Do not add results, suggestions, requests, debounce, filtering, ranking, routing, global shortcuts, history, analytics, or product entities.",
+      ],
+    },
+    related: ["input", "combobox", "command-primitive", "field"],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+      "--n-input-addon-foreground",
+      "--n-focus-ring",
+    ],
+  },
+  "number-field": {
+    category: "Forms",
+    purpose:
+      "Use NumberField for one decimal quantity that needs localized entry, deliberate stepping, finite bounds, and native form behavior.",
+    anatomy: [
+      {
+        title: "input",
+        description: "Localized decimal text entry and one form-backed numeric value.",
+      },
+      {
+        title: "decrement",
+        description: "Localizable action that steps down without crossing the minimum.",
+      },
+      {
+        title: "increment",
+        description: "Localizable action that steps up without crossing the maximum.",
+      },
+      { title: "description / message", description: "Associated help and validation content." },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      {
+        title: "LTR and RTL",
+        description: "Logical stepper placement follows document direction.",
+      },
+    ],
+    states: [
+      {
+        title: "Value",
+        description: "One controlled or uncontrolled finite number, or null when empty.",
+      },
+      {
+        title: "Bounds and step",
+        description: "Buttons and keyboard actions respect finite min, max, and positive steps.",
+      },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves form and accessibility state while blocking changes.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label and localize decrementLabel, incrementLabel, and roleDescription for the product locale.",
+      "Keep business validation in the consumer and use invalid plus message for the resulting feedback.",
+      "Wheel-driven changes are deliberately disabled to avoid accidental edits while scrolling.",
+      "Read-only controls remain perceivable while all input, keyboard, and step actions are blocked.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled numeric value with a bounded change reason.",
+      },
+      {
+        title: "onValueCommitted",
+        description: "Receives the value after deliberate input or stepping is committed.",
+      },
+      {
+        title: "min / max / step / smallStep / largeStep",
+        description: "Finite bounds and positive decimal stepping behavior.",
+      },
+      {
+        title: "locale / format",
+        description: "Decimal-only Intl.NumberFormat presentation with an en-US default.",
+      },
+      {
+        title: "name / form / required",
+        description: "Native form identity, submission, validation, and reset.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for quantities, percentages, durations, or other decimal values with clear units in surrounding content.",
+      ],
+      dont: [
+        "Do not add currency policy, arbitrary parsing, unit conversion, calculations, business validation, product steppers, or wheel changes.",
+      ],
+    },
+    related: ["input", "slider", "field"],
+    tokens: ["--n-input-background", "--n-input-border", "--n-input-placeholder", "--n-focus-ring"],
   },
   toast: {
     category: "Feedback",
@@ -2483,7 +3211,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Expanded stack",
         description:
-          "Expands upward from a bottom-centered stack whose collapsed cards scale and step upward behind the frontmost toast.",
+          "Expands upward from a bottom inline-end stack whose collapsed cards scale and step upward behind the frontmost toast.",
       },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
@@ -2554,8 +3282,9 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     designNotes: [
-      "Toast uses the standard adaptive overlay surface, text, control, border, and elevation tokens for the active color mode.",
+      "Toast uses the adaptive overlay surface and text hierarchy with a compact shadow and a visible default border.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+      "Managed actions stay beside the copy and use the primary Button treatment; dismissal remains the trailing ghost control.",
       "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],
     tokens: [
@@ -2582,6 +3311,69 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-status-danger",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
+    ],
+  },
+  "otp-field": {
+    category: "Forms",
+    purpose:
+      "Use OTPField for one short verification code that needs deterministic paste, deletion, autofill, and form behavior.",
+    anatomy: [
+      { title: "root / label", description: "One named verification-code group." },
+      { title: "input-group / input", description: "Real character slots backed by one value." },
+      { title: "separator", description: "Visual grouping hidden from assistive technology." },
+      { title: "description / message", description: "Associated help and validation content." },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      { title: "Numeric, alpha, alphanumeric", description: "Bounded accepted character sets." },
+    ],
+    states: [
+      { title: "Empty / filled / complete", description: "One controlled or uncontrolled string." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Truthful interaction and form state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label and localize getSlotLabel for the product locale.",
+      "Keep the default one-time-code autocomplete hint unless the product has a documented reason to override it.",
+      "Use concise invalid messages; do not announce every entered character through a live region.",
+      "The separator is decorative and never fragments the accessible code value.",
+    ],
+    api: [
+      { title: "length", description: "Required positive slot count and completion boundary." },
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "One string value and bounded change reason.",
+      },
+      {
+        title: "onValueComplete",
+        description: "Runs after all slots contain accepted characters.",
+      },
+      {
+        title: "validationType / inputMode",
+        description: "Accepted characters and mobile keyboard hint.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form and autofill contract.",
+      },
+    ],
+    guidance: {
+      do: ["Use for short numeric or alphanumeric verification and invite codes."],
+      dont: [
+        "Do not add verification requests, resend, countdowns, masking, rate limits, recovery, or credential storage.",
+      ],
+    },
+    related: ["input", "field", "form-message"],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-border-focus",
+      "--n-input-border-danger",
+      "--n-focus-ring",
     ],
   },
   card: {
@@ -3189,6 +3981,157 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-focus-ring",
     ],
   },
+  collapsible: {
+    category: "Layout",
+    purpose:
+      "Use Collapsible for one independent disclosure when controlled state, shared anatomy, or maintained motion adds durable value.",
+    anatomy: [
+      { title: "root", description: "Owns one controlled or uncontrolled open state." },
+      { title: "trigger", description: "Native button with expanded and controls relationships." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [{ title: "Independent disclosure", description: "One trigger controls one panel." }],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and has no focusable descendants.",
+      },
+      { title: "Open", description: "Panel height and opacity resolve to visible content." },
+      { title: "Disabled", description: "Trigger remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns aria-expanded, aria-controls, stable panel association, and activation behavior.",
+      "The trigger renders a native type=button by default and retains focus after activation.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+      "Use native details and summary for simple uncontrolled disclosure that needs no maintained abstraction.",
+    ],
+    api: [
+      {
+        title: "open / defaultOpen / onOpenChange",
+        description:
+          "Controlled or uncontrolled Base UI state with cancellable Nerio event details.",
+      },
+      {
+        title: "disabled",
+        description: "Prevents trigger interaction for the complete disclosure.",
+      },
+      {
+        title: "CollapsiblePanel keepMounted / hiddenUntilFound",
+        description:
+          "Opt into browser-hidden content only when persistence or page search requires it.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose semantic elements and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Collapsible owns one disclosure only; grouped expansion belongs to Accordion.",
+      "Content, persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Accordion", "Button", "Card"],
+    guidance: {
+      do: ["Use for one independently controlled panel with meaningful hidden content."],
+      dont: [
+        "Do not replace native details and summary when no shared state, motion, or anatomy is needed.",
+      ],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
+    ],
+  },
+  accordion: {
+    category: "Layout",
+    purpose:
+      "Use Accordion for a related group of disclosure items whose expansion state benefits from one bounded owner.",
+    anatomy: [
+      { title: "root", description: "Owns the ordered set of expanded item values." },
+      { title: "item", description: "Stable string value and optional disabled state." },
+      { title: "header", description: "Semantic heading chosen to fit the surrounding outline." },
+      { title: "trigger", description: "Native button associated with one panel." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [
+      { title: "Single expansion", description: "Default mode keeps at most one item open." },
+      {
+        title: "Multiple expansion",
+        description: "The multiple prop allows independent open items.",
+      },
+    ],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and leaves no focusable hidden descendants.",
+      },
+      { title: "Open", description: "Item value is present in the root value array." },
+      { title: "Disabled", description: "Item remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns expanded state, trigger-panel relationships, and activation behavior.",
+      "Wrap every trigger in AccordionHeader and choose a heading level that fits the document outline through render composition.",
+      "Tab follows document order and Enter or Space toggles the focused trigger; deprecated roving Arrow-key behavior is not reintroduced.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string item values.",
+      },
+      { title: "multiple", description: "Allows more than one item value to remain expanded." },
+      {
+        title: "AccordionItem value / disabled",
+        description:
+          "Requires a stable value and optionally prevents one item from changing state.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose heading levels and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Accordion is content disclosure, not application navigation or a routing owner.",
+      "FAQ schema, nested persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Collapsible", "Card", "Tabs"],
+    guidance: {
+      do: [
+        "Use concise related headings and stable values; choose single or multiple expansion deliberately.",
+      ],
+      dont: ["Do not use Accordion for navigation trees, routed menus, or unrelated sections."],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-divider",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
+    ],
+  },
   tabs: {
     category: "Navigation",
     purpose: "Use Tabs to switch between related panels within the same context.",
@@ -3232,6 +4175,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Provide aria-label or aria-labelledby when the tablist purpose is not clear from nearby text.",
       "Base UI owns tab, tablist, tabpanel relationships and activation direction; Nerio keeps arrow navigation on enabled triggers.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Every trigger needs a visible text label. Icons are decorative; Badge text remains available to assistive technology.",
       "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled.",
     ],
@@ -3293,9 +4237,10 @@ export const componentReference: Record<string, ComponentReference> = {
   dialog: {
     category: "Overlays",
     purpose:
-      "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
+      "Use Dialog to focus a short task or reversible decision above the current surface; use AlertDialog when a consequential action requires an explicit response.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
+      { title: "portal", description: "Optional container boundary for portalled modal content." },
       { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
       { title: "content", description: "Modal surface rendered through a portal." },
       { title: "header", description: "Title, optional description, and close boundary." },
@@ -3323,8 +4268,15 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     variants: [
-      { title: "Task", description: "Short focused task with clear completion." },
-      { title: "Confirmation", description: "Decision point for sensitive actions." },
+      {
+        title: "Convenience",
+        description: "Compatible trigger, title, description, body, footer, and close path.",
+      },
+      {
+        title: "Compound",
+        description:
+          "Meaningful parts may be omitted, reordered, or customized while Base UI retains behavior.",
+      },
     ],
     states: [
       { title: "Open", description: "Focus moves into the dialog." },
@@ -3333,6 +4285,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
       "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
+      "Compound compositions keep a keyboard-reachable DialogClose; initialFocus and finalFocus are explicit advanced controls.",
       "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
       "Long body content scrolls inside the bounded dialog so the title and dismissal control remain visible.",
     ],
@@ -3345,8 +4298,9 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
       {
-        title: "DialogFooter",
-        description: "Composable footer that keeps modal actions aligned to the inline end.",
+        title: "DialogRoot and compound parts",
+        description:
+          "Expose Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close without changing the convenience Dialog API.",
       },
       {
         title: "closeLabel",
@@ -3354,8 +4308,103 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     guidance: {
-      do: ["Use for short decisions that need context without a route change."],
-      dont: ["Do not use Dialog for long, multi-page workflows."],
+      do: [
+        "Use the convenience API for the common path and compound parts only when the task needs structural control.",
+      ],
+      dont: [
+        "Do not use Dialog for long workflows or consequential confirmation that belongs in AlertDialog.",
+      ],
+    },
+    tokens: [
+      "--n-dialog-width-md",
+      "--n-overlay-z-index",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-backdrop",
+      "--n-overlay-backdrop-filter",
+      "--n-overlay-foreground",
+      "--n-overlay-foreground-muted",
+      "--n-overlay-surface-filter",
+      "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
+      "--n-motion-overlay-exit-duration",
+      "--n-focus-ring",
+    ],
+  },
+  "alert-dialog": {
+    category: "Overlays",
+    purpose:
+      "Use AlertDialog when a destructive or difficult-to-reverse action must pause for one explicit response.",
+    anatomy: [
+      { title: "trigger", description: "Control that requests the confirmation." },
+      { title: "portal", description: "Container boundary for the portalled confirmation." },
+      { title: "backdrop", description: "Modal backdrop that does not dismiss on pointer press." },
+      {
+        title: "content",
+        description: "Viewport-bounded alertdialog surface with deliberate focus.",
+      },
+      { title: "header", description: "Groups the accessible name and concrete consequence." },
+      { title: "title", description: "Required accessible name phrased as the decision." },
+      { title: "description", description: "Explains the consequence without ambiguous language." },
+      { title: "body", description: "Optional supporting content; keep the decision concise." },
+      { title: "footer", description: "Action row with cancel before confirmation." },
+      { title: "cancel", description: "Safe response and recommended initial-focus target." },
+      {
+        title: "action",
+        description: "Explicit confirmation boundary that closes after the consumer handler runs.",
+      },
+    ],
+    variants: [{ title: "Confirmation", description: "One explicit cancel/action decision." }],
+    states: [
+      {
+        title: "Open",
+        description: "Pointer dismissal is disabled and focus stays in the alertdialog.",
+      },
+      { title: "Cancelled", description: "The safe response closes and restores focus." },
+      { title: "Confirmed", description: "The consumer handler runs and the dialog closes." },
+    ],
+    accessibility: [
+      "Base UI supplies role=alertdialog, modal focus containment, Escape dismissal, scroll locking, and pointer-dismissal protection.",
+      "Provide both AlertDialogTitle and AlertDialogDescription with concrete action and consequence copy.",
+      "For destructive or difficult-to-reverse actions, pass the AlertDialogCancel ref to AlertDialogContent initialFocus.",
+      "Keep cancel before action in reading and tab order; do not communicate danger through color alone.",
+      "When product policy requires stronger confirmation, compose an exact entity-name field and disable the action until it matches.",
+      "Mutation, async state, permissions, routing, and error recovery remain consumer-owned.",
+    ],
+    api: [
+      {
+        title: "AlertDialog",
+        description: "Controlled or uncontrolled Base UI Alert Dialog root.",
+      },
+      {
+        title: "AlertDialogContent",
+        description:
+          "Accepts initialFocus, finalFocus, className, native popup props, and a forwarded ref.",
+      },
+      {
+        title: "AlertDialogCancel",
+        description: "Explicit safe close boundary and recommended initial-focus target.",
+      },
+      {
+        title: "AlertDialogAction",
+        description:
+          "Explicit confirm close boundary; consumers attach mutation behavior to the rendered Button.",
+      },
+    ],
+    designNotes: [
+      "AlertDialog is a response boundary, not an async mutation orchestrator.",
+      "Exact-name confirmation is optional consumer-owned policy composed inside AlertDialogBody.",
+      "A normal Dialog remains appropriate for reversible tasks and forms with their own completion model.",
+    ],
+    related: ["Dialog", "Button"],
+    guidance: {
+      do: [
+        "Name the action and consequence precisely, focus Cancel first, and keep one clear confirmation action.",
+        "Compose an exact entity-name confirmation when consumer product policy requires it.",
+      ],
+      dont: [
+        "Do not hide side effects, default focus to a destructive action, or put multi-step workflows in AlertDialog.",
+      ],
     },
     tokens: [
       "--n-dialog-width-md",
@@ -3407,7 +4456,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Direction",
-        description: "Explicit ltr or rtl content direction while side remains physical.",
+        description:
+          "Inherits the nearest HTML dir by default; an explicit ltr or rtl override leaves side physical.",
       },
       {
         title: "Collapse mode",
@@ -3450,7 +4500,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "SidebarProvider",
         description:
-          "defaultExpanded, expanded, onExpandedChange, side, direction, collapseMode, and optional sidebarId.",
+          "defaultExpanded, expanded, onExpandedChange, physical side, optional direction override, collapseMode, and optional sidebarId.",
       },
       {
         title: "Sidebar",
@@ -3879,14 +4929,21 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Overlays",
     purpose: "Use DropdownMenu to group secondary commands behind a compact trigger.",
     anatomy: [
+      { title: "root", description: "Owns controlled or uncontrolled menu state." },
       { title: "trigger", description: "Control that opens the command list." },
-      { title: "content", description: "Layered menu surface." },
+      { title: "portal + positioner", description: "Mount and collision-aware placement layer." },
+      { title: "content", description: "Bounded, scrollable menu surface." },
       {
         title: "item",
         description:
-          "Command row with optional description, group, leading icon, trailing icon, hotkey, and intent.",
+          "Command row with optional label, description, shortcut, icon, disabled state, and destructive intent.",
       },
-      { title: "group", description: "Labeled command cluster separated from adjacent groups." },
+      { title: "group + group label", description: "Named command cluster." },
+      { title: "link item", description: "Native or router-rendered navigation target." },
+      { title: "checkbox item", description: "Independent toggled menu option." },
+      { title: "radio group + radio item", description: "Single-choice option set." },
+      { title: "submenu", description: "One nested level with its own trigger and content." },
+      { title: "separator", description: "Non-interactive boundary between related sets." },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -3894,21 +4951,33 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "Destructive item",
         description: "Marks risky commands without making the whole menu destructive.",
       },
+      { title: "Selection items", description: "Checkbox and radio item semantics." },
+      { title: "Submenu", description: "A bounded nested command branch." },
     ],
     states: [
       { title: "Open", description: "Items are keyboard navigable." },
       { title: "Highlighted", description: "Current item is ready for selection." },
       { title: "Disabled", description: "Unavailable items stay in context without activation." },
+      { title: "Checked", description: "Current checkbox or radio selection is announced." },
+      { title: "Nested open", description: "Submenu content opens from its parent item." },
     ],
     accessibility: [
       "Keep labels action-oriented and support keyboard navigation through Base UI.",
       "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+      "Use LinkItem for navigation, CheckboxItem for independent toggles, and RadioGroup with RadioItem for one-of-many choices.",
+      "Submenus open with the direction-aware forward arrow and return focus to their trigger on Escape.",
+      "Pair the document dir attribute with Base UI DirectionProvider so navigation and positioning follow LTR or RTL.",
     ],
     api: [
       {
-        title: "items",
+        title: "compound anatomy",
         description:
-          "Ordered list of label, description, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+          "Root, Trigger, Portal, Positioner, Content, groups, items, selection items, and submenu parts support product composition.",
+      },
+      {
+        title: "items convenience API",
+        description:
+          "DropdownMenu trigger and items remain available for simple grouped command lists.",
       },
       {
         title: "description",
@@ -3923,15 +4992,28 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "destructive item",
         description: "Marks risky commands without changing the whole menu tone.",
       },
+      { title: "closeOnClick", description: "Keeps selection menus open while options change." },
+      { title: "render", description: "Composes native links, router links, and custom triggers." },
     ],
     guidance: {
-      do: ["Use for Rename, Duplicate, Archive, and similar secondary commands."],
-      dont: ["Do not hide the primary page action inside a menu."],
+      do: [
+        "Use command items for actions, link items for navigation, and selection items for settings.",
+        "Keep submenu depth to one level when a flat grouping would become harder to scan.",
+      ],
+      dont: [
+        "Do not hide the primary page action inside a menu.",
+        "Do not use menu items as confirmation, permission, analytics, or command-execution policy.",
+      ],
     },
     tokens: [
       "--n-dropdown-min-width",
+      "--n-dropdown-content-padding",
+      "--n-dropdown-item-min-height",
+      "--n-dropdown-item-padding-block",
       "--n-dropdown-item-padding-inline",
       "--n-dropdown-item-gap",
+      "--n-dropdown-item-radius",
+      "--n-dropdown-icon-size",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
       "--n-overlay-floating-z-index",

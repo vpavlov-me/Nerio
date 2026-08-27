@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { componentDocSlugs } from "../lib/component-docs";
+import { foundationPages } from "../lib/generated/foundation-pages";
 import { absoluteUrl } from "../lib/seo";
 
 const staticRoutes = [
@@ -11,13 +12,7 @@ const staticRoutes = [
   "/docs/registry",
   "/docs/ai",
   "/docs/feedback",
-  "/docs/foundations/tokens",
-  "/docs/foundations/themes",
-  "/docs/foundations/effects",
-  "/docs/foundations/icons",
-  "/docs/foundations/motion",
-  "/docs/foundations/radius",
-  "/docs/foundations/typography",
+  ...foundationPages.map((page) => page.path),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

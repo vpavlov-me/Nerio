@@ -147,6 +147,17 @@ export function StandardDocPage({
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <p>
+          Review the shared responsibility and evidence boundaries in the{" "}
+          <a href="/docs/foundations/accessibility">Accessibility foundation</a> alongside this
+          component-specific contract. Use the{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> for shared
+          density, wrapping, overflow, reflow, and component-versus-product ownership guidance. The{" "}
+          <a href="/docs/foundations/color">Color foundation</a>,{" "}
+          <a href="/docs/foundations/typography">Typography foundation</a>, and{" "}
+          <a href="/docs/foundations/localization">Localization foundation</a> define the shared
+          visual-role, text-resilience, direction, and locale boundaries used by component examples.
+        </p>
       </section>
       <section className="doc-section">
         <h2 id="api">API</h2>
@@ -358,8 +369,15 @@ const relatedRouteAliases: Record<string, string> = {
 };
 
 const relatedFoundationRoutes: Record<string, string> = {
+  Accessibility: "/docs/foundations/accessibility",
+  Color: "/docs/foundations/color",
+  Effects: "/docs/foundations/effects",
   Heading: "/docs/foundations/typography",
   "Icon Adapter": "/docs/foundations/icons",
+  Localization: "/docs/foundations/localization",
+  Motion: "/docs/foundations/motion",
+  Radius: "/docs/foundations/radius",
+  "Spacing & layout": "/docs/foundations/spacing-layout",
   Text: "/docs/foundations/typography",
   Themes: "/docs/foundations/themes",
   Tokens: "/docs/foundations/tokens",

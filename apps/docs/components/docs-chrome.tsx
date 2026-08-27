@@ -8,6 +8,7 @@ import { SiClaude, SiCursor } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 import {
   ArrowLeft,
+  ArrowLeftRight,
   ArrowRight,
   BookOpen,
   Box,
@@ -18,6 +19,7 @@ import {
   Circle,
   Copy,
   ExternalLink,
+  Eye,
   FileText,
   Layers,
   ListTree,
@@ -61,10 +63,25 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
+import { foundationPages } from "../lib/generated/foundation-pages";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
 type FeedbackValue = "helpful" | "neutral" | "not-helpful";
+
+const foundationIcons: Record<(typeof foundationPages)[number]["path"], IconComponent> = {
+  "/docs/foundations/tokens": Layers,
+  "/docs/foundations/typography": Type,
+  "/docs/foundations/themes": Palette,
+  "/docs/foundations/color": Palette,
+  "/docs/foundations/localization": ArrowLeftRight,
+  "/docs/foundations/accessibility": Eye,
+  "/docs/foundations/spacing-layout": PanelLeft,
+  "/docs/foundations/motion": Sparkles,
+  "/docs/foundations/radius": Circle,
+  "/docs/foundations/effects": Wrench,
+  "/docs/foundations/icons": Box,
+};
 
 type NavItem = {
   href: string;
@@ -91,15 +108,11 @@ const navGroups: NavGroup[] = [
   },
   {
     title: "Foundations",
-    items: [
-      { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
-      { href: "/docs/foundations/typography", label: "Typography", icon: Type },
-      { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
-      { href: "/docs/foundations/motion", label: "Motion", icon: Sparkles },
-      { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
-      { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
-      { href: "/docs/foundations/icons", label: "Icons", icon: Box },
-    ],
+    items: foundationPages.map(({ path, label }) => ({
+      href: path,
+      label,
+      icon: foundationIcons[path],
+    })),
   },
   {
     title: "Actions",
@@ -107,6 +120,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
       { href: "/docs/components/toggle", label: "Toggle", icon: Circle },
+      { href: "/docs/components/toggle-group", label: "ToggleGroup", icon: Circle },
       { href: "/docs/components/button-group", label: "ButtonGroup", icon: Circle },
     ],
   },
@@ -133,9 +147,15 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/form-message", label: "FormMessage", icon: Circle },
       { href: "/docs/components/form-group", label: "FormGroup", icon: Circle },
       { href: "/docs/components/checkbox", label: "Checkbox", icon: Circle },
+      { href: "/docs/components/checkbox-group", label: "CheckboxGroup", icon: Circle },
       { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
+      { href: "/docs/components/combobox", label: "Combobox", icon: Search },
+      { href: "/docs/components/multi-select", label: "MultiSelect", icon: Search },
+      { href: "/docs/components/search-field", label: "SearchField", icon: Search },
+      { href: "/docs/components/number-field", label: "NumberField", icon: Circle },
+      { href: "/docs/components/otp-field", label: "OTPField", icon: Circle },
       { href: "/docs/components/slider", label: "Slider", icon: Circle },
       { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
       { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },
@@ -147,6 +167,8 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/typography", label: "Typography", icon: Type },
       { href: "/docs/components/card", label: "Card", icon: PanelLeft },
       { href: "/docs/components/separator", label: "Separator", icon: Circle },
+      { href: "/docs/components/collapsible", label: "Collapsible", icon: ChevronDown },
+      { href: "/docs/components/accordion", label: "Accordion", icon: ListTree },
     ],
   },
   {
@@ -175,6 +197,7 @@ const navGroups: NavGroup[] = [
     title: "Overlays",
     items: [
       { href: "/docs/components/dialog", label: "Dialog", icon: PanelLeft },
+      { href: "/docs/components/alert-dialog", label: "AlertDialog", icon: PanelLeft },
       { href: "/docs/components/sheet", label: "Sheet", icon: PanelLeft },
       { href: "/docs/components/popover", label: "Popover", icon: PanelLeft },
       { href: "/docs/components/tooltip", label: "Tooltip", icon: Circle },
@@ -297,6 +320,47 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "density", label: "Density" },
     { id: "custom-themes", label: "Custom themes" },
     { id: "do-do-not", label: "Do / do not" },
+  ],
+  "/docs/foundations/color": [
+    { id: "color-architecture", label: "Color architecture" },
+    { id: "primitive-families", label: "Primitive families" },
+    { id: "semantic-roles", label: "Semantic roles" },
+    { id: "pairing-and-states", label: "Pairing and states" },
+    { id: "applied-example", label: "Applied example" },
+    { id: "accessibility", label: "Accessibility" },
+    { id: "custom-themes", label: "Custom themes" },
+    { id: "do-do-not", label: "Do / do not" },
+    { id: "review-checklist", label: "Review checklist" },
+  ],
+  "/docs/foundations/localization": [
+    { id: "direction", label: "Direction" },
+    { id: "base-ui-behavior", label: "Base UI behavior" },
+    { id: "rtl-fixture", label: "RTL fixture" },
+    { id: "locale", label: "Locale-sensitive output" },
+    { id: "labels", label: "Labels and copy" },
+    { id: "keyboard", label: "Keyboard direction" },
+    { id: "consumer-boundary", label: "Consumer boundary" },
+  ],
+  "/docs/foundations/accessibility": [
+    { id: "responsibility-model", label: "Responsibility model" },
+    { id: "applied-example", label: "Applied example" },
+    { id: "system-invariants", label: "System invariants" },
+    { id: "resilient-content", label: "Resilient content" },
+    { id: "platform-preferences", label: "Platform preferences" },
+    { id: "evidence-model", label: "Evidence model" },
+    { id: "review-checklist", label: "Review checklist" },
+    { id: "known-limitations", label: "Known limitations" },
+  ],
+  "/docs/foundations/spacing-layout": [
+    { id: "responsibility-model", label: "Responsibility model" },
+    { id: "spacing-architecture", label: "Spacing architecture" },
+    { id: "primitive-scale", label: "Primitive scale" },
+    { id: "density", label: "Density" },
+    { id: "applied-examples", label: "Applied examples" },
+    { id: "rhythm-and-hierarchy", label: "Rhythm and hierarchy" },
+    { id: "resilient-layout", label: "Resilient layout" },
+    { id: "direction", label: "Direction" },
+    { id: "review-checklist", label: "Review checklist" },
   ],
   "/docs/foundations/motion": [
     { id: "duration-tokens", label: "Duration tokens" },
@@ -485,6 +549,8 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
 
 function slugify(value: string) {
   return value
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
@@ -704,8 +770,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = searchEntries;
-
   React.useEffect(() => {
     setFeedback(null);
   }, [pathname]);
@@ -855,7 +919,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
           <TooltipProvider closeDelay={0} delay={600}>
             <div className="docs-controls">
-              <DocsCommandPalette entries={visibleSearchEntries} />
+              <DocsCommandPalette entries={searchEntries} />
               <span className="docs-controls-divider" aria-hidden />
               <DropdownMenu
                 className="docs-mode-menu"

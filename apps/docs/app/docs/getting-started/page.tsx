@@ -1,4 +1,5 @@
 import { CodeExample } from "../../../components/code-example";
+import { FoundationDirectory } from "../../../components/foundation-directory";
 import {
   localCliInstall,
   localCliWorkflow,
@@ -23,15 +24,7 @@ const tailwindSetup = `/* app/globals.css */
 @import "tailwindcss";
 @import "@nerio-ui/tokens/tailwind.css";
 @import "@nerio-ui/ui/styles.css";
-@source "../node_modules/@nerio-ui/ui/src";`;
-
-const nextConfig = `import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  transpilePackages: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
-};
-
-export default nextConfig;`;
+@source "../node_modules/@nerio-ui/ui/dist";`;
 
 export default function Page() {
   return (
@@ -60,10 +53,10 @@ export default function Page() {
           interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
           Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens, named keyframes, and the
           scoped no-Preflight compatibility rules; component visuals compile from their Tailwind
-          recipes. Tailwind Preflight remains consumer-owned, and package source must be registered
-          explicitly because Tailwind ignores <code>node_modules</code> by default. Adjust the{" "}
-          <code>@source</code> path relative to your global stylesheet for other package-manager
-          layouts.
+          recipes. Tailwind Preflight remains consumer-owned, and compiled package output must be
+          registered explicitly because Tailwind ignores <code>node_modules</code> by default.
+          Adjust the <code>@source</code> path relative to your global stylesheet for other
+          package-manager layouts.
         </p>
         <p>
           Consumers may omit Preflight by importing only Tailwind&apos;s theme and utilities layers.
@@ -77,10 +70,11 @@ export default function Page() {
           use their dedicated subpaths and require only their matching optional peer.
         </p>
         <p>
-          Core packages ship TypeScript source. Add the Nerio packages used by your application to
-          Next.js <code>transpilePackages</code>.
+          Runtime packages ship unbundled JavaScript plus declarations. Supported Next.js consumers
+          use the package exports directly and do not add Nerio packages to{" "}
+          <code>transpilePackages</code>. Editable TypeScript source remains available through the
+          Registry and CLI workflow below.
         </p>
-        <CodeExample code={nextConfig} label="next.config.ts" />
         <p>
           The supported baseline is Node.js 22 or newer, React 19, Next.js 16.2, TypeScript 5.9, and
           Tailwind CSS 4.1 or newer within the v4 line. Automated browser evidence covers current
@@ -133,8 +127,9 @@ export default function Page() {
             the global stylesheet.
           </li>
           <li>
-            Next.js syntax or module errors from package source usually mean a used Nerio package is
-            missing from <code>transpilePackages</code>.
+            Next.js module errors usually mean package versions are misaligned or an unsupported
+            adapter root was imported. Reinstall the coordinated packages and use documented subpath
+            exports; Nerio does not require <code>transpilePackages</code>.
           </li>
           <li>
             Server Component errors mean an interactive primitive was imported from the wrong
@@ -165,6 +160,17 @@ export default function Page() {
             local package install.
           </li>
         </ul>
+      </section>
+
+      <section className="doc-section" id="foundations">
+        <h2>Foundations</h2>
+        <p>
+          Use the canonical foundation sequence to move from token architecture and visual roles to
+          composition, runtime behavior, accessibility, localization, and focused visual details.
+          Every destination below is shared by documentation navigation, search, adjacent-page
+          links, the sitemap, and the public <code>llms.txt</code> index.
+        </p>
+        <FoundationDirectory />
       </section>
 
       <section className="doc-section" id="principles">

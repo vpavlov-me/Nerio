@@ -8,6 +8,80 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added `Bold`, `Italic`, and `Underline` to the public `@nerio-ui/adapters/icons` entrypoint for
+  accessible text-formatting controls and the focused ToggleGroup documentation example.
+- Added a separate bounded Core 1.2 MultiSelect for finite local options with synchronous
+  filtering, ordered removable text values, independent selection/query/popup state, repeated form
+  values, reset, groups, disabled selected values, localizable actions, and polite announcements.
+  Async data, creation, virtualization, selection quotas, rich product chips, persistence, and
+  FilterBar workflows remain consumer or Pro responsibilities.
+- Raised only the homepage raw-JavaScript and deterministic-transfer ceilings for MultiSelect
+  discovery, reference content, and the Component Lab specimen. The measured output is 864,690 raw
+  JavaScript bytes and 312,646 gzip-transfer bytes; CSS, browser-runtime transfer, and unrelated
+  route ceilings remain unchanged.
+- Raised the reviewed UI tarball ceiling from 89 KB to 94 KB for the additive MultiSelect source;
+  the measured archive is 91,858 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
+- Added the complete bounded Dropdown Menu family for Core 1.1. The existing trigger-and-items API
+  remains compatible, while compound Root, Trigger, Portal, Positioner, Content, groups, action and
+  link items, checkbox and radio selection, one-level submenus, separators, labels, descriptions,
+  and shortcuts now support product composition. ContextMenu, Menubar, NavigationMenu, routing,
+  permissions, analytics, command execution, and confirmation policy remain outside Core.
+- Raised the reviewed UI tarball budget from 85 KB to 89 KB for the additive compound menu source;
+  the measured archive is 87,188 bytes. Raised only the affected docs raw-JavaScript ceilings by
+  8-9 KB; measured routes remain between 489,564 and 850,459 bytes, while CSS, deterministic
+  transfer, browser-runtime transfer, and unrelated route ceilings remain unchanged.
+- Added the client-only `CheckboxGroup` and `CheckboxGroupItem` APIs for controlled or uncontrolled string-array selection, visible group metadata, options or compound composition, item descriptions, group and item states, form submission, and native uncontrolled reset behavior.
+- Raised the reviewed UI and Registry tarball budgets to 85 KB and 38 KB for the CheckboxGroup source, metadata, and source-install contract; measured archives remain 83.6 KB and 37.1 KB.
+- Raised the reviewed shared docs CSS budget to 356 KB and the homepage JS and deterministic-transfer budgets to 826 KB and 304 KB after adding CheckboxGroup discovery and reference content; measured output remains 360,670 CSS bytes, 841,344 homepage JS bytes, and 307,407 transfer bytes.
+
+- Added the first #348 grouped-selection slice: a bounded Core 1.1 ToggleGroup on `dev` with
+  single or multiple string values, controlled or uncontrolled state, horizontal or vertical
+  roving focus, options or ToggleGroupItem composition, accessible group naming, disabled items,
+  and existing Toggle variants and sizes. CheckboxGroup and MultiSelect remain separate work.
+- Raised the Registry tarball allowance from 36,000 to 37,000 bytes for the additive ToggleGroup
+  source-install metadata. The measured Registry tarball is 36,394 bytes; the UI tarball remains
+  within its existing 82,000-byte allowance at 81,554 bytes.
+- Added a bounded Core 1.1 OTPField on `dev` with one controlled or uncontrolled verification-code
+  value, deterministic paste and deletion, autofill and mobile hints, native form/reset behavior,
+  accessible slot context, and consumer-owned authentication policy.
+- Raised the docs home-route JavaScript allowance from 823,296 to 839,680 bytes and the UI tarball
+  allowance from 80,000 to 82,000 bytes for the additive Base UI OTPField source, documentation
+  preview, and source-install contract. The measured outputs are 831,911 and 80,391 bytes.
+
+- Added a bounded Core 1.1 NumberField on `dev` with one controlled or uncontrolled decimal value,
+  localized parsing and formatting, finite bounds, deliberate keyboard and button stepping,
+  form/reset support, disabled/read-only/invalid states, and localizable action labels. Currency
+  policy, arbitrary parsing, unit conversion, calculations, business validation, product steppers,
+  and wheel-driven value changes remain outside the Core contract.
+- Added a bounded Core 1.1 SearchField on `dev` with native search semantics, one controlled or
+  uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events,
+  Field relationships, form/reset support, loading presentation, and localizable action/status
+  labels. Results, requests, debounce, filtering, ranking, routing, global shortcuts, analytics,
+  and product search workflows remain consumer or Pro responsibilities.
+- Added a bounded Core 1.1 single-select Combobox on `dev` with synchronous locale-aware filtering,
+  generic string value identity, options and composed-item modes, independent query, selection, and
+  popup state, form/reset support, groups, disabled items, clear behavior, and consumer-provided
+  empty and loading presentation. Fetching, debounce, ranking, creation, virtualization,
+  multi-selection, routing, analytics, and persistence remain consumer or Pro responsibilities.
+- Added additive compound Dialog anatomy and a separate AlertDialog confirmation primitive on
+  `dev`. The existing convenience Dialog remains compatible, while AlertDialog adds conservative
+  pointer-dismissal behavior, deliberate safe-action focus, explicit cancel/action boundaries,
+  Registry/source-install parity, and consumer-owned mutation policy. This Core 1.1 feature remains
+  outside the isolated Core 1.0 release candidate.
+- Added Core 1.1 Collapsible and Accordion primitives on `dev`, with bounded controlled and
+  uncontrolled disclosure state, single or multiple grouped expansion, disabled items, semantic
+  headings, tokenized height motion, RTL and reduced-motion support, Registry/source-install
+  parity, and explicit native `details`/`summary` guidance. This forward feature remains outside
+  the isolated Core 1.0 release candidate.
+- Added the Core 1.1 direction and localization contract on `dev`, including deterministic locale
+  defaults, consumer setup for HTML direction and Base UI behavior, audited component guidance,
+  public Foundation documentation, and machine-readable drift validation. This forward contract
+  remains outside the isolated Core 1.0 release candidate.
+- Added a deterministic source-backed foundation metadata projection and drift validator. Typography
+  and Themes now render token scales, presets, runtime mappings, and density aliases from canonical
+  CSS and catalog sources, while foundation navigation, search, sitemap, and `llms.txt` discovery
+  share one validated route contract.
 - Added a public documentation changelog with the official Nerio X announcement and summaries of
   every published Core release. Each release now renders its canonical Added, Changed, Fixed, and
   Migration notes directly from this file so the public page cannot drift from the technical
@@ -15,6 +89,48 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Standalone `@nerio-ui/ui` package packing now builds the compiled token and adapter workspace
+  dependencies first, so `pnpm --filter @nerio-ui/ui pack` succeeds from a clean checkout without
+  relying on a previous aggregate build.
+- Runtime package entrypoints now ship deterministic unbundled JavaScript plus declarations instead
+  of TypeScript source. Supported Next.js consumers no longer need `transpilePackages`, while
+  Tailwind package discovery scans `@nerio-ui/ui/dist`. The Registry artifact is now self-contained
+  and keeps integrity-verified editable source for the CLI workflow. Public import paths and
+  source-installed component behavior remain unchanged. The measured UI tarball is 88,104 bytes
+  against its unchanged 94,000-byte ceiling; the self-contained Registry is 137,703 bytes against a
+  new 140,000-byte ceiling. CSS and named-import bundle measurements remain unchanged.
+- Raised only the root documentation route JS and deterministic transfer ceilings needed for the
+  public NumberField API and Component Lab specimen. The measured route is 818,348 raw JS bytes
+  and 301,961 gzip-transfer bytes; CSS and browser-runtime ceilings remain unchanged.
+- Raised the UI tarball ceiling from 78,000 to 80,000 bytes for the additive NumberField source;
+  the measured tarball is 79,255 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
+- Raised the raw token CSS ceiling from 75,000 to 83,000 bytes and its gzip ceiling from 11,000
+  to 11,500 bytes for the canvas-scoped theme selectors and complete semantic token axes used by
+  the refreshed Playground. The measured stylesheet is 82,040 raw bytes and 11,081 gzip bytes;
+  package tarball, unpacked, residual CSS, and named-import bundle ceilings remain unchanged.
+- Raised the UI tarball ceiling from 76,000 to 78,000 bytes for the additive SearchField source;
+  the measured tarball is 76,291 bytes. The Registry tarball ceiling moves from 34,000 to 36,000
+  bytes for the new installable metadata, measured at 34,486 bytes. Existing unpacked, CSS,
+  named-import bundle, and runtime ceilings remain unchanged.
+- Raised the UI tarball ceiling from 72,000 to 76,000 bytes for the additive Combobox source; the
+  measured tarball is 74,722 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
+- Raised only the measured documentation route JS and deterministic transfer ceilings needed for
+  the public Combobox API, preview, and reference metadata. The largest affected route is `/` at
+  787,214 raw JS bytes and 290,484 gzip-transfer bytes; CSS and browser-runtime ceilings remain
+  unchanged.
+- Raised the UI tarball ceiling from 70,000 to 72,000 bytes for the additive Dialog compound API
+  and separate AlertDialog source; the measured tarball is 70,585 bytes. Existing unpacked, CSS,
+  named-import bundle, and runtime ceilings remain unchanged.
+- Raised the root documentation route JS ceiling from 752,640 to 764,000 bytes for the new public
+  AlertDialog export and isolated preview chunk; the measured production manifest is 759,535 bytes.
+  CSS, deterministic transfer, and browser runtime ceilings remain unchanged.
+- Raised only the measured additive budgets needed for the disclosure family: the UI tarball is
+  68,421 bytes against a 70,000-byte ceiling, the Registry tarball is 32,079 bytes against a
+  34,000-byte ceiling, raw token CSS is 74,025 bytes against a 75,000-byte ceiling, and shared docs
+  CSS is 346,903 bytes against a 350,208-byte ceiling. Named-import bundle probes and existing
+  unpacked, gzip, and runtime ceilings remain within their prior limits.
 - Updated the exact `@base-ui/react` runtime pin from 1.6.0 to 1.7.0 after reviewing the current
   public primitive inventory and validating the UI, accessibility, browser, and packed-consumer
   contracts. Nerio-owned public props and event-detail aliases remain unchanged.
@@ -23,7 +139,7 @@ Items under `Unreleased` may change before the next public release.
   consumers retain the same component contract without adding a second icon runtime.
 - Replaced the documentation wordmark and favicon with the new Nerio brand assets. The wordmark
   preserves the purple brand mark while its text follows the operating-system color scheme, and the
-  favicon switches between black and white for light and dark system modes.
+  favicon keeps the white Nerio mark on the fixed purple brand field across system modes.
 - Made the newest coordinated public release the default npm install target through `latest`, while
   preserving the historical `alpha` channel, and aligned release policy, public documentation, and
   machine-readable release metadata with that contract.

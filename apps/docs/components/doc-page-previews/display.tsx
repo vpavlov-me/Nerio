@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Circle } from "@nerio-ui/adapters/icons";
+import { Bold, Circle, Italic, Underline } from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -41,6 +41,7 @@ import {
   TableHeader,
   TableRow,
   Text,
+  ToggleGroup,
 } from "@nerio-ui/ui/client";
 import { PreviewFrame, type PreviewProps } from "./shared";
 
@@ -60,6 +61,18 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
           <Button variant="secondary">Cancel</Button>
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
+      ) : null}
+      {kind === "toggle-group" ? (
+        <ToggleGroup
+          aria-label="Text formatting"
+          defaultValue={["bold", "italic"]}
+          multiple
+          options={[
+            { value: "bold", icon: Bold, "aria-label": "Bold" },
+            { value: "italic", icon: Italic, "aria-label": "Italic" },
+            { value: "underline", icon: Underline, "aria-label": "Underline" },
+          ]}
+        />
       ) : null}
       {kind === "typography" ? (
         <div className="preview-card">

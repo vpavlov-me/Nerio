@@ -55,7 +55,9 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   const dialog = page.getByRole("dialog", { name: "Long review notes" });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Tab");
-  expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await expect
+    .poll(() => dialog.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
   await expectInsideViewport(dialog, viewport);
   await page.keyboard.press("Escape");
   await expect(dialogTrigger).toBeFocused();
@@ -144,6 +146,7 @@ test("keeps Toggle keyboard, pointer, state, naming, focus, and reflow portable"
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
+
   expect(problems).toEqual([]);
 });
 
@@ -167,6 +170,195 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
   } finally {
     await context.close();
   }
+});
+
+test("keeps OTPField mobile paste, deletion, autofill, and reflow portable", async ({
+  browser,
+  browserName,
+}, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/otp-field");
+    const preview = page.getByRole("region", { name: "otp-field preview" });
+    const group = preview.getByRole("group", { name: "Verification code" });
+    const slots = group.getByRole("textbox");
+    await expect(slots.first()).toHaveAttribute("autocomplete", "one-time-code");
+    await expect(slots.first()).toHaveAttribute("inputmode", "numeric");
+    await slots.first().focus();
+    await slots.first().evaluate((input) => {
+      const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
+      Object.defineProperty(pasteEvent, "clipboardData", {
+        value: { getData: () => "123456" },
+      });
+      input.dispatchEvent(pasteEvent);
+    });
+    await expect(slots.last()).toHaveValue("6");
+    await page.keyboard.press("Backspace");
+    await expect(slots.last()).toHaveValue("");
+    await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
+test("keeps ToggleGroup multiple selection and roving focus portable", async ({ page }) => {
+  await page.goto("/docs/components/toggle-group");
+  const preview = page.getByRole("region", { name: "toggle-group preview" });
+  const group = preview.getByRole("group", { name: "Text formatting", exact: true });
+  const bold = group.getByRole("button", { name: "Bold" });
+  const italic = group.getByRole("button", { name: "Italic" });
+  const underline = group.getByRole("button", { name: "Underline" });
+
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "false");
+  await underline.click();
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "true");
+
+  await underline.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(italic).toBeFocused();
+});
+
+test("keeps CheckboxGroup independent values and form controls portable", async ({ page }) => {
+  await page.goto("/docs/components/checkbox-group");
+  const preview = page.getByRole("region", { name: "checkbox-group preview" });
+  const group = preview.getByRole("group", { name: "Notifications" });
+  const email = group.getByRole("checkbox", { name: /Email/ });
+  const security = group.getByRole("checkbox", { name: /Security alerts/ });
+
+  await expect(email).toBeChecked();
+  await security.focus();
+  await security.press("Space");
+  await expect(email).toBeChecked();
+  await expect(security).toBeChecked();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+});
+
+test("keeps Collapsible and Accordion disclosure behavior portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+
+  await page.goto("/docs/components/collapsible");
+  const collapsible = page.getByRole("button", { name: "Recovery keys" });
+  await expect(collapsible).toHaveAttribute("aria-expanded", "false");
+  await collapsible.focus();
+  await collapsible.press("Enter");
+  await expect(collapsible).toHaveAttribute("aria-expanded", "true");
+  const collapsiblePanel = page.locator(`#${await collapsible.getAttribute("aria-controls")}`);
+  await expect(collapsiblePanel).toBeVisible();
+  expect(
+    await collapsiblePanel.evaluate((element) =>
+      getComputedStyle(element)
+        .transitionDuration.split(",")
+        .every((duration) => Number.parseFloat(duration) <= 0.001),
+    ),
+  ).toBe(true);
+
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+
+  await page.goto("/docs/components/accordion");
+  const billing = page.getByRole("button", { name: "How does billing work?" });
+  const members = page.getByRole("button", { name: "Can I invite collaborators?" });
+  await expect(billing).toHaveAttribute("aria-expanded", "true");
+  await expect(members).toHaveAttribute("aria-expanded", "false");
+  expect(await billing.evaluate((element) => element.parentElement?.tagName)).toBe("H3");
+  await members.press("Enter");
+  await expect(billing).toHaveAttribute("aria-expanded", "false");
+  await expect(members).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(`#${await members.getAttribute("aria-controls")}`)).toContainText(
+    "Workspace owners can invite and remove members.",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+
+  await page.goto("/visual-test/disclosure");
+  const disabledDisclosure = page.getByRole("button", { name: "Managed by your organization" });
+  const disabledBackground = await disabledDisclosure.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await disabledDisclosure.hover();
+  await expect
+    .poll(() => disabledDisclosure.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .toBe(disabledBackground);
+  expect(problems).toEqual([]);
+});
+
+test("animates disclosure panels through their full measured height", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/components/accordion");
+  const trigger = page.getByRole("button", { name: "Can I invite collaborators?" });
+  await trigger.click();
+  const panel = page.locator(`#${await trigger.getAttribute("aria-controls")}`);
+  await expect
+    .poll(() =>
+      panel.evaluate((element) =>
+        Math.abs(
+          element.getBoundingClientRect().height -
+            (element.firstElementChild?.getBoundingClientRect().height ?? 0),
+        ),
+      ),
+    )
+    .toBeLessThanOrEqual(1);
+  const openGeometry = await panel.evaluate((element) => ({
+    contentHeight: element.firstElementChild?.getBoundingClientRect().height,
+    contentPaddingTop: Number.parseFloat(
+      getComputedStyle(element.firstElementChild).paddingBlockStart,
+    ),
+    focusRingWidth: Number.parseFloat(
+      getComputedStyle(element).getPropertyValue("--n-focus-ring-outer-width"),
+    ),
+    openHeight: element.getBoundingClientRect().height,
+  }));
+  expect(Math.abs(openGeometry.openHeight - openGeometry.contentHeight)).toBeLessThanOrEqual(1);
+  expect(openGeometry.contentPaddingTop).toBeGreaterThanOrEqual(openGeometry.focusRingWidth);
+
+  const panelHandle = await panel.elementHandle();
+  expect(panelHandle).not.toBeNull();
+  await trigger.click();
+  await expect
+    .poll(() =>
+      panelHandle.evaluate((element) =>
+        element.isConnected ? element.getBoundingClientRect().height : 0,
+      ),
+    )
+    .toBeLessThanOrEqual(4);
+  expect(problems).toEqual([]);
 });
 
 test("keeps the manual audit fixture contained at narrow reflow widths", async ({
@@ -413,6 +605,108 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   await gotoFixture("/visual-test/tabs");
   await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();
   expect(problems).toEqual([]);
+});
+
+test("keeps the public direction contract behavioral in RTL", async ({ browserName, page }) => {
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/foundations/localization");
+
+  const fixture = page.getByRole("region", { name: "RTL direction preview" });
+  await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
+  const toggleGroup = fixture.getByRole("group", { name: "RTL text alignment" });
+  const center = toggleGroup.getByRole("button", { name: "Center" });
+  await center.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(toggleGroup.getByRole("button", { name: "Right" })).toBeFocused();
+  for (const side of ["left", "right"]) {
+    const provider = fixture.locator(`[data-physical-side="${side}"]`);
+    const sidebar = provider.getByRole("complementary", {
+      name: `${side} inherited direction sidebar`,
+    });
+    const content = provider.locator('[data-slot="sidebar-provider-content"]');
+    await expect(provider).toHaveAttribute("data-direction", "rtl");
+    await expect(provider).toHaveCSS("direction", "ltr");
+    await expect(content).toHaveCSS("direction", "rtl");
+    await expect(sidebar).toHaveCSS("direction", "rtl");
+    const providerBox = await provider.boundingBox();
+    const sidebarBox = await sidebar.boundingBox();
+    expect(providerBox).not.toBeNull();
+    expect(sidebarBox).not.toBeNull();
+    const expectedX = side === "left" ? providerBox.x : providerBox.x + providerBox.width;
+    const actualX = side === "left" ? sidebarBox.x : sidebarBox.x + sidebarBox.width;
+    expect(Math.abs(actualX - expectedX)).toBeLessThanOrEqual(1);
+
+    await provider.evaluate((element) => element.setAttribute("dir", "ltr"));
+    await expect(provider).toHaveCSS("direction", "ltr");
+    await expect(provider).toHaveAttribute("data-direction", "ltr");
+    await expect(content).toHaveCSS("direction", "ltr");
+    await expect(sidebar).toHaveCSS("direction", "ltr");
+    const explicitProviderBox = await provider.boundingBox();
+    const explicitSidebarBox = await sidebar.boundingBox();
+    expect(explicitProviderBox).not.toBeNull();
+    expect(explicitSidebarBox).not.toBeNull();
+    const explicitExpectedX =
+      side === "left" ? explicitProviderBox.x : explicitProviderBox.x + explicitProviderBox.width;
+    const explicitActualX =
+      side === "left" ? explicitSidebarBox.x : explicitSidebarBox.x + explicitSidebarBox.width;
+    expect(Math.abs(explicitActualX - explicitExpectedX)).toBeLessThanOrEqual(1);
+  }
+
+  const overview = fixture.getByRole("tab", { name: "Overview" });
+  const details = fixture.getByRole("tab", { name: "Details" });
+  await overview.focus();
+  await overview.press("ArrowLeft");
+  await expect(details).toBeFocused();
+
+  const slider = fixture.getByRole("slider", { name: "RTL priority" });
+  await expect(slider).toHaveValue("35");
+  await slider.focus();
+  await slider.press("ArrowRight");
+  await expect(slider).toHaveValue("34");
+
+  await page.waitForLoadState("networkidle");
+  await page.goto("/docs/components/dialog");
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await page
+    .getByRole("region", { name: "dialog preview" })
+    .getByRole("button", { name: "Open dialog" })
+    .click();
+  const dialogBox = await page.getByRole("dialog", { name: "Share collection" }).boundingBox();
+  expect(dialogBox).not.toBeNull();
+  const dialogViewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(Math.abs(dialogBox.x + dialogBox.width / 2 - dialogViewportWidth / 2)).toBeLessThanOrEqual(
+    1,
+  );
+  expect(problems).toEqual([]);
+});
+
+test("keeps Sidebar direction and physical sides correct in server HTML", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  try {
+    await page.goto("/docs/foundations/localization");
+    const fixture = page.getByRole("region", { name: "RTL direction preview" });
+    for (const side of ["left", "right"]) {
+      const provider = fixture.locator(`[data-physical-side="${side}"]`);
+      const content = provider.locator('[data-slot="sidebar-provider-content"]');
+      const sidebar = provider.getByRole("complementary", {
+        name: `${side} inherited direction sidebar`,
+      });
+      await expect(provider).toHaveAttribute("data-direction", "ltr");
+      await expect(provider).toHaveCSS("direction", "ltr");
+      await expect(content).toHaveCSS("direction", "rtl");
+      await expect(sidebar).toHaveCSS("direction", "rtl");
+      const providerBox = await provider.boundingBox();
+      const sidebarBox = await sidebar.boundingBox();
+      expect(providerBox).not.toBeNull();
+      expect(sidebarBox).not.toBeNull();
+      const expectedX = side === "left" ? providerBox.x : providerBox.x + providerBox.width;
+      const actualX = side === "left" ? sidebarBox.x : sidebarBox.x + sidebarBox.width;
+      expect(Math.abs(actualX - expectedX)).toBeLessThanOrEqual(1);
+    }
+  } finally {
+    await context.close();
+  }
 });
 
 test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({

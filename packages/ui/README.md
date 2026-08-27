@@ -21,8 +21,9 @@ import "@nerio-ui/ui/styles.css";
 ```
 
 The default entrypoint is server-safe. Interactive Base UI-backed components live under
-`@nerio-ui/ui/client`. Nerio ships TypeScript source and Tailwind CSS v4 recipes, so consuming
-Next.js applications must configure `transpilePackages` and register the package source as shown in
+`@nerio-ui/ui/client`. Nerio ships unbundled JavaScript, declarations, and Tailwind CSS v4 recipes,
+so supported Next.js applications consume the exports without `transpilePackages` and register the
+compiled package output as shown in
 [Getting started](https://nerio.vpavlov.com/docs/getting-started).
 
 Browse the complete [component documentation](https://nerio.vpavlov.com/docs/components/button).

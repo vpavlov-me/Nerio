@@ -36,6 +36,9 @@ import {
   CardTitle,
   CardVisual,
   Checkbox,
+  CheckboxGroup,
+  CheckboxGroupItem,
+  Combobox,
   Command,
   CommandEmpty,
   CommandInput,
@@ -76,11 +79,15 @@ import {
   LabelRequired,
   LabelRow,
   List,
+  MultiSelect,
   Pagination,
+  NumberField,
+  OTPField,
   Popover,
   Progress,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   Separator,
   Sheet,
@@ -98,6 +105,7 @@ import {
   Stat,
   Switch,
   Toggle,
+  ToggleGroup,
   Table,
   TableBody,
   TableCell,
@@ -303,6 +311,13 @@ const commandItems = [
   { value: "disabled", label: "Unavailable", disabled: true },
 ] as const;
 
+const cityOptions = [
+  { value: "paris", label: "Paris", textValue: "Paris" },
+  { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+  { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
+  { value: "unavailable", label: "Unavailable", textValue: "Unavailable", disabled: true },
+] as const;
+
 function SheetExample({
   side,
   size,
@@ -457,6 +472,35 @@ export function ComponentPlayground() {
             },
           ]}
         />
+      </SpecimenSection>
+
+      <SpecimenSection
+        id="toggle-group"
+        title="Toggle Group"
+        api="single · multiple · orientation · options · disabled"
+      >
+        <div className="component-lab-inline">
+          <ToggleGroup
+            aria-label="Text alignment"
+            defaultValue={["left"]}
+            options={[
+              { value: "left", label: "Left" },
+              { value: "center", label: "Center" },
+              { value: "right", label: "Right" },
+            ]}
+          />
+          <ToggleGroup
+            aria-label="Visible layers"
+            defaultValue={["grid", "guides"]}
+            multiple
+            variant="outline"
+            options={[
+              { value: "grid", label: "Grid" },
+              { value: "guides", label: "Guides" },
+              { value: "snap", label: "Snap", disabled: true },
+            ]}
+          />
+        </div>
       </SpecimenSection>
 
       <SpecimenSection id="button-group" title="Button Group" api="horizontal grouped actions">
@@ -748,6 +792,28 @@ export function ComponentPlayground() {
           </RadioGroupItem>
         </RadioGroup>
       </SpecimenSection>
+      <SpecimenSection
+        id="checkbox-group"
+        title="Checkbox Group"
+        api="label · description · message · options · composed items · disabled · readOnly"
+      >
+        <CheckboxGroup
+          label="Notifications"
+          description="Choose every channel that applies."
+          name="lab-notifications"
+          defaultValue={["email"]}
+        >
+          <CheckboxGroupItem value="email" description="Weekly project summary.">
+            Email
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="security" description="Important account changes.">
+            Security alerts
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="sms" disabled>
+            SMS
+          </CheckboxGroupItem>
+        </CheckboxGroup>
+      </SpecimenSection>
       <SpecimenSection id="switch" title="Switch" api="off · on · disabled · readOnly">
         <Matrix
           columns={["Default", "Disabled"]}
@@ -833,6 +899,167 @@ export function ComponentPlayground() {
                   placeholder="Unavailable"
                   options={[{ label: "Active", value: "active" }]}
                 />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="combobox"
+        title="Combobox"
+        api="query · selected value · options · groups · disabled · readOnly · invalid · empty · loading"
+      >
+        <Matrix
+          columns={["Default", "Selected", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Combobox key="default" label="City" options={cityOptions} />,
+                <Combobox
+                  key="selected"
+                  label="City"
+                  defaultValue="tbilisi"
+                  options={cityOptions}
+                />,
+                <Combobox
+                  key="readonly"
+                  label="City"
+                  defaultValue="paris"
+                  options={cityOptions}
+                  readOnly
+                />,
+                <Combobox
+                  key="invalid"
+                  label="City"
+                  message="Choose a supported city."
+                  options={cityOptions}
+                  invalid
+                />,
+                <Combobox key="disabled" label="City" options={cityOptions} disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="multi-select"
+        title="MultiSelect"
+        api="ordered values · query · popup · groups · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Selected", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <MultiSelect key="default" label="Disciplines" options={cityOptions} />,
+                <MultiSelect
+                  key="selected"
+                  label="Disciplines"
+                  defaultValue={["paris", "tbilisi"]}
+                  options={cityOptions}
+                />,
+                <MultiSelect
+                  key="readonly"
+                  label="Disciplines"
+                  defaultValue={["paris"]}
+                  options={cityOptions}
+                  readOnly
+                />,
+                <MultiSelect
+                  key="invalid"
+                  label="Disciplines"
+                  message="Choose at least one discipline."
+                  options={cityOptions}
+                  invalid
+                />,
+                <MultiSelect key="disabled" label="Disciplines" options={cityOptions} disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="search-field"
+        title="SearchField"
+        api="native search · value · clear · Enter search · loading · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Value", "Loading", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <SearchField key="default" label="Search projects" />,
+                <SearchField key="value" label="Search projects" defaultValue="Roadmap" />,
+                <SearchField key="loading" label="Search projects" defaultValue="Nerio" loading />,
+                <SearchField
+                  key="invalid"
+                  label="Search projects"
+                  message="Enter a project name."
+                  invalid
+                />,
+                <SearchField key="disabled" label="Search projects" disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="number-field"
+        title="NumberField"
+        api="decimal value · locale · step · bounds · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Decimal", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <NumberField key="default" label="Quantity" />,
+                <NumberField key="decimal" label="Quantity" defaultValue={12.5} step={0.5} />,
+                <NumberField key="readonly" label="Quantity" defaultValue={24} readOnly />,
+                <NumberField
+                  key="invalid"
+                  label="Quantity"
+                  message="Enter 0 through 100."
+                  invalid
+                />,
+                <NumberField key="disabled" label="Quantity" disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="otp-field"
+        title="OTPField"
+        api="string value · length · paste · autofill · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Filled", "Alphanumeric", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <OTPField key="default" label="Verification code" length={6} />,
+                <OTPField key="filled" label="Verification code" length={6} defaultValue="247" />,
+                <OTPField
+                  key="alphanumeric"
+                  label="Recovery code"
+                  length={6}
+                  validationType="alphanumeric"
+                  defaultValue="A7C"
+                />,
+                <OTPField
+                  key="invalid"
+                  label="Verification code"
+                  length={6}
+                  message="Enter all six digits."
+                  invalid
+                />,
+                <OTPField key="disabled" label="Verification code" length={6} disabled />,
               ],
             },
           ]}

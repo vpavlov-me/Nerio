@@ -281,6 +281,99 @@ async function verify() {
       );
     }
 
+    const comboboxUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "combobox" },
+    });
+    const comboboxUsage = JSON.parse(comboboxUsageResult.content[0].text);
+    if (
+      !comboboxUsage.baseUiPrimitives.includes("combobox") ||
+      !comboboxUsage.registryDependencies.includes("spinner") ||
+      !comboboxUsage.slots.includes("loading") ||
+      !comboboxUsage.states.includes("read-only") ||
+      !comboboxUsage.accessibility.some((item) => item.includes("independent controlled")) ||
+      !comboboxUsage.accessibility.some((item) => item.includes("Fetching"))
+    ) {
+      throw new Error(
+        "MCP Combobox usage is missing state ownership, presentation, or consumer boundaries.",
+      );
+    }
+
+    const multiSelectUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "multi-select" },
+    });
+    const multiSelectUsage = JSON.parse(multiSelectUsageResult.content[0].text);
+    if (
+      !multiSelectUsage.baseUiPrimitives.includes("combobox") ||
+      !multiSelectUsage.registryDependencies.includes("form-message") ||
+      !multiSelectUsage.slots.includes("selected-values") ||
+      !multiSelectUsage.slots.includes("announcement") ||
+      !multiSelectUsage.states.includes("read-only") ||
+      !multiSelectUsage.accessibility.some((item) => item.includes("independent controlled")) ||
+      !multiSelectUsage.accessibility.some((item) => item.includes("Fetching"))
+    ) {
+      throw new Error(
+        "MCP MultiSelect usage is missing multiple selection, announcements, or consumer boundaries.",
+      );
+    }
+
+    const searchFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "search-field" },
+    });
+    const searchFieldUsage = JSON.parse(searchFieldUsageResult.content[0].text);
+    if (
+      searchFieldUsage.baseUiPrimitives.length !== 0 ||
+      !searchFieldUsage.registryDependencies.includes("input-group") ||
+      !searchFieldUsage.slots.includes("clear") ||
+      !searchFieldUsage.slots.includes("loading") ||
+      !searchFieldUsage.states.includes("read-only") ||
+      !searchFieldUsage.accessibility.some((item) => item.includes("restores focus")) ||
+      !searchFieldUsage.accessibility.some((item) => item.includes("Results"))
+    ) {
+      throw new Error(
+        "MCP SearchField usage is missing native state, focus, presentation, or consumer boundaries.",
+      );
+    }
+
+    const numberFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "number-field" },
+    });
+    const numberFieldUsage = JSON.parse(numberFieldUsageResult.content[0].text);
+    if (
+      !numberFieldUsage.baseUiPrimitives.includes("number-field") ||
+      !numberFieldUsage.registryDependencies.includes("form-message") ||
+      !numberFieldUsage.slots.includes("decrement") ||
+      !numberFieldUsage.slots.includes("increment") ||
+      !numberFieldUsage.states.includes("read-only") ||
+      !numberFieldUsage.accessibility.some((item) => item.includes("Wheel")) ||
+      !numberFieldUsage.accessibility.some((item) => item.includes("Currency"))
+    ) {
+      throw new Error(
+        "MCP NumberField usage is missing locale, stepping, wheel, or consumer boundaries.",
+      );
+    }
+
+    const otpFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "otp-field" },
+    });
+    const otpFieldUsage = JSON.parse(otpFieldUsageResult.content[0].text);
+    if (
+      !otpFieldUsage.baseUiPrimitives.includes("otp-field") ||
+      !otpFieldUsage.registryDependencies.includes("form-message") ||
+      !otpFieldUsage.slots.includes("separator") ||
+      !otpFieldUsage.states.includes("complete") ||
+      !otpFieldUsage.accessibility.some((item) => item.includes("one-time-code")) ||
+      !otpFieldUsage.accessibility.some((item) => item.includes("Authentication"))
+    ) {
+      throw new Error(
+        "MCP OTPField usage is missing autofill, form, completion, or consumer boundaries.",
+      );
+    }
+
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },
@@ -533,9 +626,44 @@ async function verify() {
       !toggleUsage.states.includes("pressed") ||
       !toggleUsage.requiredTokens.includes("--n-toggle-background-pressed") ||
       !toggleUsage.accessibility.some((item) => item.includes("stable accessible name")) ||
-      !toggleUsage.accessibility.some((item) => item.includes("future ToggleGroup"))
+      !toggleUsage.accessibility.some((item) => item.includes("ToggleGroup"))
     ) {
       throw new Error("MCP Toggle usage is missing Base UI, naming, state, or boundary metadata.");
+    }
+
+    const toggleGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "toggle-group" },
+    });
+    const toggleGroupUsage = JSON.parse(toggleGroupUsageResult.content[0].text);
+    assertRegistryParity("toggle-group", toggleGroupUsage, ["components/toggle-group.tsx"]);
+    if (
+      !toggleGroupUsage.baseUiPrimitives.includes("toggle-group") ||
+      !toggleGroupUsage.registryDependencies.includes("toggle") ||
+      !toggleGroupUsage.slots.includes("item") ||
+      !toggleGroupUsage.states.includes("multiple") ||
+      !toggleGroupUsage.accessibility.some((item) => item.includes("roving focus"))
+    ) {
+      throw new Error("MCP ToggleGroup usage is missing grouped state or focus metadata.");
+    }
+
+    const checkboxGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "checkbox-group" },
+    });
+    const checkboxGroupUsage = JSON.parse(checkboxGroupUsageResult.content[0].text);
+    assertRegistryParity("checkbox-group", checkboxGroupUsage, [
+      "components/checkbox-group.tsx",
+      "lib/compose-refs.ts",
+    ]);
+    if (
+      !checkboxGroupUsage.baseUiPrimitives.includes("checkbox-group") ||
+      !checkboxGroupUsage.registryDependencies.includes("checkbox") ||
+      !checkboxGroupUsage.slots.includes("group") ||
+      !checkboxGroupUsage.states.includes("read-only") ||
+      !checkboxGroupUsage.accessibility.some((item) => item.includes("native form reset"))
+    ) {
+      throw new Error("MCP CheckboxGroup usage is missing form, state, or boundary metadata.");
     }
 
     const sliderUsageResult = await client.callTool({
@@ -687,6 +815,56 @@ async function verify() {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
     }
 
+    const collapsibleUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "collapsible" },
+    });
+    const collapsibleUsage = JSON.parse(collapsibleUsageResult.content[0].text);
+    assertRegistryParity("collapsible", collapsibleUsage, [
+      "components/collapsible.tsx",
+      "lib/cn.ts",
+      "lib/component-props.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !collapsibleUsage.baseUiPrimitives.includes("collapsible") ||
+      !collapsibleUsage.slots.includes("panel") ||
+      !collapsibleUsage.states.includes("open") ||
+      !collapsibleUsage.requiredTokens.includes("--n-disclosure-trigger-min-height") ||
+      !collapsibleUsage.accessibility.some((item) => item.includes("native details"))
+    ) {
+      throw new Error(
+        "MCP Collapsible usage is missing Base UI, anatomy, token, or native guidance.",
+      );
+    }
+
+    const accordionUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "accordion" },
+    });
+    const accordionUsage = JSON.parse(accordionUsageResult.content[0].text);
+    assertRegistryParity("accordion", accordionUsage, [
+      "components/accordion.tsx",
+      "lib/cn.ts",
+      "lib/component-props.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !accordionUsage.baseUiPrimitives.includes("accordion") ||
+      !accordionUsage.slots.includes("header") ||
+      !accordionUsage.variants.includes("multiple expansion") ||
+      !accordionUsage.requiredTokens.includes("--n-disclosure-divider") ||
+      !accordionUsage.accessibility.some((item) => item.includes("stable string value"))
+    ) {
+      throw new Error(
+        "MCP Accordion usage is missing grouped state, anatomy, token, or value metadata.",
+      );
+    }
+
     const breadcrumbsUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "breadcrumbs" },
@@ -729,6 +907,21 @@ async function verify() {
       )
     ) {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
+    }
+
+    const alertDialogUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "alert-dialog" },
+    });
+    const alertDialogUsage = JSON.parse(alertDialogUsageResult.content[0].text);
+    if (
+      !alertDialogUsage.registryDependencies.includes("dialog") ||
+      !alertDialogUsage.baseUiPrimitives.includes("alert-dialog") ||
+      !alertDialogUsage.slots.includes("cancel") ||
+      !alertDialogUsage.slots.includes("action") ||
+      !alertDialogUsage.accessibility.some((item) => item.includes("pointer dismissal disabled"))
+    ) {
+      throw new Error("MCP AlertDialog usage is missing its response or dismissal contract.");
     }
 
     const sheetUsageResult = await client.callTool({
@@ -817,9 +1010,16 @@ async function verify() {
     if (
       !dropdownUsage.requiredTokens.includes("--n-dropdown-min-width") ||
       !dropdownUsage.accessibility.some((item) => item.includes("Disabled items")) ||
-      !dropdownUsage.accessibility.some((item) => item.includes("destructive"))
+      !dropdownUsage.accessibility.some((item) => item.includes("destructive")) ||
+      !dropdownUsage.accessibility.some((item) => item.includes("Checkbox and radio")) ||
+      !dropdownUsage.accessibility.some((item) => item.includes("submenu")) ||
+      !dropdownUsage.slots.includes("link-item") ||
+      !dropdownUsage.slots.includes("checkbox-item") ||
+      !dropdownUsage.slots.includes("radio-item") ||
+      !dropdownUsage.slots.includes("sub-content") ||
+      !dropdownUsage.usage.includes("DropdownMenuRoot")
     ) {
-      throw new Error("MCP DropdownMenu usage is missing disabled/destructive metadata.");
+      throw new Error("MCP DropdownMenu usage is missing compound selection or submenu metadata.");
     }
 
     const toastUsageResult = await client.callTool({
@@ -837,7 +1037,7 @@ async function verify() {
       !toastUsage.requiredTokens.includes("--n-toast-viewport-inset") ||
       !toastUsage.requiredTokens.includes("--n-toast-enter-offset") ||
       !toastUsage.requiredTokens.includes("--n-toast-stack-scale-step") ||
-      !toastUsage.accessibility.some((item) => item.includes("bottom-centered")) ||
+      !toastUsage.accessibility.some((item) => item.includes("bottom-right")) ||
       !toastUsage.usage.includes("ToastProvider")
     ) {
       throw new Error(
@@ -870,9 +1070,15 @@ async function verify() {
       "button",
       "motion-adapter",
       "button-group",
+      "toggle-group",
+      "checkbox-group",
       "dialog",
+      "alert-dialog",
       "sheet",
       "select",
+      "search-field",
+      "number-field",
+      "otp-field",
       "tabs",
       "toast",
       "input",

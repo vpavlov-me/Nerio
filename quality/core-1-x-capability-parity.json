@@ -8,10 +8,10 @@
     "coreVersion": "1.0.0-beta.1",
     "baseUiVersion": "1.6.0",
     "componentCatalogSchemaVersion": 1,
-    "componentCatalogSha256": "a955f4432b80b6a13e1d30591d591c26ee67eac3c91f4d649e6232f447fdffd6",
+    "componentCatalogSha256": "a79f8bc053ae0d7c31e93bcc5f3ebda8955271f479e77ced0917c103ad1841cc",
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
-    "registryManifestSha256": "22094d0b3e69536548a6838d5d7d9a4f99f5d64596b35aa5eb8c864fffb71de0",
+    "registryManifestSha256": "c92f1c1db90bfeee6a4c665c6a074137a1938ddc2bc5ca4223681a7bef92d07f",
     "publicApiSnapshotSha256": "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3"
   },
   "currentBaseUiVersion": "1.7.0",
@@ -64,11 +64,18 @@
       "unstable-use-media-query"
     ]
   },
-  "currentPublicApiSnapshotSha256": "948031422bb1635594628bcff633d81958ef17c484501b45e97ff46033907996",
+  "currentComponentCatalogSchemaVersion": 1,
+  "currentComponentCatalogSha256": "236cc0b58d6cbe18e321b8a84ed9a2eb2b96ae03199629e20a219c2135b8c2fe",
+  "currentCoreVersion": "1.0.0-beta.1",
+  "currentRegistrySchemaVersion": "1.1.0",
+  "currentRegistryItemCount": 56,
+  "currentRegistryManifestSha256": "34e1b2f22203d00f60a346919fb2266bfb5adcbddaa87d77d46ccb1fbd229975",
+  "currentPublicApiSnapshotSha256": "e230d4d36462567d577d97768e64ba31153a124cd713de0de0d8c3b1a35c1906",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
     "core-1.1-primitive": "A bounded additive primitive is accepted for Core 1.1 after stable 1.0.",
+    "core-1.2-primitive": "A bounded additive primitive is accepted for the Core 1.2 tranche.",
     "later-core-candidate": "The capability needs a later decision or platform tranche before implementation.",
     "core-recipe": "The capability is best taught as a tested, copyable composition rather than a component API.",
     "adapter": "The capability belongs in an optional integration or deterministic interchange layer.",
@@ -184,9 +191,9 @@
     {
       "id": "shared-direction-contract",
       "target": "Core 1.1",
-      "mayStart": "after #151",
+      "mayStart": "now on dev",
       "issues": [342],
-      "dependsOn": [341, 151],
+      "dependsOn": [341],
       "rule": "Establish the minimum direction and localization contract first; the full repository audit is a parallel shared track, not a global serialization barrier."
     },
     {
@@ -194,16 +201,24 @@
       "target": "Core 1.1",
       "mayStart": "after the relevant #342 contract foundation",
       "issues": [343, 344, 345, 346, 347, 370],
-      "dependsOn": [151, 341, 342],
+      "dependsOn": [341, 342],
       "rule": "Disclosure, dialog, single-selection, search, OTP, and number work may proceed in parallel after their shared direction decisions are accepted."
     },
     {
       "id": "primitive-parity-b",
       "target": "Core 1.1",
       "mayStart": "after the relevant #342 contract foundation",
-      "issues": [348, 350],
+      "issues": [348],
       "dependsOn": [151, 341, 342],
-      "rule": "Grouped selection and menu anatomy may proceed independently of the field family."
+      "rule": "Grouped selection may proceed independently of the field family."
+    },
+    {
+      "id": "compound-menu",
+      "target": "Core 1.1",
+      "mayStart": "after the relevant #342 contract foundation",
+      "issues": [350],
+      "dependsOn": [341, 342],
+      "rule": "Compound menu anatomy is additive dev work and does not wait for the isolated stable 1.0 release line."
     },
     {
       "id": "multi-select-decision",
@@ -211,7 +226,7 @@
       "mayStart": "after #345 and #348 provide real evidence",
       "issues": [349],
       "dependsOn": [151, 341, 342, 345, 348],
-      "rule": "Keep MultiSelect as a decision spike; no implementation is approved by this matrix."
+      "rule": "Implement only the separate bounded MultiSelect contract accepted by ADR 0006."
     },
     {
       "id": "adoption",
@@ -246,7 +261,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 151],
+      "dependsOn": [341],
       "decision": "Shared foundation, but not a requirement to finish the entire repository audit before every component PR. Each new direction-sensitive API must wait for the relevant accepted contract."
     },
     {
@@ -266,7 +281,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Additive compound anatomy and a separate confirmation responsibility are justified; the current convenience Dialog must remain compatible."
     },
     {
@@ -276,7 +291,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Accept one synchronous, single-select, form-backed primitive; fetching, creation, virtualization, and product search remain outside Core."
     },
     {
@@ -286,7 +301,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Retain #346 for SearchField only. NumberField has a different value, locale, form, and primitive contract and moves to #370."
     },
     {
@@ -296,7 +311,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Base UI 1.6.0 marks OTPField stable; Core owns one form value, not authentication or verification policy."
     },
     {
@@ -312,12 +327,12 @@
     {
       "issue": 349,
       "title": "MultiSelect decision spike",
-      "disposition": "defer-implementation",
+      "disposition": "accept-bounded-implementation",
       "priority": "P2",
       "target": "Core 1.2",
-      "classification": "later-core-candidate",
+      "classification": "core-1.2-primitive",
       "dependsOn": [341, 342, 345, 348, 151],
-      "decision": "No Core implementation is accepted yet. Re-evaluate after real Combobox and CheckboxGroup use; composition or Pro remains a valid final outcome."
+      "decision": "ADR 0006 accepts a separate options-only bounded MultiSelect over Base UI Combobox multiple mode; async data, creation, virtualization, quotas, and product filtering remain outside Core."
     },
     {
       "issue": 350,
@@ -326,18 +341,18 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Links, checkbox/radio items, and submenus are additive menu anatomy. ContextMenu, Menubar, and NavigationMenu remain separate non-goals."
     },
     {
       "issue": 351,
       "title": "Package output decision",
-      "disposition": "retain-decision-first",
+      "disposition": "implemented-adr-0007",
       "priority": "P2",
       "target": "Core 1.2",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "dependsOn": [341, 151],
-      "decision": "Measure source, compiled, hybrid, and configuration-only options. Compiled output is not predetermined."
+      "decision": "ADR 0007 is implemented with deterministic unbundled compiled runtime output, declarations, package-mode consumer evidence, and a self-contained integrity-verified editable source Registry."
     },
     {
       "issue": 352,
@@ -347,7 +362,7 @@
       "target": "Core 1.2",
       "classification": "later-core-candidate",
       "dependsOn": [341, 151],
-      "decision": "Modularization and source lifecycle can start independently. Project bootstrap waits only for #351."
+      "decision": "Modularization, source lifecycle, and project bootstrap can proceed independently now that #351 is complete."
     },
     {
       "issue": 353,
@@ -416,8 +431,8 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
-      "decision": "Independent numeric value and locale contract split from #346."
+      "dependsOn": [341, 342],
+      "decision": "Independent numeric value and locale contract split from #346; #151 is no longer a start dependency."
     }
   ],
   "capabilities": [
@@ -577,7 +592,7 @@
       "classification": "existing-core",
       "priority": "none",
       "target": "current",
-      "nerioComponents": ["Dialog", "Sheet", "Popover", "Tooltip"],
+      "nerioComponents": ["Sheet", "Popover", "Tooltip"],
       "baseUiPrimitives": ["dialog", "drawer", "popover", "tooltip"],
       "platformCoverageIds": ["dialog", "popover"],
       "competitorEvidence": [
@@ -594,7 +609,7 @@
     {
       "id": "menu-foundation",
       "kind": "component-family",
-      "userProblem": "Products need a bounded secondary-command menu.",
+      "userProblem": "Products need bounded secondary-command, navigation, and menu-selection anatomy.",
       "classification": "existing-core",
       "priority": "none",
       "target": "current",
@@ -606,8 +621,8 @@
       "complexity": "high",
       "dependencies": [],
       "semverImpact": "none",
-      "acceptanceBoundary": "The current convenience menu remains stable while #350 adds bounded anatomy.",
-      "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu"]
+      "acceptanceBoundary": "Keep the convenience API compatible while compound action, link, checkbox, radio, and one-level submenu anatomy owns accessible interaction and bounded positioning.",
+      "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu", "Command execution"]
     },
     {
       "id": "data-display",
@@ -722,7 +737,7 @@
       "competitorEvidence": ["shadcn-components:Direction", "heroui-components:localized controls"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341],
+      "dependencies": [341],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "Inherit document direction by default; add a provider or locale prop only where evidence proves inheritance or Intl is insufficient.",
       "nonGoals": ["Translation framework", "Product message catalogs"],
@@ -735,7 +750,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Accordion", "Collapsible"],
       "baseUiPrimitives": ["accordion", "collapsible"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -757,7 +772,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Dialog", "AlertDialog"],
       "baseUiPrimitives": ["alert-dialog"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -766,7 +781,7 @@
       ],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "Preserve the current Dialog API; add meaningful compound parts and a separate conservative confirmation responsibility.",
       "nonGoals": ["Mutation orchestration", "Permission checks", "Routing guards"],
@@ -779,13 +794,13 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Combobox"],
       "baseUiPrimitives": ["combobox"],
       "platformCoverageIds": [],
       "competitorEvidence": ["shadcn-components:Combobox", "heroui-components:ComboBox"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One synchronous selected value with consumer-supplied data and bounded filtering.",
       "nonGoals": ["Remote fetching", "Creation", "Multiple selection", "Virtualization"],
@@ -798,7 +813,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["SearchField"],
       "baseUiPrimitives": [],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -807,7 +822,7 @@
       ],
       "value": "high",
       "complexity": "medium",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One query input, clear action, and search event composed from existing form primitives.",
       "nonGoals": ["Results", "Requests", "Debounce", "Global shortcuts"],
@@ -820,16 +835,25 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["NumberField"],
       "baseUiPrimitives": ["number-field"],
       "platformCoverageIds": [],
       "competitorEvidence": ["heroui-components:NumberField", "base-ui-components:NumberField"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One finite numeric form value with deterministic locale, min, max, step, and reset behavior.",
-      "nonGoals": ["Currency", "Accounting", "Expressions", "Unit conversion"],
+      "nonGoals": [
+        "Currency",
+        "Accounting",
+        "Arbitrary parsing",
+        "Unit conversion",
+        "Calculations",
+        "Business validation",
+        "Product steppers",
+        "Wheel changes"
+      ],
       "issue": 370
     },
     {
@@ -839,16 +863,25 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["OTPField"],
       "baseUiPrimitives": ["otp-field"],
       "platformCoverageIds": [],
       "competitorEvidence": ["shadcn-components:Input OTP", "heroui-components:InputOTP"],
       "value": "medium",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One bounded form value with mobile, paste, deletion, and accessible group behavior.",
-      "nonGoals": ["Authentication", "Resend", "Expiry", "Rate limiting"],
+      "nonGoals": [
+        "Authentication",
+        "Verification requests",
+        "Resend",
+        "Countdowns",
+        "Masking",
+        "Rate limiting",
+        "Recovery workflows",
+        "Credential storage"
+      ],
       "issue": 347
     },
     {
@@ -858,7 +891,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["ToggleGroup", "CheckboxGroup"],
       "baseUiPrimitives": ["checkbox-group", "toggle-group"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -875,20 +908,20 @@
     },
     {
       "id": "multi-select",
-      "kind": "decision",
+      "kind": "component",
       "userProblem": "Long popup option sets may require multiple form values.",
-      "classification": "later-core-candidate",
+      "classification": "core-1.2-primitive",
       "priority": "P2",
       "target": "Core 1.2",
-      "nerioComponents": [],
+      "nerioComponents": ["MultiSelect"],
       "baseUiPrimitives": [],
       "platformCoverageIds": [],
       "competitorEvidence": ["base-ui-components:Combobox multiple mode"],
       "value": "medium",
       "complexity": "high",
       "dependencies": [151, 341, 342, 345, 348],
-      "semverImpact": "decision-only",
-      "acceptanceBoundary": "Approve only after composition is proven insufficient and selected-value presentation remains bounded.",
+      "semverImpact": "additive-minor",
+      "acceptanceBoundary": "One options-only finite local collection, synchronous filtering, removable text values, repeated form values, reset, and polite announcements.",
       "nonGoals": ["Async search", "Creation", "Tagging", "FilterBar", "Max-selection policy"],
       "issue": 349
     },
@@ -905,9 +938,9 @@
       "competitorEvidence": ["shadcn-components:Dropdown Menu", "base-ui-components:Menu"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
-      "acceptanceBoundary": "Add meaningful Menu parts while keeping the current data-array API compatible.",
+      "acceptanceBoundary": "Keep the data-array API compatible while adding action and link items, checkbox/radio selection, one-level submenus, descriptions, shortcuts, and bounded positioning.",
       "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu", "Command execution"],
       "issue": 350
     },
@@ -1100,7 +1133,7 @@
       "id": "package-output",
       "kind": "tooling",
       "userProblem": "Package consumers need the smallest reliable setup without losing source mode.",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "priority": "P2",
       "target": "Core 1.2",
       "nerioComponents": [],
@@ -1110,8 +1143,8 @@
       "value": "high",
       "complexity": "high",
       "dependencies": [151, 341],
-      "semverImpact": "decision-first",
-      "acceptanceBoundary": "Choose source, compiled, hybrid, or configuration-only improvements by measured consumer evidence.",
+      "semverImpact": "additive-minor",
+      "acceptanceBoundary": "Ship unbundled compiled runtime output while keeping Registry source self-contained, editable, and integrity-verified.",
       "nonGoals": ["Replacing Registry source mode", "Unmeasured build rewrite"],
       "issue": 351
     },

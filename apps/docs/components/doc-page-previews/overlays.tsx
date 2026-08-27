@@ -1,11 +1,47 @@
 "use client";
 
-import { Copy, UserPlus, X } from "@nerio-ui/adapters/icons";
+import {
+  BookOpen,
+  CircleQuestionMark,
+  Copy,
+  Eye,
+  FileText,
+  Layers,
+  Palette,
+  PanelLeft,
+  Save,
+  Settings,
+  Upload,
+  UserPlus,
+  WalletCards,
+  X,
+} from "@nerio-ui/adapters/icons";
 import {
   Button,
   Dialog,
   DialogFooter,
-  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuCheckboxItemIndicator,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuGroupLabel,
+  DropdownMenuItem,
+  DropdownMenuItemContent,
+  DropdownMenuItemDescription,
+  DropdownMenuItemLabel,
+  DropdownMenuLinkItem,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioItemIndicator,
+  DropdownMenuRoot,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSubContent,
+  DropdownMenuSubmenu,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
   Popover,
   Sheet,
   SheetBody,
@@ -155,27 +191,126 @@ export function OverlaysPreview({ kind, snippet }: PreviewProps) {
         </Popover>
       ) : null}
       {kind === "dropdown-menu" ? (
-        <DropdownMenu
-          trigger="Actions"
-          items={[
-            {
-              group: "Collaborate",
-              label: "Share workspace",
-              leadingIcon: UserPlus,
-            },
-            {
-              group: "Collaborate",
-              label: "Duplicate workspace",
-              leadingIcon: Copy,
-            },
-            {
-              group: "Manage",
-              label: "Archive",
-              leadingIcon: X,
-              destructive: true,
-            },
-          ]}
-        />
+        <DropdownMenuRoot>
+          <DropdownMenuTrigger render={<Button variant="secondary">Complex menu</Button>} />
+          <DropdownMenuPortal>
+            <DropdownMenuPositioner>
+              <DropdownMenuContent>
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>File</DropdownMenuGroupLabel>
+                  <DropdownMenuItem>
+                    <FileText aria-hidden />
+                    <DropdownMenuItemLabel>New document</DropdownMenuItemLabel>
+                    <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Copy aria-hidden />
+                    <DropdownMenuItemLabel>Duplicate</DropdownMenuItemLabel>
+                    <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Layers aria-hidden />
+                      <DropdownMenuItemLabel>Open recent</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>Design system</DropdownMenuItem>
+                      <DropdownMenuItem>Documentation</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Save aria-hidden />
+                  <DropdownMenuItemLabel>Save</DropdownMenuItemLabel>
+                  <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Upload aria-hidden />
+                  <DropdownMenuItemLabel>Export</DropdownMenuItemLabel>
+                  <DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>View</DropdownMenuGroupLabel>
+                  <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>
+                    <Eye aria-hidden />
+                    <DropdownMenuItemLabel>Show sidebar</DropdownMenuItemLabel>
+                    <DropdownMenuCheckboxItemIndicator className="ms-auto" />
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem closeOnClick={false}>
+                    <PanelLeft aria-hidden />
+                    <DropdownMenuItemLabel>Show details</DropdownMenuItemLabel>
+                    <DropdownMenuCheckboxItemIndicator className="ms-auto" />
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Palette aria-hidden />
+                      <DropdownMenuItemLabel>Theme</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuRadioGroup defaultValue="system">
+                        <DropdownMenuRadioItem closeOnClick={false} value="light">
+                          <DropdownMenuRadioItemIndicator />
+                          Light
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem closeOnClick={false} value="dark">
+                          <DropdownMenuRadioItemIndicator />
+                          Dark
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem closeOnClick={false} value="system">
+                          <DropdownMenuRadioItemIndicator />
+                          System
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>Account</DropdownMenuGroupLabel>
+                  <DropdownMenuLinkItem href="#dropdown-menu-guidance">
+                    <UserPlus aria-hidden />
+                    <DropdownMenuItemContent>
+                      <DropdownMenuItemLabel>Invite members</DropdownMenuItemLabel>
+                      <DropdownMenuItemDescription>
+                        Add people to this workspace
+                      </DropdownMenuItemDescription>
+                    </DropdownMenuItemContent>
+                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                  </DropdownMenuLinkItem>
+                  <DropdownMenuItem>
+                    <WalletCards aria-hidden />
+                    <DropdownMenuItemLabel>Billing</DropdownMenuItemLabel>
+                  </DropdownMenuItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Settings aria-hidden />
+                      <DropdownMenuItemLabel>Settings</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>Workspace settings</DropdownMenuItem>
+                      <DropdownMenuItem disabled>Organization settings</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuLinkItem href="#dropdown-menu-guidance">
+                  <CircleQuestionMark aria-hidden />
+                  <DropdownMenuItemLabel>Help and support</DropdownMenuItemLabel>
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="#dropdown-menu-anatomy">
+                  <BookOpen aria-hidden />
+                  <DropdownMenuItemLabel>Documentation</DropdownMenuItemLabel>
+                </DropdownMenuLinkItem>
+                <DropdownMenuItem variant="destructive">
+                  <X aria-hidden />
+                  <DropdownMenuItemLabel>Remove workspace</DropdownMenuItemLabel>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenuPositioner>
+          </DropdownMenuPortal>
+        </DropdownMenuRoot>
       ) : null}
     </PreviewFrame>
   );

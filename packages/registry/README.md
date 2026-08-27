@@ -26,7 +26,9 @@ pnpm exec nerio doctor
 ```
 
 The package exports Registry metadata through `@nerio-ui/registry` and its immutable manifest at
-`@nerio-ui/registry/manifest.json`.
+`@nerio-ui/registry/manifest.json`. The published artifact is self-contained: every manifest source
+file is packed with integrity metadata, so the CLI does not need runtime UI, token, or adapter
+package dependencies to install editable source.
 
 See the [Registry documentation](https://nerio.vpavlov.com/docs/registry).
 

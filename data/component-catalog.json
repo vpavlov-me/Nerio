@@ -76,6 +76,7 @@
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "toggle", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "toggle-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "button-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "badge", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "spinner", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -92,6 +93,11 @@
     { "name": "item", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "multi-select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "search-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "number-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "otp-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -105,11 +111,15 @@
     { "name": "field", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "form-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "checkbox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "checkbox-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "switch", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "tabs", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "collapsible", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "accordion", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "breadcrumbs", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "pagination", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "alert-dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sidebar-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "command-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sheet", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -356,14 +366,14 @@
     },
     {
       "id": "dialog",
-      "surface": "Dialog",
-      "catalogComponents": ["Dialog"],
+      "surface": "Dialog and AlertDialog",
+      "catalogComponents": ["Dialog", "AlertDialog"],
       "coverageMode": "dedicated-component",
       "status": "covered",
       "issue": null,
-      "capability": "modal dialog",
-      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, and restoration that native styling alone does not standardize.",
-      "boundary": "Core owns the modal primitive. Consumers own task content and confirmation policy."
+      "capability": "modal dialog and explicit confirmation",
+      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, restoration, and a conservative alert-dialog mode that native styling alone does not standardize.",
+      "boundary": "Core owns modal and confirmation primitives. Consumers own task content, mutation orchestration, permissions, routing, and confirmation copy."
     },
     {
       "id": "popover",
@@ -557,6 +567,14 @@
       "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and prop/ref-safe render composition."
     },
     {
+      "name": "ToggleGroup",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "actions",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped pressed-state control with single or multiple string values, controlled or uncontrolled ownership, horizontal or vertical roving focus, options or ToggleGroupItem composition, disabled items, and inherited Toggle variants and sizes."
+    },
+    {
       "name": "ButtonGroup",
       "tier": "core",
       "package": "@nerio-ui/ui",
@@ -629,6 +647,14 @@
       "description": "Client-only Base UI checkbox for grouped multi-selection with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
     },
     {
+      "name": "CheckboxGroup",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped checkbox control with controlled or uncontrolled string arrays, visible group metadata, options or CheckboxGroupItem composition, item descriptions, disabled and read-only states, form submission, and native reset behavior."
+    },
+    {
       "name": "Radio Group",
       "tier": "core",
       "package": "@nerio-ui/ui/client",
@@ -651,6 +677,46 @@
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
+    },
+    {
+      "name": "Combobox",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only bounded single-select Combobox with synchronous filtering, generic string value identity, options or composed item modes, independent query, value, and popup state, form metadata, groups, clear, empty, and loading presentation hooks."
+    },
+    {
+      "name": "MultiSelect",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only bounded multiple-selection field for finite local options with synchronous filtering, removable text values, independent selection, query, and popup state, repeated form values, reset, groups, clear-all, and polite selection announcements."
+    },
+    {
+      "name": "SearchField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only native search composition with one controlled or uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events, form reset, Field relationships, and loading presentation."
+    },
+    {
+      "name": "NumberField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI decimal NumberField with one controlled or uncontrolled numeric value, locale-aware editing and display, bounded stepping, form metadata and reset, accessible increment and decrement controls, and a deliberate no-wheel default."
+    },
+    {
+      "name": "OTPField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI verification-code field with one controlled or uncontrolled string value, deterministic paste and deletion, autofill and mobile keyboard hints, form metadata and reset, accessible slot labels, and a completion callback."
     },
     {
       "name": "Slider",
@@ -690,7 +756,15 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible viewport-bounded modal primitive with a neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible viewport-bounded modal primitive with a compatible convenience API, additive compound anatomy, neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
+    },
+    {
+      "name": "AlertDialog",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "overlays",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI confirmation primitive with alertdialog semantics, pointer-dismissal protection, explicit cancel and action boundaries, controlled state, and consumer-owned mutation policy."
     },
     {
       "name": "Sheet",
@@ -722,7 +796,23 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
+      "description": "Base UI-backed dropdown menu with a compatible array API plus compound root, trigger, portal, positioner, content, group, action, link, checkbox, radio, submenu, separator, label, description, and shortcut anatomy."
+    },
+    {
+      "name": "Collapsible",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "data-display",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI disclosure primitive with one controlled or uncontrolled open state, disabled behavior, stable trigger and panel anatomy, tokenized height motion, and explicit native details guidance."
+    },
+    {
+      "name": "Accordion",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "data-display",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped disclosure primitive with stable item values, single or multiple expansion, disabled items, semantic headings, tokenized height motion, and consumer-owned content."
     },
     {
       "name": "Card",
@@ -810,7 +900,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Static and managed anatomy stay separate; managed actions and icon-only dismissal use Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-centered and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
+      "description": "Static and managed anatomy stay separate; managed actions use the primary Button beside the copy, icon-only dismissal uses the trailing ghost Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-right and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
     },
     {
       "name": "Progress",

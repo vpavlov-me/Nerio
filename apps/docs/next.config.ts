@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import path from "node:path";
+import { foundationAliases } from "./lib/generated/foundation-pages";
 
 const workspaceRoot = path.resolve(process.cwd(), "../..");
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -25,12 +26,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: workspaceRoot,
   },
-  transpilePackages: [
-    "@nerio-ui/ui",
-    "@nerio-ui/tokens",
-    "@nerio-ui/adapters",
-    "@nerio-ui/registry",
-  ],
   async headers() {
     return [
       {
@@ -53,13 +48,11 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [
-      {
-        source: "/docs/foundations/animations",
-        destination: "/docs/foundations/motion",
-        permanent: true,
-      },
-    ];
+    return foundationAliases.map((alias) => ({
+      source: alias.path,
+      destination: alias.destination,
+      permanent: true,
+    }));
   },
 };
 

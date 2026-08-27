@@ -12,13 +12,9 @@ import { CodeExample } from "../../../../components/code-example";
 import { MotionAdapterExamples } from "../../../../components/motion-adapter-examples";
 import { sourceInstallCommand } from "../../../../lib/public-commands";
 import { createPageMetadata } from "../../../../lib/seo";
+import { getFoundationPage } from "../../../../lib/foundations";
 
-export const metadata = createPageMetadata({
-  title: "Motion",
-  description:
-    "Apply CSS-first Nerio motion tokens or opt into the Motion adapter for advanced, accessible product animation.",
-  path: "/docs/foundations/motion",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/motion"));
 
 type TokenRow = readonly [label: string, token: string, value: string, use: string];
 

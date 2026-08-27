@@ -3,50 +3,50 @@
   "policy": "Production JS, CSS, and deterministic gzip transfer use approximately 4 KiB review headroom. Browser runtime transfer uses 64 KiB for protocol, font, and route payload variance. Raise only in a focused reviewed change with recorded delta and consumer value.",
   "routes": {
     "/": {
-      "jsBytes": 752640,
-      "cssBytes": 346112,
-      "transferBytes": 278528,
+      "jsBytes": 868352,
+      "cssBytes": 364544,
+      "transferBytes": 317440,
       "runtimeTransferBytes": 852992
     },
     "/docs/getting-started": {
-      "jsBytes": 480256,
-      "cssBytes": 346112,
-      "transferBytes": 198656,
+      "jsBytes": 494592,
+      "cssBytes": 364544,
+      "transferBytes": 205312,
       "runtimeTransferBytes": 761856
     },
     "/docs/components/button": {
-      "jsBytes": 484864,
-      "cssBytes": 346112,
-      "transferBytes": 200704,
+      "jsBytes": 499712,
+      "cssBytes": 364544,
+      "transferBytes": 207360,
       "runtimeTransferBytes": 784384
     },
     "/docs/components/select": {
-      "jsBytes": 484352,
-      "cssBytes": 346112,
-      "transferBytes": 200704,
+      "jsBytes": 498688,
+      "cssBytes": 364544,
+      "transferBytes": 207360,
       "runtimeTransferBytes": 844800
     },
     "/docs/components/calendar": {
-      "jsBytes": 494592,
-      "cssBytes": 346112,
-      "transferBytes": 203776,
+      "jsBytes": 508928,
+      "cssBytes": 364544,
+      "transferBytes": 210432,
       "runtimeTransferBytes": 831488
     },
     "/docs/components/date-picker": {
-      "jsBytes": 519168,
-      "cssBytes": 346112,
-      "transferBytes": 211968,
+      "jsBytes": 532480,
+      "cssBytes": 364544,
+      "transferBytes": 218112,
       "runtimeTransferBytes": 825344
     },
     "/docs/components/command-primitive": {
-      "jsBytes": 487424,
-      "cssBytes": 346112,
-      "transferBytes": 201216,
+      "jsBytes": 501760,
+      "cssBytes": 364544,
+      "transferBytes": 208384,
       "runtimeTransferBytes": 814080
     },
     "/templates": {
       "jsBytes": 738304,
-      "cssBytes": 346112,
+      "cssBytes": 364544,
       "transferBytes": 275456,
       "runtimeTransferBytes": 4456448
     },

@@ -11,13 +11,9 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
+import { getFoundationPage } from "../../../../lib/foundations";
 
-export const metadata = createPageMetadata({
-  title: "Effects",
-  description:
-    "Use Nerio shadow, focus, and layering tokens to create calm, accessible visual hierarchy across product surfaces.",
-  path: "/docs/foundations/effects",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/effects"));
 
 type TokenExample = readonly [label: string, token: string, description: string];
 type TokenContract = readonly [label: string, token: string];

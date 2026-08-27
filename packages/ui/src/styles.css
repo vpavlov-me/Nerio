@@ -5,13 +5,4 @@
 @import "./styles/progress.css";
 @import "./styles/select.css";
 @import "./styles/overlays.css";
-
-/* Scoped no-Preflight compatibility for source and package consumers. */
-:where([class^="n-"], [class*=" n-"]) {
-  box-sizing: border-box;
-}
-
-/* Preserve Nerio control typography when consumers intentionally omit Tailwind Preflight. */
-:where(button, input, select, textarea):where([class^="n-"], [class*=" n-"]) {
-  font-family: inherit;
-}
+@import "./styles/compatibility.css";

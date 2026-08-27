@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { collectRules, parseCss, scopedRule } from "./css-structure.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-tokens.mjs");
@@ -28,7 +29,10 @@ function withoutDeclaration(source, token, selector) {
   }
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return source.replace(
-    new RegExp(`(${escaped}\\s*\\{[\\s\\S]*?)^\\s*${token.replaceAll("-", "\\-")}:.*\\n`, "m"),
+    new RegExp(
+      `(${escaped}(?:\\s*,[^{}]+)?\\s*\\{[\\s\\S]*?)^\\s*${token.replaceAll("-", "\\-")}:.*\\n`,
+      "m",
+    ),
     "$1",
   );
 }
@@ -210,6 +214,37 @@ test("dark Badge aliases preserve custom status semantics outside preset themes"
   assert.match(
     source,
     /:root\[data-theme="purple"\]\[data-mode="dark"\][\s\S]*?--n-badge-background-strong-info: var\(--n-blue-400\);/,
+  );
+});
+
+test("dark Tabs indicator stays lighter than the control surface", () => {
+  const source = readFileSync(tokenSource, "utf8");
+  const rules = collectRules(parseCss(source));
+  const explicitDark = scopedRule(rules, ':root[data-mode="dark"]');
+  const systemDark = scopedRule(rules, ':root[data-mode="system"]', "(prefers-color-scheme: dark)");
+  const activeSurfaceAlias =
+    "--n-tabs-indicator-background: var(--n-color-surface-control-active);";
+
+  for (const modeRule of [explicitDark, systemDark]) {
+    assert.equal(
+      modeRule?.declarations.get("--n-tabs-indicator-background"),
+      activeSurfaceAlias.slice(activeSurfaceAlias.indexOf(":") + 1, -1).trim(),
+    );
+  }
+  assert.match(source, /--n-tabs-indicator-background: var\(--n-color-surface-raised\);/);
+});
+
+test("scoped System shares the explicit light reset before the dark media override", () => {
+  const rules = collectRules(parseCss(readFileSync(tokenSource, "utf8")));
+  const lightRule = scopedRule(rules, ':root[data-mode="light"]', undefined, [
+    '[data-nerio-theme-scope][data-mode="system"]',
+  ]);
+
+  assert.equal(lightRule?.declarations.get("color-scheme"), "light");
+  assert.equal(lightRule?.declarations.get("--n-color-surface-canvas"), "var(--n-gray-0)");
+  assert.equal(
+    lightRule?.declarations.get("--n-multi-select-value-background"),
+    "var(--n-color-surface-raised)",
   );
 });
 

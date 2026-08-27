@@ -27,6 +27,7 @@ const expectedFiles = [
   "styles/tailwind.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
+const expectedAlertDialogFiles = [...expectedDialogFiles, "components/alert-dialog.tsx"];
 const expectedSheetFiles = [
   ...expectedFiles,
   "components/button.tsx",
@@ -98,6 +99,74 @@ const expectedSelectFiles = [
   "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/select.css",
+  "styles/tailwind.css",
+];
+const expectedComboboxFiles = [
+  "components/combobox.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/select.css",
+  "styles/spinner.css",
+  "styles/tailwind.css",
+];
+const expectedMultiSelectFiles = [
+  "components/multi-select.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/select.css",
+  "styles/tailwind.css",
+];
+const expectedSearchFieldFiles = [
+  "components/button.tsx",
+  "components/field.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/input.tsx",
+  "components/input-group.tsx",
+  "components/label.tsx",
+  "components/search-field.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/spinner.css",
+  "styles/tailwind.css",
+];
+const expectedNumberFieldFiles = [
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/number-field.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tokens.css",
+  "styles/tailwind.css",
+];
+const expectedOtpFieldFiles = [
+  "components/form-message.tsx",
+  "components/otp-field.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tokens.css",
   "styles/tailwind.css",
 ];
 const expectedPhase2BFiles = [
@@ -176,6 +245,32 @@ const expectedToggleFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedToggleGroupFiles = [
+  "components/icon.tsx",
+  "components/toggle-group.tsx",
+  "components/toggle.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
+const expectedCheckboxGroupFiles = [
+  "components/checkbox-group.tsx",
+  "components/checkbox.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedCalendarFiles = [
   "components/calendar.tsx",
   "lib/cn.ts",
@@ -227,6 +322,15 @@ const expectedOverlayAndTabsFiles = [
   "styles/motion.css",
   "styles/overlays.css",
   "styles/tailwind.css",
+];
+const expectedDisclosureFiles = [
+  "components/accordion.tsx",
+  "components/collapsible.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
 ];
 
 function execute(cwd, args, env = {}) {
@@ -292,7 +396,7 @@ function writePackageTailwindSetup(target, { explicitPreflight = false } = {}) {
       '@import "tailwindcss/utilities.css" layer(utilities);',
       '@import "@nerio-ui/tokens/tailwind.css";',
       '@import "@nerio-ui/ui/styles.css";',
-      '@source "../node_modules/@nerio-ui/ui/src";',
+      '@source "../node_modules/@nerio-ui/ui/dist";',
       "",
     ]
       .filter(Boolean)
@@ -1749,6 +1853,7 @@ async function verify() {
     await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
+    await run(localTarget, "add", "alert-dialog");
     await run(localTarget, "add", "sheet");
     await run(localTarget, "add", "sidebar-primitive");
     await run(localTarget, "add", "command-primitive");
@@ -1756,9 +1861,16 @@ async function verify() {
     await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
+    await run(localTarget, "add", "checkbox-group");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "toggle");
+    await run(localTarget, "add", "toggle-group");
     await run(localTarget, "add", "select");
+    await run(localTarget, "add", "combobox");
+    await run(localTarget, "add", "multi-select");
+    await run(localTarget, "add", "search-field");
+    await run(localTarget, "add", "number-field");
+    await run(localTarget, "add", "otp-field");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -1777,6 +1889,8 @@ async function verify() {
     await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
     await run(localTarget, "add", "tabs");
+    await run(localTarget, "add", "collapsible");
+    await run(localTarget, "add", "accordion");
     await run(localTarget, "add", "breadcrumbs");
     await run(localTarget, "add", "pagination");
     await run(localTarget, "add", "popover");
@@ -1798,6 +1912,38 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Icon source is missing its adapter, Lucide isolation, or protected accessibility contract.",
+      );
+    }
+    assertFiles(localTarget, expectedCheckboxGroupFiles);
+    const checkboxGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/checkbox-group.tsx"),
+      "utf8",
+    );
+    if (
+      !checkboxGroupSource.includes("@base-ui/react/checkbox-group") ||
+      !checkboxGroupSource.includes("CheckboxGroupItem") ||
+      !checkboxGroupSource.includes("onValueChange") ||
+      !checkboxGroupSource.includes('data-slot="group"') ||
+      !checkboxGroupSource.includes('addEventListener("reset"')
+    ) {
+      throw new Error(
+        "Installed CheckboxGroup source did not preserve grouped values, composition, slots, or reset behavior.",
+      );
+    }
+    assertFiles(localTarget, expectedToggleGroupFiles);
+    const toggleGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/toggle-group.tsx"),
+      "utf8",
+    );
+    if (
+      !toggleGroupSource.includes("@base-ui/react/toggle-group") ||
+      !toggleGroupSource.includes("ToggleGroupItem") ||
+      !toggleGroupSource.includes("multiple?: boolean") ||
+      !toggleGroupSource.includes('data-slot="group"') ||
+      !toggleGroupSource.includes('data-slot="item"')
+    ) {
+      throw new Error(
+        "Installed ToggleGroup source did not preserve grouped values, composition, or public slots.",
       );
     }
     assertFiles(localTarget, [
@@ -1834,9 +1980,25 @@ async function verify() {
     );
     if (
       !dialogSource.includes('closeLabel = "Close dialog"') ||
-      !dialogSource.includes('data-slot="close"')
+      !dialogSource.includes('data-slot="close"') ||
+      !dialogSource.includes("export function DialogRoot") ||
+      !dialogSource.includes("export const DialogContent")
     ) {
-      throw new Error("Installed Dialog source is missing its localizable close anatomy contract.");
+      throw new Error("Installed Dialog source is missing its convenience or compound contract.");
+    }
+    assertInstall(localTarget, expectedAlertDialogFiles);
+    const alertDialogSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/alert-dialog.tsx"),
+      "utf8",
+    );
+    if (
+      !alertDialogSource.includes("BaseAlertDialog.Root") ||
+      !alertDialogSource.includes('createAlertDialogAction("cancel")') ||
+      !alertDialogSource.includes('createAlertDialogAction("action")')
+    ) {
+      throw new Error(
+        "Installed AlertDialog source is missing its conservative response contract.",
+      );
     }
     assertFiles(localTarget, expectedSheetFiles);
     const sheetSource = fs.readFileSync(
@@ -2001,6 +2163,87 @@ async function verify() {
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
     }
+    assertFiles(localTarget, expectedComboboxFiles);
+    const comboboxSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/combobox.tsx"),
+      "utf8",
+    );
+    if (
+      !comboboxSource.includes("@base-ui/react/combobox") ||
+      !comboboxSource.includes("setUncontrolledQuery") ||
+      !comboboxSource.includes("setUncontrolledOpen(false)") ||
+      !comboboxSource.includes("isItemEqualToValue") ||
+      !comboboxSource.includes('data-slot="loading"') ||
+      !comboboxSource.includes("loadingMessage")
+    ) {
+      throw new Error(
+        "Installed Combobox source did not preserve generic identity, state, or presentation contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedMultiSelectFiles);
+    const multiSelectSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/multi-select.tsx"),
+      "utf8",
+    );
+    if (
+      !multiSelectSource.includes("<MultiSelectOption<Value>, true>") ||
+      !multiSelectSource.includes("pendingAnnouncementRef") ||
+      !multiSelectSource.includes("setUncontrolledOpen(false)") ||
+      !multiSelectSource.includes('data-slot="selected-values"') ||
+      !multiSelectSource.includes('data-slot="announcement"')
+    ) {
+      throw new Error(
+        "Installed MultiSelect source did not preserve multiple selection, reset, chip, or announcement contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedSearchFieldFiles);
+    const searchFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/search-field.tsx"),
+      "utf8",
+    );
+    if (
+      !searchFieldSource.includes('type="search"') ||
+      !searchFieldSource.includes("setUncontrolledValue") ||
+      !searchFieldSource.includes('reason: "enter"') ||
+      !searchFieldSource.includes('data-slot="clear"') ||
+      !searchFieldSource.includes("nativeInputRef.current?.focus()")
+    ) {
+      throw new Error(
+        "Installed SearchField source did not preserve native search, state, clear, or focus contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedNumberFieldFiles);
+    const numberFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/number-field.tsx"),
+      "utf8",
+    );
+    if (
+      !numberFieldSource.includes("@base-ui/react/number-field") ||
+      !numberFieldSource.includes("setUncontrolledValue") ||
+      !numberFieldSource.includes("allowWheelScrub={false}") ||
+      !numberFieldSource.includes('data-slot="decrement"') ||
+      !numberFieldSource.includes('data-slot="increment"')
+    ) {
+      throw new Error(
+        "Installed NumberField source did not preserve decimal state, stepper, or wheel contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedOtpFieldFiles);
+    const otpFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/otp-field.tsx"),
+      "utf8",
+    );
+    if (
+      !otpFieldSource.includes("@base-ui/react/otp-field") ||
+      !otpFieldSource.includes("setUncontrolledValue") ||
+      !otpFieldSource.includes('autoComplete = "one-time-code"') ||
+      !otpFieldSource.includes('data-slot="separator"') ||
+      !otpFieldSource.includes("onValueComplete")
+    ) {
+      throw new Error(
+        "Installed OTPField source did not preserve value, autofill, grouping, or completion contracts.",
+      );
+    }
     assertFiles(localTarget, expectedSliderFiles);
     const sliderSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/slider.tsx"),
@@ -2069,6 +2312,28 @@ async function verify() {
     assertFiles(localTarget, expectedFeedbackFiles);
     assertFiles(localTarget, expectedProgressFiles);
     assertFiles(localTarget, expectedOverlayAndTabsFiles);
+    assertFiles(localTarget, expectedDisclosureFiles);
+    const collapsibleSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/collapsible.tsx"),
+      "utf8",
+    );
+    const accordionSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/accordion.tsx"),
+      "utf8",
+    );
+    if (
+      !collapsibleSource.includes("@base-ui/react/collapsible") ||
+      !collapsibleSource.includes('data-slot="panel"') ||
+      !collapsibleSource.includes("--collapsible-panel-height") ||
+      !accordionSource.includes("@base-ui/react/accordion") ||
+      !accordionSource.includes("value: AccordionValue") ||
+      !accordionSource.includes('data-slot="header"') ||
+      !accordionSource.includes("--accordion-panel-height")
+    ) {
+      throw new Error(
+        "Installed disclosure source did not preserve Base UI state, stable values, anatomy, or height motion.",
+      );
+    }
 
     const tableSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/table.tsx"),
@@ -2252,9 +2517,17 @@ async function verify() {
     if (
       !dropdownSource.includes("destructive") ||
       !dropdownSource.includes("disabled={item.disabled}") ||
-      !dropdownSource.includes("onOpenChange")
+      !dropdownSource.includes("onOpenChange") ||
+      !dropdownSource.includes("DropdownMenuLinkItem") ||
+      !dropdownSource.includes("DropdownMenuCheckboxItem") ||
+      !dropdownSource.includes("DropdownMenuRadioGroup") ||
+      !dropdownSource.includes("DropdownMenuSubContent") ||
+      !dropdownSource.includes("aria-describedby={textRelationships.describedBy}") ||
+      !fs.existsSync(path.join(localTarget, "components/nerio/lib/resolve-class-name.ts"))
     ) {
-      throw new Error("Installed DropdownMenu source is missing item state or open control.");
+      throw new Error(
+        "Installed DropdownMenu source is missing compound menu anatomy or support files.",
+      );
     }
 
     const tooltipSource = fs.readFileSync(
@@ -2300,7 +2573,7 @@ async function verify() {
       !toastSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
-        "Installed Toast styles are missing the bottom-centered scaled stack or unified transform coordinate system.",
+        "Installed Toast styles are missing the bottom-right scaled stack or unified transform coordinate system.",
       );
     }
 

@@ -89,10 +89,13 @@ speed claims or a substitute for production observability.
 - each optional adapter subpath with its peer externalized.
 
 `pnpm validate:route-budgets` reads production Next.js client-reference manifests and enforces raw
-JavaScript, raw CSS, and deterministic gzip transfer allowances per reviewed route. The checked-in
-report covers the home page, Getting Started, Button, Select, Calendar, DatePicker, Command
-Primitive, one template detail, and one full-screen view, including major chunks, duplicated package
-ownership, and the measured delta from the pre-split baseline.
+JavaScript, raw CSS, and deterministic gzip transfer allowances per reviewed route. The tracked
+baseline in `quality/docs-route-bundle-baseline.json` covers the home page, Getting Started, Button,
+Select, Calendar, DatePicker, Command Primitive, one template detail, and one full-screen view. A
+current full diagnostic, including major chunks, duplicated package ownership, and measured deltas,
+is written to ignored `artifacts/docs-route-bundle-report.json` and uploaded by CI from the existing
+production build. See the [artifact retention policy](./artifact-retention.md) for inspection,
+baseline refresh, and budget-review commands.
 
 `pnpm test:consumer:vite` packs the public artifacts and builds a clean Vite + React + TypeScript +
 Tailwind CSS v4 fixture with explicit dependencies, representative server-safe and client imports,
@@ -151,6 +154,8 @@ pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test:ci-scopes
+pnpm test:repo-artifacts
+pnpm validate:repo-artifacts
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog

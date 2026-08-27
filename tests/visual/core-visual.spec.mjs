@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const categoryFixtures = {
   foundation: ["typography", "kbd"],
-  actions: ["button", "toggle", "button-group"],
+  actions: ["button", "toggle", "toggle-group", "button-group"],
   forms: [
     "input",
     "file-input",
@@ -13,9 +13,15 @@ const categoryFixtures = {
     "form-message",
     "form-group",
     "checkbox",
+    "checkbox-group",
     "radio-group",
     "switch",
     "select",
+    "combobox",
+    "multi-select",
+    "search-field",
+    "number-field",
+    "otp-field",
     "slider",
     "calendar",
     "date-picker",
@@ -30,11 +36,14 @@ const matrixSections = [
   "typography",
   "button",
   "toggle",
+  "toggle-group",
+  "checkbox-group",
   "input",
   "file-input",
   "slider",
   "calendar",
   "date-picker",
+  "otp-field",
   "card",
   "alert",
   "tabs",
@@ -127,6 +136,25 @@ test("protects purple light comfortable mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await showSections(page, matrixSections);
   await captureFixture(page, "purple-light-comfortable-mobile.png");
+});
+
+test("protects disclosure primitives", async ({ page }) => {
+  await page.goto("/visual-test/disclosure");
+  await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({
+    content: `
+      nextjs-portal { display: none !important; }
+      *, *::before, *::after {
+        animation: none !important;
+        caret-color: transparent !important;
+        transition: none !important;
+      }
+    `,
+  });
+  await expect(page.locator('[data-visual-test-ready="true"]')).toBeVisible();
+  await expect(page.locator(".disclosure-visual-fixture")).toHaveScreenshot(
+    "disclosure-primitives.png",
+  );
 });
 
 async function prepareOverlayFixture(page) {

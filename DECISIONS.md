@@ -55,11 +55,13 @@ Nerio does not use component-count parity as a product criterion. Every relevant
 classified as existing Core, native guidance, Core 1.1 primitive, later Core candidate, Core
 recipe, adapter, Pro, consumer-owned, or explicitly rejected.
 
-The accepted Core 1.1 component set is additive and begins only after stable 1.0. #342 supplies the
-shared direction/localization foundation without forcing the complete audit to serialize all
-component work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
-Core 1.2 decision spike with no implementation approval. MCP expansion stays in #354 while the
-repository-native Agent Skill is tracked separately in #369.
+The accepted Core 1.1 component set is additive. Roadmap #152 authorizes #342 on `dev` before stable
+1.0 because the isolated release candidate excludes forward development. #342 supplies the shared
+direction/localization foundation without forcing the complete audit to serialize all component
+work. SearchField remains #346 and NumberField is split into #370. The accepted ADR for MultiSelect
+#349 approves one separate bounded Core 1.2 primitive over Base UI Combobox multiple mode; async
+data, creation, virtualization, selection quotas, and product filtering remain outside Core. MCP
+expansion stays in #354 while the repository-native Agent Skill is tracked separately in #369.
 
 Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
 pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,
@@ -84,6 +86,12 @@ second component styling layer.
 ## Distribution
 
 Nerio is source-first and independent. It has its own component APIs, registry format, CLI, documentation, MCP tooling, and visual language.
+
+[ADR 0007](./docs/decisions/0007-compiled-runtime-and-self-contained-registry.md) accepts
+unbundled compiled ESM plus declarations for the TypeScript runtime packages and a self-contained
+source Registry artifact. Package mode does not require Next.js `transpilePackages`; source mode
+remains editable and integrity-verified. Public import paths and the single Tailwind/token contract
+remain unchanged.
 
 Core distribution should be public through the repository, public docs, public registry, and public packages where needed.
 

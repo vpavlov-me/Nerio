@@ -95,37 +95,40 @@ roadmap method.
 
 ### Core 1.1 shared contract
 
-<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341,#151 -->
+<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341 -->
 
-- #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
-  stable 1.0.
+- #342 establishes the minimum inherited direction, RTL, locale, and localization contract on
+  `dev`; it stays outside the isolated stable 1.0 candidate.
 - The full #342 audit continues as a parallel shared track. A direction-sensitive component API
   waits only for the relevant accepted contract, not for the complete cross-repository audit.
 
 ### Core 1.1 primitive parity
 
-<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#151,#341,#342 -->
+<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#341,#342 -->
 
 After the relevant #342 foundation, these may proceed in parallel:
 
-- #343 — Accordion and Collapsible;
-- #344 — additive compound Dialog anatomy and AlertDialog;
-- #345 — bounded single-select Combobox;
-- #346 — SearchField;
-- #347 — OTPField;
-- #370 — NumberField, split from #346.
+- #343 — Accordion and Collapsible (complete on `dev`);
+- #344 — additive compound Dialog anatomy and AlertDialog (complete on `dev`);
+- #345 — bounded single-select Combobox (complete on `dev`);
+- #346 — SearchField (complete on `dev`);
+- #347 — OTPField (complete on `dev`);
+- #370 — NumberField, split from #346 (complete on `dev`).
 
-<!-- parity-track:primitive-parity-b issues:#348,#350 depends-on:#151,#341,#342 -->
+<!-- parity-track:primitive-parity-b issues:#348 depends-on:#151,#341,#342 -->
+
+<!-- parity-track:compound-menu issues:#350 depends-on:#341,#342 -->
 
 These are independent parallel slices:
 
-- #348 — separate ToggleGroup and CheckboxGroup responsibilities;
-- #350 — complete bounded DropdownMenu anatomy.
+- #348 — separate ToggleGroup and CheckboxGroup responsibilities (complete on `dev`);
+- #350 — complete bounded DropdownMenu anatomy (complete on `dev`).
 
 <!-- parity-track:multi-select-decision issues:#349 depends-on:#151,#341,#342,#345,#348 -->
 
-#349 moves to a Core 1.2 decision spike after #345 and #348. No MultiSelect implementation is
-approved until real composition and accessibility evidence proves a dedicated Core responsibility.
+#349 completed its Core 1.2 decision spike after #345 and #348. ADR 0006 accepts a separate bounded
+MultiSelect implementation while keeping remote data, creation, virtualization, quotas, and product
+filtering outside Core.
 
 ### Adoption
 
@@ -139,9 +142,10 @@ components they use.
 
 <!-- parity-track:developer-platform issues:#351,#352,#353,#354,#355 depends-on:#151,#341 -->
 
-- #351 remains a measured package-output decision, not a predetermined compiled-output rewrite.
-- #352 starts with CLI modularization; source lifecycle work is independent, while project
-  bootstrap waits for #351.
+- #351 delivered ADR 0007 with deterministic unbundled compiled runtime output, declarations,
+  package-mode consumer evidence, and a self-contained integrity-verified editable source Registry.
+- #352 can proceed with CLI modularization, independent source lifecycle work, and project
+  bootstrap now that #351 is complete.
 - #353 waits only for the CLI modularization slice and reuses the existing Registry engine.
 - #354 owns bounded read-only MCP expansion; Agent Skill work is separate in #369.
 - #355 remains a measured build/expand/defer Component Lab decision; current docs and visual

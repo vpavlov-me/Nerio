@@ -76,6 +76,7 @@ function registryRequiredTokens(items) {
 
 function slugify(value) {
   return value
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
     .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -171,6 +172,7 @@ function uiEntrypointFailures() {
   const packageJson = JSON.parse(read("packages/ui/package.json"));
   const failures = [];
   const clientOnlyExports = [
+    "alert-dialog",
     "button",
     "checkbox",
     "dialog",
@@ -198,11 +200,14 @@ function uiEntrypointFailures() {
     failures.push("packages/ui/src/client.ts: client entrypoint must start with use client");
   }
 
-  if (packageJson.exports?.["./client"] !== "./src/client.ts") {
+  if (
+    packageJson.exports?.["./client"]?.default !== "./dist/client.js" ||
+    packageJson.exports?.["./client"]?.types !== "./dist/client.d.ts"
+  ) {
     failures.push("packages/ui/package.json: missing ./client export");
   }
 
-  if (packageJson.exports?.["./styles.css"] !== "./src/styles.css") {
+  if (packageJson.exports?.["./styles.css"] !== "./dist/styles.css") {
     failures.push("packages/ui/package.json: styles.css export changed");
   }
 
@@ -238,7 +243,7 @@ function packageReadinessFailures() {
     }
   }
 
-  if (tokensPackage.exports?.["./styles.css"] !== "./src/styles.css") {
+  if (tokensPackage.exports?.["./styles.css"] !== "./dist/styles.css") {
     failures.push("packages/tokens/package.json: missing ./styles.css export");
   }
 
@@ -262,6 +267,7 @@ function packageReadinessFailures() {
 }
 
 function tailwindDocumentationFailures() {
+  const globals = read("apps/docs/app/globals.css");
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
@@ -273,6 +279,7 @@ function tailwindDocumentationFailures() {
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const migrationPage = read("apps/docs/app/docs/migration/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
   const failures = [];
 
   const required = [
@@ -285,16 +292,15 @@ function tailwindDocumentationFailures() {
       "Component docs must expose an overview and decision boundary",
     ],
     [componentPage, 'id="installation"', "Component docs must expose installation and imports"],
-    [
-      docsChrome,
-      '{ href: "/docs/foundations/motion", label: "Motion"',
-      "Foundation navigation must use the canonical Motion route and label",
-    ],
     [docsChrome, 'href="/blocks"', "Primary navigation must expose the Blocks reference surface"],
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [
+      playground,
+      'aria-label="Playground settings"',
+      "Playground must expose labeled live settings",
+    ],
     [playground, "<h1>Playground</h1>", "Playground must use its concise canonical title"],
     [
       playground,
@@ -330,6 +336,33 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  for (const sourceImport of [
+    "../../../packages/tokens/src/styles.css",
+    "../../../packages/tokens/src/tailwind.css",
+    "../../../packages/ui/src/styles/motion.css",
+    "../../../packages/ui/src/styles/spinner.css",
+    "../../../packages/ui/src/styles/feedback.css",
+    "../../../packages/ui/src/styles/progress.css",
+    "../../../packages/ui/src/styles/select.css",
+    "../../../packages/ui/src/styles/overlays.css",
+    "../../../packages/ui/src/styles/compatibility.css",
+  ]) {
+    if (!globals.includes(`@import "${sourceImport}";`)) {
+      failures.push(`Docs development CSS must import the live source file: ${sourceImport}`);
+    }
+  }
+  if (globals.includes('@import "@nerio-ui/')) {
+    failures.push("Docs development CSS must not read one-time package output");
+  }
+
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/motion" && page.label === "Motion",
+    )
+  ) {
+    failures.push("Foundation route metadata must use the canonical Motion route and label");
   }
 
   if (migrationPage.includes("<table")) {
@@ -374,6 +407,226 @@ function tailwindDocumentationFailures() {
   }
   if (progressPage.includes("dedicated progress.css stylesheet")) {
     failures.push("Progress docs must not describe residual keyframes as component CSS");
+  }
+
+  return failures;
+}
+
+function accessibilityFoundationFailures() {
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const typographyPage = read("apps/docs/app/docs/foundations/typography/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const componentPage = read("apps/docs/components/doc-page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const failures = [];
+
+  const requiredPageContracts = [
+    ["Responsibility model", "Accessibility Foundation must define the responsibility model"],
+    ["Nerio Core", "Accessibility Foundation must name the Core responsibility"],
+    ["Product team", "Accessibility Foundation must name the product responsibility"],
+    ["Nerio Pro", "Accessibility Foundation must name the Pro responsibility"],
+    ["Applied example", "Accessibility Foundation must include a focused applied example"],
+    [
+      "Accessibility example preview",
+      "Accessibility Foundation must include a live component preview",
+    ],
+    ["accessibleFieldExample", "Accessibility Foundation must include a public usage snippet"],
+    [
+      "does not automatically make a product conform to WCAG",
+      "Accessibility Foundation must reject automatic product conformance claims",
+    ],
+    [
+      "Semantics and native behavior",
+      "Accessibility Foundation must cover semantic HTML and native behavior",
+    ],
+    [
+      "Names, descriptions, and errors",
+      "Accessibility Foundation must cover accessible names and relationships",
+    ],
+    ["Keyboard and focus", "Accessibility Foundation must cover keyboard and focus behavior"],
+    [
+      "Contrast and non-color communication",
+      "Accessibility Foundation must cover contrast-independent communication",
+    ],
+    ["Pointer and touch", "Accessibility Foundation must cover pointer and touch input"],
+    ["Dynamic feedback", "Accessibility Foundation must cover loading and status feedback"],
+    ["320 CSS pixel", "Accessibility Foundation must cover narrow reflow"],
+    ["Text resize and spacing", "Accessibility Foundation must cover text resizing and spacing"],
+    ["Direction and locale", "Accessibility Foundation must cover RTL and localization"],
+    ["Reduced motion", "Accessibility Foundation must cover reduced motion"],
+    ["Forced colors", "Accessibility Foundation must cover forced colors"],
+    ["Increased contrast", "Accessibility Foundation must cover increased contrast"],
+    ["pnpm test:a11y", "Accessibility Foundation must document automated a11y evidence"],
+    ["pnpm typecheck", "Accessibility Foundation must document typecheck evidence separately"],
+    ["pnpm test:browser:pr", "Accessibility Foundation must document browser evidence"],
+    ["GitHub issue #143", "Accessibility Foundation must link the manual evidence gate"],
+    ["Known limitations", "Accessibility Foundation must expose known limitations"],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!accessibilityPage.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (accessibilityPage.includes('"use client"')) {
+    failures.push("Accessibility Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/accessibility" && page.label === "Accessibility",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Accessibility route");
+  }
+
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [typographyPage, "Typography"],
+    [themesPage, "Themes"],
+    [componentPage, "component"],
+  ]) {
+    if (!source.includes("/docs/foundations/accessibility")) {
+      failures.push(`${label} documentation must link to the Accessibility Foundation`);
+    }
+  }
+
+  return failures;
+}
+
+function colorFoundationFailures() {
+  const colorPage = read("apps/docs/app/docs/foundations/color/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const normalized = colorPage.replaceAll(/\s+/g, " ");
+  const failures = [];
+  const requiredPageContracts = [
+    ["Color architecture", "Color Foundation must explain the token architecture"],
+    ["color.primitiveFamilies", "Color Foundation must render source-backed primitive families"],
+    ["color.semanticFamilies", "Color Foundation must render source-backed semantic families"],
+    ["color.componentAliases", "Color Foundation must render source-backed component aliases"],
+    ["Representative mode mappings", "Color Foundation must render mode mappings"],
+    ["System dark", "Color Foundation must label the projected system mapping as OS dark"],
+    ["runtimeAxes.theme.presets", "Color Foundation must render built-in theme mappings"],
+    ["foreground/background pair", "Color Foundation must review complete color pairs"],
+    ["Default", "Color Foundation must cover the default interaction state"],
+    ["Hover", "Color Foundation must cover the hover interaction state"],
+    ["Active", "Color Foundation must cover the active interaction state"],
+    ["Focus-visible", "Color Foundation must cover visible focus"],
+    ["Disabled", "Color Foundation must cover disabled color behavior"],
+    ["Selected", "Color Foundation must cover selected color behavior"],
+    ["Invalid", "Color Foundation must cover invalid color behavior"],
+    ["Color foundation example preview", "Color Foundation must include a live component preview"],
+    ["colorExample", "Color Foundation must include a public component snippet"],
+    ["Text contrast", "Color Foundation must cover text contrast"],
+    ["Non-text contrast", "Color Foundation must cover non-text contrast"],
+    ["Color-independent meaning", "Color Foundation must reject color-only communication"],
+    ["Forced colors", "Color Foundation must cover forced colors"],
+    ["Increased contrast", "Color Foundation must cover increased contrast"],
+    ["Color vision", "Color Foundation must cover color-vision limitations"],
+    ["system with OS dark", "Color Foundation must validate system-dark custom themes"],
+    ["Custom color theme", "Color Foundation must include a custom theme snippet"],
+    [
+      ':root[data-theme="acme"][data-mode="system"]',
+      "Color Foundation must include the system-dark custom theme selector",
+    ],
+    ["Validation matrix", "Color Foundation must include a custom theme validation matrix"],
+    ["Chart foundation issue", "Color Foundation must preserve the chart ownership boundary"],
+    [
+      "does not currently expose a contrast runtime axis",
+      "Color Foundation must state known runtime limitations",
+    ],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!normalized.includes(expected)) failures.push(message);
+  }
+  if (colorPage.includes('"use client"')) {
+    failures.push("Color Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/color" && page.label === "Color",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Color route");
+  }
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [themesPage, "Themes"],
+    [accessibilityPage, "Accessibility"],
+  ]) {
+    if (!source.includes("/docs/foundations/color")) {
+      failures.push(`${label} documentation must link to the Color Foundation`);
+    }
+  }
+
+  return failures;
+}
+
+function spacingLayoutFoundationFailures() {
+  const spacingPage = read("apps/docs/app/docs/foundations/spacing-layout/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const typographyPage = read("apps/docs/app/docs/foundations/typography/page.tsx");
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const componentPage = read("apps/docs/components/doc-page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const normalized = spacingPage.replaceAll(/\s+/g, " ");
+  const failures = [];
+  const requiredPageContracts = [
+    ["Responsibility model", "Spacing & layout Foundation must define ownership"],
+    ["Nerio Core", "Spacing & layout Foundation must name Core responsibility"],
+    ["Product team", "Spacing & layout Foundation must name product responsibility"],
+    ["Nerio Pro", "Spacing & layout Foundation must name Pro responsibility"],
+    ["spacing.primitiveScale", "Spacing & layout Foundation must render the source-backed scale"],
+    ["runtimeAxes.density.mappings", "Spacing & layout Foundation must render density mappings"],
+    ["spacing.componentAliases", "Spacing & layout Foundation must render component geometry"],
+    ["Component contract", "Spacing & layout Foundation must define token selection order"],
+    ["Semantic density alias", "Spacing & layout Foundation must define semantic aliases"],
+    ["Primitive step", "Spacing & layout Foundation must define primitive use"],
+    ["Local semantic token", "Spacing & layout Foundation must define product aliases"],
+    ["comfortable", "Spacing & layout Foundation must cover comfortable density"],
+    ["compact", "Spacing & layout Foundation must cover compact density"],
+    ["Spacing and layout examples", "Spacing & layout Foundation must include a live preview"],
+    ["spacingLayoutExample", "Spacing & layout Foundation must include public usage code"],
+    ["wrapping action toolbar", "Spacing & layout Foundation must cover toolbar wrapping"],
+    ["repeated table rows", "Spacing & layout Foundation must cover repeated rows"],
+    ["horizontal overflow", "Spacing & layout Foundation must cover two-dimensional overflow"],
+    ["320 CSS pixels", "Spacing & layout Foundation must cover narrow reflow"],
+    ["Long localization", "Spacing & layout Foundation must cover content growth"],
+    ["Direction and logical properties", "Spacing & layout Foundation must cover RTL layout"],
+    ["Grid, Stack, Container", "Spacing & layout Foundation must reject layout API backdoors"],
+    ["application shell", "Spacing & layout Foundation must preserve the application boundary"],
+    ["pnpm validate:route-budgets", "Spacing & layout Foundation must document route budgets"],
+    ["Known limitations", "Spacing & layout Foundation must expose current limitations"],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!normalized.includes(expected)) failures.push(message);
+  }
+  if (spacingPage.includes('"use client"')) {
+    failures.push("Spacing & layout Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) =>
+        page.path === "/docs/foundations/spacing-layout" && page.label === "Spacing & layout",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Spacing & layout route");
+  }
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [themesPage, "Themes"],
+    [typographyPage, "Typography"],
+    [accessibilityPage, "Accessibility"],
+    [componentPage, "component"],
+  ]) {
+    if (!source.includes("/docs/foundations/spacing-layout")) {
+      failures.push(`${label} documentation must link to the Spacing & layout Foundation`);
+    }
   }
 
   return failures;
@@ -598,6 +851,7 @@ function blockArchitectureFailures() {
 function publicSurfaceFailures() {
   const layout = read("apps/docs/app/layout.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const docsCommandPalette = read("apps/docs/components/docs-command-palette.tsx");
   const siteConfig = read("apps/docs/lib/site-config.ts");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const robots = read("apps/docs/app/robots.ts");
@@ -617,10 +871,11 @@ function publicSurfaceFailures() {
   const failures = [];
   const required = [
     [layout, "<DocsChrome>{children}</DocsChrome>", "The docs shell must expose public surfaces"],
+    [docsChrome, "entries={searchEntries}", "Search must include public surfaces"],
     [
-      docsChrome,
-      "const visibleSearchEntries = searchEntries",
-      "Search must include public surfaces",
+      docsCommandPalette,
+      'import("../lib/generated/foundation-search-pages")',
+      "Search must load canonical Foundation descriptions",
     ],
     [sitemap, 'absoluteUrl("/blocks")', "The sitemap must include Blocks"],
     [sitemap, 'absoluteUrl("/templates")', "The sitemap must include Templates"],
@@ -735,6 +990,14 @@ const docsChrome = read("apps/docs/components/docs-chrome.tsx");
 const componentReference = read("apps/docs/components/component-reference.ts");
 const componentDocs = read("apps/docs/lib/component-docs.ts");
 const tokenStyles = read("packages/tokens/src/styles.css");
+const togglePage = read("apps/docs/app/docs/components/toggle/page.tsx");
+const toggleGroupCompositionGuidance = "Use ToggleGroupItem, not Toggle, for grouped composition.";
+const toggleCompositionDocumentationIssues = [
+  ["Toggle page", togglePage],
+  ["Component reference", componentReference],
+]
+  .filter(([, source]) => !source.includes(toggleGroupCompositionGuidance))
+  .map(([surface]) => `${surface} must direct grouped composition through ToggleGroupItem`);
 
 const navSlugs = unique(matchAll(docsChrome, /href: "\/docs\/components\/([^"]+)"/g));
 const dynamicRouteSlugs = unique(
@@ -791,6 +1054,9 @@ const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
+const accessibilityFoundationIssues = accessibilityFoundationFailures();
+const colorFoundationIssues = colorFoundationFailures();
+const spacingLayoutFoundationIssues = spacingLayoutFoundationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
 const publicSurfaceIssues = publicSurfaceFailures();
@@ -829,10 +1095,14 @@ reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
+reportMissing("Accessibility foundation issues", accessibilityFoundationIssues);
+reportMissing("Color foundation issues", colorFoundationIssues);
+reportMissing("Spacing & layout foundation issues", spacingLayoutFoundationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Public documentation surface issues", publicSurfaceIssues);
 reportMissing("Documentation server/client architecture issues", docPageArchitectureIssues);
+reportMissing("ToggleGroup composition documentation issues", toggleCompositionDocumentationIssues);
 
 const failures = [
   missingNav,
@@ -856,10 +1126,14 @@ const failures = [
   uiEntrypointIssues,
   packageReadinessIssues,
   tailwindDocumentationIssues,
+  accessibilityFoundationIssues,
+  colorFoundationIssues,
+  spacingLayoutFoundationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
   publicSurfaceIssues,
   docPageArchitectureIssues,
+  toggleCompositionDocumentationIssues,
 ].flat();
 
 if (failures.length > 0) {
