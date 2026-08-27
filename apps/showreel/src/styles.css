@@ -106,7 +106,7 @@ body {
   border: 1px solid var(--n-color-border-subtle);
   border-radius: 42px;
   background: var(--n-color-surface-default);
-  box-shadow: 0 24px 80px rgb(15 23 42 / 8%);
+  box-shadow: var(--n-shadow-surface-raised);
 }
 
 .showreel-grid {
@@ -141,7 +141,7 @@ body {
   border: 1px solid var(--n-color-border-subtle);
   border-radius: 34px;
   background: var(--n-color-surface-default);
-  box-shadow: 0 28px 90px rgb(15 23 42 / 10%);
+  box-shadow: var(--n-shadow-surface-floating);
 }
 
 .showreel-window-bar {
@@ -202,7 +202,7 @@ body {
   border: 1px solid var(--n-color-border-subtle);
   border-radius: 36px;
   background: var(--n-color-surface-default);
-  box-shadow: 0 24px 70px rgb(15 23 42 / 7%);
+  box-shadow: var(--n-shadow-surface-raised);
 }
 
 .showreel-portrait-label {
@@ -233,7 +233,7 @@ body {
   border: 1px solid var(--n-color-border-subtle);
   border-radius: 38px;
   background: var(--n-color-surface-default);
-  box-shadow: 0 28px 90px rgb(15 23 42 / 10%);
+  box-shadow: var(--n-shadow-surface-floating);
 }
 
 .showreel-frame[data-format="vertical"] .showreel-component-scale,
