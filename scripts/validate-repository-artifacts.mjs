@@ -6,6 +6,16 @@ import { fileURLToPath } from "node:url";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const allowMarker = "repo-artifacts-allow";
 const textExtensions = new Set([".json", ".md", ".mdx", ".txt", ".yaml", ".yml"]);
+const referenceTextExtensions = new Set([
+  ...textExtensions,
+  ".css",
+  ".html",
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".ts",
+  ".tsx",
+]);
 const durableAssetPrefixes = [
   "apps/docs/public/",
   "docs/assets/",
@@ -13,13 +23,35 @@ const durableAssetPrefixes = [
   "tests/visual/__screenshots__/darwin/",
   "tests/visual/__screenshots__/linux/",
 ];
+const transientEvidenceExtensions = new Set([
+  ".gif",
+  ".jpeg",
+  ".jpg",
+  ".mov",
+  ".mp4",
+  ".png",
+  ".trace",
+  ".webm",
+  ".webp",
+  ".zip",
+]);
+const linuxEvidencePathPattern =
+  /(?:(?:^|(?:evidence|path|file|linux|output|artifact):[ \t]*)\/home\/[^/<>'"`\s)]+\/[^<>'"`\s)]+|\/home\/[^/<>'"`\s)]+\/[^<>'"`\s)]*\.[A-Za-z0-9]{1,10}(?=$|[?#\s)]))/gi;
 const machinePathPatterns = [
   {
     label: "personal macOS home path",
-    pattern: /\/Users\/[^/<>'"`\s)]+(?:\/[^<>'"`\s)]*)?/g,
+    pattern: /(?<![A-Za-z]:)\/Users\/[^/<>'"`\s)]+(?:\/[^<>'"`\s)]*)?/g,
+  },
+  {
+    label: "personal Linux home path",
+    pattern: linuxEvidencePathPattern,
   },
   { label: "macOS temporary path", pattern: /\/var\/folders\//g },
   { label: "Windows user path", pattern: /[A-Za-z]:\\Users\\[^\\<>'"`\s)]+/g },
+  {
+    label: "Windows user path",
+    pattern: /\b[A-Za-z]:\/Users\/[^/<>'"`\s)]+(?:\/[^<>'"`\s)]*)?/g,
+  },
   { label: "local file URL", pattern: /\bfile:\/\//g },
   { label: "tool-private cache path", pattern: /(?:^|\/)\.codex\//g },
   { label: "temporary tool output path", pattern: /\/(?:private\/)?tmp\/[^\s`'"<>)]+/g },
@@ -29,15 +61,37 @@ function normalizePath(path) {
   return path.replaceAll("\\", "/").replace(/^\.\//, "");
 }
 
+function isMachineLocalDestination(destination) {
+  linuxEvidencePathPattern.lastIndex = 0;
+  return (
+    /^\/(?:Users\/|var\/folders\/|(?:private\/)?tmp\/)/.test(destination) ||
+    destination.includes("/.codex/") ||
+    linuxEvidencePathPattern.test(destination)
+  );
+}
+
+function maskPortableUrls(line) {
+  return line
+    .replace(/\bhttps?:\/\/[^\s<>'"`)]+/g, (url) => " ".repeat(url.length))
+    .replace(/\]\((\/[^)\s]+)(?:\s+[^)]*)?\)/g, (link, destination) =>
+      isMachineLocalDestination(destination) ? link : " ".repeat(link.length),
+    );
+}
+
 function isCanonicalText(path) {
-  if (!textExtensions.has(extname(path).toLowerCase())) return false;
+  const extension = extname(path).toLowerCase();
+  if (!textExtensions.has(extension)) return false;
+  if (extension === ".md" || extension === ".mdx") return true;
   return (
     path.startsWith("docs/") ||
     path.startsWith("quality/") ||
     path.startsWith("apps/docs/content/") ||
-    path === "apps/docs/content/llms.txt" ||
-    (!path.includes("/") && path.endsWith(".md"))
+    path === "apps/docs/content/llms.txt"
   );
+}
+
+function isReferenceText(path) {
+  return referenceTextExtensions.has(extname(path).toLowerCase());
 }
 
 function isDurableAsset(path) {
@@ -45,23 +99,30 @@ function isDurableAsset(path) {
 }
 
 function generatedArtifactReason(path) {
-  if (isDurableAsset(path)) return undefined;
   const name = path.split("/").at(-1) ?? path;
+  if (/(?:^|[-_.])report.*\.json$/i.test(name)) {
+    return "generated JSON reports must stay in an ignored artifact directory";
+  }
+  if (isDurableAsset(path)) return undefined;
+  if (transientEvidenceExtensions.has(extname(name).toLowerCase())) {
+    return "transient screenshot, video, or trace output must stay in an ignored artifact directory";
+  }
   if (/(?:^|[-_.])(?:comparison|diff).*\.html?$/i.test(name)) {
     return "generated comparison HTML must stay in an ignored artifact directory";
   }
   if (/(?:^|[-_.])(?:comparison|diff|actual|pass\d+).*\.(?:gif|jpe?g|png|webp)$/i.test(name)) {
     return "generated visual comparison output must stay in an ignored artifact directory";
   }
-  if (/(?:^|[-_.])report.*\.json$/i.test(name) && !path.startsWith("quality/")) {
-    return "generated JSON reports must stay in an ignored artifact directory";
-  }
 }
 
 export function repositoryArtifactFailures(trackedFiles, readText) {
+  const paths = trackedFiles.map(normalizePath);
+  const referenceText = new Map(
+    paths.filter(isReferenceText).map((path) => [path, readText(path)]),
+  );
+  const canonicalText = new Map([...referenceText].filter(([path]) => isCanonicalText(path)));
   const failures = [];
-  for (const inputPath of trackedFiles) {
-    const path = normalizePath(inputPath);
+  for (const path of paths) {
     if (
       path === "design-qa.md" ||
       path.startsWith("artifacts/") ||
@@ -73,17 +134,46 @@ export function repositoryArtifactFailures(trackedFiles, readText) {
       continue;
     }
 
+    if (path.startsWith("docs/audits/screenshots/")) {
+      const name = path.split("/").at(-1) ?? path;
+      const hasAuditOwner = [...canonicalText].some(
+        ([source, contents]) =>
+          source.startsWith("docs/audits/") &&
+          !source.startsWith("docs/audits/screenshots/") &&
+          contents.includes(name),
+      );
+      if (!hasAuditOwner) {
+        failures.push(`${path}: durable audit evidence must be referenced by an audit document`);
+      }
+    }
+
+    if (
+      !isReferenceText(path) &&
+      (path.startsWith("docs/assets/") || path.startsWith("apps/docs/public/"))
+    ) {
+      const ownerPath = path.startsWith("docs/assets/")
+        ? path.slice("docs/".length)
+        : path.slice("apps/docs/public".length);
+      const hasOwner = [...referenceText].some(
+        ([source, contents]) => source !== path && contents.includes(ownerPath),
+      );
+      if (!hasOwner) {
+        failures.push(`${path}: durable public assets must have a live repository reference`);
+      }
+    }
+
     const artifactReason = generatedArtifactReason(path);
     if (artifactReason) failures.push(`${path}: ${artifactReason}`);
     if (!isCanonicalText(path)) continue;
 
-    const lines = readText(path).split(/\r?\n/);
+    const lines = canonicalText.get(path).split(/\r?\n/);
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index];
       if (line.includes(allowMarker)) continue;
+      const portableText = maskPortableUrls(line);
       for (const { label, pattern } of machinePathPatterns) {
         pattern.lastIndex = 0;
-        if (pattern.test(line)) {
+        if (pattern.test(portableText)) {
           failures.push(
             `${path}:${index + 1}: ${label} is not portable; link durable repository or PR/CI evidence`,
           );

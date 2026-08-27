@@ -1,6 +1,11 @@
-import { resolve } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 
 export const defaultDocsRouteReportPath = "artifacts/docs-route-bundle-report.json";
+
+export function isRepositoryArtifactReportPath(repositoryRelativePath) {
+  const normalizedPath = repositoryRelativePath.replaceAll("\\", "/");
+  return normalizedPath.startsWith("artifacts/");
+}
 
 export function resolveDocsRouteReportOutput(args, root) {
   const equalsOptions = args
@@ -25,8 +30,16 @@ export function resolveDocsRouteReportOutput(args, root) {
   }
 
   const writeReport = args.includes("--write") || configuredPath !== undefined;
+  const outputPath = resolve(root, configuredPath ?? defaultDocsRouteReportPath);
+  const repositoryRelativePath = relative(root, outputPath);
+  const isRepositoryPath =
+    repositoryRelativePath === "" ||
+    (!repositoryRelativePath.startsWith("..") && !isAbsolute(repositoryRelativePath));
+  if (writeReport && isRepositoryPath && !isRepositoryArtifactReportPath(repositoryRelativePath)) {
+    throw new Error("Usage error: report output inside the repository must stay under artifacts/.");
+  }
   return {
     writeReport,
-    outputPath: resolve(root, configuredPath ?? defaultDocsRouteReportPath),
+    outputPath,
   };
 }

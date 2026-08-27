@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import test from "node:test";
 import {
   defaultDocsRouteReportPath,
+  isRepositoryArtifactReportPath,
   resolveDocsRouteReportOutput,
 } from "./docs-route-bundle-report-options.mjs";
 
@@ -30,6 +31,26 @@ test("supports an explicit ephemeral output path", () => {
       outputPath: resolve(root, "artifacts/reports/routes.json"),
     },
   );
+  assert.deepEqual(resolveDocsRouteReportOutput(["--output=/tmp/nerio-routes.json"], root), {
+    writeReport: true,
+    outputPath: resolve("/tmp/nerio-routes.json"),
+  });
+});
+
+test("accepts the repository artifact directory with platform path separators", () => {
+  assert.equal(isRepositoryArtifactReportPath("artifacts/reports/routes.json"), true);
+  assert.equal(isRepositoryArtifactReportPath("artifacts\\reports\\routes.json"), true);
+  assert.equal(isRepositoryArtifactReportPath("quality\\reports\\routes.json"), false);
+});
+
+test("rejects report output over tracked repository paths", () => {
+  for (const path of ["quality/docs-route-bundle-baseline.json", "package.json"]) {
+    assert.throws(
+      () => resolveDocsRouteReportOutput([`--output=${path}`], root),
+      /inside the repository must stay under artifacts/,
+      path,
+    );
+  }
 });
 
 test("rejects missing or repeated output values", () => {
