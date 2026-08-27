@@ -14,7 +14,7 @@ Items under `Unreleased` may change before the next public release.
   controlled and uncontrolled state, disabled items, semantic headings, RTL, reduced motion, and
   explicit native `details`/`summary` guidance.
 - Added `AlertDialog` for deliberate confirmation flows and expanded `Dialog` with compatible
-  compound anatomy. AlertDialog protects pointer dismissal, separates cancel and action
+  compound anatomy. AlertDialog protects against pointer dismissal, separates cancel and action
   responsibilities, and keeps the mutation itself consumer-owned.
 - Added `Combobox` for one synchronously filtered string value with independent query, selection,
   and popup state, options or composed items, groups, form/reset support, and consumer-provided
