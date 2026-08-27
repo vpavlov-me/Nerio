@@ -100,15 +100,21 @@ function isDurableAsset(path) {
 
 function generatedArtifactReason(path) {
   const name = path.split("/").at(-1) ?? path;
-  if (/(?:^|[-_.])report.*\.json$/i.test(name)) {
-    return "generated JSON reports must stay in an ignored artifact directory";
+  const extension = extname(name).toLowerCase();
+  const segments = path.split("/");
+  const hasReportMarker = segments.some((segment) => /(?:^|[-_.])report(?:$|[-_.])/i.test(segment));
+  const hasComparisonMarker = segments.some((segment) =>
+    /(?:^|[-_.])(?:comparison|diff)(?:$|[-_.])/i.test(segment),
+  );
+  if (hasReportMarker && [".htm", ".html", ".json"].includes(extension)) {
+    return "generated diagnostic reports must stay in an ignored artifact directory";
+  }
+  if (hasComparisonMarker && [".htm", ".html"].includes(extension)) {
+    return "generated comparison HTML must stay in an ignored artifact directory";
   }
   if (isDurableAsset(path)) return undefined;
   if (transientEvidenceExtensions.has(extname(name).toLowerCase())) {
     return "transient screenshot, video, or trace output must stay in an ignored artifact directory";
-  }
-  if (/(?:^|[-_.])(?:comparison|diff).*\.html?$/i.test(name)) {
-    return "generated comparison HTML must stay in an ignored artifact directory";
   }
   if (/(?:^|[-_.])(?:comparison|diff|actual|pass\d+).*\.(?:gif|jpe?g|png|webp)$/i.test(name)) {
     return "generated visual comparison output must stay in an ignored artifact directory";
