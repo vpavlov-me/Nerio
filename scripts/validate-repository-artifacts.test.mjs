@@ -111,13 +111,16 @@ test("rejects generated comparison and report output outside approved locations"
     "review/lighthouse-report.html": "generated fixture",
     "docs/assets/lighthouse-report.html": "generated fixture",
     "apps/docs/public/lighthouse-report.html": "generated fixture",
+    "quality/lighthouse-report2.json": "{}",
+    "review/comparison2.html": "generated fixture",
+    "review/diffing.html": "generated fixture",
     "review/lighthouse-report/index.html": "generated fixture",
     "docs/assets/comparison/index.html": "generated fixture",
     "docs/assets/comparison.html": "generated fixture",
     "apps/docs/public/comparison.html": "generated fixture",
     "review/comparison.html": "generated fixture",
   });
-  assert.equal(result.length, 17);
+  assert.equal(result.length, 20);
   assert.ok(result.every((failure) => failure.includes("ignored artifact directory")));
 });
 

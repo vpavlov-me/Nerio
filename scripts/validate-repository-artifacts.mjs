@@ -101,11 +101,13 @@ function isDurableAsset(path) {
 function generatedArtifactReason(path) {
   const name = path.split("/").at(-1) ?? path;
   const extension = extname(name).toLowerCase();
-  const segments = path.split("/");
-  const hasReportMarker = segments.some((segment) => /(?:^|[-_.])report(?:$|[-_.])/i.test(segment));
-  const hasComparisonMarker = segments.some((segment) =>
-    /(?:^|[-_.])(?:comparison|diff)(?:$|[-_.])/i.test(segment),
-  );
+  const parentSegments = path.split("/").slice(0, -1);
+  const hasReportMarker =
+    /(?:^|[-_.])report/i.test(name) ||
+    parentSegments.some((segment) => /(?:^|[-_.])report(?:$|[-_.])/i.test(segment));
+  const hasComparisonMarker =
+    /(?:^|[-_.])(?:comparison|diff)/i.test(name) ||
+    parentSegments.some((segment) => /(?:^|[-_.])(?:comparison|diff)(?:$|[-_.])/i.test(segment));
   if (hasReportMarker && [".htm", ".html", ".json"].includes(extension)) {
     return "generated diagnostic reports must stay in an ignored artifact directory";
   }
