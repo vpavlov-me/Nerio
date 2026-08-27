@@ -585,36 +585,42 @@ test("keeps OTPField paste, deletion, autofill, RTL, and narrow layout bounded",
   await expectHealthyPage(page, problems);
 });
 
-test("keeps ToggleGroup selection, roving focus, RTL, and narrow wrapping bounded", async ({
+test("keeps ToggleGroup multiple selection, RTL roving focus, and narrow wrapping bounded", async ({
   page,
 }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/toggle-group");
   const preview = page.getByRole("region", { name: "toggle-group preview" });
-  const group = preview.getByRole("group", { name: "Text alignment", exact: true });
-  const left = group.getByRole("button", { name: "Left" });
-  const center = group.getByRole("button", { name: "Center" });
+  const group = preview.getByRole("group", { name: "Text formatting", exact: true });
+  const bold = group.getByRole("button", { name: "Bold" });
+  const italic = group.getByRole("button", { name: "Italic" });
+  const underline = group.getByRole("button", { name: "Underline" });
 
-  await expect(left).toHaveAttribute("aria-pressed", "true");
-  await center.click();
-  await expect(left).toHaveAttribute("aria-pressed", "false");
-  await expect(center).toHaveAttribute("aria-pressed", "true");
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "false");
+  await underline.click();
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "true");
 
-  await center.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(group.getByRole("button", { name: "Right" })).toBeFocused();
-
-  const rtlGroup = preview.getByRole("group", { name: "Text alignment RTL", exact: true });
-  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
-  await rtlCenter.focus();
+  await underline.focus();
   await page.keyboard.press("ArrowLeft");
-  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
+  await expect(italic).toBeFocused();
 
   await page.setViewportSize({ width: 320, height: 700 });
   const groupBox = await group.boundingBox();
   expect(groupBox).not.toBeNull();
   expect(groupBox.x).toBeGreaterThanOrEqual(0);
   expect(groupBox.x + groupBox.width).toBeLessThanOrEqual(320);
+
+  await page.goto("/docs/foundations/localization");
+  const rtlFixture = page.getByRole("region", { name: "RTL direction preview" });
+  const rtlGroup = rtlFixture.getByRole("group", { name: "RTL text alignment" });
+  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
+  await rtlCenter.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
   await expectHealthyPage(page, problems);
 });
 

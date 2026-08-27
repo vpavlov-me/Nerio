@@ -247,7 +247,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
     return (
       <div
         className={cn(
-          "n-field n-checkbox-group-field grid gap-(--n-field-gap) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)",
+          "n-field n-checkbox-group-field grid gap-0 [&>[data-slot=description]]:mt-(--n-label-gap) [&>[data-slot=group]]:mt-(--n-density-space-md) [&>[data-slot=message]]:mt-(--n-field-gap)",
           typeof className === "string" ? className : undefined,
         )}
         data-disabled={disabled ? "" : undefined}
@@ -264,7 +264,11 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
           {label}
         </span>
         {description ? (
-          <p className="n-field__description" data-slot="description" id={descriptionId}>
+          <p
+            className="n-field__description m-0 text-(length:--n-body-font-size) leading-(--n-body-line-height) text-(--n-color-text-tertiary)"
+            data-slot="description"
+            id={descriptionId}
+          >
             {description}
           </p>
         ) : null}
@@ -279,7 +283,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
             aria-labelledby={mergeIds(ariaLabelledBy, labelId)}
             className={(baseState) =>
               cn(
-                "grid gap-(--n-space-2)",
+                "grid gap-(--n-density-space-md)",
                 typeof className === "function"
                   ? resolveClassName(className, { ...state, disabled: baseState.disabled })
                   : undefined,

@@ -2,10 +2,14 @@ import { Check, X } from "@nerio-ui/adapters/icons";
 import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
+import { PreviewIsland } from "../../../../components/doc-page-preview-registry";
 import { getComponentDoc } from "../../../../lib/component-docs";
 import { createPageMetadata } from "../../../../lib/seo";
 
 const toggleGroupDoc = getComponentDoc("toggle-group");
+
+const formattingPreviewSnippet =
+  'import { Bold, Italic, Underline } from \'@nerio-ui/adapters/icons\';\nimport { ToggleGroup } from \'@nerio-ui/ui/client\';\n\n<ToggleGroup\n  aria-label="Text formatting"\n  defaultValue={["bold", "italic"]}\n  multiple\n  options={[\n    { value: "bold", icon: Bold, "aria-label": "Bold" },\n    { value: "italic", icon: Italic, "aria-label": "Italic" },\n    { value: "underline", icon: Underline, "aria-label": "Underline" },\n  ]}\n/>';
 
 const anatomyRows = [
   ["group", "Named Base UI ToggleGroup and controlled or uncontrolled value owner."],
@@ -40,6 +44,7 @@ export default function Page() {
       title={toggleGroupDoc!.title}
       lede={toggleGroupDoc!.description}
       kind="toggle-group"
+      preview={<PreviewIsland kind="toggle-group" snippet={formattingPreviewSnippet} />}
       sectionContent={{
         anatomy: (
           <DocumentationTable headers={["Slot", "Purpose"]} rows={anatomyRows} codeColumns={1} />

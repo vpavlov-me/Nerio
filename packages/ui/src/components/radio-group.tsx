@@ -182,7 +182,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
   return (
     <div
       className={cn(
-        "n-field n-radio-field grid gap-(--n-field-gap) data-invalid:[&_.n-radio]:border-(--n-input-border-danger) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)",
+        "n-field n-radio-field grid gap-0 data-invalid:[&_.n-radio]:border-(--n-input-border-danger) [&>[data-slot=description]]:mt-(--n-label-gap) [&>[data-slot=group]]:mt-(--n-density-space-md) [&>[data-slot=message]]:mt-(--n-field-gap)",
         typeof className === "string" ? className : undefined,
       )}
       data-disabled={disabled ? "" : undefined}
@@ -199,7 +199,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
       </span>
       {description ? (
         <p
-          className="n-field__description m-0 text-(length:--n-helper-font-size) text-(--n-color-text-tertiary)"
+          className="n-field__description m-0 text-(length:--n-body-font-size) leading-(--n-body-line-height) text-(--n-color-text-tertiary)"
           data-slot="description"
           id={descriptionId}
         >
@@ -210,7 +210,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
         ref={ref}
         className={(state) =>
           cn(
-            "grid gap-(--n-space-2)",
+            "grid gap-(--n-density-space-md)",
             typeof className === "function" ? resolveClassName(className, state) : undefined,
           )
         }

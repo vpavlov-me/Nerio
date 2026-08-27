@@ -242,6 +242,10 @@ test("scoped System shares the explicit light reset before the dark media overri
 
   assert.equal(lightRule?.declarations.get("color-scheme"), "light");
   assert.equal(lightRule?.declarations.get("--n-color-surface-canvas"), "var(--n-gray-0)");
+  assert.equal(
+    lightRule?.declarations.get("--n-multi-select-value-background"),
+    "var(--n-color-surface-raised)",
+  );
 });
 
 test("token validator reports unresolved aliases", () => {

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { DirectionProvider } from "@base-ui/react/direction-provider";
-import { Circle } from "@nerio-ui/adapters/icons";
+import { Bold, Circle, Italic, Underline } from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -64,30 +63,16 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
         </ButtonGroup>
       ) : null}
       {kind === "toggle-group" ? (
-        <div className="form-preview-stack">
-          <ToggleGroup
-            aria-label="Text alignment"
-            defaultValue={["left"]}
-            options={[
-              { value: "left", label: "Left" },
-              { value: "center", label: "Center" },
-              { value: "right", label: "Right" },
-            ]}
-          />
-          <DirectionProvider direction="rtl">
-            <div dir="rtl">
-              <ToggleGroup
-                aria-label="Text alignment RTL"
-                defaultValue={["right"]}
-                options={[
-                  { value: "left", label: "Left" },
-                  { value: "center", label: "Center" },
-                  { value: "right", label: "Right" },
-                ]}
-              />
-            </div>
-          </DirectionProvider>
-        </div>
+        <ToggleGroup
+          aria-label="Text formatting"
+          defaultValue={["bold", "italic"]}
+          multiple
+          options={[
+            { value: "bold", icon: Bold, "aria-label": "Bold" },
+            { value: "italic", icon: Italic, "aria-label": "Italic" },
+            { value: "underline", icon: Underline, "aria-label": "Underline" },
+          ]}
+        />
       ) : null}
       {kind === "typography" ? (
         <div className="preview-card">

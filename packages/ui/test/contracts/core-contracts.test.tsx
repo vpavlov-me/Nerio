@@ -3731,6 +3731,10 @@ describe("Core interactive action contracts", () => {
     );
     const group = screen.getByRole("radiogroup", { name: "Visibility" });
     const team = screen.getByRole("radio", { name: "Team" });
+    expect(group).toHaveClass("gap-(--n-density-space-md)");
+    expect(screen.getByText("Choose who can access this project.")).toHaveClass(
+      "text-(length:--n-body-font-size)",
+    );
     await user.tab();
     expect(team).toHaveFocus();
     await user.keyboard("{ArrowDown}");
