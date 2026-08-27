@@ -52,8 +52,8 @@ governed by `quality/platform-support.json` and `docs/platform-support.md`.
 
 ## Package pilot: HR dashboard
 
-Consumer: `/Users/vladimirpavlov/Documents/nerio-hr-dashboard`  
-Validation copy: `/Users/vladimirpavlov/Documents/.codex-validation/nerio-hr-frozen`
+Consumer: local `nerio-hr-dashboard` pilot.
+Validation copy: isolated frozen-source fixture.
 
 The package pilot installed the locally packed frozen `tokens`, `adapters`, and `ui` candidates. Its
 first production build correctly rejected the removed Select `onChange` alias in the product shell.
@@ -71,8 +71,8 @@ No Pro component or product-workflow API was required.
 
 ## Editable-source pilot: CRM
 
-Consumer: `/Users/vladimirpavlov/Documents/nerio-crm`  
-Validation copy: `/Users/vladimirpavlov/Documents/.codex-validation/nerio-crm-frozen`
+Consumer: local `nerio-crm` pilot.
+Validation copy: isolated frozen-source fixture.
 
 The source pilot installed locally packed coordinated Registry, CLI, MCP, adapters, tokens, and UI
 candidates. The frozen CLI reported 46 Registry items. Before writing, `doctor`, `diff`, and

@@ -38,6 +38,10 @@ test("release documentation validator requires package-output instructions", () 
   invalidFixture("--release", "RELEASE.md", "pnpm validate:package-output");
 });
 
+test("release documentation validator requires the repository artifact guard", () => {
+  invalidFixture("--release", "RELEASE.md", "pnpm validate:repo-artifacts");
+});
+
 test("release documentation validator fails when focused tests disappear from the release gate", () => {
   invalidFixture("--release-gate", ".github/workflows/release-gate.yml", "pnpm test:tokens");
 });

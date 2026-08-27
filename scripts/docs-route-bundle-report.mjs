@@ -1,9 +1,10 @@
-import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { gzipSync } from "node:zlib";
 import { routeBudgetFailures } from "./docs-route-budget-contract.mjs";
+import { resolveDocsRouteReportOutput } from "./docs-route-bundle-report-options.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const nextDirectory = resolve(
@@ -11,7 +12,7 @@ const nextDirectory = resolve(
   process.argv.find((argument) => argument.startsWith("--next-dir="))?.slice(11) ??
     "apps/docs/.next",
 );
-const writeReport = process.argv.includes("--write");
+const { writeReport, outputPath } = resolveDocsRouteReportOutput(process.argv.slice(2), root);
 const writeBaseline = process.argv.includes("--write-baseline");
 const reportOnly = process.argv.includes("--report-only");
 const skipBaseline = process.argv.includes("--no-baseline") || writeBaseline;
@@ -161,7 +162,8 @@ if (!skipBaseline && existsSync(baselinePath)) {
 const serialized = `${JSON.stringify(report, null, 2)}\n`;
 
 if (writeReport) {
-  writeFileSync(join(root, "docs/audits/docs-route-bundle-report.json"), serialized);
+  mkdirSync(dirname(outputPath), { recursive: true });
+  writeFileSync(outputPath, serialized);
 }
 if (writeBaseline) {
   writeFileSync(baselinePath, serialized);
@@ -182,4 +184,4 @@ if (!reportOnly) {
   console.log(`Documentation route budgets passed for ${report.routes.length} production routes.`);
 }
 
-if (reportOnly || writeReport) process.stdout.write(serialized);
+if (reportOnly) process.stdout.write(serialized);
