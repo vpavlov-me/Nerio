@@ -43,7 +43,7 @@ export function DeveloperScene({ format }: { format: ShowreelFormat }) {
         <Interactive.Code
           name="Install command"
           style={{
-            color: "#c4b5fd",
+            color: "var(--n-color-action-primary)",
             fontFamily: "var(--n-font-mono)",
             fontSize: format === "wide" ? 34 : 25,
             opacity: interpolate(frame, [0.7 * fps, 1.2 * fps], [0, 1], {

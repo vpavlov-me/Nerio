@@ -7,38 +7,57 @@ import { DeveloperScene } from "../scenes/DeveloperScene";
 import { IdentityScene } from "../scenes/IdentityScene";
 import { OutroScene } from "../scenes/OutroScene";
 import { TypeManifestoScene } from "../scenes/TypeManifestoScene";
+import { getSceneDuration, storyboardTransitionFrames, verticalStoryboard } from "../storyboard";
+
+const sceneDuration = (id: (typeof verticalStoryboard)[number]["id"]) =>
+  getSceneDuration(verticalStoryboard, id);
 
 const transition = (
   <TransitionSeries.Transition
     presentation={fade()}
-    timing={linearTiming({ durationInFrames: 10 })}
+    timing={linearTiming({ durationInFrames: storyboardTransitionFrames.vertical })}
   />
 );
 
 export function NerioShowreelVertical() {
   return (
     <TransitionSeries>
-      <TransitionSeries.Sequence durationInFrames={150} name="Identity vertical">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("identity")}
+        name="Identity vertical"
+      >
         <IdentityScene format="vertical" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={300} name="Type manifesto vertical">
-        <TypeManifestoScene format="vertical" />
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("manifesto")}
+        name="Type manifesto vertical"
+      >
+        <TypeManifestoScene durationInFrames={sceneDuration("manifesto")} format="vertical" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={330} name="Component portraits vertical">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("components")}
+        name="Component portraits vertical"
+      >
         <ComponentPortraitsScene format="vertical" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={360} name="Approval composition vertical">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("approval")}
+        name="Approval composition vertical"
+      >
         <ApprovalScene format="vertical" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={180} name="Developer experience vertical">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("developer")}
+        name="Developer experience vertical"
+      >
         <DeveloperScene format="vertical" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={170} name="Outro vertical">
+      <TransitionSeries.Sequence durationInFrames={sceneDuration("outro")} name="Outro vertical">
         <OutroScene format="vertical" />
       </TransitionSeries.Sequence>
     </TransitionSeries>

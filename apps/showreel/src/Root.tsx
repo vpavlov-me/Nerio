@@ -5,6 +5,13 @@ import { NerioShowreel } from "./compositions/NerioShowreel";
 import { NerioShowreelSquare } from "./compositions/NerioShowreelSquare";
 import { NerioShowreelVertical } from "./compositions/NerioShowreelVertical";
 import { PosterFrame } from "./compositions/PosterFrame";
+import {
+  getCompositionDuration,
+  mainStoryboard,
+  squareStoryboard,
+  storyboardTransitionFrames,
+  verticalStoryboard,
+} from "./storyboard";
 import "./styles.css";
 
 export function RemotionRoot() {
@@ -14,7 +21,7 @@ export function RemotionRoot() {
         <Composition
           id="NerioShowreel"
           component={NerioShowreel}
-          durationInFrames={2340}
+          durationInFrames={getCompositionDuration(mainStoryboard, storyboardTransitionFrames.main)}
           fps={60}
           width={1920}
           height={1080}
@@ -22,7 +29,10 @@ export function RemotionRoot() {
         <Composition
           id="NerioShowreelVertical"
           component={NerioShowreelVertical}
-          durationInFrames={1440}
+          durationInFrames={getCompositionDuration(
+            verticalStoryboard,
+            storyboardTransitionFrames.vertical,
+          )}
           fps={60}
           width={1080}
           height={1920}
@@ -30,7 +40,10 @@ export function RemotionRoot() {
         <Composition
           id="NerioShowreelSquare"
           component={NerioShowreelSquare}
-          durationInFrames={900}
+          durationInFrames={getCompositionDuration(
+            squareStoryboard,
+            storyboardTransitionFrames.square,
+          )}
           fps={60}
           width={1080}
           height={1080}

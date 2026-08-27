@@ -23,10 +23,11 @@ export function SceneFrame({
       className="showreel-root"
       data-density="comfortable"
       data-mode={dark ? "dark" : "light"}
+      data-nerio-theme-scope=""
       data-theme="purple"
       style={{
-        backgroundColor: dark ? "#000" : "#fff",
-        color: dark ? "#fff" : "#111318",
+        backgroundColor: "var(--n-color-surface-canvas)",
+        color: "var(--n-color-text-primary)",
       }}
     >
       <Interactive.Div

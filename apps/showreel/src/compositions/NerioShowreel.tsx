@@ -9,46 +9,65 @@ import { IdentityScene } from "../scenes/IdentityScene";
 import { OutroScene } from "../scenes/OutroScene";
 import { SystemLanguageScene } from "../scenes/SystemLanguageScene";
 import { TypeManifestoScene } from "../scenes/TypeManifestoScene";
+import { getSceneDuration, mainStoryboard, storyboardTransitionFrames } from "../storyboard";
+
+const sceneDuration = (id: (typeof mainStoryboard)[number]["id"]) =>
+  getSceneDuration(mainStoryboard, id);
 
 const transition = (
   <TransitionSeries.Transition
     presentation={fade()}
-    timing={linearTiming({ durationInFrames: 12 })}
+    timing={linearTiming({ durationInFrames: storyboardTransitionFrames.main })}
   />
 );
 
 export function NerioShowreel() {
   return (
     <TransitionSeries>
-      <TransitionSeries.Sequence durationInFrames={180} name="Identity">
+      <TransitionSeries.Sequence durationInFrames={sceneDuration("identity")} name="Identity">
         <IdentityScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={420} name="Type manifesto">
-        <TypeManifestoScene format="wide" />
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("manifesto")}
+        name="Type manifesto"
+      >
+        <TypeManifestoScene durationInFrames={sceneDuration("manifesto")} format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={240} name="System language">
+      <TransitionSeries.Sequence durationInFrames={sceneDuration("system")} name="System language">
         <SystemLanguageScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={480} name="Component portraits">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("components")}
+        name="Component portraits"
+      >
         <ComponentPortraitsScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={240} name="Built to compose">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("composition")}
+        name="Built to compose"
+      >
         <CompositionScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={480} name="Approval composition">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("approval")}
+        name="Approval composition"
+      >
         <ApprovalScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={240} name="Developer experience">
+      <TransitionSeries.Sequence
+        durationInFrames={sceneDuration("developer")}
+        name="Developer experience"
+      >
         <DeveloperScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={144} name="Outro">
+      <TransitionSeries.Sequence durationInFrames={sceneDuration("outro")} name="Outro">
         <OutroScene format="wide" />
       </TransitionSeries.Sequence>
     </TransitionSeries>

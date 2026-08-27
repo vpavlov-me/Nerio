@@ -4,9 +4,15 @@ import { SceneFrame } from "../components/SceneFrame";
 import { nerioEase } from "../motion/timing";
 import type { ShowreelFormat } from "../showreel.config";
 
-export function TypeManifestoScene({ format }: { format: ShowreelFormat }) {
+export function TypeManifestoScene({
+  durationInFrames,
+  format,
+}: {
+  durationInFrames: number;
+  format: ShowreelFormat;
+}) {
   const frame = useCurrentFrame();
-  const { durationInFrames, fps } = useVideoConfig();
+  const { fps } = useVideoConfig();
   const headlineSize = format === "wide" ? 166 : format === "vertical" ? 132 : 104;
 
   return (

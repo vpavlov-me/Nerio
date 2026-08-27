@@ -4,6 +4,29 @@ export type StoryboardScene = {
   durationInFrames: number;
 };
 
+export const storyboardTransitionFrames = {
+  main: 12,
+  square: 10,
+  vertical: 10,
+} as const;
+
+export function getSceneDuration(
+  storyboard: readonly StoryboardScene[],
+  id: StoryboardScene["id"],
+) {
+  const scene = storyboard.find((candidate) => candidate.id === id);
+  if (!scene) throw new Error(`Unknown storyboard scene: ${id}`);
+  return scene.durationInFrames;
+}
+
+export function getCompositionDuration(
+  storyboard: readonly StoryboardScene[],
+  transitionDurationInFrames: number,
+) {
+  const sceneFrames = storyboard.reduce((total, scene) => total + scene.durationInFrames, 0);
+  return sceneFrames - transitionDurationInFrames * Math.max(0, storyboard.length - 1);
+}
+
 export const mainStoryboard = [
   { id: "identity", label: "Identity", durationInFrames: 180 },
   { id: "manifesto", label: "Type manifesto", durationInFrames: 420 },

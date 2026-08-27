@@ -40,9 +40,10 @@ export function SystemLanguageScene({ format }: { format: ShowreelFormat }) {
               key={category}
               name={`${category} category`}
               style={{
-                border: "1px solid #27272a",
+                border: "1px solid var(--n-color-border-subtle)",
                 borderRadius: 999,
-                color: index === 0 ? "#c4b5fd" : "#a1a1aa",
+                color:
+                  index === 0 ? "var(--n-color-action-primary)" : "var(--n-color-text-secondary)",
                 fontSize: format === "wide" ? 25 : 21,
                 opacity: interpolate(
                   frame,
