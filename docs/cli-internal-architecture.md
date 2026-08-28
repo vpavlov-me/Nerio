@@ -12,6 +12,7 @@ details and do not create supported package subpaths.
 | `index.js`                 | Compose the runtime and report the final process error.                                               |
 | `internal/command-line.js` | Parse current arguments and render existing help text.                                                |
 | `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
+| `internal/remove.js`       | Plan direct-root removal, shared ownership retention, conflicts, and human or JSON results.           |
 | `internal/registry.js`     | Read and validate local or remote immutable Registry input.                                           |
 | `internal/workspace.js`    | Validate paths and state, plan source changes, and own locks, journals, recovery, and atomic commits. |
 | `internal/diagnostics.js`  | Inspect consumer dependencies, Tailwind setup, and installed-source drift.                            |
@@ -59,10 +60,24 @@ so rollback, recovery, process locking, source ownership, and lock portability r
 `--dry-run` returns the same plan without invoking the transaction. `--json` emits add-result schema
 `1.0.0`; its portable contract and exit behavior are documented in `docs/cli-add-output.md`.
 
+## Safe remove lifecycle
+
+The second Phase 2 slice accepts one or more directly installed roots and computes their recorded
+dependency closure from `nerio.lock.json`. Any item still reachable from another direct root remains
+installed. Files with a remaining owner are preserved with narrowed owner metadata; unowned files
+are deleted only when their local hash matches the recorded baseline or `--force` explicitly
+authorizes a reported modification. Missing or inconsistent ownership metadata blocks the complete
+operation before writes.
+
+Dry-run uses the same deterministic plan without invoking the transaction. A successful operation
+supplies one ordered delete list and one coherent next lock state to `applyTransaction`, retaining
+the existing process lock, validation, rollback, durable journal, and crash-recovery contracts.
+`--json` emits remove-result schema `1.0.0`, documented in `docs/cli-remove-output.md`.
+
 ## Explicit non-goals
 
-- No new command, configuration schema, lock schema, or exit-code semantics.
+- No configuration schema, lock schema, or exit-code semantics change.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
 - No transaction, rollback, crash recovery, concurrency, or source-ownership behavior change.
-- No remove, search, migration, or project bootstrap implementation in this slice.
+- No search, view, docs-inspection, migration, or project bootstrap implementation in this slice.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

@@ -70,7 +70,7 @@
   "currentRegistrySchemaVersion": "1.1.0",
   "currentRegistryItemCount": 56,
   "currentRegistryManifestSha256": "34e1b2f22203d00f60a346919fb2266bfb5adcbddaa87d77d46ccb1fbd229975",
-  "currentPublicApiSnapshotSha256": "52a89c5965163f5357feae59774e354158f0182cac31869385e9ba2000623c2c",
+  "currentPublicApiSnapshotSha256": "6b5efb3a1c0b0e1c1ea91ceae0d8466cf44684abae2cd761db566d1e56268ffc",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",

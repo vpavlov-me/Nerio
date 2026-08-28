@@ -18,6 +18,7 @@ function createCommandLine(cwd, args) {
       ? args[1]
       : undefined;
   const addItemNames = command === "add" ? positionalArguments : [];
+  const removeItemNames = command === "remove" ? positionalArguments : [];
 
   function option(name) {
     const index = args.indexOf(name);
@@ -47,6 +48,11 @@ function createCommandLine(cwd, args) {
         "Usage: nerio add <component...> [--all] [--registry <path-or-url>] [--dry-run] [--json] [--overwrite] [--allow-insecure-http]",
         "",
         "Install one or more editable source items and their dependency union in one transaction.",
+      ],
+      remove: [
+        "Usage: nerio remove <component...> [--dry-run] [--json] [--force]",
+        "",
+        "Remove direct source items and dependencies no longer referenced by another direct item.",
       ],
       diff: [
         "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]",
@@ -79,6 +85,7 @@ function createCommandLine(cwd, args) {
         "Commands:",
         "  nerio init     Create nerio.json",
         "  nerio add      Install editable source components",
+        "  nerio remove   Safely remove directly installed source components",
         "  nerio diff     Inspect local and upstream source drift",
         "  nerio update   Preview or apply non-destructive source updates",
         "  nerio list     List registry components",
@@ -100,6 +107,7 @@ function createCommandLine(cwd, args) {
     command,
     itemName,
     addItemNames,
+    removeItemNames,
     option,
     hasFlag,
     defaultComponentsDirectory,

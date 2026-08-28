@@ -38,7 +38,8 @@ export default function Page() {
           <code>add</code> writes the selected component and source dependencies. Use{" "}
           <code>list</code> to discover components, <code>info</code> to inspect metadata, and{" "}
           <code>add --dry-run</code> to review the initial install plan. Use <code>diff</code> and{" "}
-          <code>update --dry-run</code> before applying an upstream source update.
+          <code>update --dry-run</code> before applying an upstream source update, or{" "}
+          <code>remove --dry-run</code> before pruning directly installed source.
         </p>
         <p>
           Pass multiple names to install one dependency union, or use <code>add --all</code> to
@@ -92,6 +93,17 @@ export default function Page() {
             code 1 means input, conflict, Registry, or transaction failure.
           </li>
           <li>
+            <code>remove button card</code> accepts direct items only and removes their source plus
+            dependencies no longer referenced by another direct item. Shared files remain installed
+            with narrowed owner metadata.
+          </li>
+          <li>
+            <code>remove --dry-run --json</code> emits its bounded schema <code>1.0.0</code> without
+            writes. Locally modified or ambiguous tracked source blocks the complete operation;
+            <code>--force</code> is an explicit opt-in for every reported modified-file deletion and
+            never bypasses ownership or path validation.
+          </li>
+          <li>
             <code>diff [component]</code> reports unchanged, locally modified, upstream changed,
             added, removed, and combined conflict states.
           </li>
@@ -113,15 +125,16 @@ export default function Page() {
             dependency closures update without duplicate files.
           </li>
           <li>
-            Add and update fetch and validate the complete plan before writing, stage every change,
-            commit source before lock metadata, and restore both source and lock state after any
-            handled failure. A durable local journal recovers an interrupted process on the next
-            state-sensitive command (<code>add</code>, <code>diff</code>, <code>update</code>, or{" "}
-            <code>doctor</code>); already-committed source and lock state is retained. A
-            project-local process lock serializes installs, updates, validation, and recovery so
-            parallel commands cannot lose source ownership or lock metadata; <code>list</code> and{" "}
-            <code>info</code> remain read-only inspection commands. An owner heartbeat also makes
-            locks reclaimable after process death, restart, or PID reuse.
+            Add and update fetch and validate the complete plan before writing; remove validates the
+            recorded source and ownership graph. Every mutation stages a complete plan, commits
+            source before lock metadata, and restores both source and lock state after any handled
+            failure. A durable local journal recovers an interrupted process on the next
+            state-sensitive command (<code>add</code>, <code>remove</code>, <code>diff</code>,{" "}
+            <code>update</code>, or <code>doctor</code>); already-committed source and lock state is
+            retained. A project-local process lock serializes installs, updates, validation, and
+            recovery so parallel commands cannot lose source ownership or lock metadata;{" "}
+            <code>list</code> and <code>info</code> remain read-only inspection commands. An owner
+            heartbeat also makes locks reclaimable after process death, restart, or PID reuse.
           </li>
         </ul>
         <p>

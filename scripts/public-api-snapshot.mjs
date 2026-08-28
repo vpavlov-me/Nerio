@@ -415,13 +415,13 @@ function cliContracts() {
       .trim() ?? null;
   return {
     addOutputSchema: constant("ADD_OUTPUT_SCHEMA_VERSION"),
+    removeOutputSchema: constant("REMOVE_OUTPUT_SCHEMA_VERSION"),
     configSchemas: constant("SUPPORTED_CONFIG_SCHEMAS"),
     defaultRegistry: constant("DEFAULT_REGISTRY"),
     help: Object.fromEntries(
-      ["root", "init", "add", "diff", "update", "list", "info", "doctor"].map((command) => [
-        command,
-        command === "root" ? runCli("--help") : runCli(command, "--help"),
-      ]),
+      ["root", "init", "add", "remove", "diff", "update", "list", "info", "doctor"].map(
+        (command) => [command, command === "root" ? runCli("--help") : runCli(command, "--help")],
+      ),
     ),
     lockSchema: constant("STATE_SCHEMA_VERSION"),
     lockStateShape: generatedLockContract(),
