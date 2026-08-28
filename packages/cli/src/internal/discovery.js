@@ -89,7 +89,8 @@ function createDiscoveryCommand(services) {
     const terms = query.toLowerCase().split(/\s+/);
     const matches = manifest.items
       .filter((item) => {
-        const text = JSON.stringify({ ...item, files: undefined }).toLowerCase();
+        const { files: _files, ...metadata } = item;
+        const text = JSON.stringify(Object.values(metadata)).toLowerCase();
         return terms.every((term) => text.includes(term));
       })
       .sort((left, right) => left.name.localeCompare(right.name));

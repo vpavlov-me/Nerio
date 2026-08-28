@@ -2202,6 +2202,18 @@ async function verify() {
     ) {
       throw new Error("Search JSON did not expose the bounded Registry inspection contract.");
     }
+    const tokenSearchResult = JSON.parse(
+      await run(localTarget, "search", "--n-card-padding-inline", "--json"),
+    );
+    if (!tokenSearchResult.items.some(({ name }) => name === "card")) {
+      throw new Error("Search did not preserve a hyphen-prefixed Registry token query.");
+    }
+    const fieldNameSearchResult = JSON.parse(
+      await run(localTarget, "search", "optionalPeerDependencies", "--json"),
+    );
+    if (fieldNameSearchResult.total !== 0) {
+      throw new Error("Search matched Registry schema field names instead of metadata values.");
+    }
     const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
     if (
       viewResult.schemaVersion !== "1.0.0" ||

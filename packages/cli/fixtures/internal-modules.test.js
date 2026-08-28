@@ -61,6 +61,15 @@ test("search positional parsing excludes option values and keeps a multi-word qu
   assert.deepEqual(parsed.positionalArguments, ["keyboard", "navigation"]);
 });
 
+test("search positional parsing preserves token queries and the end-of-options boundary", () => {
+  const { createCommandLine } = require("../src/internal/command-line");
+  const direct = createCommandLine(process.cwd(), ["search", "--n-card-padding-inline", "--json"]);
+  const bounded = createCommandLine(process.cwd(), ["search", "--", "--json"]);
+  assert.deepEqual(direct.positionalArguments, ["--n-card-padding-inline"]);
+  assert.deepEqual(bounded.positionalArguments, ["--json"]);
+  assert.equal(bounded.hasFlag("--json"), false);
+});
+
 test("remove positional parsing excludes option values and keeps every explicit item", () => {
   const { createCommandLine } = require("../src/internal/command-line");
   const parsed = createCommandLine(process.cwd(), [

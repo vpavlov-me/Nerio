@@ -27,7 +27,9 @@ await build({
 const compressed = await minify(readFileSync(outputFile, "utf8"), {
   compress: true,
   ecma: 2022,
+  format: { shebang: true },
   mangle: true,
+  parse: { shebang: true },
 });
 if (!compressed.code) throw new Error("CLI output compression did not produce code.");
 writeFileSync(outputFile, compressed.code);

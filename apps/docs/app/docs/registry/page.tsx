@@ -36,8 +36,8 @@ export default function Page() {
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and source dependencies. Use{" "}
-          <code>search</code> to discover capabilities, <code>view</code> to inspect source and
-          integrity metadata, <code>docs</code> to read usage and accessibility guidance, and{" "}
+          <code>search</code> to discover documented metadata, <code>view</code> to inspect source
+          and integrity metadata, <code>docs</code> to read usage and accessibility guidance, and{" "}
           <code>add --dry-run</code> to review the initial install plan. The compatible{" "}
           <code>list</code> and <code>info</code> commands remain available. Use <code>diff</code>{" "}
           and <code>update --dry-run</code> before applying an upstream source update, or{" "}
