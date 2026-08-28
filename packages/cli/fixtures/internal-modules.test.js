@@ -1,6 +1,7 @@
 const assert = require("node:assert/strict");
 const { Buffer } = require("node:buffer");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
 
@@ -49,4 +50,33 @@ test("add positional parsing excludes option values and keeps every explicit ite
     "--dry-run",
   ]);
   assert.deepEqual(parsed.addItemNames, ["button", "card", "button"]);
+});
+
+test("registry file planning fetches one shared source for every owner", async (context) => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nerio-shared-source-"));
+  context.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
+  let reads = 0;
+  const { createWorkspace } = require("../src/internal/workspace");
+  const { registryFiles } = createWorkspace({
+    cwd,
+    cliPackage: { version: "1.0.0-test" },
+    readConfig: () => ({}),
+    readText: async () => {
+      reads += 1;
+      return "export const shared = true;\n";
+    },
+    resolveSource: (registry, source) => `${registry}/${source}`,
+  });
+  const sharedFile = { target: "shared.ts", source: "shared.ts", role: "utility" };
+  const files = await registryFiles(
+    "https://registry.example/source",
+    new Map([
+      ["alpha", { name: "alpha", files: [sharedFile] }],
+      ["beta", { name: "beta", files: [sharedFile] }],
+    ]),
+    "components",
+  );
+
+  assert.equal(reads, 1);
+  assert.deepEqual(files.get("components/shared.ts").owners, ["alpha", "beta"]);
 });
