@@ -407,7 +407,9 @@ function createCommands(services) {
     const lock = guardedCommand ? await acquireCommandLock() : null;
     let commandError;
     try {
-      if (recoveryCommand) recoverInterruptedTransactions();
+      if (recoveryCommand) {
+        recoverInterruptedTransactions(hasFlag("--json") ? console.error : console.log);
+      }
 
       if (command === "init") await init();
       else if (command === "add") await add();

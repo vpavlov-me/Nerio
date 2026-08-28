@@ -186,8 +186,16 @@ function createAddCommand(services) {
 
     if (conflicts.length) {
       printResult(result, label);
+      const guidance = [];
+      if (conflicts.some((file) => file.action === "conflict-local-modification")) {
+        guidance.push("review local modifications with nerio diff/update");
+      }
+      if (conflicts.some((file) => file.action === "conflict-existing-content")) {
+        guidance.push("move or rename existing untracked targets");
+      }
+      guidance.push("re-run add with --overwrite to replace every reported target intentionally");
       throw new Error(
-        `Add stopped before writing because ${conflicts.length} target file(s) conflict. Keep local modifications and use nerio diff/update, or re-run add with --overwrite intentionally.`,
+        `Add stopped before writing because ${conflicts.length} target file(s) conflict. ${guidance.join("; ")}.`,
       );
     }
     if (dryRun) {

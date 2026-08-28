@@ -3,7 +3,7 @@ const crypto = require("node:crypto");
 const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
-const { spawn } = require("node:child_process");
+const { spawn, spawnSync } = require("node:child_process");
 const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
@@ -1247,6 +1247,36 @@ async function verifyAtomicTransactions(tempRoot) {
     }
     assertNoTransactionArtifacts(target, `Interrupted add ${point}`);
   }
+
+  const jsonRecoveryTarget = path.join(tempRoot, "transaction-add-json-recovery");
+  fs.mkdirSync(jsonRecoveryTarget);
+  await run(jsonRecoveryTarget, "init", "--registry", fixtureManifest);
+  await runFailureWithEnv(
+    jsonRecoveryTarget,
+    { NERIO_TEST_CRASH: "after-commit:1" },
+    "add",
+    "button",
+  );
+  assertInterruptedTransaction(jsonRecoveryTarget, "Interrupted JSON add");
+  discardCrashedRegistryLock(jsonRecoveryTarget);
+  const jsonRecovery = spawnSync(process.execPath, [cli, "add", "button", "--dry-run", "--json"], {
+    cwd: jsonRecoveryTarget,
+    encoding: "utf8",
+  });
+  let jsonRecoveryResult;
+  try {
+    jsonRecoveryResult = JSON.parse(jsonRecovery.stdout);
+  } catch {
+    throw new Error(`Recovered add did not preserve JSON stdout:\n${jsonRecovery.stdout}`);
+  }
+  if (
+    jsonRecovery.status !== 0 ||
+    jsonRecoveryResult.status !== "planned" ||
+    !jsonRecovery.stderr.includes("Recovered interrupted Registry transaction")
+  ) {
+    throw new Error("Recovered add did not keep its notice separate from JSON stdout.");
+  }
+  assertNoTransactionArtifacts(jsonRecoveryTarget, "Interrupted JSON add");
 
   await run(baselineTarget, "init", "--registry", fixtureManifest);
   await run(baselineTarget, "add", "button");

@@ -16,7 +16,8 @@ source transaction and one coherent `nerio.lock.json` update.
 
 ## JSON contract
 
-`--json` writes one JSON object to standard output. Schema `1.0.0` contains:
+`--json` writes one JSON object to standard output. Recovery notices and error diagnostics remain on
+standard error. Schema `1.0.0` contains:
 
 - `command`: always `add`;
 - `status`: `planned`, `applied`, or `blocked`;

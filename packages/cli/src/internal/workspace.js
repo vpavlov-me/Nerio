@@ -531,7 +531,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
     }
   }
 
-  function recoverInterruptedTransactions() {
+  function recoverInterruptedTransactions(report = console.log) {
     const entries = fs
       .readdirSync(cwd, { withFileTypes: true })
       .filter((entry) => entry.name.startsWith(TRANSACTION_PREFIX))
@@ -566,7 +566,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       validateRecoveryJournal(transactionRoot, journal);
       if (journal.phase === "committing") {
         restoreTransaction(transactionRoot, journal.snapshots, journal.lockSnapshot);
-        console.log(`Recovered interrupted Registry transaction ${entry.name}.`);
+        report(`Recovered interrupted Registry transaction ${entry.name}.`);
       }
       fs.rmSync(transactionRoot, { recursive: true, force: true });
     }
