@@ -179,7 +179,9 @@ export function ciWorkflowContractFailures({
     ],
     failures,
   );
-  const developmentInstallCount = (prGate.match(/pnpm install --frozen-lockfile/g) ?? []).length;
+  const developmentInstallCount = (
+    prGate.match(/pnpm install --frozen-lockfile/g) ?? []
+  ).length;
   if (developmentInstallCount > 3) {
     failures.push(
       `${ciWorkflowPaths.prGate}: expected at most 3 frozen-lockfile installs, found ${developmentInstallCount}`,
