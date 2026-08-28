@@ -51,13 +51,13 @@ test("routes docs route report tooling through the docs gate", () => {
   }
 });
 
-test("treats the rendered changelog as a docs build and browser surface", () => {
-  const result = scopes("CHANGELOG.md");
+test("keeps changelog and README changes on the Markdown-only path", () => {
+  const result = scopes("CHANGELOG.md", "README.md");
   assert.equal(result.docs, true);
-  assert.equal(result.ui, true);
-  assert.equal(result.browser, true);
-  assert.equal(result.visual, true);
-  assert.equal(result.docs_only, false);
+  assert.equal(result.ui, false);
+  assert.equal(result.browser, false);
+  assert.equal(result.visual, false);
+  assert.equal(result.docs_only, true);
 });
 
 test("isolates the manual audit contract", () => {
