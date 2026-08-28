@@ -63,6 +63,7 @@ function createAddCommand(services) {
     if (content === upstreamContent) return "unchanged";
     if (isTokenStylesTarget(relative)) return "preserved";
     if (tracked && existingHash !== tracked.hash) return "conflict-local-modification";
+    if (tracked) return "conflict-upstream-change";
     return "conflict-existing-content";
   }
 
@@ -189,6 +190,9 @@ function createAddCommand(services) {
       const guidance = [];
       if (conflicts.some((file) => file.action === "conflict-local-modification")) {
         guidance.push("review local modifications with nerio diff/update");
+      }
+      if (conflicts.some((file) => file.action === "conflict-upstream-change")) {
+        guidance.push("review upstream changes with nerio diff/update");
       }
       if (conflicts.some((file) => file.action === "conflict-existing-content")) {
         guidance.push("move or rename existing untracked targets");

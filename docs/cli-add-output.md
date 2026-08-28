@@ -30,7 +30,9 @@ standard error. Schema `1.0.0` contains:
 - `summary`: requested, resolved, file, write, unchanged, and conflict counts.
 
 File actions are `write`, `overwrite`, `unchanged`, `preserved`,
-`conflict-local-modification`, or `conflict-existing-content`. `preserved` identifies the intentional
+`conflict-local-modification`, `conflict-upstream-change`, or `conflict-existing-content`.
+`conflict-upstream-change` identifies a pristine tracked target whose configured Registry source has
+changed and should be reviewed with `diff` and `update`. `preserved` identifies the intentional
 source-install token stylesheet exception. JSON never includes source content, secrets, temporary
 transaction paths, or absolute machine paths.
 

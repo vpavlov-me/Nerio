@@ -622,11 +622,18 @@ function writeLifecycleRegistry(
   return manifestPath;
 }
 
-function writeConcurrencyRegistry(registryRoot) {
+function writeConcurrencyRegistry(
+  registryRoot,
+  {
+    alphaSource = "export const alpha = true;\n",
+    betaSource = "export const beta = true;\n",
+    sourceRevision = "fixture-concurrency",
+  } = {},
+) {
   const sourceRoot = path.join(registryRoot, "source");
   fs.mkdirSync(sourceRoot, { recursive: true });
   const items = ["alpha", "beta"].map((name) => {
-    const source = `export const ${name} = true;\n`;
+    const source = name === "alpha" ? alphaSource : betaSource;
     fs.writeFileSync(path.join(sourceRoot, `${name}.ts`), source);
     return {
       name,
@@ -659,7 +666,7 @@ function writeConcurrencyRegistry(registryRoot) {
         schemaVersion: "1.1.0",
         name: "nerio-concurrency-fixture",
         version: cliVersion,
-        sourceRevision: "fixture-concurrency",
+        sourceRevision,
         styleContractVersion: "tailwind-v1",
         items,
       },
@@ -1155,6 +1162,18 @@ async function verifyMultiItemAdd(tempRoot) {
     unchanged.files.some((file) => file.action !== "unchanged")
   ) {
     throw new Error("Repeated multi-item add did not produce a stable unchanged plan.");
+  }
+  writeConcurrencyRegistry(registryRoot, {
+    alphaSource: "export const alpha = false;\n",
+    sourceRevision: "fixture-concurrency-updated",
+  });
+  const upstreamConflict = await runFailure(explicitTarget, "add", "alpha", "--dry-run", "--json");
+  if (
+    !upstreamConflict.includes('"action": "conflict-upstream-change"') ||
+    !upstreamConflict.includes("review upstream changes with nerio diff/update") ||
+    upstreamConflict.includes("move or rename existing untracked targets")
+  ) {
+    throw new Error("A pristine tracked target did not receive upstream update guidance.");
   }
 
   await run(allTarget, "init", "--registry", fixtureManifest);
