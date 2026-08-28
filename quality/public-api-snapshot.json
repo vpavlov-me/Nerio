@@ -1,10 +1,11 @@
 {
   "baseline": "core-1.0",
   "cli": {
+    "addOutputSchema": "\"1.0.0\"",
     "configSchemas": "new Set([\"0.1.0\", \"1.0.0\"])",
     "defaultRegistry": "\"@nerio-ui/registry/manifest.json\"",
     "help": {
-      "add": "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite] [--allow-insecure-http]\n\nInstall an editable source component, its registry dependencies, and exact source metadata.",
+      "add": "Usage: nerio add <component...> [--all] [--registry <path-or-url>] [--dry-run] [--json] [--overwrite] [--allow-insecure-http]\n\nInstall one or more editable source items and their dependency union in one transaction.",
       "diff": "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]\n\nCompare installed source with its recorded baseline and the configured Registry.",
       "doctor": "Usage: nerio doctor [--registry <path-or-url>] [--allow-insecure-http]\n\nValidate nerio.json and the configured registry manifest.",
       "info": "Usage: nerio info <component> [--registry <path-or-url>] [--allow-insecure-http]\n\nShow registry metadata, dependencies, tokens, files, and usage for one component.",
@@ -13777,6 +13778,8 @@
           "pnpm exec nerio list",
           "pnpm exec nerio info button",
           "pnpm exec nerio add button --dry-run",
+          "pnpm exec nerio add button card --dry-run",
+          "pnpm exec nerio add --all --dry-run --json",
           "pnpm exec nerio add button",
           "pnpm exec nerio diff button",
           "pnpm exec nerio update button --dry-run",

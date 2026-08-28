@@ -11,6 +11,7 @@ details and do not create supported package subpaths.
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `index.js`                 | Compose the runtime and report the final process error.                                               |
 | `internal/command-line.js` | Parse current arguments and render existing help text.                                                |
+| `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
 | `internal/registry.js`     | Read and validate local or remote immutable Registry input.                                           |
 | `internal/workspace.js`    | Validate paths and state, plan source changes, and own locks, journals, recovery, and atomic commits. |
 | `internal/diagnostics.js`  | Inspect consumer dependencies, Tailwind setup, and installed-source drift.                            |
@@ -47,10 +48,21 @@ measured:
 
 The existing 20,000-byte tarball and 82,000-byte unpacked package budgets were not raised.
 
+## Multi-item add lifecycle
+
+The first Phase 2 slice accepts multiple explicit roots or `--all`. It sorts and deduplicates direct
+requests, resolves one Registry dependency union, fetches every source, and classifies every target
+before invoking the existing transaction service. Any conflict blocks the complete set. A successful
+operation supplies one ordered operation list and one coherent next lock state to `applyTransaction`,
+so rollback, recovery, process locking, source ownership, and lock portability remain unchanged.
+
+`--dry-run` returns the same plan without invoking the transaction. `--json` emits add-result schema
+`1.0.0`; its portable contract and exit behavior are documented in `docs/cli-add-output.md`.
+
 ## Explicit non-goals
 
-- No new command, option, output schema, exit code, configuration schema, or lock schema.
+- No new command, configuration schema, lock schema, or exit-code semantics.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
 - No transaction, rollback, crash recovery, concurrency, or source-ownership behavior change.
-- No multi-item add, remove, search, migration, or project bootstrap implementation in this slice.
+- No remove, search, migration, or project bootstrap implementation in this slice.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

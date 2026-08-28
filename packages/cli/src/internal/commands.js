@@ -1,9 +1,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { createAddCommand } = require("./add");
 
 const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
 
 function createCommands(services) {
+  const { add } = createAddCommand(services);
   const {
     cwd,
     cliPackage,
@@ -27,14 +29,12 @@ function createCommands(services) {
     applyTransaction,
     collectItems,
     readState,
-    emptyState,
     registryMetadata,
     registryFiles,
     itemMetadata,
     classifyFile,
     formatDrift,
     hashContent,
-    isTokenStylesTarget,
     resolveInstalledTarget,
     resolveTarget,
     formatList,
@@ -57,108 +57,6 @@ function createCommands(services) {
     };
     fs.writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
     console.log("Created nerio.json");
-  }
-
-  async function add(name) {
-    if (!name || name.startsWith("--")) {
-      throw new Error(
-        "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite] [--allow-insecure-http]",
-      );
-    }
-
-    const config = readConfig(true);
-    if (!config.components || typeof config.components !== "string") {
-      throw new Error("nerio.json must define a components directory.");
-    }
-
-    const registry = registryLocation(config);
-    const manifest = await readManifest(registry);
-    const items = collectItems(manifest, name);
-    const upstreamFiles = await registryFiles(
-      manifest.__registryLocation || registry,
-      items,
-      config.components,
-    );
-    const state = readState(false) || emptyState(manifest);
-    const written = [];
-    const skipped = [];
-    const writes = [];
-    const validations = [];
-    const componentsRoot = path.resolve(cwd, config.components);
-
-    for (const [relative, file] of upstreamFiles) {
-      const target = path.resolve(cwd, relative);
-      const existed = fs.existsSync(target);
-      const existingHash = existed ? hashContent(fs.readFileSync(target)) : undefined;
-      validations.push({
-        target,
-        root: componentsRoot,
-        expectedExists: existed,
-        expectedHash: existingHash,
-      });
-      if (hasFlag("--dry-run")) {
-        written.push(relative);
-        continue;
-      }
-
-      if (existed && !hasFlag("--overwrite")) {
-        const content = fs.readFileSync(target, "utf8");
-        const tracked = state.files[relative];
-        if (content === file.content || isTokenStylesTarget(relative)) {
-          skipped.push(relative);
-        } else if (tracked && hashContent(content) !== tracked.hash) {
-          throw new Error(
-            `${relative} has local modifications. Keep them and use nerio diff/update, or re-run add with --overwrite to replace them intentionally.`,
-          );
-        } else {
-          throw new Error(
-            `${relative} already exists with different Registry content. Run nerio diff and nerio update instead of silently upgrading during add.`,
-          );
-        }
-      } else {
-        writes.push({
-          type: "write",
-          target,
-          content: file.content,
-          root: componentsRoot,
-          expectedExists: existed,
-          expectedHash: existingHash,
-        });
-        written.push(relative);
-      }
-    }
-
-    const item = items.get(name);
-    if (hasFlag("--dry-run")) {
-      console.log(`Would add ${item.title}: ${written.length} files.`);
-      for (const file of written) console.log(`- ${file}`);
-    } else {
-      const nextState = globalThis.structuredClone(state);
-      nextState.registry = registryMetadata(manifest);
-      nextState.nerioVersion = cliPackage.version;
-      nextState.requestedItems = [...new Set([...nextState.requestedItems, name])].sort();
-      for (const dependency of items.values()) {
-        nextState.items[dependency.name] = itemMetadata(dependency, manifest);
-      }
-      for (const [relative, file] of upstreamFiles) {
-        const previous = nextState.files[relative];
-        nextState.files[relative] = {
-          hash: written.includes(relative) ? file.hash : previous?.hash || file.hash,
-          integrity: file.integrity,
-          role: file.role,
-          source: file.source,
-          owners: [...new Set([...(previous?.owners || []), ...file.owners])].sort(),
-        };
-      }
-      applyTransaction(writes, nextState, state[LOCK_CONTENT_HASH] ?? null, validations);
-      console.log(
-        `Added ${item.title}: ${written.length} files written, ${skipped.length} unchanged.`,
-      );
-      console.log(`Recorded exact source metadata in ${STATE_FILENAME}.`);
-    }
-    if (item.dependencies?.length) {
-      console.log(`Package dependencies: ${item.dependencies.join(", ")}`);
-    }
   }
 
   function collectStateItems(state, name, collected = new Set()) {
@@ -512,7 +410,7 @@ function createCommands(services) {
       if (recoveryCommand) recoverInterruptedTransactions();
 
       if (command === "init") await init();
-      else if (command === "add") await add(itemName);
+      else if (command === "add") await add();
       else if (command === "diff") await diff(itemName);
       else if (command === "update") await update(itemName);
       else if (command === "list") await list();

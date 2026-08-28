@@ -60,6 +60,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Expanded `nerio add` with transactional multi-item roots and `--all`, one deterministic Registry
+  and package dependency union, complete preflight conflict reporting, one coherent lock update,
+  deterministic dry-run output, and a bounded versioned `--json` result without changing the lock,
+  Registry, transport, rollback, or recovery schemas.
 - Modularized the public CLI runtime behind its unchanged seven-command contract, isolated Registry
   transport, source transactions, diagnostics, and command presentation, and switched the packed
   CLI to one deterministic generated CommonJS bin so internal modules remain private and package
