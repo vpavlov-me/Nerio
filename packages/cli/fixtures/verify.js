@@ -1318,7 +1318,13 @@ async function verifySafeRemove(tempRoot) {
       "Safe remove planned deletion for a dependency retained by another direct root.",
     );
   }
-  await run(target, "remove", "shared");
+  const retainedApplied = await run(target, "remove", "shared");
+  if (
+    !retainedApplied.includes("0 source items became unreferenced") ||
+    retainedApplied.includes("Removed shared:")
+  ) {
+    throw new Error("Safe remove human output misreported a still-referenced direct item.");
+  }
   const beforePreview = managedSnapshot(target);
   const preview = JSON.parse(await run(target, "remove", "alpha", "--dry-run", "--json"));
   if (
@@ -1378,13 +1384,21 @@ async function verifySafeRemove(tempRoot) {
 
   const missingTarget = await makeConsumer("remove-missing-consumer");
   fs.rmSync(path.join(missingTarget, "components/nerio/components/alpha.ts"));
+  fs.rmSync(path.join(missingTarget, "components/nerio/lib/common.ts"));
   const missing = JSON.parse(await run(missingTarget, "remove", "alpha", "--json"));
+  const missingLock = JSON.parse(
+    fs.readFileSync(path.join(missingTarget, "nerio.lock.json"), "utf8"),
+  );
   if (
-    missing.summary.missing !== 1 ||
+    missing.summary.missing !== 2 ||
     missing.files.find((entry) => entry.path.endsWith("components/alpha.ts"))?.action !==
-      "already-missing"
+      "already-missing" ||
+    missing.files.find((entry) => entry.path.endsWith("lib/common.ts"))?.action !==
+      "already-missing" ||
+    JSON.stringify(missingLock.files["components/nerio/lib/common.ts"].owners) !==
+      JSON.stringify(["beta"])
   ) {
-    throw new Error("Safe remove did not classify an already missing tracked target.");
+    throw new Error("Safe remove did not classify missing unowned and shared tracked targets.");
   }
   const indirect = await runFailure(missingTarget, "remove", "shared");
   if (!indirect.includes("not recorded as a directly installed Registry item")) {
@@ -1394,12 +1408,13 @@ async function verifySafeRemove(tempRoot) {
   const ambiguousTarget = await makeConsumer("remove-ambiguous-consumer");
   const ambiguousLockPath = path.join(ambiguousTarget, "nerio.lock.json");
   const ambiguousLock = JSON.parse(fs.readFileSync(ambiguousLockPath, "utf8"));
-  delete ambiguousLock.files["components/nerio/components/alpha.ts"];
+  ambiguousLock.files["components/nerio/lib/common.ts"].owners = ["alpha"];
   fs.writeFileSync(ambiguousLockPath, `${JSON.stringify(ambiguousLock, null, 2)}\n`);
   const ambiguousSnapshot = managedSnapshot(ambiguousTarget);
   const ambiguous = await runFailure(ambiguousTarget, "remove", "alpha", "--json");
   if (
     !ambiguous.includes('"action": "conflict-ambiguous-ownership"') ||
+    !fs.existsSync(path.join(ambiguousTarget, "components/nerio/lib/common.ts")) ||
     JSON.stringify(managedSnapshot(ambiguousTarget)) !== JSON.stringify(ambiguousSnapshot)
   ) {
     throw new Error("Safe remove did not block incomplete source ownership metadata.");

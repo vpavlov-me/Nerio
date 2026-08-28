@@ -46,7 +46,7 @@ function createRemoveCommand(services) {
     const { summary } = result;
     const prefix = result.status === "blocked" ? "Cannot remove" : "Would remove";
     console.log(
-      `${prefix} ${result.requestedItems.join(", ")}: ${summary.deletes} files to delete, ${summary.preserved} shared files preserved, ${summary.missing} already missing, ${summary.conflicts} conflicts.`,
+      `${prefix} direct request(s) ${result.requestedItems.join(", ")}: ${summary.removedItems} source items no longer referenced, ${summary.deletes} files to delete, ${summary.preserved} shared files preserved, ${summary.missing} already missing, ${summary.conflicts} conflicts.`,
     );
     for (const file of result.files) console.log(`- ${file.action}\t${file.path}`);
   }
@@ -61,7 +61,7 @@ function createRemoveCommand(services) {
       return;
     }
     console.log(
-      `Removed ${result.requestedItems.join(", ")}: ${result.summary.deletes} files deleted, ${result.summary.preserved} shared files preserved, ${result.summary.missing} already missing.`,
+      `Removed direct request(s) ${result.requestedItems.join(", ")}: ${result.summary.removedItems} source items became unreferenced, ${result.summary.deletes} files deleted, ${result.summary.preserved} shared files preserved, ${result.summary.missing} already missing.`,
     );
     console.log(`Updated exact source metadata in ${STATE_FILENAME}.`);
   }
@@ -133,10 +133,14 @@ function createRemoveCommand(services) {
       const removedOwners = metadata.owners.filter((owner) => removedNames.has(owner));
       if (!removedOwners.length) continue;
       const remainingOwners = metadata.owners.filter((owner) => !removedNames.has(owner));
-      const invalidOwners = metadata.owners.filter(
-        (owner) => !itemOwnsTarget(config, state.items[owner], absolute),
-      );
-      if (invalidOwners.length || duplicateTargets.has(absolute)) {
+      const declaredOwners = Object.keys(state.items)
+        .filter((owner) => itemOwnsTarget(config, state.items[owner], absolute))
+        .sort((left, right) => left.localeCompare(right));
+      const recordedOwners = sortedUnique(metadata.owners);
+      const ownershipMismatch =
+        declaredOwners.length !== recordedOwners.length ||
+        declaredOwners.some((owner, index) => owner !== recordedOwners[index]);
+      if (ownershipMismatch || duplicateTargets.has(absolute)) {
         files.push(ambiguousFile(storedTarget, removedOwners, remainingOwners));
         ambiguousPaths.add(storedTarget);
         continue;
@@ -145,8 +149,8 @@ function createRemoveCommand(services) {
       const exists = fs.existsSync(absolute);
       const localHash = exists ? hashContent(fs.readFileSync(absolute)) : undefined;
       let action;
-      if (remainingOwners.length) action = "preserved-shared";
-      else if (!exists) action = "already-missing";
+      if (!exists) action = "already-missing";
+      else if (remainingOwners.length) action = "preserved-shared";
       else if (localHash === metadata.hash) action = "delete";
       else if (hasFlag("--force")) action = "delete-modified";
       else action = "conflict-local-modification";
