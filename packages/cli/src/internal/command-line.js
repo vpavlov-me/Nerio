@@ -3,10 +3,21 @@ const path = require("node:path");
 
 function createCommandLine(cwd, args) {
   const command = args[0];
+  const valueOptions = new Set(["--components", "--registry"]);
+  const positionalArguments = [];
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index];
+    if (valueOptions.has(argument)) {
+      index += 1;
+    } else if (!argument.startsWith("-")) {
+      positionalArguments.push(argument);
+    }
+  }
   const itemName =
     ["add", "diff", "info", "update"].includes(command) && !args[1]?.startsWith("--")
       ? args[1]
       : undefined;
+  const addItemNames = command === "add" ? positionalArguments : [];
 
   function option(name) {
     const index = args.indexOf(name);
@@ -33,9 +44,9 @@ function createCommandLine(cwd, args) {
         "Defaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
       ],
       add: [
-        "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite] [--allow-insecure-http]",
+        "Usage: nerio add <component...> [--all] [--registry <path-or-url>] [--dry-run] [--json] [--overwrite] [--allow-insecure-http]",
         "",
-        "Install an editable source component, its registry dependencies, and exact source metadata.",
+        "Install one or more editable source items and their dependency union in one transaction.",
       ],
       diff: [
         "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]",
@@ -85,7 +96,15 @@ function createCommandLine(cwd, args) {
     return (sections[commandName] || sections.root).join("\n");
   }
 
-  return { command, itemName, option, hasFlag, defaultComponentsDirectory, help };
+  return {
+    command,
+    itemName,
+    addItemNames,
+    option,
+    hasFlag,
+    defaultComponentsDirectory,
+    help,
+  };
 }
 
 module.exports = { createCommandLine };

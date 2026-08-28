@@ -184,6 +184,8 @@ pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
 pnpm exec nerio add button --dry-run
+pnpm exec nerio add button card --dry-run
+pnpm exec nerio add --all --dry-run --json
 pnpm exec nerio add button
 pnpm exec nerio diff button
 pnpm exec nerio update button --dry-run
@@ -202,8 +204,12 @@ source are bounded by a 10-second request/body timeout, a 2 MiB manifest limit, 
 limit, at most three redirects, content-type handling, schema/path validation, and SHA-256
 integrity checks.
 
-`nerio add` resolves and fetches the complete requested source closure before writing. It stages the
-full operation, commits source, and writes `nerio.lock.json` last; any source or lock failure restores
+`nerio add` accepts one or more explicit Registry items, while `nerio add --all` selects every item.
+It resolves one sorted dependency and package-dependency union, fetches and preflights every target
+before writing, and reports every conflict without partially applying the set. `--dry-run` renders
+the same deterministic plan without writes, and `--json` emits the bounded versioned add-result
+schema documented in `docs/cli-add-output.md`. A successful add stages the full operation, commits
+source, and writes `nerio.lock.json` last; any source or lock failure restores
 the previous source and lock state and removes temporary artifacts. A durable local journal lets the
 next state-sensitive command (`add`, `diff`, `update`, or `doctor`) recover an operation interrupted
 by process exit or machine failure; a fully committed source-and-lock transaction is retained and

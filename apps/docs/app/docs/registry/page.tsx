@@ -41,6 +41,12 @@ export default function Page() {
           <code>update --dry-run</code> before applying an upstream source update.
         </p>
         <p>
+          Pass multiple names to install one dependency union, or use <code>add --all</code> to
+          select every Registry item. Both paths preflight the complete set and commit one source
+          and lock transaction. Add <code>--json</code> for the stable structured result and combine
+          it with <code>--dry-run</code> for automation-safe planning.
+        </p>
+        <p>
           For a one-off initialization or component install, invoke the real package name. Keep the
           local installation above as the default for repeatable lifecycle work.
         </p>
@@ -71,6 +77,20 @@ export default function Page() {
           absolute machine paths.
         </p>
         <ul className="doc-list">
+          <li>
+            <code>add button card</code> resolves the explicit roots and their shared dependencies
+            once, then updates source and <code>nerio.lock.json</code> atomically.
+          </li>
+          <li>
+            <code>add --all</code> selects every Registry item in name order. It cannot be combined
+            with explicit item names.
+          </li>
+          <li>
+            <code>add --dry-run --json</code> emits schema <code>1.0.0</code> with a deterministic
+            planned, applied, or blocked status, portable file actions and owners, dependency
+            unions, and summary counts. Exit code 0 means the plan or transaction succeeded; exit
+            code 1 means input, conflict, Registry, or transaction failure.
+          </li>
           <li>
             <code>diff [component]</code> reports unchanged, locally modified, upstream changed,
             added, removed, and combined conflict states.

@@ -55,6 +55,8 @@ const expectedLocalCommands = [
   "pnpm exec nerio list",
   "pnpm exec nerio info button",
   "pnpm exec nerio add button --dry-run",
+  "pnpm exec nerio add button card --dry-run",
+  "pnpm exec nerio add --all --dry-run --json",
   "pnpm exec nerio add button",
   "pnpm exec nerio diff button",
   "pnpm exec nerio update button --dry-run",

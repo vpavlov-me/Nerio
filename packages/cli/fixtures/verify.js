@@ -3,7 +3,7 @@ const crypto = require("node:crypto");
 const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
-const { spawn } = require("node:child_process");
+const { spawn, spawnSync } = require("node:child_process");
 const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
@@ -622,18 +622,25 @@ function writeLifecycleRegistry(
   return manifestPath;
 }
 
-function writeConcurrencyRegistry(registryRoot) {
+function writeConcurrencyRegistry(
+  registryRoot,
+  {
+    alphaSource = "export const alpha = true;\n",
+    betaSource = "export const beta = true;\n",
+    sourceRevision = "fixture-concurrency",
+  } = {},
+) {
   const sourceRoot = path.join(registryRoot, "source");
   fs.mkdirSync(sourceRoot, { recursive: true });
   const items = ["alpha", "beta"].map((name) => {
-    const source = `export const ${name} = true;\n`;
+    const source = name === "alpha" ? alphaSource : betaSource;
     fs.writeFileSync(path.join(sourceRoot, `${name}.ts`), source);
     return {
       name,
       title: name[0].toUpperCase() + name.slice(1),
       description: `Fixture ${name} source.`,
       category: "foundation",
-      dependencies: [],
+      dependencies: name === "alpha" ? ["zeta-package"] : ["alpha-package"],
       registryDependencies: [],
       files: [
         {
@@ -659,7 +666,7 @@ function writeConcurrencyRegistry(registryRoot) {
         schemaVersion: "1.1.0",
         name: "nerio-concurrency-fixture",
         version: cliVersion,
-        sourceRevision: "fixture-concurrency",
+        sourceRevision,
         styleContractVersion: "tailwind-v1",
         items,
       },
@@ -1096,6 +1103,125 @@ async function verifyConcurrentTransactions(tempRoot) {
   assertNoTransactionArtifacts(invalidOwnerTarget, "Multi-contender stale Registry lock recovery");
 }
 
+async function verifyMultiItemAdd(tempRoot) {
+  const registryRoot = path.join(tempRoot, "multi-add-registry");
+  const explicitTarget = path.join(tempRoot, "multi-add-explicit");
+  const allTarget = path.join(tempRoot, "multi-add-all");
+  const conflictTarget = path.join(tempRoot, "multi-add-conflict");
+  const rollbackTarget = path.join(tempRoot, "multi-add-rollback");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(explicitTarget);
+  fs.mkdirSync(allTarget);
+  fs.mkdirSync(conflictTarget);
+  fs.mkdirSync(rollbackTarget);
+  const fixtureManifest = writeConcurrencyRegistry(registryRoot);
+
+  await run(explicitTarget, "init", "--registry", fixtureManifest);
+  const preview = JSON.parse(
+    await run(explicitTarget, "add", "beta", "alpha", "beta", "--dry-run", "--json"),
+  );
+  if (
+    preview.schemaVersion !== "1.0.0" ||
+    preview.status !== "planned" ||
+    preview.dryRun !== true ||
+    preview.all !== false ||
+    JSON.stringify(preview.requestedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    JSON.stringify(preview.resolvedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    JSON.stringify(preview.packageDependencies) !==
+      JSON.stringify(["alpha-package", "zeta-package"]) ||
+    preview.summary.writes !== 2 ||
+    preview.summary.conflicts !== 0 ||
+    preview.files.some((file) => file.action !== "write") ||
+    fs.existsSync(path.join(explicitTarget, "nerio.lock.json")) ||
+    fs.existsSync(path.join(explicitTarget, "components"))
+  ) {
+    throw new Error("Multi-item add dry-run was not deterministic or wrote consumer state.");
+  }
+
+  const applied = JSON.parse(await run(explicitTarget, "add", "beta", "alpha", "--json"));
+  const explicitLock = JSON.parse(
+    fs.readFileSync(path.join(explicitTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    applied.status !== "applied" ||
+    applied.summary.writes !== 2 ||
+    JSON.stringify(explicitLock.requestedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    !explicitLock.items.alpha ||
+    !explicitLock.items.beta ||
+    !fs.existsSync(path.join(explicitTarget, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(explicitTarget, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Multi-item add did not commit one coherent source and lock result.");
+  }
+  const unchanged = JSON.parse(
+    await run(explicitTarget, "add", "alpha", "beta", "--dry-run", "--json"),
+  );
+  if (
+    unchanged.summary.writes !== 0 ||
+    unchanged.summary.unchanged !== 2 ||
+    unchanged.files.some((file) => file.action !== "unchanged")
+  ) {
+    throw new Error("Repeated multi-item add did not produce a stable unchanged plan.");
+  }
+  writeConcurrencyRegistry(registryRoot, {
+    alphaSource: "export const alpha = false;\n",
+    sourceRevision: "fixture-concurrency-updated",
+  });
+  const upstreamConflict = await runFailure(explicitTarget, "add", "alpha", "--dry-run", "--json");
+  if (
+    !upstreamConflict.includes('"action": "conflict-upstream-change"') ||
+    !upstreamConflict.includes("review upstream changes with nerio diff/update") ||
+    upstreamConflict.includes("move or rename existing untracked targets")
+  ) {
+    throw new Error("A pristine tracked target did not receive upstream update guidance.");
+  }
+
+  await run(allTarget, "init", "--registry", fixtureManifest);
+  const all = JSON.parse(await run(allTarget, "add", "--all", "--json"));
+  if (
+    all.status !== "applied" ||
+    all.all !== true ||
+    JSON.stringify(all.requestedItems) !== JSON.stringify(["alpha", "beta"])
+  ) {
+    throw new Error("nerio add --all did not select every Registry item deterministically.");
+  }
+  const invalidAll = await runFailure(allTarget, "add", "alpha", "--all");
+  if (!invalidAll.includes("cannot be combined with explicit Registry items")) {
+    throw new Error("nerio add accepted --all together with an explicit item.");
+  }
+
+  await run(conflictTarget, "init", "--registry", fixtureManifest);
+  const conflictPath = path.join(conflictTarget, "components/nerio/components/beta.ts");
+  fs.mkdirSync(path.dirname(conflictPath), { recursive: true });
+  fs.writeFileSync(conflictPath, "consumer-owned\n");
+  const conflict = await runFailure(conflictTarget, "add", "alpha", "beta", "--json");
+  if (
+    !conflict.includes('"status": "blocked"') ||
+    !conflict.includes('"action": "conflict-existing-content"') ||
+    fs.existsSync(path.join(conflictTarget, "components/nerio/components/alpha.ts")) ||
+    fs.readFileSync(conflictPath, "utf8") !== "consumer-owned\n" ||
+    fs.existsSync(path.join(conflictTarget, "nerio.lock.json"))
+  ) {
+    throw new Error("A multi-item conflict was not reported before every consumer write.");
+  }
+
+  await run(rollbackTarget, "init", "--registry", fixtureManifest);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-commit:1" },
+    "add",
+    "alpha",
+    "beta",
+  );
+  if (
+    !rollback.includes("rolled back without source or lock changes") ||
+    Object.keys(managedSnapshot(rollbackTarget)).length
+  ) {
+    throw new Error("A failed multi-item add did not roll back the complete operation.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Atomic multi-item add");
+}
+
 async function verifyAtomicTransactions(tempRoot) {
   const registryRoot = path.join(tempRoot, "transaction-registry");
   const baselineTarget = path.join(tempRoot, "transaction-baseline");
@@ -1140,6 +1266,36 @@ async function verifyAtomicTransactions(tempRoot) {
     }
     assertNoTransactionArtifacts(target, `Interrupted add ${point}`);
   }
+
+  const jsonRecoveryTarget = path.join(tempRoot, "transaction-add-json-recovery");
+  fs.mkdirSync(jsonRecoveryTarget);
+  await run(jsonRecoveryTarget, "init", "--registry", fixtureManifest);
+  await runFailureWithEnv(
+    jsonRecoveryTarget,
+    { NERIO_TEST_CRASH: "after-commit:1" },
+    "add",
+    "button",
+  );
+  assertInterruptedTransaction(jsonRecoveryTarget, "Interrupted JSON add");
+  discardCrashedRegistryLock(jsonRecoveryTarget);
+  const jsonRecovery = spawnSync(process.execPath, [cli, "add", "button", "--dry-run", "--json"], {
+    cwd: jsonRecoveryTarget,
+    encoding: "utf8",
+  });
+  let jsonRecoveryResult;
+  try {
+    jsonRecoveryResult = JSON.parse(jsonRecovery.stdout);
+  } catch {
+    throw new Error(`Recovered add did not preserve JSON stdout:\n${jsonRecovery.stdout}`);
+  }
+  if (
+    jsonRecovery.status !== 0 ||
+    jsonRecoveryResult.status !== "planned" ||
+    !jsonRecovery.stderr.includes("Recovered interrupted Registry transaction")
+  ) {
+    throw new Error("Recovered add did not keep its notice separate from JSON stdout.");
+  }
+  assertNoTransactionArtifacts(jsonRecoveryTarget, "Interrupted JSON add");
 
   await run(baselineTarget, "init", "--registry", fixtureManifest);
   await run(baselineTarget, "add", "button");
@@ -1598,6 +1754,7 @@ async function verify() {
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await verifySourceLifecycle(tempRoot);
+    await verifyMultiItemAdd(tempRoot);
     await verifyAtomicTransactions(tempRoot);
     await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
@@ -1720,7 +1877,12 @@ async function verify() {
       );
     }
     const addHelpOutput = await run(localTarget, "add", "--help");
-    if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
+    if (
+      !addHelpOutput.includes("nerio add <component...>") ||
+      !addHelpOutput.includes("--all") ||
+      !addHelpOutput.includes("--json") ||
+      !addHelpOutput.includes("--dry-run")
+    ) {
       throw new Error("Add help output does not describe the source install options.");
     }
     const initHelpOutput = await run(localTarget, "init", "--help");

@@ -414,6 +414,7 @@ function cliContracts() {
       ?.replace(/\s+/g, " ")
       .trim() ?? null;
   return {
+    addOutputSchema: constant("ADD_OUTPUT_SCHEMA_VERSION"),
     configSchemas: constant("SUPPORTED_CONFIG_SCHEMAS"),
     defaultRegistry: constant("DEFAULT_REGISTRY"),
     help: Object.fromEntries(

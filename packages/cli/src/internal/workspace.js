@@ -531,7 +531,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
     }
   }
 
-  function recoverInterruptedTransactions() {
+  function recoverInterruptedTransactions(report = console.log) {
     const entries = fs
       .readdirSync(cwd, { withFileTypes: true })
       .filter((entry) => entry.name.startsWith(TRANSACTION_PREFIX))
@@ -566,7 +566,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       validateRecoveryJournal(transactionRoot, journal);
       if (journal.phase === "committing") {
         restoreTransaction(transactionRoot, journal.snapshots, journal.lockSnapshot);
-        console.log(`Recovered interrupted Registry transaction ${entry.name}.`);
+        report(`Recovered interrupted Registry transaction ${entry.name}.`);
       }
       fs.rmSync(transactionRoot, { recursive: true, force: true });
     }
@@ -858,11 +858,18 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
 
   async function registryFiles(registry, items, componentsRoot) {
     const files = new Map();
+    const sources = new Map();
     for (const item of items.values()) {
       for (const file of item.files) {
         const target = relativeTarget(componentsRoot, file.target);
-        const content = await readText(resolveSource(registry, file.source));
-        const hash = hashContent(content);
+        const source = resolveSource(registry, file.source);
+        let resolved = sources.get(source);
+        if (!resolved) {
+          const content = await readText(source);
+          resolved = { content, hash: hashContent(content) };
+          sources.set(source, resolved);
+        }
+        const { content, hash } = resolved;
         const expectedHash = file.integrity?.match(INTEGRITY_PATTERN)?.[1];
         if (expectedHash && hash !== expectedHash) {
           throw new Error(
