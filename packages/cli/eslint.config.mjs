@@ -9,6 +9,7 @@ export default [
         __dirname: "readonly",
         console: "readonly",
         fetch: "readonly",
+        module: "readonly",
         process: "readonly",
         require: "readonly",
         URL: "readonly",
@@ -24,6 +25,7 @@ export default [
       globals: {
         __dirname: "readonly",
         console: "readonly",
+        module: "readonly",
         process: "readonly",
         require: "readonly",
         URL: "readonly",

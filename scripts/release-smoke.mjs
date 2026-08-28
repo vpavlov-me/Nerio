@@ -72,6 +72,7 @@ const packageContracts = {
     dependencies: ["@nerio-ui/registry"],
     peers: [],
     bin: ["nerio"],
+    files: "dist",
   },
   "@nerio-ui/mcp": {
     homepage: "https://nerio.vpavlov.com/docs/ai",

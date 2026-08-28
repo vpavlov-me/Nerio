@@ -18,7 +18,7 @@ const optionNames = new Map([
   ["--architecture", "ARCHITECTURE.md"],
   ["--registry-manifest", "packages/registry/src/manifest.json"],
   ["--cli-readme", "packages/cli/fixtures/basic/README.md"],
-  ["--cli", "packages/cli/src/index.js"],
+  ["--cli", "packages/cli/src/internal/command-line.js"],
   ["--mcp", "packages/mcp/src/server.js"],
   ["--release-smoke", "scripts/release-smoke.mjs"],
 ]);
@@ -131,7 +131,7 @@ for (const command of [
   "pnpm exec nerio <command>",
   commands.cli.oneOffCommands[0],
 ]) {
-  requireText(sources["packages/cli/src/index.js"], command, "CLI help", failures);
+  requireText(sources["packages/cli/src/internal/command-line.js"], command, "CLI help", failures);
 }
 requireText(
   sources["packages/mcp/src/server.js"],
