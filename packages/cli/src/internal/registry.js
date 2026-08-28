@@ -288,6 +288,11 @@ function createRegistry({ cwd, cliPackage, option, hasFlag }) {
           throw new Error(`Registry item ${item.name || "(unnamed)"} must define ${field}.`);
         }
       }
+      if (item.docsPath !== undefined && (typeof item.docsPath !== "string" || !item.docsPath)) {
+        throw new Error(
+          `Registry item ${item.name || "(unnamed)"} must define docsPath as a non-empty string when provided.`,
+        );
+      }
       if (names.has(item.name))
         throw new Error(`Registry contains duplicate item name: ${item.name}`);
       names.add(item.name);

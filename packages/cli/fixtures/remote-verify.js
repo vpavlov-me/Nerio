@@ -59,6 +59,10 @@ function requestHandler(request, response) {
   const url = new URL(request.url, "http://registry.test");
   if (url.pathname === "/valid/manifest.json") {
     respondJson(response, manifest(validFiles));
+  } else if (url.pathname === "/invalid-docs-path/manifest.json") {
+    const invalid = JSON.parse(manifest(validFiles));
+    invalid.items[0].docsPath = { path: "/docs/components/button" };
+    respondJson(response, JSON.stringify(invalid));
   } else if (url.pathname === "/redirect-valid") {
     response.writeHead(302, { location: "/valid/manifest.json" });
     response.end();
@@ -228,6 +232,7 @@ async function verify() {
       ["/wrong-content", "unsupported content type"],
       ["/missing", "request failed (404)"],
       ["/duplicates/manifest.json", "duplicate target"],
+      ["/invalid-docs-path/manifest.json", "docsPath as a non-empty string"],
     ]) {
       const output = await failure(
         policyTarget,

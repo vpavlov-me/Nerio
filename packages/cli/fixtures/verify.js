@@ -2240,6 +2240,24 @@ async function verify() {
     ) {
       throw new Error("Docs JSON did not expose Registry usage and accessibility guidance.");
     }
+    const invalidDocsPathManifest = path.join(tempRoot, "invalid-docs-path-manifest.json");
+    const invalidDocsPathRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    invalidDocsPathRegistry.items[0].docsPath = { path: "/docs/components/button" };
+    fs.writeFileSync(
+      invalidDocsPathManifest,
+      `${JSON.stringify(invalidDocsPathRegistry, null, 2)}\n`,
+    );
+    const invalidDocsPath = await runFailure(
+      localTarget,
+      "docs",
+      invalidDocsPathRegistry.items[0].name,
+      "--registry",
+      invalidDocsPathManifest,
+      "--json",
+    );
+    if (!invalidDocsPath.includes("docsPath as a non-empty string")) {
+      throw new Error("Docs did not reject a non-string local Registry docsPath.");
+    }
     const invalidLimit = await runFailure(localTarget, "search", "button", "--limit", "51");
     if (!invalidLimit.includes("integer from 1 to 50")) {
       throw new Error("Search did not reject an out-of-range result limit.");
