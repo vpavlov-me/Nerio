@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - dev
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   scopes:
-    name: detect-scopes
+    name: branch-policy
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -35,9 +35,34 @@ jobs:
       unknown: ${{ steps.detect.outputs.unknown }}
       changed_count: ${{ steps.detect.outputs.changed_count }}
     steps:
+      - name: Defer required checks for draft pull requests
+        if: github.event.pull_request.draft == true
+        run: |
+          echo "Full CI is deferred while the pull request is a draft. Mark it ready for review to run required checks." >&2
+          exit 1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+      - name: Validate pull request direction
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-branch-policy.mjs
+      - name: Require DCO sign-off on human commits
+        if: >-
+          ${{
+            github.event.pull_request.head.repo.full_name != github.repository ||
+            (
+              (github.base_ref != 'main' || github.head_ref != 'dev') &&
+              (github.base_ref != 'dev' || github.head_ref != 'main')
+            )
+          }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.mjs --base "$BASE_SHA" --head "$HEAD_SHA"
       - name: Detect affected CI scopes
         id: detect
         env:
@@ -57,11 +82,12 @@ jobs:
             echo "- unknown: \`$UNKNOWN\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  always_fast:
-    name: always-fast
+  quality:
+    name: quality-and-contracts
     needs: scopes
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -73,104 +99,115 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile
       - run: pnpm format:check
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test:ci-scopes
-      - run: pnpm test:repo-artifacts
       - run: pnpm validate:repo-artifacts
-      - run: pnpm test:branch-policy
-      - run: node --test scripts/check-dco.test.mjs scripts/validate-release-candidate.test.mjs
+
+      - name: Validate code and repository contracts
+        if: needs.scopes.outputs.docs_only != 'true'
+        run: |
+          pnpm lint
+          pnpm typecheck
+          pnpm test:ci-scopes
+          pnpm test:repo-artifacts
+          pnpm test:branch-policy
+          node --test scripts/check-dco.test.mjs scripts/validate-release-candidate.test.mjs
+
       - name: Validate Markdown-only documentation
-        if: needs.scopes.outputs.docs_only == 'true'
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.docs_only == 'true'
+          }}
         run: |
           pnpm validate:docs
           pnpm validate:onboarding
 
-  docs:
-    name: docs-contract
-    needs: scopes
-    if: needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm validate:docs
-      - run: pnpm validate:onboarding
-      - run: pnpm test:docs-examples
-      - run: pnpm build
-      - run: pnpm validate:route-budgets
-      - name: Upload docs route bundle report
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: docs-route-bundle-report-${{ github.event.pull_request.head.sha }}
-          if-no-files-found: warn
-          retention-days: 14
-          path: artifacts/docs-route-bundle-report.json
+      - name: Validate public package contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.packages == 'true'
+          }}
+        run: |
+          pnpm validate:package-output
+          pnpm validate:package-budgets
+          pnpm test:consumer:vite
+          pnpm pack:check
 
-  ui:
-    name: ui-contract
-    needs: scopes
-    if: needs.scopes.outputs.ui == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:ui
-      - run: pnpm test:a11y
-      - run: pnpm test:catalog
-      - run: pnpm test:api
-      - run: pnpm validate:api
-      - run: pnpm test:tokens
-      - run: pnpm test:onboarding
-      - run: pnpm validate:tokens
-      - run: pnpm validate:runtime-axes
-      - run: pnpm validate:typography
-      - run: pnpm validate:catalog
-      - name: Install Chromium
-        if: needs.scopes.outputs.browser == 'true'
-        run: pnpm exec playwright install --with-deps chromium
-      - name: Run Chromium PR smoke
-        if: needs.scopes.outputs.browser == 'true'
-        run: pnpm test:browser:pr
-      - name: Upload Chromium PR smoke artifacts
-        if: failure() && needs.scopes.outputs.browser == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: chromium-pr-smoke-artifacts-${{ github.event.pull_request.head.sha }}
-          if-no-files-found: warn
-          retention-days: 14
-          path: |
-            test-results/browser/results.json
-            test-results/browser/artifacts/**
+      - name: Validate CLI contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.cli == 'true'
+          }}
+        run: pnpm test:cli
 
-  visual:
-    name: visual-regression
+      - name: Validate MCP contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.mcp == 'true'
+          }}
+        run: pnpm test:mcp
+
+      - name: Validate adapter contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.adapters == 'true'
+          }}
+        run: pnpm test:adapters
+
+      - name: Validate manual release contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.manual_audit == 'true'
+          }}
+        run: |
+          pnpm test:manual-audit-plan
+          pnpm test:beta-feedback
+          pnpm validate:stable-readiness
+
+      - name: Validate workflow contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            (
+              needs.scopes.outputs.workflow == 'true' ||
+              needs.scopes.outputs.branch_policy == 'true'
+            )
+          }}
+        run: node --test scripts/ci-workflow-contract.test.mjs
+
+  product:
+    name: product-contract
     needs: scopes
-    if: needs.scopes.outputs.visual == 'true'
+    if: >-
+      ${{
+        github.event.pull_request.draft == false &&
+        (
+          (needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true') ||
+          needs.scopes.outputs.ui == 'true' ||
+          needs.scopes.outputs.browser == 'true' ||
+          needs.scopes.outputs.visual == 'true'
+        )
+      }}
     permissions:
       contents: read
       pull-requests: read
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -182,8 +219,54 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate documentation contract
+        id: docs_contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.docs == 'true' &&
+            needs.scopes.outputs.docs_only != 'true'
+          }}
+        run: |
+          pnpm validate:docs
+          pnpm validate:onboarding
+          pnpm test:docs-examples
+          pnpm build
+          pnpm validate:route-budgets
+
+      - name: Validate UI contract
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.ui == 'true'
+          }}
+        run: |
+          pnpm test:ui
+          pnpm test:a11y
+          pnpm test:catalog
+          pnpm test:api
+          pnpm validate:api
+          pnpm test:tokens
+          pnpm test:onboarding
+          pnpm validate:tokens
+          pnpm validate:runtime-axes
+          pnpm validate:typography
+          pnpm validate:catalog
+
       - name: Require live maintainer approval for baseline changes
+        id: visual_approval
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            needs.scopes.outputs.visual == 'true'
+          }}
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -208,184 +291,116 @@ jobs:
               throw new Error("Baseline changes require the visual-baseline-approved maintainer label. Apply it, then rerun failed jobs only.");
             }
           '
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:visual
+
+      - name: Install Chromium
+        id: chromium
+        if: >-
+          ${{
+            always() &&
+            steps.install.outcome == 'success' &&
+            (
+              needs.scopes.outputs.browser == 'true' ||
+              (
+                needs.scopes.outputs.visual == 'true' &&
+                steps.visual_approval.outcome == 'success'
+              )
+            )
+          }}
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Chromium PR smoke
+        id: browser_smoke
+        if: >-
+          ${{
+            always() &&
+            steps.chromium.outcome == 'success' &&
+            needs.scopes.outputs.browser == 'true'
+          }}
+        run: pnpm test:browser:pr
+
+      - name: Run visual regression
+        id: visual_regression
+        if: >-
+          ${{
+            always() &&
+            steps.chromium.outcome == 'success' &&
+            steps.visual_approval.outcome == 'success' &&
+            needs.scopes.outputs.visual == 'true'
+          }}
+        run: pnpm test:visual
+
+      - name: Upload docs route bundle report
+        if: ${{ always() && steps.docs_contract.outcome == 'failure' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: docs-route-bundle-report-${{ github.event.pull_request.head.sha }}
+          if-no-files-found: warn
+          retention-days: 7
+          path: artifacts/docs-route-bundle-report.json
+
+      - name: Upload Chromium PR smoke artifacts
+        if: ${{ always() && steps.browser_smoke.outcome == 'failure' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: chromium-pr-smoke-artifacts-${{ github.event.pull_request.head.sha }}
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            test-results/browser/results.json
+            test-results/browser/artifacts/**
+
       - name: Upload visual regression artifacts
-        if: failure()
+        if: ${{ always() && steps.visual_regression.outcome == 'failure' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: visual-regression-artifacts-${{ github.event.pull_request.head.sha }}
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 7
           path: |
             test-results/visual/**/*-actual.png
             test-results/visual/**/*-diff.png
             test-results/visual/**/trace.zip
             tests/visual/__screenshots__/linux/*.png
 
-  packages:
-    name: public-package-contract
-    needs: scopes
-    if: needs.scopes.outputs.packages == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm validate:package-output
-      - run: pnpm validate:package-budgets
-      - run: pnpm test:consumer:vite
-      - run: pnpm pack:check
-
-  cli:
-    name: cli-contract
-    needs: scopes
-    if: needs.scopes.outputs.cli == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:cli
-
-  mcp:
-    name: mcp-contract
-    needs: scopes
-    if: needs.scopes.outputs.mcp == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:mcp
-
-  adapters:
-    name: adapter-contract
-    needs: scopes
-    if: needs.scopes.outputs.adapters == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:adapters
-
-  manual:
-    name: manual-release-contract
-    needs: scopes
-    if: needs.scopes.outputs.manual_audit == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:manual-audit-plan
-      - run: pnpm test:beta-feedback
-      - run: pnpm validate:stable-readiness
-
-  workflow:
-    name: workflow-contract
-    needs: scopes
-    if: needs.scopes.outputs.workflow == 'true' || needs.scopes.outputs.branch_policy == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: node --test scripts/ci-workflow-contract.test.mjs scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs
-
   pr_gate:
     name: PR gate
-    if: always()
+    if: ${{ github.event.pull_request.draft == false && always() }}
     needs:
       - scopes
-      - always_fast
-      - docs
-      - ui
-      - visual
-      - packages
-      - cli
-      - mcp
-      - adapters
-      - manual
-      - workflow
+      - quality
+      - product
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require mandatory and selected development jobs
         env:
           SCOPES_RESULT: ${{ needs.scopes.result }}
-          ALWAYS_FAST_RESULT: ${{ needs.always_fast.result }}
-          DOCS_RESULT: ${{ needs.docs.result }}
-          UI_RESULT: ${{ needs.ui.result }}
-          VISUAL_RESULT: ${{ needs.visual.result }}
-          PACKAGES_RESULT: ${{ needs.packages.result }}
-          CLI_RESULT: ${{ needs.cli.result }}
-          MCP_RESULT: ${{ needs.mcp.result }}
-          ADAPTERS_RESULT: ${{ needs.adapters.result }}
-          MANUAL_RESULT: ${{ needs.manual.result }}
-          WORKFLOW_RESULT: ${{ needs.workflow.result }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          PRODUCT_RESULT: ${{ needs.product.result }}
+          PRODUCT_REQUIRED: >-
+            ${{
+              (needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true') ||
+              needs.scopes.outputs.ui == 'true' ||
+              needs.scopes.outputs.browser == 'true' ||
+              needs.scopes.outputs.visual == 'true'
+            }}
         run: |
-          if [[ "$SCOPES_RESULT" != "success" || "$ALWAYS_FAST_RESULT" != "success" ]]; then
-            echo "Mandatory jobs failed: scopes=$SCOPES_RESULT always-fast=$ALWAYS_FAST_RESULT" >&2
+          if [[ "$SCOPES_RESULT" != "success" ]]; then
+            echo "Branch policy or scope detection failed: scopes=$SCOPES_RESULT" >&2
             exit 1
           fi
-          for result in \
-            "$DOCS_RESULT" \
-            "$UI_RESULT" \
-            "$VISUAL_RESULT" \
-            "$PACKAGES_RESULT" \
-            "$CLI_RESULT" \
-            "$MCP_RESULT" \
-            "$ADAPTERS_RESULT" \
-            "$MANUAL_RESULT" \
-            "$WORKFLOW_RESULT"; do
-            if [[ "$result" != "success" && "$result" != "skipped" ]]; then
-              echo "A selected scope job ended with $result." >&2
-              exit 1
-            fi
-          done
+
+          if [[ "$QUALITY_RESULT" != "success" ]]; then
+            echo "Quality or scoped contract checks failed: quality=$QUALITY_RESULT" >&2
+            exit 1
+          fi
+
+          if [[ "$PRODUCT_REQUIRED" == "true" && "$PRODUCT_RESULT" != "success" ]]; then
+            echo "Selected product job ended with $PRODUCT_RESULT." >&2
+            exit 1
+          fi
+
+          if [[ "$PRODUCT_REQUIRED" != "true" && "$PRODUCT_RESULT" != "success" && "$PRODUCT_RESULT" != "skipped" ]]; then
+            echo "Unselected product job ended with $PRODUCT_RESULT." >&2
+            exit 1
+          fi

@@ -13,6 +13,7 @@ const pinnedActions = [
   "pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6",
   "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7",
 ];
+const pinnedBranchPolicyActions = [pinnedActions[0], pinnedActions[2]];
 const pinnedUploadAction =
   "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1";
 
@@ -126,27 +127,31 @@ export function ciWorkflowContractFailures({
     [
       "pull_request:",
       "branches:\n      - dev",
-      "types: [opened, synchronize, reopened, ready_for_review]",
+      "types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]",
       "group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
       "cancel-in-progress: true",
       "permissions:",
       "contents: read",
       "pull-requests: read",
+      "name: branch-policy",
+      "if: github.event.pull_request.draft == true",
+      "Full CI is deferred while the pull request is a draft.",
+      "node scripts/check-branch-policy.mjs",
+      "node scripts/check-dco.mjs",
       "node scripts/detect-ci-scopes.mjs",
-      "name: always-fast",
-      "name: docs-contract",
-      "name: ui-contract",
-      "name: workflow-contract",
+      "name: quality-and-contracts",
+      "name: product-contract",
       "docs_only:",
       "broad:",
       "unknown:",
-      "if: needs.scopes.outputs.docs_only == 'true'",
-      "if: needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'",
+      "needs.scopes.outputs.docs_only == 'true'",
+      "if: needs.scopes.outputs.docs_only != 'true'",
+      "PRODUCT_REQUIRED:",
       "GITHUB_TOKEN: ${{ github.token }}",
       "pnpm exec playwright install --with-deps chromium",
       "docs-route-bundle-report-${{ github.event.pull_request.head.sha }}",
       "name: PR gate",
-      "if: always()",
+      "if: ${{ github.event.pull_request.draft == false && always() }}",
       "timeout-minutes:",
     ],
     failures,
@@ -244,11 +249,37 @@ export function ciWorkflowContractFailures({
   }
 
   requireStrings(prGate, ciWorkflowPaths.prGate, [...pinnedActions, pinnedUploadAction], failures);
-  requireStrings(branchPolicy, ciWorkflowPaths.branchPolicy, pinnedActions, failures);
+  const prInstallCount = (prGate.match(/pnpm install --frozen-lockfile/g) ?? []).length;
+  if (prInstallCount > 2) {
+    failures.push(
+      `${ciWorkflowPaths.prGate}: expected at most 2 dependency installs, found ${prInstallCount}`,
+    );
+  }
+
+  requireStrings(branchPolicy, ciWorkflowPaths.branchPolicy, pinnedBranchPolicyActions, failures);
   requireStrings(
     branchPolicy,
     ciWorkflowPaths.branchPolicy,
-    ["node scripts/check-dco.mjs", "node scripts/check-branch-policy.mjs"],
+    [
+      "branches:\n      - main",
+      "types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]",
+      "if: github.event.pull_request.draft == true",
+      "Full CI is deferred while the pull request is a draft.",
+      "node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs",
+      "node scripts/check-dco.mjs",
+      "node scripts/check-branch-policy.mjs",
+    ],
+    failures,
+  );
+  forbidStrings(
+    branchPolicy,
+    ciWorkflowPaths.branchPolicy,
+    [
+      "branches:\n      - main\n      - dev",
+      "pnpm/action-setup@",
+      "pnpm install --frozen-lockfile",
+      "cache: pnpm",
+    ],
     failures,
   );
   requireStrings(playwrightCanary, ciWorkflowPaths.playwrightCanary, pinnedActions, failures);
