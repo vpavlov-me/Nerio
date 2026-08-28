@@ -4,7 +4,6 @@ import { resolve } from "node:path";
 export const ciWorkflowPaths = {
   prGate: ".github/workflows/pr-gate.yml",
   releaseGate: ".github/workflows/release-gate.yml",
-  branchPolicy: ".github/workflows/branch-policy.yml",
   playwrightCanary: ".github/workflows/playwright-canary.yml",
 };
 
@@ -42,7 +41,6 @@ const developmentCommands = [
 ];
 
 const developmentScopedCommands = [
-  "pnpm test:branch-policy",
   "pnpm test:browser:pr",
   "pnpm test:visual",
   "pnpm test:cli",
@@ -58,7 +56,6 @@ const developmentScopedCommands = [
 
 const releaseCommands = [
   ...developmentCommands,
-  "pnpm test:branch-policy",
   "pnpm test:visual",
   "pnpm test:cli",
   "pnpm test:mcp",
@@ -75,6 +72,12 @@ const releaseCommands = [
   "pnpm pack:check",
   "pnpm generate:sbom",
   "pnpm validate:sbom",
+];
+
+const branchPolicyCommands = [
+  "node scripts/check-branch-policy.mjs",
+  "node scripts/check-dco.mjs --base \"$BASE_SHA\" --head \"$HEAD_SHA\"",
+  "node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs",
 ];
 
 const forbiddenPublicationStrings = [
@@ -105,21 +108,16 @@ export function readCiWorkflowSources(root) {
   return {
     prGate: readFileSync(resolve(root, ciWorkflowPaths.prGate), "utf8"),
     releaseGate: readFileSync(resolve(root, ciWorkflowPaths.releaseGate), "utf8"),
-    branchPolicy: readFileSync(resolve(root, ciWorkflowPaths.branchPolicy), "utf8"),
     playwrightCanary: readFileSync(resolve(root, ciWorkflowPaths.playwrightCanary), "utf8"),
   };
 }
 
-export function ciWorkflowContractFailures({
-  prGate,
-  releaseGate,
-  branchPolicy = "",
-  playwrightCanary = "",
-}) {
+export function ciWorkflowContractFailures({ prGate, releaseGate, playwrightCanary = "" }) {
   const failures = [];
 
   requireStrings(prGate, ciWorkflowPaths.prGate, developmentCommands, failures);
   requireStrings(prGate, ciWorkflowPaths.prGate, developmentScopedCommands, failures);
+  requireStrings(prGate, ciWorkflowPaths.prGate, branchPolicyCommands, failures);
   requireStrings(
     prGate,
     ciWorkflowPaths.prGate,
@@ -133,6 +131,7 @@ export function ciWorkflowContractFailures({
       "contents: read",
       "pull-requests: read",
       "node scripts/detect-ci-scopes.mjs",
+      "name: branch-policy",
       "name: always-fast",
       "name: docs-contract",
       "name: ui-contract",
@@ -141,7 +140,10 @@ export function ciWorkflowContractFailures({
       "broad:",
       "unknown:",
       "if: needs.scopes.outputs.docs_only == 'true'",
-      "if: needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'",
+      "github.event.pull_request.draft == false",
+      "needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'",
+      "IS_DRAFT: ${{ github.event.pull_request.draft }}",
+      "Draft pull request: expensive checks are deferred until ready for review.",
       "GITHUB_TOKEN: ${{ github.token }}",
       "pnpm exec playwright install --with-deps chromium",
       "docs-route-bundle-report-${{ github.event.pull_request.head.sha }}",
@@ -173,6 +175,7 @@ export function ciWorkflowContractFailures({
   );
 
   requireStrings(releaseGate, ciWorkflowPaths.releaseGate, releaseCommands, failures);
+  requireStrings(releaseGate, ciWorkflowPaths.releaseGate, branchPolicyCommands, failures);
   requireStrings(
     releaseGate,
     ciWorkflowPaths.releaseGate,
@@ -180,20 +183,20 @@ export function ciWorkflowContractFailures({
       "pull_request:",
       "branches:\n      - main",
       "types: [opened, synchronize, reopened, ready_for_review]",
-      "workflow_dispatch:",
-      "candidate_sha:",
-      "required: true",
       "group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
       "cancel-in-progress: true",
       "permissions:",
       "contents: read",
-      "name: exact-release-candidate",
-      "DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}",
+      "name: branch-policy",
+      "PULL_REQUEST_CANDIDATE: ${{ github.event.pull_request.head.sha }}",
       "node scripts/validate-release-candidate.mjs",
       "ref: ${{ needs.candidate.outputs.candidate_sha }}",
       "release-candidate-${{ steps.candidate.outputs.candidate_sha }}",
       "sbom-${{ needs.candidate.outputs.candidate_sha }}",
       "docs-route-bundle-report-${{ needs.candidate.outputs.candidate_sha }}",
+      "github.event.pull_request.draft == false",
+      "IS_DRAFT: ${{ github.event.pull_request.draft }}",
+      "Draft release pull request: full release validation is deferred until ready for review.",
       "fail-fast: false",
       "engine: chromium",
       "command: test:browser:chromium",
@@ -218,6 +221,8 @@ export function ciWorkflowContractFailures({
     ciWorkflowPaths.releaseGate,
     [
       "pull_request_target",
+      "workflow_dispatch:",
+      "DISPATCH_CANDIDATE",
       "continue-on-error",
       "secrets.",
       "${{ inputs.",
@@ -244,18 +249,10 @@ export function ciWorkflowContractFailures({
   }
 
   requireStrings(prGate, ciWorkflowPaths.prGate, [...pinnedActions, pinnedUploadAction], failures);
-  requireStrings(branchPolicy, ciWorkflowPaths.branchPolicy, pinnedActions, failures);
-  requireStrings(
-    branchPolicy,
-    ciWorkflowPaths.branchPolicy,
-    ["node scripts/check-dco.mjs", "node scripts/check-branch-policy.mjs"],
-    failures,
-  );
   requireStrings(playwrightCanary, ciWorkflowPaths.playwrightCanary, pinnedActions, failures);
   for (const [key, source] of Object.entries({
     prGate,
     releaseGate,
-    branchPolicy,
     playwrightCanary,
   })) {
     forbidStrings(source, ciWorkflowPaths[key], ["@v", "@main", "@master"], failures);

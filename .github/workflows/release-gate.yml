@@ -5,12 +5,6 @@ on:
     branches:
       - main
     types: [opened, synchronize, reopened, ready_for_review]
-  workflow_dispatch:
-    inputs:
-      candidate_sha:
-        description: Exact 40-character candidate commit on the dev release branch
-        required: true
-        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -21,7 +15,7 @@ permissions:
 
 jobs:
   candidate:
-    name: exact-release-candidate
+    name: branch-policy
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -34,13 +28,33 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
+      - name: Validate pull request direction
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-branch-policy.mjs
+      - name: Require DCO sign-off on human commits
+        if: >-
+          ${{
+            github.event.pull_request.head.repo.full_name != github.repository ||
+            (
+              (github.base_ref != 'main' || github.head_ref != 'dev') &&
+              (github.base_ref != 'dev' || github.head_ref != 'main')
+            )
+          }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.mjs --base "$BASE_SHA" --head "$HEAD_SHA"
+      - run: node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs
       - name: Resolve and validate exact candidate
         id: candidate
         env:
-          DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}
           PULL_REQUEST_CANDIDATE: ${{ github.event.pull_request.head.sha }}
         run: |
-          CANDIDATE_SHA="${DISPATCH_CANDIDATE:-$PULL_REQUEST_CANDIDATE}"
+          CANDIDATE_SHA="$PULL_REQUEST_CANDIDATE"
           if [[ ! "$CANDIDATE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Release candidate must be an exact lowercase 40-character SHA." >&2
             exit 1
@@ -67,6 +81,7 @@ jobs:
   release_quality:
     name: release-quality
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -85,7 +100,6 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test:branch-policy
       - run: pnpm test:ci-scopes
       - run: pnpm test:repo-artifacts
       - run: pnpm validate:repo-artifacts
@@ -118,6 +132,7 @@ jobs:
   release_browser:
     name: release-browser-${{ matrix.engine }}
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -158,6 +173,7 @@ jobs:
   release_visual:
     name: release-visual
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -190,6 +206,7 @@ jobs:
   release_tool_contracts:
     name: release-tool-contracts
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -211,6 +228,7 @@ jobs:
   release_package_contracts:
     name: release-package-contracts
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -248,6 +266,7 @@ jobs:
   release_consumer_matrix:
     name: release-consumer-${{ matrix.profile }}-node-${{ matrix.node }}
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -279,6 +298,7 @@ jobs:
   release_manual_audit_contract:
     name: release-manual-and-beta-contract
     needs: candidate
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -315,6 +335,7 @@ jobs:
     steps:
       - name: Require exact candidate and every release job
         env:
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
           CANDIDATE_RESULT: ${{ needs.candidate.result }}
           CANDIDATE_SHA: ${{ needs.candidate.outputs.candidate_sha }}
           RELEASE_QUALITY_RESULT: ${{ needs.release_quality.result }}
@@ -325,8 +346,30 @@ jobs:
           RELEASE_CONSUMER_RESULT: ${{ needs.release_consumer_matrix.result }}
           RELEASE_MANUAL_AUDIT_RESULT: ${{ needs.release_manual_audit_contract.result }}
         run: |
+          if [[ "$CANDIDATE_RESULT" != "success" ]]; then
+            echo "Release branch policy or candidate validation failed: $CANDIDATE_RESULT." >&2
+            exit 1
+          fi
+
+          if [[ "$IS_DRAFT" == "true" ]]; then
+            for result in \
+              "$RELEASE_QUALITY_RESULT" \
+              "$RELEASE_BROWSER_RESULT" \
+              "$RELEASE_VISUAL_RESULT" \
+              "$RELEASE_TOOL_RESULT" \
+              "$RELEASE_PACKAGE_RESULT" \
+              "$RELEASE_CONSUMER_RESULT" \
+              "$RELEASE_MANUAL_AUDIT_RESULT"; do
+              if [[ "$result" != "success" && "$result" != "skipped" ]]; then
+                echo "A draft release job ended with $result." >&2
+                exit 1
+              fi
+            done
+            echo "Draft release pull request: full release validation is deferred until ready for review." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           for result in \
-            "$CANDIDATE_RESULT" \
             "$RELEASE_QUALITY_RESULT" \
             "$RELEASE_BROWSER_RESULT" \
             "$RELEASE_VISUAL_RESULT" \

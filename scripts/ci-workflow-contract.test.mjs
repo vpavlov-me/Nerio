@@ -35,6 +35,16 @@ test("requires all supported release browser engines", () => {
   );
 });
 
+test("keeps full release validation bound to pull requests", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.releaseGate += "\n  workflow_dispatch:\n";
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.releaseGate}: forbidden workflow_dispatch:`,
+    ),
+  );
+});
+
 test("requires the production dependency audit in the release gate", () => {
   const sources = readCiWorkflowSources(root);
   sources.releaseGate = sources.releaseGate.replace("      - run: pnpm audit:prod\n", "");

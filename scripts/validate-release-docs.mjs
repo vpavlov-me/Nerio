@@ -84,20 +84,16 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--release": resolve(root, "RELEASE.md"),
   "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
   "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
-  "--branch-policy": resolve(root, ".github/workflows/branch-policy.yml"),
   "--playwright-canary": resolve(root, ".github/workflows/playwright-canary.yml"),
 });
 
-const [changelog, release, prGate, releaseGate, branchPolicy, playwrightCanary] = await Promise.all(
-  [
-    readFile(paths["--changelog"], "utf8"),
-    readFile(paths["--release"], "utf8"),
-    readFile(paths["--pr-gate"], "utf8"),
-    readFile(paths["--release-gate"], "utf8"),
-    readFile(paths["--branch-policy"], "utf8"),
-    readFile(paths["--playwright-canary"], "utf8"),
-  ],
-);
+const [changelog, release, prGate, releaseGate, playwrightCanary] = await Promise.all([
+  readFile(paths["--changelog"], "utf8"),
+  readFile(paths["--release"], "utf8"),
+  readFile(paths["--pr-gate"], "utf8"),
+  readFile(paths["--release-gate"], "utf8"),
+  readFile(paths["--playwright-canary"], "utf8"),
+]);
 
 const missingChangelogHeadings = requiredChangelogHeadings.filter(
   (heading) => !changelog.includes(heading),
@@ -108,7 +104,6 @@ const missingReleaseCommands = requiredReleaseCommands.filter(
 const workflowFailures = ciWorkflowContractFailures({
   prGate,
   releaseGate,
-  branchPolicy,
   playwrightCanary,
 });
 

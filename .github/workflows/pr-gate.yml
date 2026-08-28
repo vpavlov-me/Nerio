@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   scopes:
-    name: detect-scopes
+    name: branch-policy
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -38,6 +38,30 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+      - name: Validate pull request direction
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-branch-policy.mjs
+      - name: Require DCO sign-off on human commits
+        if: >-
+          ${{
+            github.event.pull_request.head.repo.full_name != github.repository ||
+            (
+              (github.base_ref != 'main' || github.head_ref != 'dev') &&
+              (github.base_ref != 'dev' || github.head_ref != 'main')
+            )
+          }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.mjs --base "$BASE_SHA" --head "$HEAD_SHA"
+      - run: node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs
       - name: Detect affected CI scopes
         id: detect
         env:
@@ -60,6 +84,7 @@ jobs:
   always_fast:
     name: always-fast
     needs: scopes
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -76,12 +101,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm lint
+        if: needs.scopes.outputs.docs_only != 'true'
       - run: pnpm typecheck
+        if: needs.scopes.outputs.docs_only != 'true'
       - run: pnpm test:ci-scopes
       - run: pnpm test:repo-artifacts
       - run: pnpm validate:repo-artifacts
-      - run: pnpm test:branch-policy
-      - run: node --test scripts/check-dco.test.mjs scripts/validate-release-candidate.test.mjs
+      - run: node --test scripts/validate-release-candidate.test.mjs
       - name: Validate Markdown-only documentation
         if: needs.scopes.outputs.docs_only == 'true'
         run: |
@@ -91,7 +117,7 @@ jobs:
   docs:
     name: docs-contract
     needs: scopes
-    if: needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -121,7 +147,7 @@ jobs:
   ui:
     name: ui-contract
     needs: scopes
-    if: needs.scopes.outputs.ui == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.ui == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -165,7 +191,7 @@ jobs:
   visual:
     name: visual-regression
     needs: scopes
-    if: needs.scopes.outputs.visual == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.visual == 'true'
     permissions:
       contents: read
       pull-requests: read
@@ -226,7 +252,7 @@ jobs:
   packages:
     name: public-package-contract
     needs: scopes
-    if: needs.scopes.outputs.packages == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.packages == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -247,7 +273,7 @@ jobs:
   cli:
     name: cli-contract
     needs: scopes
-    if: needs.scopes.outputs.cli == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.cli == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -265,7 +291,7 @@ jobs:
   mcp:
     name: mcp-contract
     needs: scopes
-    if: needs.scopes.outputs.mcp == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.mcp == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -283,7 +309,7 @@ jobs:
   adapters:
     name: adapter-contract
     needs: scopes
-    if: needs.scopes.outputs.adapters == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.adapters == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -301,7 +327,7 @@ jobs:
   manual:
     name: manual-release-contract
     needs: scopes
-    if: needs.scopes.outputs.manual_audit == 'true'
+    if: github.event.pull_request.draft == false && needs.scopes.outputs.manual_audit == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -323,7 +349,7 @@ jobs:
   workflow:
     name: workflow-contract
     needs: scopes
-    if: needs.scopes.outputs.workflow == 'true' || needs.scopes.outputs.branch_policy == 'true'
+    if: github.event.pull_request.draft == false && (needs.scopes.outputs.workflow == 'true' || needs.scopes.outputs.branch_policy == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -358,6 +384,7 @@ jobs:
     steps:
       - name: Require mandatory and selected development jobs
         env:
+          IS_DRAFT: ${{ github.event.pull_request.draft }}
           SCOPES_RESULT: ${{ needs.scopes.result }}
           ALWAYS_FAST_RESULT: ${{ needs.always_fast.result }}
           DOCS_RESULT: ${{ needs.docs.result }}
@@ -370,8 +397,34 @@ jobs:
           MANUAL_RESULT: ${{ needs.manual.result }}
           WORKFLOW_RESULT: ${{ needs.workflow.result }}
         run: |
-          if [[ "$SCOPES_RESULT" != "success" || "$ALWAYS_FAST_RESULT" != "success" ]]; then
-            echo "Mandatory jobs failed: scopes=$SCOPES_RESULT always-fast=$ALWAYS_FAST_RESULT" >&2
+          if [[ "$SCOPES_RESULT" != "success" ]]; then
+            echo "Branch policy and scope detection failed: scopes=$SCOPES_RESULT" >&2
+            exit 1
+          fi
+
+          if [[ "$IS_DRAFT" == "true" ]]; then
+            for result in \
+              "$ALWAYS_FAST_RESULT" \
+              "$DOCS_RESULT" \
+              "$UI_RESULT" \
+              "$VISUAL_RESULT" \
+              "$PACKAGES_RESULT" \
+              "$CLI_RESULT" \
+              "$MCP_RESULT" \
+              "$ADAPTERS_RESULT" \
+              "$MANUAL_RESULT" \
+              "$WORKFLOW_RESULT"; do
+              if [[ "$result" != "success" && "$result" != "skipped" ]]; then
+                echo "A draft-only job ended with $result." >&2
+                exit 1
+              fi
+            done
+            echo "Draft pull request: expensive checks are deferred until ready for review." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [[ "$ALWAYS_FAST_RESULT" != "success" ]]; then
+            echo "Mandatory development checks failed: always-fast=$ALWAYS_FAST_RESULT" >&2
             exit 1
           fi
           for result in \
