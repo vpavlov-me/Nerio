@@ -23,7 +23,7 @@ const activeVersionSurfaces = [
   "apps/docs/content/llms.txt",
   ...packageReadmePaths,
   "packages/registry/src/public-commands.json",
-  "packages/cli/src/index.js",
+  "packages/cli/src/internal/command-line.js",
   "packages/cli/fixtures/basic/README.md",
 ];
 

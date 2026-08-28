@@ -60,6 +60,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Modularized the public CLI runtime behind its unchanged seven-command contract, isolated Registry
+  transport, source transactions, diagnostics, and command presentation, and switched the packed
+  CLI to one deterministic generated CommonJS bin so internal modules remain private and package
+  budgets do not increase.
 - Expanded `DropdownMenu` into a complete bounded compound family while preserving the existing
   trigger-and-items API. The new anatomy covers Root, Trigger, Portal, Positioner, Content, groups,
   action and link items, checkbox and radio selection, one submenu level, separators, labels,

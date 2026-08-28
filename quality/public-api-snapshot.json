@@ -9214,7 +9214,7 @@
     },
     "@nerio-ui/cli": {
       "bin": {
-        "nerio": "./src/index.js"
+        "nerio": "./dist/index.cjs"
       },
       "dependencies": {
         "@nerio-ui/registry": "workspace:*"
@@ -9223,7 +9223,7 @@
         "node": ">=22"
       },
       "exports": null,
-      "files": ["src"],
+      "files": ["dist"],
       "peerDependencies": null,
       "peerDependenciesMeta": null,
       "sideEffects": null,

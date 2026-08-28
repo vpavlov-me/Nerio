@@ -215,7 +215,7 @@ function validate() {
     "--platform-coverage": resolve(root, "docs/core-platform-primitive-coverage.md"),
     "--docs-chrome": resolve(root, "apps/docs/components/docs-chrome.tsx"),
     "--component-docs": resolve(root, "apps/docs/lib/component-docs.ts"),
-    "--cli-runtime": resolve(root, "packages/cli/src/index.js"),
+    "--cli-runtime": resolve(root, "packages/cli/src/internal/commands.js"),
     "--mcp-runtime": resolve(root, "packages/mcp/src/tool-runtime.js"),
   });
 
