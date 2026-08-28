@@ -58,6 +58,7 @@ const expectedLocalCommands = [
   "pnpm exec nerio add button card --dry-run",
   "pnpm exec nerio add --all --dry-run --json",
   "pnpm exec nerio add button",
+  "pnpm exec nerio remove button --dry-run",
   "pnpm exec nerio diff button",
   "pnpm exec nerio update button --dry-run",
   "pnpm exec nerio doctor",
@@ -162,7 +163,7 @@ const forbiddenPatterns = [
   [/packages\/mcp\/src\/server\.js/g, "monorepo-only MCP path"],
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
-  [/^\s*nerio (?:init|list|info|add|diff|update|doctor)\b/gm, "bare public CLI command"],
+  [/^\s*nerio (?:init|list|info|add|remove|diff|update|doctor)\b/gm, "bare public CLI command"],
   [/@nerio\//g, "obsolete package scope"],
   [/No npm release exists/g, "stale unpublished-package copy"],
 ];

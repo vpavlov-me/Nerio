@@ -1,11 +1,13 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { createAddCommand } = require("./add");
+const { createRemoveCommand } = require("./remove");
 
 const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
 
 function createCommands(services) {
   const { add } = createAddCommand(services);
+  const { remove } = createRemoveCommand(services);
   const {
     cwd,
     cliPackage,
@@ -402,8 +404,8 @@ function createCommands(services) {
       console.log(help(command));
       return;
     }
-    const guardedCommand = ["init", "add", "diff", "update", "doctor"].includes(command);
-    const recoveryCommand = ["add", "diff", "update", "doctor"].includes(command);
+    const guardedCommand = ["init", "add", "remove", "diff", "update", "doctor"].includes(command);
+    const recoveryCommand = ["add", "remove", "diff", "update", "doctor"].includes(command);
     const lock = guardedCommand ? await acquireCommandLock() : null;
     let commandError;
     try {
@@ -413,6 +415,7 @@ function createCommands(services) {
 
       if (command === "init") await init();
       else if (command === "add") await add();
+      else if (command === "remove") await remove();
       else if (command === "diff") await diff(itemName);
       else if (command === "update") await update(itemName);
       else if (command === "list") await list();

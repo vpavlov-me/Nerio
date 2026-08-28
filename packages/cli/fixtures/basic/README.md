@@ -7,6 +7,7 @@ pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1
 pnpm exec nerio init
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add button card
+pnpm exec nerio remove card --dry-run
 pnpm exec nerio diff button
 pnpm exec nerio update button --dry-run
 pnpm exec nerio doctor
@@ -14,4 +15,5 @@ pnpm exec nerio doctor
 
 It asserts that requested items install as one deterministic dependency union and atomic source plus
 lock transaction, records portable original hashes, and supports non-destructive drift inspection
-and update planning.
+and update planning. Safe removal preserves shared dependencies and locally modified source unless
+the consumer supplies an explicit force option.

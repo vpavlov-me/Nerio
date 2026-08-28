@@ -677,6 +677,76 @@ function writeConcurrencyRegistry(
   return manifestPath;
 }
 
+function writeRemoveRegistry(registryRoot) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  const sources = {
+    "shared.ts": "export const shared = true;\n",
+    "common.ts": "export const common = true;\n",
+    "alpha.ts": "export const alpha = true;\n",
+    "beta.ts": "export const beta = true;\n",
+  };
+  for (const [name, source] of Object.entries(sources)) {
+    fs.writeFileSync(path.join(sourceRoot, name), source);
+  }
+  const file = (source, target, role) => ({
+    source: `./source/${source}`,
+    target,
+    role,
+    integrity: `sha256-${crypto.createHash("sha256").update(sources[source]).digest("hex")}`,
+  });
+  const common = file("common.ts", "lib/common.ts", "utility");
+  const items = [
+    {
+      name: "shared",
+      title: "Shared",
+      description: "Shared dependency source.",
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [file("shared.ts", "lib/shared.ts", "utility")],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { shared } from '@/components/nerio/lib/shared';",
+    },
+    ...["alpha", "beta"].map((name) => ({
+      name,
+      title: name[0].toUpperCase() + name.slice(1),
+      description: `Fixture ${name} source.`,
+      category: "actions",
+      dependencies: [],
+      registryDependencies: ["shared"],
+      files: [file(`${name}.ts`, `components/${name}.ts`, "component"), common],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: `import { ${name} } from '@/components/nerio/components/${name}';`,
+    })),
+  ];
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion: "1.1.0",
+        name: "nerio-remove-fixture",
+        version: cliVersion,
+        sourceRevision: "fixture-remove",
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
 function managedSnapshot(target) {
   const snapshot = {};
   const visit = (entry) => {
@@ -1222,6 +1292,186 @@ async function verifyMultiItemAdd(tempRoot) {
   assertNoTransactionArtifacts(rollbackTarget, "Atomic multi-item add");
 }
 
+async function verifySafeRemove(tempRoot) {
+  const registryRoot = path.join(tempRoot, "remove-registry");
+  fs.mkdirSync(registryRoot);
+  const fixtureManifest = writeRemoveRegistry(registryRoot);
+  const makeConsumer = async (name) => {
+    const target = path.join(tempRoot, name);
+    fs.mkdirSync(target);
+    await run(target, "init", "--registry", fixtureManifest);
+    await run(target, "add", "alpha", "beta");
+    return target;
+  };
+
+  const target = await makeConsumer("remove-consumer");
+  await run(target, "add", "shared");
+  const retainedDependency = JSON.parse(
+    await run(target, "remove", "shared", "--dry-run", "--json"),
+  );
+  if (
+    retainedDependency.removedItems.length ||
+    retainedDependency.files.length ||
+    retainedDependency.summary.deletes !== 0
+  ) {
+    throw new Error(
+      "Safe remove planned deletion for a dependency retained by another direct root.",
+    );
+  }
+  const retainedApplied = await run(target, "remove", "shared");
+  if (
+    !retainedApplied.includes("0 source items became unreferenced") ||
+    retainedApplied.includes("Removed shared:")
+  ) {
+    throw new Error("Safe remove human output misreported a still-referenced direct item.");
+  }
+  const beforePreview = managedSnapshot(target);
+  const preview = JSON.parse(await run(target, "remove", "alpha", "--dry-run", "--json"));
+  if (
+    preview.schemaVersion !== "1.0.0" ||
+    preview.command !== "remove" ||
+    preview.status !== "planned" ||
+    preview.dryRun !== true ||
+    preview.force !== false ||
+    JSON.stringify(preview.requestedItems) !== JSON.stringify(["alpha"]) ||
+    JSON.stringify(preview.removedItems) !== JSON.stringify(["alpha"]) ||
+    preview.summary.deletes !== 1 ||
+    preview.summary.preserved !== 1 ||
+    preview.files.find((entry) => entry.path.endsWith("lib/common.ts"))?.action !==
+      "preserved-shared" ||
+    JSON.stringify(managedSnapshot(target)) !== JSON.stringify(beforePreview)
+  ) {
+    throw new Error("Safe remove dry-run did not preserve shared ownership or consumer state.");
+  }
+
+  const applied = JSON.parse(await run(target, "remove", "alpha", "--json"));
+  const lock = JSON.parse(fs.readFileSync(path.join(target, "nerio.lock.json"), "utf8"));
+  if (
+    applied.status !== "applied" ||
+    fs.existsSync(path.join(target, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/components/beta.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/lib/common.ts")) ||
+    JSON.stringify(lock.requestedItems) !== JSON.stringify(["beta"]) ||
+    lock.items.alpha ||
+    !lock.items.beta ||
+    !lock.items.shared ||
+    JSON.stringify(lock.files["components/nerio/lib/common.ts"].owners) !== JSON.stringify(["beta"])
+  ) {
+    throw new Error("Safe remove did not commit the expected direct-root and owner transition.");
+  }
+
+  const betaPath = path.join(target, "components/nerio/components/beta.ts");
+  fs.writeFileSync(betaPath, "consumer modification\n");
+  const blockedSnapshot = managedSnapshot(target);
+  const blocked = await runFailure(target, "remove", "beta", "--json");
+  if (
+    !blocked.includes('"status": "blocked"') ||
+    !blocked.includes('"action": "conflict-local-modification"') ||
+    !blocked.includes("re-run remove with --force") ||
+    JSON.stringify(managedSnapshot(target)) !== JSON.stringify(blockedSnapshot)
+  ) {
+    throw new Error("Safe remove did not block a locally modified tracked target before writes.");
+  }
+  const forced = JSON.parse(await run(target, "remove", "beta", "--force", "--json"));
+  if (
+    forced.status !== "applied" ||
+    forced.files.find((entry) => entry.path.endsWith("components/beta.ts"))?.action !==
+      "delete-modified" ||
+    listInstalledFiles(target).length !== 0
+  ) {
+    throw new Error("Intentional forced remove did not delete the final unreferenced closure.");
+  }
+
+  const missingTarget = await makeConsumer("remove-missing-consumer");
+  fs.rmSync(path.join(missingTarget, "components/nerio/components/alpha.ts"));
+  fs.rmSync(path.join(missingTarget, "components/nerio/lib/common.ts"));
+  const missing = JSON.parse(await run(missingTarget, "remove", "alpha", "--json"));
+  const missingLock = JSON.parse(
+    fs.readFileSync(path.join(missingTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    missing.summary.missing !== 2 ||
+    missing.files.find((entry) => entry.path.endsWith("components/alpha.ts"))?.action !==
+      "already-missing" ||
+    missing.files.find((entry) => entry.path.endsWith("lib/common.ts"))?.action !==
+      "already-missing" ||
+    JSON.stringify(missingLock.files["components/nerio/lib/common.ts"].owners) !==
+      JSON.stringify(["beta"])
+  ) {
+    throw new Error("Safe remove did not classify missing unowned and shared tracked targets.");
+  }
+  const indirect = await runFailure(missingTarget, "remove", "shared");
+  if (!indirect.includes("not recorded as a directly installed Registry item")) {
+    throw new Error("Safe remove accepted a dependency that was not directly installed.");
+  }
+
+  const ambiguousTarget = await makeConsumer("remove-ambiguous-consumer");
+  const ambiguousLockPath = path.join(ambiguousTarget, "nerio.lock.json");
+  const ambiguousLock = JSON.parse(fs.readFileSync(ambiguousLockPath, "utf8"));
+  ambiguousLock.files["components/nerio/lib/common.ts"].owners = ["alpha"];
+  fs.writeFileSync(ambiguousLockPath, `${JSON.stringify(ambiguousLock, null, 2)}\n`);
+  const ambiguousSnapshot = managedSnapshot(ambiguousTarget);
+  const ambiguous = await runFailure(ambiguousTarget, "remove", "alpha", "--json");
+  if (
+    !ambiguous.includes('"action": "conflict-ambiguous-ownership"') ||
+    !fs.existsSync(path.join(ambiguousTarget, "components/nerio/lib/common.ts")) ||
+    JSON.stringify(managedSnapshot(ambiguousTarget)) !== JSON.stringify(ambiguousSnapshot)
+  ) {
+    throw new Error("Safe remove did not block incomplete source ownership metadata.");
+  }
+
+  const rollbackTarget = await makeConsumer("remove-rollback-consumer");
+  const rollbackSnapshot = managedSnapshot(rollbackTarget);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-commit:1" },
+    "remove",
+    "alpha",
+    "beta",
+  );
+  if (
+    !rollback.includes("rolled back without source or lock changes") ||
+    JSON.stringify(managedSnapshot(rollbackTarget)) !== JSON.stringify(rollbackSnapshot)
+  ) {
+    throw new Error("A failed multi-item remove did not roll back the complete operation.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Atomic safe remove");
+
+  const recoveryTarget = await makeConsumer("remove-recovery-consumer");
+  const recoverySnapshot = managedSnapshot(recoveryTarget);
+  await runFailureWithEnv(
+    recoveryTarget,
+    { NERIO_TEST_CRASH: "after-commit:1" },
+    "remove",
+    "alpha",
+    "beta",
+  );
+  assertInterruptedTransaction(recoveryTarget, "Interrupted safe remove");
+  discardCrashedRegistryLock(recoveryTarget);
+  const recovery = spawnSync(
+    process.execPath,
+    [cli, "remove", "alpha", "beta", "--dry-run", "--json"],
+    {
+      cwd: recoveryTarget,
+      encoding: "utf8",
+      env: process.env,
+    },
+  );
+  const recoveredPlan = recovery.status === 0 ? JSON.parse(recovery.stdout) : null;
+  if (
+    recovery.status !== 0 ||
+    recoveredPlan?.status !== "planned" ||
+    recovery.stdout.includes("Recovered interrupted Registry transaction") ||
+    !recovery.stderr.includes("Recovered interrupted Registry transaction") ||
+    JSON.stringify(managedSnapshot(recoveryTarget)) !== JSON.stringify(recoverySnapshot)
+  ) {
+    throw new Error(
+      `Safe remove recovery did not restore the snapshot or isolate JSON stdout.\n${recovery.stdout}\n${recovery.stderr}`,
+    );
+  }
+  assertNoTransactionArtifacts(recoveryTarget, "Recovered safe remove");
+}
+
 async function verifyAtomicTransactions(tempRoot) {
   const registryRoot = path.join(tempRoot, "transaction-registry");
   const baselineTarget = path.join(tempRoot, "transaction-baseline");
@@ -1755,6 +2005,7 @@ async function verify() {
   try {
     await verifySourceLifecycle(tempRoot);
     await verifyMultiItemAdd(tempRoot);
+    await verifySafeRemove(tempRoot);
     await verifyAtomicTransactions(tempRoot);
     await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
@@ -1868,6 +2119,7 @@ async function verify() {
     if (
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
+      !helpOutput.includes("nerio remove") ||
       !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
       !helpOutput.includes(publicCommands.cli.oneOffCommands[0])
@@ -1884,6 +2136,16 @@ async function verify() {
       !addHelpOutput.includes("--dry-run")
     ) {
       throw new Error("Add help output does not describe the source install options.");
+    }
+    const removeHelpOutput = await run(localTarget, "remove", "--help");
+    if (
+      !removeHelpOutput.includes("nerio remove <component...>") ||
+      !removeHelpOutput.includes("--dry-run") ||
+      !removeHelpOutput.includes("--json") ||
+      !removeHelpOutput.includes("--force") ||
+      !removeHelpOutput.includes("no longer referenced")
+    ) {
+      throw new Error("Remove help output does not describe the safe source-removal options.");
     }
     const initHelpOutput = await run(localTarget, "init", "--help");
     if (

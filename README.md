@@ -187,6 +187,7 @@ pnpm exec nerio add button --dry-run
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add --all --dry-run --json
 pnpm exec nerio add button
+pnpm exec nerio remove button --dry-run
 pnpm exec nerio diff button
 pnpm exec nerio update button --dry-run
 pnpm exec nerio doctor
@@ -211,7 +212,7 @@ the same deterministic plan without writes, and `--json` emits the bounded versi
 schema documented in `docs/cli-add-output.md`. A successful add stages the full operation, commits
 source, and writes `nerio.lock.json` last; any source or lock failure restores
 the previous source and lock state and removes temporary artifacts. A durable local journal lets the
-next state-sensitive command (`add`, `diff`, `update`, or `doctor`) recover an operation interrupted
+next state-sensitive command (`add`, `remove`, `diff`, `update`, or `doctor`) recover an operation interrupted
 by process exit or machine failure; a fully committed source-and-lock transaction is retained and
 only its orphaned journal is removed. State-sensitive Registry commands share one project-local
 process lock, so installs, updates, validation, and recovery cannot race source state against
@@ -220,6 +221,11 @@ reclaimed before journal recovery, and an expired heartbeat distinguishes a rest
 owner. The lock records
 exact Registry version, revision, file paths, dependency closure, original hashes, integrity
 metadata, and owners.
+`nerio remove` accepts one or more directly installed items, removes only their dependency closure
+that is no longer referenced by another direct item, and preserves shared files while narrowing
+their recorded owners. It blocks locally modified or ambiguous tracked source before any write;
+`--dry-run` and the versioned `--json` result expose the complete plan, while `--force` is the
+explicit opt-in for deleting every reported locally modified target.
 `nerio diff` separates local and upstream drift. `nerio update --dry-run` previews a deterministic
 update, while `nerio update` applies only safe upstream changes and never overwrites locally modified
 source silently. Run `nerio doctor` after configuring the consumer stylesheet to validate versions,

@@ -60,6 +60,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added transactional `nerio remove` for one or more direct source items. It prunes only their
+  unreferenced dependency closure, preserves shared files and owners, blocks modified or ambiguous
+  source before writes, and provides deterministic dry-run, bounded JSON, explicit-force, rollback,
+  and recovery behavior without changing the lock or transaction schemas.
 - Expanded `nerio add` with transactional multi-item roots and `--all`, one deterministic Registry
   and package dependency union, complete preflight conflict reporting, one coherent lock update,
   deterministic dry-run output, and a bounded versioned `--json` result without changing the lock,
