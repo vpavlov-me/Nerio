@@ -60,10 +60,51 @@ test("requires deterministic package output in the release gate", () => {
 
 test("requires the repository artifact guard in the development gate", () => {
   const sources = readCiWorkflowSources(root);
-  sources.prGate = sources.prGate.replace("      - run: pnpm validate:repo-artifacts\n", "");
+  sources.prGate = sources.prGate.replace("          pnpm validate:repo-artifacts\n", "");
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
       `${ciWorkflowPaths.prGate}: missing pnpm validate:repo-artifacts`,
+    ),
+  );
+});
+
+test("caps development dependency installation at three runner lanes", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate += "\n      - run: pnpm install --frozen-lockfile\n";
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: expected at most 3 frozen-lockfile installs, found 4`,
+    ),
+  );
+});
+
+test("requires draft deferral and CI-infrastructure self-validation", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate
+    .replace(
+      "types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]",
+      "types: [opened, synchronize, reopened, ready_for_review]",
+    )
+    .replaceAll("github.event.pull_request.draft == false", "false");
+  const failures = ciWorkflowContractFailures(sources);
+  assert.ok(
+    failures.includes(
+      `${ciWorkflowPaths.prGate}: missing types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]`,
+    ),
+  );
+  assert.ok(
+    failures.includes(
+      `${ciWorkflowPaths.prGate}: missing github.event.pull_request.draft == false`,
+    ),
+  );
+});
+
+test("keeps branch policy dependency-free", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.branchPolicy += "\n      - run: pnpm install --frozen-lockfile\n";
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.branchPolicy}: forbidden pnpm install --frozen-lockfile`,
     ),
   );
 });

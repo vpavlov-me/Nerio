@@ -5,7 +5,11 @@ on:
     branches:
       - main
       - dev
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -14,19 +18,14 @@ jobs:
   branch-policy:
     name: branch-policy
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-        with:
-          version: 11.7.0
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
       - name: Validate pull request direction
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -47,5 +46,4 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node scripts/check-dco.mjs --base "$BASE_SHA" --head "$HEAD_SHA"
-      - run: pnpm test:branch-policy
-      - run: node --test scripts/check-dco.test.mjs
+      - run: node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs
