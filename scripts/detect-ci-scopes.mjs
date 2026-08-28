@@ -70,10 +70,12 @@ function isPackageBoundary(path) {
     /^packages\/[^/]+\/package\.json$/,
     /^packages\/[^/]+\/tsconfig\.build\.json$/,
     /^packages\/ui\/src\/(?:(?:index|client)\.ts|styles\.css)$/,
-    /^packages\/(?:tokens|adapters|registry|cli|mcp)\/src\/index\.[cm]?[jt]s$/,
+    /^packages\/(?:tokens|adapters|registry|mcp)\/src\/index\.[cm]?[jt]s$/,
+    /^packages\/cli\/src\/.*\.js$/,
     "quality/package-budgets.json",
     "scripts/adapter-consumer-smoke.mjs",
     "scripts/build-package-output.mjs",
+    "scripts/build-cli-output.mjs",
     "scripts/pack-check.mjs",
     "scripts/release-smoke.mjs",
     "scripts/validate-motion-adapter.mjs",
@@ -158,6 +160,7 @@ export function detectCiScopes(inputPaths) {
     scopes.cli ||= matchesAny(path, [
       /^packages\/cli\//,
       /^packages\/registry\/src\//,
+      "scripts/build-cli-output.mjs",
       "scripts/release-smoke.mjs",
     ]);
     scopes.mcp ||= matchesAny(path, [

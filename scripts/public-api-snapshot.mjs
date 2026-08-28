@@ -398,11 +398,12 @@ function generatedLockContract() {
 
 function cliContracts() {
   const cliSource = join(root, "packages/cli/src");
+  const cliInternalSource = join(cliSource, "internal");
   const runtime = [
     join(cliSource, "index.js"),
-    ...readdirSync(join(cliSource, "internal"), { withFileTypes: true })
+    ...readdirSync(cliInternalSource, { withFileTypes: true })
       .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
-      .map((entry) => join(entry.parentPath, entry.name))
+      .map((entry) => join(cliInternalSource, entry.name))
       .sort(),
   ]
     .map((path) => readFileSync(path, "utf8"))
