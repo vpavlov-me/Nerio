@@ -89,8 +89,23 @@ function createDiscoveryCommand(services) {
     const terms = query.toLowerCase().split(/\s+/);
     const matches = manifest.items
       .filter((item) => {
-        const { files: _files, ...metadata } = item;
-        const text = JSON.stringify(Object.values(metadata)).toLowerCase();
+        const text = JSON.stringify([
+          item.name,
+          item.title,
+          item.description,
+          item.category,
+          item.dependencies,
+          item.optionalPeerDependencies,
+          item.registryDependencies,
+          item.baseUiPrimitives,
+          item.slots,
+          item.variants,
+          item.states,
+          item.requiredTokens,
+          item.accessibility,
+          item.usage,
+          item.docsPath,
+        ]).toLowerCase();
         return terms.every((term) => text.includes(term));
       })
       .sort((left, right) => left.name.localeCompare(right.name));

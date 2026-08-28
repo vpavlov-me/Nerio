@@ -2214,6 +2214,23 @@ async function verify() {
     if (fieldNameSearchResult.total !== 0) {
       throw new Error("Search matched Registry schema field names instead of metadata values.");
     }
+    const extensionManifest = path.join(tempRoot, "extension-metadata-manifest.json");
+    const extensionRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    extensionRegistry.items[0].internalNotes = "private-extension-keyword";
+    fs.writeFileSync(extensionManifest, `${JSON.stringify(extensionRegistry, null, 2)}\n`);
+    const extensionSearchResult = JSON.parse(
+      await run(
+        localTarget,
+        "search",
+        "private-extension-keyword",
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (extensionSearchResult.total !== 0) {
+      throw new Error("Search matched an undocumented Registry extension field.");
+    }
     const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
     if (
       viewResult.schemaVersion !== "1.0.0" ||
