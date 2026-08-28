@@ -34,6 +34,9 @@ importers:
       prettier:
         specifier: ^3.9.6
         version: 3.9.6
+      terser:
+        specifier: 5.50.0
+        version: 5.50.0
       turbo:
         specifier: ^2.10.7
         version: 2.10.7

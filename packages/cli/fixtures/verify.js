@@ -2119,6 +2119,9 @@ async function verify() {
     if (
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
+      !helpOutput.includes("nerio search") ||
+      !helpOutput.includes("nerio view") ||
+      !helpOutput.includes("nerio docs") ||
       !helpOutput.includes("nerio remove") ||
       !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
@@ -2183,6 +2186,64 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const inspectionSnapshot = managedSnapshot(localTarget);
+    const searchResult = JSON.parse(
+      await run(localTarget, "search", "keyboard", "navigation", "--limit", "3", "--json"),
+    );
+    if (
+      searchResult.schemaVersion !== "1.0.0" ||
+      searchResult.command !== "search" ||
+      searchResult.limit !== 3 ||
+      searchResult.count > 3 ||
+      searchResult.total < searchResult.count ||
+      !searchResult.items.every(
+        (item) => item.name && item.title && item.description && item.category,
+      )
+    ) {
+      throw new Error("Search JSON did not expose the bounded Registry inspection contract.");
+    }
+    const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
+    if (
+      viewResult.schemaVersion !== "1.0.0" ||
+      viewResult.command !== "view" ||
+      viewResult.item.name !== "button" ||
+      !viewResult.item.files.some(
+        (file) =>
+          file.source &&
+          file.target === "components/button.tsx" &&
+          file.role === "component" &&
+          /^sha256-[a-f0-9]{64}$/.test(file.integrity),
+      ) ||
+      !viewResult.item.registryDependencies.includes("spinner")
+    ) {
+      throw new Error("View JSON did not expose source, integrity, and dependency metadata.");
+    }
+    const docsResult = JSON.parse(await run(localTarget, "docs", "button", "--json"));
+    if (
+      docsResult.schemaVersion !== "1.0.0" ||
+      docsResult.command !== "docs" ||
+      docsResult.item.name !== "button" ||
+      !docsResult.item.usage.includes("<Button") ||
+      !docsResult.item.accessibility.length
+    ) {
+      throw new Error("Docs JSON did not expose Registry usage and accessibility guidance.");
+    }
+    const invalidLimit = await runFailure(localTarget, "search", "button", "--limit", "51");
+    if (!invalidLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject an out-of-range result limit.");
+    }
+    const missingLimit = await runFailure(localTarget, "search", "button", "--limit");
+    if (!missingLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject a missing result limit.");
+    }
+    const unknownView = await runFailure(localTarget, "view", "not-a-component", "--json");
+    if (!unknownView.includes("Unknown registry item")) {
+      throw new Error("View did not report an unknown Registry item.");
+    }
+    if (JSON.stringify(managedSnapshot(localTarget)) !== JSON.stringify(inspectionSnapshot)) {
+      throw new Error("Read-only Registry inspection changed consumer source or lock state.");
+    }
+    assertNoTransactionArtifacts(localTarget, "Read-only Registry inspection");
     const fileInputInfoOutput = await run(localTarget, "info", "file-input");
     if (
       !fileInputInfoOutput.includes("FileInput (file-input)") ||

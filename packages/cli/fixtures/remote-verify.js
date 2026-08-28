@@ -242,6 +242,53 @@ async function verify() {
       }
     }
 
+    const remoteSearch = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "search",
+        "remote",
+        "--limit",
+        "1",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    const remoteView = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "view",
+        "button",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    const remoteDocs = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "docs",
+        "button",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    if (
+      remoteSearch.count !== 1 ||
+      remoteView.item.files[0].integrity !== sourceIntegrity ||
+      !remoteDocs.item.usage.includes("remoteButton")
+    ) {
+      throw new Error("Remote read-only inspection did not preserve validated Registry metadata.");
+    }
+    assertUntouched(policyTarget, "Remote read-only inspection");
+
     for (const [route, message] of [
       ["/mismatch/manifest.json", "integrity mismatch"],
       ["/escape/manifest.json", "unsafe target"],

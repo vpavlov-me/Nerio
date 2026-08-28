@@ -60,6 +60,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added bounded read-only `nerio search`, `nerio view`, and `nerio docs` inspection over immutable
+  Registry metadata, including stable JSON, source path and integrity details, dependency metadata,
+  usage, accessibility guidance, and remote-policy preservation without installing source.
 - Added transactional `nerio remove` for one or more direct source items. It prunes only their
   unreferenced dependency closure, preserves shared files and owners, blocks modified or ambiguous
   source before writes, and provides deterministic dry-run, bounded JSON, explicit-force, rollback,

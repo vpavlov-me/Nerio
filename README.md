@@ -183,6 +183,9 @@ pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
+pnpm exec nerio search keyboard --limit 5
+pnpm exec nerio view button --json
+pnpm exec nerio docs button
 pnpm exec nerio add button --dry-run
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add --all --dry-run --json
@@ -203,7 +206,10 @@ version; local-path and HTTPS overrides remain available. Plain HTTP is rejected
 local Registry is selected with the explicit `--allow-insecure-http` flag. Remote manifests and
 source are bounded by a 10-second request/body timeout, a 2 MiB manifest limit, a 4 MiB per-source
 limit, at most three redirects, content-type handling, schema/path validation, and SHA-256
-integrity checks.
+integrity checks. Read-only `search`, `view`, and `docs` inspect that validated manifest without
+installing or fetching source. Search returns at most 20 matches by default and accepts an explicit
+`--limit` from 1 to 50; all three commands support the stable inspection JSON schema documented in
+`docs/cli-registry-inspection.md`.
 
 `nerio add` accepts one or more explicit Registry items, while `nerio add --all` selects every item.
 It resolves one sorted dependency and package-dependency union, fetches and preflights every target
@@ -216,7 +222,8 @@ next state-sensitive command (`add`, `remove`, `diff`, `update`, or `doctor`) re
 by process exit or machine failure; a fully committed source-and-lock transaction is retained and
 only its orphaned journal is removed. State-sensitive Registry commands share one project-local
 process lock, so installs, updates, validation, and recovery cannot race source state against
-`nerio.lock.json`; `list` and `info` remain read-only inspection commands. A dead owner's lock is
+`nerio.lock.json`; `list`, `info`, `search`, `view`, and `docs` remain read-only inspection
+commands. A dead owner's lock is
 reclaimed before journal recovery, and an expired heartbeat distinguishes a restarted or PID-reused
 owner. The lock records
 exact Registry version, revision, file paths, dependency closure, original hashes, integrity

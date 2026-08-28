@@ -36,9 +36,11 @@ export default function Page() {
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and source dependencies. Use{" "}
-          <code>list</code> to discover components, <code>info</code> to inspect metadata, and{" "}
-          <code>add --dry-run</code> to review the initial install plan. Use <code>diff</code> and{" "}
-          <code>update --dry-run</code> before applying an upstream source update, or{" "}
+          <code>search</code> to discover capabilities, <code>view</code> to inspect source and
+          integrity metadata, <code>docs</code> to read usage and accessibility guidance, and{" "}
+          <code>add --dry-run</code> to review the initial install plan. The compatible{" "}
+          <code>list</code> and <code>info</code> commands remain available. Use <code>diff</code>{" "}
+          and <code>update --dry-run</code> before applying an upstream source update, or{" "}
           <code>remove --dry-run</code> before pruning directly installed source.
         </p>
         <p>
@@ -46,6 +48,11 @@ export default function Page() {
           select every Registry item. Both paths preflight the complete set and commit one source
           and lock transaction. Add <code>--json</code> for the stable structured result and combine
           it with <code>--dry-run</code> for automation-safe planning.
+        </p>
+        <p>
+          Read-only discovery uses the same validated immutable manifest without fetching source.
+          Search returns at most 20 name-sorted matches by default and accepts a limit from 1 to 50.
+          Search, view, and docs support a bounded JSON schema for automation.
         </p>
         <p>
           For a one-off initialization or component install, invoke the real package name. Keep the
@@ -133,8 +140,9 @@ export default function Page() {
             <code>update</code>, or <code>doctor</code>); already-committed source and lock state is
             retained. A project-local process lock serializes installs, updates, validation, and
             recovery so parallel commands cannot lose source ownership or lock metadata;{" "}
-            <code>list</code> and <code>info</code> remain read-only inspection commands. An owner
-            heartbeat also makes locks reclaimable after process death, restart, or PID reuse.
+            <code>list</code>, <code>info</code>, <code>search</code>, <code>view</code>, and{" "}
+            <code>docs</code> remain read-only inspection commands. An owner heartbeat also makes
+            locks reclaimable after process death, restart, or PID reuse.
           </li>
         </ul>
         <p>
@@ -198,6 +206,18 @@ export default function Page() {
           <li>
             <code>info &lt;component&gt;</code> prints dependencies, registry dependencies, files,
             tokens, and usage.
+          </li>
+          <li>
+            <code>search &lt;query&gt;</code> matches documented metadata with a bounded name-sorted
+            result set.
+          </li>
+          <li>
+            <code>view &lt;component&gt;</code> prints source paths, targets, roles, integrity,
+            dependencies, and component metadata without fetching source content.
+          </li>
+          <li>
+            <code>docs &lt;component&gt;</code> prints Registry usage, accessibility guidance, and
+            the optional canonical documentation path.
           </li>
           <li>Registry dependencies are traversed before the requested component is installed.</li>
           <li>

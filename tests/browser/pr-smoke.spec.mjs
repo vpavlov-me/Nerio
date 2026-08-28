@@ -731,6 +731,7 @@ test("keeps DropdownMenu compound selection, navigation, and submenu behavior co
 
   const subTrigger = menu.getByRole("menuitem", { name: "Theme" });
   await subTrigger.focus();
+  await expect(subTrigger).toBeFocused();
   await page.keyboard.press("ArrowRight");
   const light = page.getByRole("menuitemradio", { name: "Light" });
   await expect(light).toBeVisible();
@@ -738,7 +739,8 @@ test("keeps DropdownMenu compound selection, navigation, and submenu behavior co
   await page.keyboard.press("Enter");
   await expect(light).toBeChecked();
   await expect(menu).toBeVisible();
-  await page.keyboard.press("Escape");
+  await expect(light).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
   await expect(subTrigger).toBeFocused();
   await expect(menu.getByRole("menuitem", { name: "Remove workspace" })).toBeVisible();
 

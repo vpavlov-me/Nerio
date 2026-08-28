@@ -18,6 +18,9 @@ pnpm add -D @nerio-ui/cli @nerio-ui/registry
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
+pnpm exec nerio search keyboard --limit 5
+pnpm exec nerio view button --json
+pnpm exec nerio docs button
 pnpm exec nerio add button --dry-run
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add --all --dry-run --json
@@ -35,6 +38,9 @@ Remove accepts direct items only and deletes just their unreferenced dependency 
 files remain installed with updated owners. Locally modified or ambiguous tracked source blocks the
 whole operation unless `--force` explicitly authorizes each reported modified-file deletion.
 `remove --json` uses its own bounded `1.0.0` result schema.
+
+Search, view, and docs inspect validated immutable metadata without installing or fetching source.
+Search is capped at 20 results by default or 50 explicitly; `--json` uses inspection schema `1.0.0`.
 
 For a one-off command, use `pnpm dlx @nerio-ui/cli init`. A project-local installation is preferred
 for repeatable, version-aligned updates.

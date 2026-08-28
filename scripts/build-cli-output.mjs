@@ -1,7 +1,8 @@
-import { chmodSync, mkdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { chmodSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
+import { minify } from "terser";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outputDirectory = resolve(root, "packages/cli/dist");
@@ -22,6 +23,14 @@ await build({
   sourcemap: false,
   target: "node22",
 });
+
+const compressed = await minify(readFileSync(outputFile, "utf8"), {
+  compress: true,
+  ecma: 2022,
+  mangle: true,
+});
+if (!compressed.code) throw new Error("CLI output compression did not produce code.");
+writeFileSync(outputFile, compressed.code);
 
 chmodSync(outputFile, 0o755);
 const output = readFileSync(outputFile, "utf8");
