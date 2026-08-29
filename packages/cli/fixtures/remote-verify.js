@@ -261,6 +261,18 @@ async function verify() {
         "--allow-insecure-http",
       ),
     );
+    const remoteNullSearch = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "search",
+        "null",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
     const remoteView = JSON.parse(
       await execute(
         policyTarget,
@@ -287,6 +299,7 @@ async function verify() {
     );
     if (
       remoteSearch.count !== 1 ||
+      remoteNullSearch.total !== 0 ||
       remoteView.item.files[0].integrity !== sourceIntegrity ||
       !remoteDocs.item.usage.includes("remoteButton")
     ) {
