@@ -1,4 +1,21 @@
 const INSPECTION_OUTPUT_SCHEMA_VERSION = "1.0.0";
+const INSPECTION_ITEM_FIELDS = [
+  "name",
+  "title",
+  "description",
+  "category",
+  "docsPath",
+  "dependencies",
+  "optionalPeerDependencies",
+  "registryDependencies",
+  "baseUiPrimitives",
+  "slots",
+  "variants",
+  "states",
+  "requiredTokens",
+  "accessibility",
+  "usage",
+];
 
 function createDiscoveryCommand(services) {
   const {
@@ -46,6 +63,18 @@ function createDiscoveryCommand(services) {
     );
   }
 
+  function viewItem(item) {
+    return {
+      ...Object.fromEntries(INSPECTION_ITEM_FIELDS.map((field) => [field, item[field]])),
+      files: item.files.map(({ source, target, role, integrity }) => ({
+        source,
+        target,
+        role,
+        integrity,
+      })),
+    };
+  }
+
   async function list() {
     for (const item of (await load()).items) {
       console.log(`${item.name}\t${item.title}\t${item.category}`);
@@ -89,23 +118,7 @@ function createDiscoveryCommand(services) {
     const terms = query.toLowerCase().split(/\s+/);
     const matches = manifest.items
       .filter((item) => {
-        const text = [
-          item.name,
-          item.title,
-          item.description,
-          item.category,
-          item.dependencies,
-          item.optionalPeerDependencies,
-          item.registryDependencies,
-          item.baseUiPrimitives,
-          item.slots,
-          item.variants,
-          item.states,
-          item.requiredTokens,
-          item.accessibility,
-          item.usage,
-          item.docsPath,
-        ]
+        const text = INSPECTION_ITEM_FIELDS.map((field) => item[field])
           .flat()
           .join("\n")
           .toLowerCase();
@@ -147,7 +160,7 @@ function createDiscoveryCommand(services) {
 
   async function view() {
     const { manifest, item } = await one("view");
-    if (hasFlag("--json")) return json("view", manifest, item);
+    if (hasFlag("--json")) return json("view", manifest, viewItem(item));
     console.log(`${item.title} (${item.name})`);
     for (const [label, value] of [
       ["Description", item.description],

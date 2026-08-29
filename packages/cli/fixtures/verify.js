@@ -2217,6 +2217,8 @@ async function verify() {
     const extensionManifest = path.join(tempRoot, "extension-metadata-manifest.json");
     const extensionRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
     extensionRegistry.items[0].internalNotes = "private-extension-keyword";
+    extensionRegistry.items[0].sourceContent = "private source content";
+    extensionRegistry.items[0].files[0].privateFileNote = "private file metadata";
     fs.writeFileSync(extensionManifest, `${JSON.stringify(extensionRegistry, null, 2)}\n`);
     const extensionSearchResult = JSON.parse(
       await run(
@@ -2230,6 +2232,23 @@ async function verify() {
     );
     if (extensionSearchResult.total !== 0) {
       throw new Error("Search matched an undocumented Registry extension field.");
+    }
+    const extensionViewResult = JSON.parse(
+      await run(
+        localTarget,
+        "view",
+        extensionRegistry.items[0].name,
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (
+      "internalNotes" in extensionViewResult.item ||
+      "sourceContent" in extensionViewResult.item ||
+      extensionViewResult.item.files.some((file) => "privateFileNote" in file)
+    ) {
+      throw new Error("View JSON exposed an undocumented Registry extension field.");
     }
     const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
     if (

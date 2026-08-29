@@ -31,7 +31,9 @@ as absent rather than inferred from the item name.
 
 - Search returns `command`, `query`, `limit`, `total`, `count`, and `items`. Each result contains
   `name`, `title`, `description`, `category`, and a nullable `docsPath`.
-- View returns `command`, portable Registry release metadata, and the validated Registry `item`.
+- View returns `command`, portable Registry release metadata, and an explicit projection of the
+  documented Registry item fields. Each file is limited to `source`, `target`, `role`, and
+  `integrity`; additive Registry extensions are not emitted.
 - Docs returns `command`, portable Registry release metadata, and an `item` containing `name`,
   `title`, `description`, nullable `docsPath`, `usage`, and `accessibility`.
 
