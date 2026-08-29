@@ -20,7 +20,7 @@ Nerio is an open-source React design system built for teams that need a reliable
 | [`@nerio-ui/tokens`](./packages/tokens)     | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Ftokens?label=version)](https://www.npmjs.com/package/@nerio-ui/tokens)     | Tokens, themes, modes, and density      |
 | [`@nerio-ui/adapters`](./packages/adapters) | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Fadapters?label=version)](https://www.npmjs.com/package/@nerio-ui/adapters) | Icons and optional integration adapters |
 | [`@nerio-ui/registry`](./packages/registry) | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Fregistry?label=version)](https://www.npmjs.com/package/@nerio-ui/registry) | Source registry manifest and metadata   |
-| [`@nerio-ui/cli`](./packages/cli)           | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Fcli?label=version)](https://www.npmjs.com/package/@nerio-ui/cli)           | Source installation and update CLI      |
+| [`@nerio-ui/cli`](./packages/cli)           | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Fcli?label=version)](https://www.npmjs.com/package/@nerio-ui/cli)           | Project bootstrap and source lifecycle  |
 | [`@nerio-ui/mcp`](./packages/mcp)           | [![npm](https://img.shields.io/npm/v/%40nerio-ui%2Fmcp?label=version)](https://www.npmjs.com/package/@nerio-ui/mcp)           | Read-only AI component discovery server |
 
 ## Product model
@@ -174,6 +174,19 @@ import "@nerio-ui/ui/styles.css";
 ```
 
 ## Registry CLI
+
+Create a minimal package-mode project from one of the maintained, clean-tested profiles:
+
+```bash
+pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-next-app --framework next
+pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-vite-app --framework vite
+```
+
+The current profile pins the tested React, framework, TypeScript, and Tailwind versions; writes one
+deterministic project directory atomically; and configures the public token, residual-style, and
+compiled-source scanning contracts. It supports package mode only. Use `nerio init` and `nerio add`
+inside an existing application when editable source ownership is required. React Router, backend,
+authentication, database, deployment, and product scaffolding are not generated.
 
 Install the version-aligned Registry and CLI in the consuming project. The `nerio` CLI then installs
 editable source files through the project-local bin:

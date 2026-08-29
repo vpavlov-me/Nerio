@@ -1,9 +1,9 @@
 # CLI internal architecture
 
-Issue [#352](https://github.com/vpavlov-me/Nerio/issues/352) modularizes the CLI before adding new
-lifecycle or bootstrap commands. The published `nerio` bin remains the only public package
-entrypoint. Files under `packages/cli/src/internal/` are private implementation details and do not
-create supported package subpaths.
+Issue [#352](https://github.com/vpavlov-me/Nerio/issues/352) first modularized the CLI and then added
+reviewed lifecycle and bootstrap commands in focused slices. The published `nerio` bin remains the
+only public package entrypoint. Files under `packages/cli/src/internal/` are private implementation
+details and do not create supported package subpaths.
 
 ## Responsibility boundaries
 
@@ -11,6 +11,7 @@ create supported package subpaths.
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `index.js`                 | Compose the runtime and report the final process error.                                               |
 | `internal/command-line.js` | Parse current arguments and render existing help text.                                                |
+| `internal/create.js`       | Validate and atomically write maintained deterministic package-mode project profiles.                 |
 | `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
 | `internal/remove.js`       | Plan direct-root removal, shared ownership retention, conflicts, and human or JSON results.           |
 | `internal/discovery.js`    | Run bounded read-only Registry list, info, search, view, and docs inspection.                         |
@@ -75,6 +76,20 @@ The Phase 2.4 versioned-migration slice was measured against the merged inspecti
 
 The 20,000-byte tarball and 82,000-byte unpacked package budgets remain unchanged.
 
+The Phase 3 project-bootstrap slice was measured against the merged versioned-migration baseline:
+
+- deterministic generated bin: 56,716 to 65,326 bytes (`+8,610`, or `+15.2%`);
+- package tarball: 20,243 to 23,322 bytes (`+3,079`, or `+15.2%`);
+- unpacked package: 61,116 to 70,295 bytes (`+9,179`, or `+15.0%`);
+- direct `nerio --help`: 0.05 seconds on both baselines;
+- complete built CLI fixtures plus generated Next.js/Vite packed-artifact builds and served-preview
+  smokes: 112.22 seconds.
+
+The unpacked budget remains 82,000 bytes. The tarball budget rises from 20,500 to 23,500 bytes in
+this focused feature slice: the measured 3,079-byte increase buys two maintained deterministic
+project profiles, atomic target creation, bounded JSON output, and clean package/build/browser
+evidence. The 178-byte remaining headroom keeps future additions review-gated.
+
 ## Multi-item add lifecycle
 
 The first Phase 2 slice accepts multiple explicit roots or `--all`. It sorts and deduplicates direct
@@ -125,6 +140,21 @@ Structured output uses migration-result schema `1.0.0`, documented in
 `docs/cli-migrate-output.md`. Migration planning does not resolve, fetch, or execute Registry
 metadata, and unsupported targets or version routes fail before writes.
 
+## Supported project bootstrap
+
+Phase 3 adds `nerio create <directory> --framework <next|vite>` through the private create module.
+The only admitted profile is `current`, whose exact React, framework, TypeScript, Tailwind, and
+Nerio versions are synchronized with release and dependency-support metadata. Both templates use
+package mode because it has clean packed-consumer evidence; editable source remains the existing
+`init` and `add` lifecycle instead of a second generator implementation.
+
+Creation accepts a new relative path within the current directory, rejects existing targets and
+symlinked parents, stages every deterministic file adjacent to the target, and renames the complete
+directory into place. It never runs a package manager, generated script, Git command, or Registry
+code. JSON output uses create-result schema `1.0.0`, documented in
+`docs/cli-create-output.md`. React Router stays deferred until a maintained clean-consumer fixture
+proves its exact setup.
+
 ## Explicit non-goals
 
 - No configuration shape, lock schema, or exit-code semantics change beyond the explicit schema
@@ -132,6 +162,7 @@ metadata, and unsupported targets or version routes fail before writes.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
 - No change to existing Registry source transaction, rollback, crash recovery, concurrency, or
   source-ownership behavior.
-- No additional configuration or lock migration route, project bootstrap, or arbitrary script
-  execution.
+- No additional configuration or lock migration route or arbitrary script execution.
+- No source-mode bootstrap, React Router profile, package-manager execution, backend, auth,
+  database, deployment, or product scaffolding. Source ownership remains the existing lifecycle.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

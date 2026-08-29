@@ -45,7 +45,7 @@
     "test:consumer:vite": "node scripts/vite-consumer-smoke.mjs",
     "test:consumer-matrix": "pnpm test:consumer:minimum && pnpm test:consumer:current && pnpm test:consumer:vite",
     "validate:release": "pnpm test:catalog && pnpm test:api && pnpm validate:api && pnpm test:tokens && pnpm test:onboarding && pnpm validate:release:metadata && pnpm validate:package-output && pnpm test:consumer-matrix",
-    "test:cli": "pnpm --filter @nerio-ui/registry build && pnpm --filter @nerio-ui/cli test:fixture",
+    "test:cli": "pnpm --filter @nerio-ui/registry build && pnpm --filter @nerio-ui/cli test:fixture && node scripts/cli-create-smoke.mjs",
     "test:mcp": "pnpm --filter @nerio-ui/registry build && pnpm --filter @nerio-ui/mcp test:fixture",
     "test:adapters": "node scripts/adapter-consumer-smoke.mjs && pnpm test:motion-adapter",
     "test:motion-adapter": "pnpm --filter @nerio-ui/adapters test:motion && node scripts/validate-motion-adapter.mjs",

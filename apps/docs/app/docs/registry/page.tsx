@@ -1,13 +1,18 @@
 import { registry, registryMetadata } from "@nerio-ui/registry";
 import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
-import { localCliInstall, localCliWorkflow, oneOffCliWorkflow } from "../../../lib/public-commands";
+import {
+  bootstrapCommands,
+  localCliInstall,
+  localCliWorkflow,
+  oneOffCliWorkflow,
+} from "../../../lib/public-commands";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
   title: "Registry and CLI",
   description:
-    "Configure the Nerio registry and CLI to discover, validate, and install editable component source into an application.",
+    "Use the Nerio CLI to create maintained package projects or discover, validate, and install editable component source.",
   path: "/docs/registry",
 });
 
@@ -31,6 +36,15 @@ export default function Page() {
 
       <section className="doc-section">
         <h2>Quick start</h2>
+        <CodeExample code={bootstrapCommands} label="Create a package-mode project" />
+        <p>
+          <code>create</code> bootstraps one new package-mode project with the maintained current
+          Next.js or Vite profile. It pins the tested stack, writes deterministic files atomically,
+          and configures Tailwind, tokens, residual styles, compiled source scanning, and the
+          server/client entrypoint boundary. It does not guess unsupported frameworks or generate
+          backend, authentication, database, deployment, or product code. Source mode remains the
+          existing <code>init</code> and <code>add</code> lifecycle inside an application.
+        </p>
         <CodeExample code={localCliInstall} label="Install the local CLI" />
         <CodeExample code={localCliWorkflow} label="CLI quick start" />
         <p>

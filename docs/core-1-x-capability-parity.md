@@ -160,7 +160,7 @@ Pro and consumer applications compose them.
 | Capability                                                                                                                  | Accepted disposition                                                                                                                  | Issue                                                  |
 | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | <!-- capability:package-output classification:existing-core priority:P2 target:Core 1.2 --> Package output                  | ADR 0007 is implemented with deterministic unbundled compiled output, declarations, consumer evidence, and a self-contained Registry. | [#351](https://github.com/vpavlov-me/Nerio/issues/351) |
-| <!-- capability:cli-lifecycle classification:later-core-candidate priority:P2 target:Core 1.2 --> CLI lifecycle             | Modularization, source lifecycle, and project bootstrap can proceed independently now that #351 is complete.                          | [#352](https://github.com/vpavlov-me/Nerio/issues/352) |
+| <!-- capability:cli-lifecycle classification:existing-core priority:P2 target:Core 1.2 --> CLI lifecycle                    | Modular transactional lifecycle plus deterministic package-mode Next.js/Vite bootstrap are implemented with clean artifact evidence.  | [#352](https://github.com/vpavlov-me/Nerio/issues/352) |
 | <!-- capability:registry-namespaces classification:later-core-candidate priority:P2 target:Core 1.2 --> Registry namespaces | Reuse the existing integrity/transport/transaction engine after CLI modularization.                                                   | [#353](https://github.com/vpavlov-me/Nerio/issues/353) |
 | <!-- capability:mcp-discovery classification:later-core-candidate priority:P2 target:Core 1.2 --> MCP discovery             | Keep #354 focused on bounded read-only discovery and planning from canonical data.                                                    | [#354](https://github.com/vpavlov-me/Nerio/issues/354) |
 | <!-- capability:agent-skill classification:core-recipe priority:P2 target:Core 1.2 --> Agent Skill                          | Use #369 as the separate canonical progressive-disclosure skill issue.                                                                | [#369](https://github.com/vpavlov-me/Nerio/issues/369) |
@@ -186,7 +186,7 @@ oversized issue or duplicate their instructions.
 | [#349](https://github.com/vpavlov-me/Nerio/issues/349) | Accept bounded implementation    | P2 / Core 1.2     | Separate options-only MultiSelect after accepted ADR 0006; no async, creation, virtualization, quotas, or FilterBar. |
 | [#350](https://github.com/vpavlov-me/Nerio/issues/350) | Retain                           | P1 / Core 1.1     | Complete shared menu anatomy; no ContextMenu/Menubar/NavigationMenu.                                                 |
 | [#351](https://github.com/vpavlov-me/Nerio/issues/351) | Implemented ADR 0007             | P2 / Core 1.2     | Deterministic unbundled compiled runtime plus declarations and a self-contained integrity-verified source Registry.  |
-| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Retain with slices               | P2 / Core 1.2     | Modularization, lifecycle, and bootstrap may proceed independently after #351.                                       |
+| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Implemented                      | P2 / Core 1.2     | Modular lifecycle, add/remove/inspection/migration, and bounded Next.js/Vite package bootstrap are complete.         |
 | [#353](https://github.com/vpavlov-me/Nerio/issues/353) | Retain                           | P2 / Core 1.2     | Waits for CLI modularization, not full #352.                                                                         |
 | [#354](https://github.com/vpavlov-me/Nerio/issues/354) | Split                            | P2 / Core 1.2     | MCP only; Agent Skill moves to #369.                                                                                 |
 | [#355](https://github.com/vpavlov-me/Nerio/issues/355) | Retain, decision-first           | P3 / Core 1.2     | Existing fixtures remain default pending measured prototype.                                                         |
@@ -209,11 +209,11 @@ oversized issue or duplicate their instructions.
    - #369 Agent Skill.
 5. Run independent Core 1.2 platform tracks:
    - #351 package output is complete;
-   - #352 CLI modularization;
+   - #352 CLI lifecycle and package-mode bootstrap are complete;
    - #354 MCP discovery;
    - #355 Lab decision/prototype.
-6. Start #353 after only the CLI modularization slice. CLI bootstrap may now proceed because #351
-   is complete. Start #349 after #345 and #348 provide real evidence.
+6. Start #353 from the completed CLI modularization and Registry engine. Start #349 after #345 and
+   #348 provide real evidence.
 7. Start #357's component-library tranche after the first accepted Core 1.1 subset and the required
    human visual authority are available.
 

@@ -67,6 +67,10 @@ const expectedLocalCommands = [
   "pnpm exec nerio update button --dry-run",
   "pnpm exec nerio doctor",
 ];
+const expectedBootstrapCommands = [
+  `pnpm dlx @nerio-ui/cli@${registryVersion} create my-next-app --framework next`,
+  `pnpm dlx @nerio-ui/cli@${registryVersion} create my-vite-app --framework vite`,
+];
 if (
   JSON.stringify(commands.packageInstall) !==
     JSON.stringify([
@@ -75,6 +79,7 @@ if (
     ]) ||
   commands.cli.localInstall !==
     `pnpm add -D @nerio-ui/registry@${registryVersion} @nerio-ui/cli@${registryVersion}` ||
+  JSON.stringify(commands.cli.bootstrapCommands) !== JSON.stringify(expectedBootstrapCommands) ||
   JSON.stringify(commands.cli.localCommands) !== JSON.stringify(expectedLocalCommands) ||
   JSON.stringify(commands.cli.oneOffCommands) !==
     JSON.stringify([
@@ -93,6 +98,7 @@ if (
 }
 
 for (const command of [
+  ...commands.cli.bootstrapCommands,
   commands.cli.localInstall,
   ...commands.cli.localCommands,
   ...commands.cli.oneOffCommands,
@@ -116,6 +122,7 @@ for (const command of [
   requireText(sources["RELEASE.md"], command, "RELEASE.md", failures);
 }
 for (const command of [
+  ...commands.cli.bootstrapCommands,
   commands.cli.localInstall,
   ...commands.cli.localCommands,
   ...commands.cli.oneOffCommands,
@@ -168,7 +175,7 @@ const forbiddenPatterns = [
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
   [
-    /^\s*nerio (?:init|list|info|search|view|docs|migrate|add|remove|diff|update|doctor)\b/gm,
+    /^\s*nerio (?:create|init|list|info|search|view|docs|migrate|add|remove|diff|update|doctor)\b/gm,
     "bare public CLI command",
   ],
   [/@nerio\//g, "obsolete package scope"],

@@ -415,6 +415,7 @@ function cliContracts() {
       .trim() ?? null;
   return {
     addOutputSchema: constant("ADD_OUTPUT_SCHEMA_VERSION"),
+    createOutputSchema: constant("CREATE_OUTPUT_SCHEMA_VERSION"),
     inspectionOutputSchema: constant("INSPECTION_OUTPUT_SCHEMA_VERSION"),
     migrationOutputSchema: constant("MIGRATION_OUTPUT_SCHEMA_VERSION"),
     removeOutputSchema: constant("REMOVE_OUTPUT_SCHEMA_VERSION"),
@@ -423,6 +424,7 @@ function cliContracts() {
     help: Object.fromEntries(
       [
         "root",
+        "create",
         "init",
         "add",
         "remove",

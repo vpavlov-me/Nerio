@@ -1,6 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { createAddCommand } = require("./add");
+const { createCreateCommand } = require("./create");
 const { createDiscoveryCommand } = require("./discovery");
 const { createMigrationCommand } = require("./migrate");
 const { createRemoveCommand } = require("./remove");
@@ -8,6 +9,7 @@ const { createRemoveCommand } = require("./remove");
 const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
 
 function createCommands(services) {
+  const { create } = createCreateCommand(services);
   const { add } = createAddCommand(services);
   const { docs, info, list, search, view } = createDiscoveryCommand(services);
   const { migrate } = createMigrationCommand(services);
@@ -383,7 +385,8 @@ function createCommands(services) {
         recoverInterruptedTransactions(hasFlag("--json") ? console.error : console.log);
       }
 
-      if (command === "init") await init();
+      if (command === "create") await create();
+      else if (command === "init") await init();
       else if (command === "add") await add();
       else if (command === "remove") await remove();
       else if (command === "migrate") await migrate();

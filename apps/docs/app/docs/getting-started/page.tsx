@@ -1,6 +1,7 @@
 import { CodeExample } from "../../../components/code-example";
 import { FoundationDirectory } from "../../../components/foundation-directory";
 import {
+  bootstrapCommands,
   localCliInstall,
   localCliWorkflow,
   oneOffCliWorkflow,
@@ -11,7 +12,7 @@ import { createPageMetadata } from "../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Getting started",
   description:
-    "Install Nerio packages or editable source components, then use the registry CLI to build accessible product interfaces.",
+    "Create a maintained project or install Nerio packages and editable source components for accessible product interfaces.",
   path: "/docs/getting-started",
 });
 
@@ -43,6 +44,15 @@ export default function Page() {
         <p>
           Nerio Core <code>1.0.0-beta.1</code> is the current public beta. Unqualified installs and
           the <code>beta</code> dist-tag both resolve to this coordinated version.
+        </p>
+        <CodeExample code={bootstrapCommands} label="Create a package-mode project" />
+        <p>
+          <code>nerio create</code> writes one new project directory from the maintained current
+          Next.js or Vite profile. The generated package versions, Tailwind bridge, compiled source
+          scan, and server/client entrypoints match the clean consumer matrix. Existing directories,
+          unsupported frameworks, and unsupported profiles fail before project files are written.
+          Use the editable source lifecycle below when you already have an application or need
+          source ownership.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
