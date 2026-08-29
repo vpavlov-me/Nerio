@@ -371,6 +371,7 @@ function createCreateCommand(services) {
         throw new Error("Injected project creation failure: before-commit");
       }
       if (pathEntryExists(target)) throw new Error(`Create target already exists: ${directory}`);
+      fs.chmodSync(staging, 0o777 & ~process.umask());
       fs.renameSync(staging, target);
     } finally {
       fs.rmSync(staging, { recursive: true, force: true });

@@ -2324,6 +2324,8 @@ async function verify() {
     const nextStyles = fs.readFileSync(path.join(createdNext, "app/globals.css"), "utf8");
     if (
       nextPackage.name !== "created-next" ||
+      (process.platform !== "win32" &&
+        (fs.statSync(createdNext).mode & 0o777) !== (0o777 & ~process.umask())) ||
       nextPackage.engines.node !== ">=22" ||
       nextPackage.dependencies.next !== "16.2.12" ||
       !nextPage.includes('from "@nerio-ui/ui"') ||
