@@ -7,6 +7,7 @@ function createCommandLine(cwd, args) {
   const flagOptions = new Set([
     "--all",
     "--allow-insecure-http",
+    "--apply",
     "--dry-run",
     "--force",
     "--help",
@@ -33,6 +34,7 @@ function createCommandLine(cwd, args) {
       : undefined;
   const addItemNames = command === "add" ? positionalArguments : [];
   const removeItemNames = command === "remove" ? positionalArguments : [];
+  const migrationArguments = command === "migrate" ? positionalArguments : [];
 
   function option(name) {
     const index = optionArguments.indexOf(name);
@@ -67,6 +69,11 @@ function createCommandLine(cwd, args) {
         "Usage: nerio remove <component...> [--dry-run] [--json] [--force]",
         "",
         "Remove direct source items and dependencies no longer referenced by another direct item.",
+      ],
+      migrate: [
+        "Usage: nerio migrate config 0.1.0 1.0.0 [--apply] [--dry-run] [--json]",
+        "",
+        "Dry-run default; --apply writes.",
       ],
       diff: [
         "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]",
@@ -115,6 +122,7 @@ function createCommandLine(cwd, args) {
         "  nerio init     Create nerio.json",
         "  nerio add      Install editable source components",
         "  nerio remove   Safely remove directly installed source components",
+        "  nerio migrate  Migrate legacy configuration",
         "  nerio diff     Inspect local and upstream source drift",
         "  nerio update   Preview or apply non-destructive source updates",
         "  nerio list     List registry components",
@@ -140,6 +148,7 @@ function createCommandLine(cwd, args) {
     itemName,
     addItemNames,
     removeItemNames,
+    migrationArguments,
     positionalArguments,
     option,
     hasFlag,

@@ -186,6 +186,7 @@ pnpm exec nerio info button
 pnpm exec nerio search keyboard --limit 5
 pnpm exec nerio view button --json
 pnpm exec nerio docs button
+pnpm exec nerio migrate config 0.1.0 1.0.0
 pnpm exec nerio add button --dry-run
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add --all --dry-run --json
@@ -211,6 +212,13 @@ installing or fetching source. Search returns at most 20 matches by default and 
 `--limit` from 1 to 50; all three commands support the stable inspection JSON schema documented in
 `docs/cli-registry-inspection.md`.
 
+`nerio migrate config 0.1.0 1.0.0` is the only reviewed migration route in this slice. It previews
+the deterministic `nerio.json` schema change by default; `--apply` commits it through the same
+project lock, durable backup, automatic rollback, and crash-recovery boundary. The migration is
+hard-coded in the CLI, preserves additive configuration fields, does not read Registry metadata,
+and never executes Registry scripts or other external code. Its bounded JSON contract is documented
+in `docs/cli-migrate-output.md`.
+
 `nerio add` accepts one or more explicit Registry items, while `nerio add --all` selects every item.
 It resolves one sorted dependency and package-dependency union, fetches and preflights every target
 before writing, and reports every conflict without partially applying the set. `--dry-run` renders
@@ -218,12 +226,12 @@ the same deterministic plan without writes, and `--json` emits the bounded versi
 schema documented in `docs/cli-add-output.md`. A successful add stages the full operation, commits
 source, and writes `nerio.lock.json` last; any source or lock failure restores
 the previous source and lock state and removes temporary artifacts. A durable local journal lets the
-next state-sensitive command (`add`, `remove`, `diff`, `update`, or `doctor`) recover an operation interrupted
-by process exit or machine failure; a fully committed source-and-lock transaction is retained and
-only its orphaned journal is removed. State-sensitive Registry commands share one project-local
-process lock, so installs, updates, validation, and recovery cannot race source state against
-`nerio.lock.json`; `list`, `info`, `search`, `view`, and `docs` remain read-only inspection
-commands. A dead owner's lock is
+next state-sensitive command (`add`, `remove`, `migrate`, `diff`, `update`, or `doctor`) recover an
+operation interrupted by process exit or machine failure; a fully committed source-and-lock
+transaction is retained and only its orphaned journal is removed. State-sensitive Registry commands
+share one project-local process lock, so installs, updates, validation, and recovery cannot race
+source state against `nerio.lock.json`; `list`, `info`, `search`, `view`, and `docs` remain read-only
+inspection commands. A dead owner's lock is
 reclaimed before journal recovery, and an expired heartbeat distinguishes a restarted or PID-reused
 owner. The lock records
 exact Registry version, revision, file paths, dependency closure, original hashes, integrity

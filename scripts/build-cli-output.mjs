@@ -25,10 +25,27 @@ await build({
 });
 
 const compressed = await minify(readFileSync(outputFile, "utf8"), {
-  compress: true,
+  compress: {
+    hoist_funs: true,
+    hoist_vars: true,
+    keep_fargs: false,
+    passes: 3,
+    pure_getters: true,
+    toplevel: true,
+    unsafe: true,
+    unsafe_arrows: true,
+    unsafe_methods: true,
+    unsafe_undefined: true,
+  },
   ecma: 2022,
   format: { shebang: true },
-  mangle: true,
+  mangle: {
+    properties: {
+      regex:
+        /^(?:DEFAULT_REGISTRY|LOCK_CONTENT_HASH|STATE_FILENAME|__registryLocation|absolute|acquireCommandLock|addItemNames|applyMigrationTransaction|applyTransaction|assertRemoteProtocol|candidate|classifyFile|cliPackage|collectItems|collectTailwindSetupProblems|commandLine|createAddCommand|createCommandLine|createCommands|createDiagnostics|createDiscoveryCommand|createMigrationCommand|createRegistry|createRemoveCommand|createWorkspace|defaultComponentsDirectory|emptyState|errors|existingHash|expectedExists|expectedHash|existsLocally|formatDrift|hasFlag|hashContent|heartbeat|heartbeatError|help|isTokenStylesTarget|isWithin|itemMetadata|itemName|localHash|location|lockPath|metadata|migrationArguments|nextItems|observedAt|option|owner|positionalArguments|previous|readConfig|readManifest|readState|readText|recoverInterruptedTransactions|registryFiles|registryLocation|registryMetadata|releaseCommandLock|removeItemNames|renewPath|requireIntegrity|resolveInstalledTarget|resolveSource|resolveTarget|run|stateDiagnostics|statePath|stateTarget|stats|storedTarget|stylesheets|tailwindProblems|upstream|upstreamContent|upstreamFiles|warnings|workspace)$/,
+    },
+    toplevel: true,
+  },
   parse: { shebang: true },
 });
 if (!compressed.code) throw new Error("CLI output compression did not produce code.");

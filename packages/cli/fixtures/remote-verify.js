@@ -8,7 +8,7 @@ const { Buffer } = require("node:buffer");
 const { execFileSync, spawn } = require("node:child_process");
 const { setTimeout } = require("node:timers");
 
-const cli = path.resolve(__dirname, "../src/index.js");
+const cli = path.resolve(__dirname, "..", process.env.NERIO_TEST_CLI_PATH || "src/index.js");
 const source = "export const remoteButton = true;\n";
 const sourceIntegrity = `sha256-${crypto.createHash("sha256").update(source).digest("hex")}`;
 

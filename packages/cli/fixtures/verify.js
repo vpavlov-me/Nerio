@@ -7,7 +7,7 @@ const { spawn, spawnSync } = require("node:child_process");
 const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
-const cli = path.resolve(__dirname, "../src/index.js");
+const cli = path.resolve(__dirname, "..", process.env.NERIO_TEST_CLI_PATH || "src/index.js");
 const manifest = path.resolve(repoRoot, "packages/registry/src/manifest.json");
 const cliVersion = require("../package.json").version;
 const publicCommands = require("../../registry/src/public-commands.json");
@@ -1662,6 +1662,193 @@ async function verifyAtomicTransactions(tempRoot) {
   }
 }
 
+async function verifyVersionedMigrations(tempRoot) {
+  const route = ["migrate", "config", "0.1.0", "1.0.0"];
+  const writeLegacyConfig = (target) => {
+    fs.mkdirSync(target);
+    const config = {
+      schemaVersion: "0.1.0",
+      registry: "./registry-does-not-need-to-exist.json",
+      components: "components/nerio",
+      extension: { preserved: true },
+    };
+    const raw = `${JSON.stringify(config, null, 2)}\n`;
+    fs.writeFileSync(path.join(target, "nerio.json"), raw);
+    return raw;
+  };
+
+  const target = path.join(tempRoot, "migration-consumer");
+  const initial = writeLegacyConfig(target);
+  const firstPlan = await run(target, ...route, "--json");
+  const secondPlan = await run(target, ...route, "--dry-run", "--json");
+  const plan = JSON.parse(firstPlan);
+  if (
+    firstPlan !== secondPlan ||
+    plan.schemaVersion !== "1.0.0" ||
+    plan.command !== "migrate" ||
+    plan.status !== "planned" ||
+    plan.migration !== "config:0.1.0-to-1.0.0" ||
+    plan.files[0] !== "nerio.json" ||
+    fs.readFileSync(path.join(target, "nerio.json"), "utf8") !== initial
+  ) {
+    throw new Error("Versioned migration preview was not deterministic or wrote configuration.");
+  }
+  const unsupported = await runFailure(target, "migrate", "config", "1.0.0", "2.0.0");
+  if (
+    !unsupported.includes("nerio migrate config 0.1.0 1.0.0") ||
+    fs.readFileSync(path.join(target, "nerio.json"), "utf8") !== initial
+  ) {
+    throw new Error("Versioned migration accepted an unreviewed route or changed configuration.");
+  }
+  const conflictingMode = await runFailure(target, ...route, "--apply", "--dry-run");
+  if (!conflictingMode.includes("--dry-run conflicts with --apply")) {
+    throw new Error("Versioned migration accepted conflicting preview and apply modes.");
+  }
+
+  const malformedTarget = path.join(tempRoot, "migration-malformed-consumer");
+  fs.mkdirSync(malformedTarget);
+  const malformed = `${JSON.stringify({ schemaVersion: "0.1.0" }, null, 2)}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), malformed);
+  const malformedResult = await runFailure(malformedTarget, ...route, "--apply");
+  if (
+    !malformedResult.includes("requires non-empty registry and components strings") ||
+    fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== malformed
+  ) {
+    throw new Error("Versioned migration wrote an incomplete legacy configuration.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected malformed versioned migration");
+  const invalid = `${JSON.stringify(
+    { schemaVersion: "0.1.0", registry: 42, components: [] },
+    null,
+    2,
+  )}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), invalid);
+  await runFailure(malformedTarget, ...route, "--apply");
+  if (fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== invalid) {
+    throw new Error("Versioned migration wrote invalid legacy configuration fields.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected invalid versioned migration");
+
+  const preciseTarget = path.join(tempRoot, "migration-precise-consumer");
+  fs.mkdirSync(preciseTarget);
+  const preciseInitial =
+    '{"extension":{"schemaVersion":"0.1.0","accountId":9007199254740993},"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio"}\n';
+  fs.writeFileSync(path.join(preciseTarget, "nerio.json"), preciseInitial);
+  await run(preciseTarget, ...route, "--apply");
+  const preciseMigrated = fs.readFileSync(path.join(preciseTarget, "nerio.json"), "utf8");
+  if (
+    preciseMigrated !==
+    preciseInitial.replace('},"schemaVersion":"0.1.0"', '},"schemaVersion":"1.0.0"')
+  ) {
+    throw new Error("Versioned migration changed bytes outside the addressed schema marker.");
+  }
+  assertNoTransactionArtifacts(preciseTarget, "Exact-token versioned migration");
+
+  const concurrentTarget = path.join(tempRoot, "migration-concurrent-consumer");
+  writeLegacyConfig(concurrentTarget);
+  const concurrentMigration = runFailureWithEnv(
+    concurrentTarget,
+    { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" },
+    ...route,
+    "--apply",
+  );
+  await waitForFixture(
+    () => fs.readdirSync(concurrentTarget).some((entry) => entry.startsWith(".nerio-transaction-")),
+    "a staged versioned migration",
+  );
+  const concurrentEdit =
+    '{"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio","concurrent":true}\n';
+  fs.writeFileSync(path.join(concurrentTarget, "nerio.json"), concurrentEdit);
+  const concurrentResult = await concurrentMigration;
+  if (
+    !concurrentResult.includes("changed after planning") ||
+    fs.readFileSync(path.join(concurrentTarget, "nerio.json"), "utf8") !== concurrentEdit
+  ) {
+    throw new Error("Versioned migration replaced or rolled back a concurrent configuration edit.");
+  }
+  assertNoTransactionArtifacts(concurrentTarget, "Concurrent versioned migration");
+
+  fs.chmodSync(path.join(target, "nerio.json"), 0o600);
+  const applied = JSON.parse(await run(target, ...route, "--apply", "--json"));
+  const migrated = JSON.parse(fs.readFileSync(path.join(target, "nerio.json"), "utf8"));
+  if (
+    applied.status !== "applied" ||
+    migrated.schemaVersion !== "1.0.0" ||
+    migrated.extension?.preserved !== true ||
+    (fs.statSync(path.join(target, "nerio.json")).mode & 0o777) !== 0o600
+  ) {
+    throw new Error(
+      "Reviewed config migration did not apply its bounded transformation or preserve permissions.",
+    );
+  }
+  const alreadyCurrent = await runFailure(target, ...route, "--json");
+  if (!alreadyCurrent.includes("Expected 0.1.0; found 1.0.0")) {
+    throw new Error("Reviewed config migration did not enforce its addressed source version.");
+  }
+  assertNoTransactionArtifacts(target, "Applied versioned migration");
+
+  const rollbackTarget = path.join(tempRoot, "migration-rollback-consumer");
+  const rollbackInitial = writeLegacyConfig(rollbackTarget);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-state-write" },
+    ...route,
+    "--apply",
+  );
+  if (
+    !rollback.includes("Migration rolled back") ||
+    fs.readFileSync(path.join(rollbackTarget, "nerio.json"), "utf8") !== rollbackInitial
+  ) {
+    throw new Error("Versioned migration did not restore configuration after a write failure.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Rolled-back versioned migration");
+
+  const recoveryTarget = path.join(tempRoot, "migration-recovery-consumer");
+  const recoveryInitial = writeLegacyConfig(recoveryTarget);
+  await runFailureWithEnv(
+    recoveryTarget,
+    { NERIO_TEST_CRASH: "after-state-write" },
+    ...route,
+    "--apply",
+  );
+  assertInterruptedTransaction(recoveryTarget, "Interrupted versioned migration");
+  discardCrashedRegistryLock(recoveryTarget);
+  const recovery = spawnSync(process.execPath, [cli, ...route, "--json"], {
+    cwd: recoveryTarget,
+    encoding: "utf8",
+  });
+  const recoveredPlan = recovery.status === 0 ? JSON.parse(recovery.stdout) : null;
+  if (
+    recovery.status !== 0 ||
+    recoveredPlan?.status !== "planned" ||
+    !recovery.stderr.includes("Recovered interrupted Nerio migration") ||
+    fs.readFileSync(path.join(recoveryTarget, "nerio.json"), "utf8") !== recoveryInitial
+  ) {
+    throw new Error("Interrupted versioned migration did not recover its durable backup.");
+  }
+  assertNoTransactionArtifacts(recoveryTarget, "Recovered versioned migration");
+
+  const committedTarget = path.join(tempRoot, "migration-committed-consumer");
+  writeLegacyConfig(committedTarget);
+  await runFailureWithEnv(
+    committedTarget,
+    { NERIO_TEST_CRASH: "after-lock-write" },
+    ...route,
+    "--apply",
+  );
+  assertInterruptedTransaction(committedTarget, "Committed interrupted versioned migration");
+  discardCrashedRegistryLock(committedTarget);
+  const committedResult = await runFailure(committedTarget, ...route, "--json");
+  if (
+    !committedResult.includes("Expected 0.1.0; found 1.0.0") ||
+    JSON.parse(fs.readFileSync(path.join(committedTarget, "nerio.json"), "utf8")).schemaVersion !==
+      "1.0.0"
+  ) {
+    throw new Error("Recovery rolled back a versioned migration that had fully committed.");
+  }
+  assertNoTransactionArtifacts(committedTarget, "Committed versioned migration recovery");
+}
+
 async function verifySourceLifecycle(tempRoot) {
   const registryRoot = path.join(tempRoot, "lifecycle-registry");
   const target = path.join(tempRoot, "lifecycle-consumer");
@@ -2006,6 +2193,7 @@ async function verify() {
     await verifySourceLifecycle(tempRoot);
     await verifyMultiItemAdd(tempRoot);
     await verifySafeRemove(tempRoot);
+    await verifyVersionedMigrations(tempRoot);
     await verifyAtomicTransactions(tempRoot);
     await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
@@ -2123,6 +2311,7 @@ async function verify() {
       !helpOutput.includes("nerio view") ||
       !helpOutput.includes("nerio docs") ||
       !helpOutput.includes("nerio remove") ||
+      !helpOutput.includes("nerio migrate") ||
       !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
       !helpOutput.includes(publicCommands.cli.oneOffCommands[0])
@@ -2149,6 +2338,15 @@ async function verify() {
       !removeHelpOutput.includes("no longer referenced")
     ) {
       throw new Error("Remove help output does not describe the safe source-removal options.");
+    }
+    const migrateHelpOutput = await run(localTarget, "migrate", "--help");
+    if (
+      !migrateHelpOutput.includes("nerio migrate config 0.1.0 1.0.0") ||
+      !migrateHelpOutput.includes("--apply") ||
+      !migrateHelpOutput.includes("--dry-run") ||
+      !migrateHelpOutput.includes("Dry-run default")
+    ) {
+      throw new Error("Migrate help output does not describe the explicit versioned route.");
     }
     const initHelpOutput = await run(localTarget, "init", "--help");
     if (

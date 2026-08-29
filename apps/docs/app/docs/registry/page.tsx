@@ -55,6 +55,11 @@ export default function Page() {
           Search, view, and docs support a bounded JSON schema for automation.
         </p>
         <p>
+          <code>migrate config 0.1.0 1.0.0</code> previews the only reviewed configuration
+          migration. Add <code>--apply</code> to write through the project lock with durable backup,
+          rollback, and crash recovery. The CLI never reads or executes Registry migration scripts.
+        </p>
+        <p>
           For a one-off initialization or component install, invoke the real package name. Keep the
           local installation above as the default for repeatable lifecycle work.
         </p>
@@ -111,6 +116,11 @@ export default function Page() {
             never bypasses ownership or path validation.
           </li>
           <li>
+            <code>migrate config 0.1.0 1.0.0</code> preserves additive configuration fields and
+            previews by default. <code>--apply</code> changes only the schema marker in one
+            recoverable transaction; unsupported routes fail before writes.
+          </li>
+          <li>
             <code>diff [component]</code> reports unchanged, locally modified, upstream changed,
             added, removed, and combined conflict states.
           </li>
@@ -133,13 +143,13 @@ export default function Page() {
           </li>
           <li>
             Add and update fetch and validate the complete plan before writing; remove validates the
-            recorded source and ownership graph. Every mutation stages a complete plan, commits
-            source before lock metadata, and restores both source and lock state after any handled
-            failure. A durable local journal recovers an interrupted process on the next
-            state-sensitive command (<code>add</code>, <code>remove</code>, <code>diff</code>,{" "}
-            <code>update</code>, or <code>doctor</code>); already-committed source and lock state is
-            retained. A project-local process lock serializes installs, updates, validation, and
-            recovery so parallel commands cannot lose source ownership or lock metadata;{" "}
+            recorded source and ownership graph. Registry mutations stage a complete plan, commit
+            source before lock metadata, and restore both after any handled failure. Migration uses
+            the same project lock with a dedicated configuration backup. A durable local journal
+            recovers an interrupted process on the next state-sensitive command (<code>add</code>,{" "}
+            <code>remove</code>, <code>migrate</code>, <code>diff</code>, <code>update</code>, or{" "}
+            <code>doctor</code>); already-committed state is retained. The process lock serializes
+            mutations, validation, and recovery so parallel commands cannot lose state;{" "}
             <code>list</code>, <code>info</code>, <code>search</code>, <code>view</code>, and{" "}
             <code>docs</code> remain read-only inspection commands. An owner heartbeat also makes
             locks reclaimable after process death, restart, or PID reuse.

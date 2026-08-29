@@ -57,6 +57,7 @@ const expectedLocalCommands = [
   "pnpm exec nerio search keyboard --limit 5",
   "pnpm exec nerio view button --json",
   "pnpm exec nerio docs button",
+  "pnpm exec nerio migrate config 0.1.0 1.0.0",
   "pnpm exec nerio add button --dry-run",
   "pnpm exec nerio add button card --dry-run",
   "pnpm exec nerio add --all --dry-run --json",
@@ -167,7 +168,7 @@ const forbiddenPatterns = [
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
   [
-    /^\s*nerio (?:init|list|info|search|view|docs|add|remove|diff|update|doctor)\b/gm,
+    /^\s*nerio (?:init|list|info|search|view|docs|migrate|add|remove|diff|update|doctor)\b/gm,
     "bare public CLI command",
   ],
   [/@nerio\//g, "obsolete package scope"],

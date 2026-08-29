@@ -87,6 +87,8 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     "requestedItems",
     "schemaVersion",
   ]);
+  assert.equal(parsed.cli.migrationOutputSchema, '"1.0.0"');
+  assert.match(parsed.cli.help.migrate, /migrate config 0\.1\.0 1\.0\.0/);
   const expectedItemKeys = [
     "dependencies",
     "files",

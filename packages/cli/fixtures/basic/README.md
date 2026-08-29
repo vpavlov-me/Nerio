@@ -8,6 +8,7 @@ pnpm exec nerio init
 pnpm exec nerio search keyboard --limit 5
 pnpm exec nerio view button --json
 pnpm exec nerio docs button
+pnpm exec nerio migrate config 0.1.0 1.0.0
 pnpm exec nerio add button card --dry-run
 pnpm exec nerio add button card
 pnpm exec nerio remove card --dry-run
@@ -21,3 +22,5 @@ lock transaction, records portable original hashes, and supports non-destructive
 and update planning. Safe removal preserves shared dependencies and locally modified source unless
 the consumer supplies an explicit force option. Search, view, and docs inspect only bounded,
 integrity-validated Registry metadata and do not touch consumer source or lock state.
+Versioned migration previews are deterministic, and only an explicit `--apply` uses the durable
+configuration backup and recovery transaction.

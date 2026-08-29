@@ -163,7 +163,7 @@ function createRegistry({ cwd, cliPackage, option, hasFlag }) {
     throw new Error(`Registry ${kind} redirect handling failed: ${safeLocation(location)}`);
   }
 
-  function readConfig(required = false) {
+  function readConfig(required = false, includeSource = false) {
     const configPath = path.join(cwd, "nerio.json");
     if (!fs.existsSync(configPath)) {
       if (required) {
@@ -173,7 +173,9 @@ function createRegistry({ cwd, cliPackage, option, hasFlag }) {
     }
 
     try {
-      return JSON.parse(fs.readFileSync(configPath, "utf8"));
+      const source = fs.readFileSync(configPath, "utf8");
+      const config = JSON.parse(source);
+      return includeSource ? [config, source] : config;
     } catch {
       throw new Error("nerio.json is not valid JSON.");
     }
