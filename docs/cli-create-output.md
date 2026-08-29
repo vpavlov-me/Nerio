@@ -12,7 +12,8 @@ The only supported profile is `current`. It pins the exact tested React, Next.js
 TypeScript, and Tailwind versions. Generated styles import Tailwind, the public token bridge, and
 the residual UI stylesheet, then scan compiled `@nerio-ui/ui` output. The Next.js project keeps
 static imports in the server-safe entrypoint and interactive imports in a client component; it does
-not add `transpilePackages`.
+not add `transpilePackages`. The Vite profile requires Node.js 22.12.0 or newer, matching its pinned
+framework engine contract.
 
 The directory must be relative to the current directory, stay within it, use lowercase npm-safe
 letters, numbers, and hyphens in every path segment, and not already exist. The CLI rejects existing

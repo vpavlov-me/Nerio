@@ -27,13 +27,13 @@ function pathEntryExists(target) {
   }
 }
 
-function commonPackage(name, scripts, dependencies, devDependencies, type) {
+function commonPackage(name, scripts, dependencies, devDependencies, type, nodeEngine = ">=22") {
   return json({
     name,
     version: "0.0.0",
     private: true,
     ...(type ? { type } : {}),
-    engines: { node: ">=22" },
+    engines: { node: nodeEngine },
     scripts,
     dependencies: {
       "@nerio-ui/tokens": CORE_VERSION,
@@ -189,6 +189,7 @@ function viteFiles(name) {
       {},
       { vite: CREATE_VERSIONS.vite },
       "module",
+      ">=22.12.0",
     ),
     "index.html": [
       "<!doctype html>",
