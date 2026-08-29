@@ -3,13 +3,27 @@ const path = require("node:path");
 
 function createCommandLine(cwd, args) {
   const command = args[0];
-  const valueOptions = new Set(["--components", "--registry"]);
+  const valueOptions = new Set(["--components", "--limit", "--registry"]);
+  const flagOptions = new Set([
+    "--all",
+    "--allow-insecure-http",
+    "--dry-run",
+    "--force",
+    "--help",
+    "--json",
+    "--overwrite",
+  ]);
+  const optionBoundary = args.indexOf("--");
+  const optionArguments = optionBoundary === -1 ? args : args.slice(0, optionBoundary);
   const positionalArguments = [];
   for (let index = 1; index < args.length; index += 1) {
     const argument = args[index];
-    if (valueOptions.has(argument)) {
+    if (argument === "--") {
+      positionalArguments.push(...args.slice(index + 1));
+      break;
+    } else if (valueOptions.has(argument)) {
       index += 1;
-    } else if (!argument.startsWith("-")) {
+    } else if (!argument.startsWith("-") || (command === "search" && !flagOptions.has(argument))) {
       positionalArguments.push(argument);
     }
   }
@@ -21,12 +35,12 @@ function createCommandLine(cwd, args) {
   const removeItemNames = command === "remove" ? positionalArguments : [];
 
   function option(name) {
-    const index = args.indexOf(name);
-    return index >= 0 ? args[index + 1] : undefined;
+    const index = optionArguments.indexOf(name);
+    return index >= 0 ? optionArguments[index + 1] : undefined;
   }
 
   function hasFlag(name) {
-    return args.includes(name);
+    return optionArguments.includes(name);
   }
 
   function defaultComponentsDirectory() {
@@ -74,6 +88,21 @@ function createCommandLine(cwd, args) {
         "",
         "Show registry metadata, dependencies, tokens, files, and usage for one component.",
       ],
+      search: [
+        "Usage: nerio search <query...> [--limit <1-50>] [--registry <path-or-url>] [--json] [--allow-insecure-http]",
+        "",
+        "Search documented Registry metadata without installing source.",
+      ],
+      view: [
+        "Usage: nerio view <component> [--registry <path-or-url>] [--json] [--allow-insecure-http]",
+        "",
+        "Inspect one Registry item's source, file, integrity, and dependency metadata.",
+      ],
+      docs: [
+        "Usage: nerio docs <component> [--registry <path-or-url>] [--json] [--allow-insecure-http]",
+        "",
+        "Inspect one Registry item's usage and accessibility documentation.",
+      ],
       doctor: [
         "Usage: nerio doctor [--registry <path-or-url>] [--allow-insecure-http]",
         "",
@@ -90,6 +119,9 @@ function createCommandLine(cwd, args) {
         "  nerio update   Preview or apply non-destructive source updates",
         "  nerio list     List registry components",
         "  nerio info     Show metadata for one component",
+        "  nerio search   Search documented registry metadata",
+        "  nerio view     Inspect source and dependency metadata",
+        "  nerio docs     Inspect usage and accessibility guidance",
         "  nerio doctor   Validate configuration and registry metadata",
         "",
         "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
@@ -108,6 +140,7 @@ function createCommandLine(cwd, args) {
     itemName,
     addItemNames,
     removeItemNames,
+    positionalArguments,
     option,
     hasFlag,
     defaultComponentsDirectory,

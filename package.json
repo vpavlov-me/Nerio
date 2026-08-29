@@ -93,6 +93,7 @@
     "@playwright/test": "1.62.1",
     "esbuild": "0.28.1",
     "prettier": "^3.9.6",
+    "terser": "5.50.0",
     "turbo": "^2.10.7",
     "typescript": "^5.9.3"
   }

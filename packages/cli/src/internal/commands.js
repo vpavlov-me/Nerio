@@ -1,12 +1,14 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { createAddCommand } = require("./add");
+const { createDiscoveryCommand } = require("./discovery");
 const { createRemoveCommand } = require("./remove");
 
 const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
 
 function createCommands(services) {
   const { add } = createAddCommand(services);
+  const { docs, info, list, search, view } = createDiscoveryCommand(services);
   const { remove } = createRemoveCommand(services);
   const {
     cwd,
@@ -39,7 +41,6 @@ function createCommands(services) {
     hashContent,
     resolveInstalledTarget,
     resolveTarget,
-    formatList,
     collectTailwindSetupProblems,
     stateDiagnostics,
   } = services;
@@ -275,49 +276,6 @@ function createCommands(services) {
     console.log(`Updated source metadata in ${STATE_FILENAME}.`);
   }
 
-  async function list() {
-    const config = readConfig(false);
-    const registry = registryLocation(config);
-    const manifest = await readManifest(registry);
-
-    for (const item of manifest.items) {
-      console.log(`${item.name}\t${item.title}\t${item.category}`);
-    }
-  }
-
-  async function info(name) {
-    if (!name || name.startsWith("--")) {
-      throw new Error("Usage: nerio info <component> [--registry <path-or-url>]");
-    }
-
-    const config = readConfig(false);
-    const registry = registryLocation(config);
-    const manifest = await readManifest(registry);
-    const item = manifest.items.find((entry) => entry.name === name);
-    if (!item) {
-      throw new Error(`Unknown registry item: ${name}`);
-    }
-
-    console.log(`${item.title} (${item.name})`);
-    console.log(`Description: ${item.description}`);
-    console.log(`Category: ${item.category}`);
-    console.log(`Dependencies: ${formatList(item.dependencies)}`);
-    if (item.optionalPeerDependencies?.length) {
-      console.log(`Optional peer dependencies: ${formatList(item.optionalPeerDependencies)}`);
-    }
-    if (item.docsPath) console.log(`Documentation: ${item.docsPath}`);
-    console.log(`Registry dependencies: ${formatList(item.registryDependencies)}`);
-    console.log(
-      `Files: ${item.files.length} (${item.files.map((file) => file.target).join(", ")})`,
-    );
-    console.log(`Variants: ${formatList(item.variants)}`);
-    console.log(`Required tokens: ${formatList(item.requiredTokens)}`);
-    console.log(`Accessibility: ${formatList(item.accessibility)}`);
-    console.log("");
-    console.log("Usage:");
-    console.log(item.usage);
-  }
-
   async function doctor() {
     const config = readConfig(true);
     if (!config.schemaVersion || !config.registry || !config.components) {
@@ -419,7 +377,10 @@ function createCommands(services) {
       else if (command === "diff") await diff(itemName);
       else if (command === "update") await update(itemName);
       else if (command === "list") await list();
-      else if (command === "info") await info(itemName);
+      else if (command === "info") await info();
+      else if (command === "search") await search();
+      else if (command === "view") await view();
+      else if (command === "docs") await docs();
       else if (command === "doctor") await doctor();
       else {
         console.log(help("root"));

@@ -1,9 +1,9 @@
 # CLI internal architecture
 
 Issue [#352](https://github.com/vpavlov-me/Nerio/issues/352) modularizes the CLI before adding new
-lifecycle or bootstrap commands. The published `nerio` bin and its seven existing commands remain
-the only public CLI contract. Files under `packages/cli/src/internal/` are private implementation
-details and do not create supported package subpaths.
+lifecycle or bootstrap commands. The published `nerio` bin remains the only public package
+entrypoint. Files under `packages/cli/src/internal/` are private implementation details and do not
+create supported package subpaths.
 
 ## Responsibility boundaries
 
@@ -13,6 +13,7 @@ details and do not create supported package subpaths.
 | `internal/command-line.js` | Parse current arguments and render existing help text.                                                |
 | `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
 | `internal/remove.js`       | Plan direct-root removal, shared ownership retention, conflicts, and human or JSON results.           |
+| `internal/discovery.js`    | Run bounded read-only Registry list, info, search, view, and docs inspection.                         |
 | `internal/registry.js`     | Read and validate local or remote immutable Registry input.                                           |
 | `internal/workspace.js`    | Validate paths and state, plan source changes, and own locks, journals, recovery, and atomic commits. |
 | `internal/diagnostics.js`  | Inspect consumer dependencies, Tailwind setup, and installed-source drift.                            |
@@ -27,7 +28,8 @@ modules as public APIs.
 
 Repository source stays readable and modular. `prepack` creates one deterministic, minified CommonJS
 bin in `packages/cli/dist/`; the public package contains that executable instead of the private
-module graph. This keeps package and startup cost bounded without publishing internal subpaths.
+module graph. Esbuild bundles the private graph and Terser performs a deterministic final
+compression pass. This keeps package and startup cost bounded without publishing internal subpaths.
 
 The pre-refactor baseline on Node 24.18.0 and pnpm 11.19.0 was:
 
@@ -48,6 +50,18 @@ measured:
 - complete local and remote CLI fixtures: 56.41 seconds.
 
 The existing 20,000-byte tarball and 82,000-byte unpacked package budgets were not raised.
+
+The Phase 2.3 inspection slice was measured against the merged safe-remove baseline:
+
+- deterministic generated bin: 53,969 to 56,671 bytes (`+2,702`, or `+5.0%`);
+- package tarball: 19,579 to 19,576 bytes (`-3`, or less than `0.1%`);
+- package unpacked: 57,950 to 60,960 bytes (`+3,010`, or `+5.2%`);
+- direct `nerio --help`: 0.02–0.03 seconds across five warm runs;
+- complete local and remote CLI fixtures: 48.26 and 52.57 seconds across two clean runs, compared
+  with the 52.23-second safe-remove baseline.
+
+The existing package budgets remain unchanged. The Terser pass offsets most compressed-package
+cost while keeping the internal source modules independently reviewable.
 
 ## Multi-item add lifecycle
 
@@ -74,10 +88,20 @@ supplies one ordered delete list and one coherent next lock state to `applyTrans
 the existing process lock, validation, rollback, durable journal, and crash-recovery contracts.
 `--json` emits remove-result schema `1.0.0`, documented in `docs/cli-remove-output.md`.
 
+## Read-only Registry inspection
+
+The third Phase 2 slice adds `search`, `view`, and `docs` through the private discovery module.
+Every command reads only the validated immutable manifest through the existing Registry service.
+Search matches documented schema fields with a default result limit of 20 and a hard maximum of 50.
+View returns one item's source path, target, role, integrity, dependency, and component metadata
+without fetching source content. Docs returns one item's usage, accessibility guidance, and
+optional docs path. Structured output uses inspection schema `1.0.0`, documented in
+`docs/cli-registry-inspection.md`.
+
 ## Explicit non-goals
 
 - No configuration schema, lock schema, or exit-code semantics change.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
 - No transaction, rollback, crash recovery, concurrency, or source-ownership behavior change.
-- No search, view, docs-inspection, migration, or project bootstrap implementation in this slice.
+- No versioned migration or project bootstrap implementation in this slice.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

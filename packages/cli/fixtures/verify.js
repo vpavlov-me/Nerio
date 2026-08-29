@@ -2119,6 +2119,9 @@ async function verify() {
     if (
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
+      !helpOutput.includes("nerio search") ||
+      !helpOutput.includes("nerio view") ||
+      !helpOutput.includes("nerio docs") ||
       !helpOutput.includes("nerio remove") ||
       !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
@@ -2183,6 +2186,130 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const inspectionSnapshot = managedSnapshot(localTarget);
+    const searchResult = JSON.parse(
+      await run(localTarget, "search", "keyboard", "navigation", "--limit", "3", "--json"),
+    );
+    if (
+      searchResult.schemaVersion !== "1.0.0" ||
+      searchResult.command !== "search" ||
+      searchResult.limit !== 3 ||
+      searchResult.count > 3 ||
+      searchResult.total < searchResult.count ||
+      !searchResult.items.every(
+        (item) => item.name && item.title && item.description && item.category,
+      )
+    ) {
+      throw new Error("Search JSON did not expose the bounded Registry inspection contract.");
+    }
+    const tokenSearchResult = JSON.parse(
+      await run(localTarget, "search", "--n-card-padding-inline", "--json"),
+    );
+    if (!tokenSearchResult.items.some(({ name }) => name === "card")) {
+      throw new Error("Search did not preserve a hyphen-prefixed Registry token query.");
+    }
+    const fieldNameSearchResult = JSON.parse(
+      await run(localTarget, "search", "optionalPeerDependencies", "--json"),
+    );
+    if (fieldNameSearchResult.total !== 0) {
+      throw new Error("Search matched Registry schema field names instead of metadata values.");
+    }
+    const extensionManifest = path.join(tempRoot, "extension-metadata-manifest.json");
+    const extensionRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    extensionRegistry.items[0].internalNotes = "private-extension-keyword";
+    extensionRegistry.items[0].sourceContent = "private source content";
+    extensionRegistry.items[0].files[0].privateFileNote = "private file metadata";
+    fs.writeFileSync(extensionManifest, `${JSON.stringify(extensionRegistry, null, 2)}\n`);
+    const extensionSearchResult = JSON.parse(
+      await run(
+        localTarget,
+        "search",
+        "private-extension-keyword",
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (extensionSearchResult.total !== 0) {
+      throw new Error("Search matched an undocumented Registry extension field.");
+    }
+    const extensionViewResult = JSON.parse(
+      await run(
+        localTarget,
+        "view",
+        extensionRegistry.items[0].name,
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (
+      "internalNotes" in extensionViewResult.item ||
+      "sourceContent" in extensionViewResult.item ||
+      extensionViewResult.item.files.some((file) => "privateFileNote" in file)
+    ) {
+      throw new Error("View JSON exposed an undocumented Registry extension field.");
+    }
+    const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
+    if (
+      viewResult.schemaVersion !== "1.0.0" ||
+      viewResult.command !== "view" ||
+      viewResult.item.name !== "button" ||
+      !viewResult.item.files.some(
+        (file) =>
+          file.source &&
+          file.target === "components/button.tsx" &&
+          file.role === "component" &&
+          /^sha256-[a-f0-9]{64}$/.test(file.integrity),
+      ) ||
+      !viewResult.item.registryDependencies.includes("spinner")
+    ) {
+      throw new Error("View JSON did not expose source, integrity, and dependency metadata.");
+    }
+    const docsResult = JSON.parse(await run(localTarget, "docs", "button", "--json"));
+    if (
+      docsResult.schemaVersion !== "1.0.0" ||
+      docsResult.command !== "docs" ||
+      docsResult.item.name !== "button" ||
+      !docsResult.item.usage.includes("<Button") ||
+      !docsResult.item.accessibility.length
+    ) {
+      throw new Error("Docs JSON did not expose Registry usage and accessibility guidance.");
+    }
+    const invalidDocsPathManifest = path.join(tempRoot, "invalid-docs-path-manifest.json");
+    const invalidDocsPathRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    invalidDocsPathRegistry.items[0].docsPath = { path: "/docs/components/button" };
+    fs.writeFileSync(
+      invalidDocsPathManifest,
+      `${JSON.stringify(invalidDocsPathRegistry, null, 2)}\n`,
+    );
+    const invalidDocsPath = await runFailure(
+      localTarget,
+      "docs",
+      invalidDocsPathRegistry.items[0].name,
+      "--registry",
+      invalidDocsPathManifest,
+      "--json",
+    );
+    if (!invalidDocsPath.includes("docsPath as a non-empty string")) {
+      throw new Error("Docs did not reject a non-string local Registry docsPath.");
+    }
+    const invalidLimit = await runFailure(localTarget, "search", "button", "--limit", "51");
+    if (!invalidLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject an out-of-range result limit.");
+    }
+    const missingLimit = await runFailure(localTarget, "search", "button", "--limit");
+    if (!missingLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject a missing result limit.");
+    }
+    const unknownView = await runFailure(localTarget, "view", "not-a-component", "--json");
+    if (!unknownView.includes("Unknown registry item")) {
+      throw new Error("View did not report an unknown Registry item.");
+    }
+    if (JSON.stringify(managedSnapshot(localTarget)) !== JSON.stringify(inspectionSnapshot)) {
+      throw new Error("Read-only Registry inspection changed consumer source or lock state.");
+    }
+    assertNoTransactionArtifacts(localTarget, "Read-only Registry inspection");
     const fileInputInfoOutput = await run(localTarget, "info", "file-input");
     if (
       !fileInputInfoOutput.includes("FileInput (file-input)") ||
