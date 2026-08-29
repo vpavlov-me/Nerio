@@ -3,9 +3,11 @@
   "cli": {
     "addOutputSchema": "\"1.0.0\"",
     "configSchemas": "new Set([\"0.1.0\", \"1.0.0\"])",
+    "createOutputSchema": "\"1.0.0\"",
     "defaultRegistry": "\"@nerio-ui/registry/manifest.json\"",
     "help": {
       "add": "Usage: nerio add <component...> [--all] [--registry <path-or-url>] [--dry-run] [--json] [--overwrite] [--allow-insecure-http]\n\nInstall one or more editable source items and their dependency union in one transaction.",
+      "create": "Usage: nerio create <directory> --framework <next|vite> [--profile current] [--json]\n\nCreate a maintained package-mode project with deterministic Nerio and Tailwind setup.\nOnly the current Next.js and Vite profiles are supported; source lifecycle remains init/add.",
       "diff": "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]\n\nCompare installed source with its recorded baseline and the configured Registry.",
       "docs": "Usage: nerio docs <component> [--registry <path-or-url>] [--json] [--allow-insecure-http]\n\nInspect one Registry item's usage and accessibility documentation.",
       "doctor": "Usage: nerio doctor [--registry <path-or-url>] [--allow-insecure-http]\n\nValidate nerio.json and the configured registry manifest.",
@@ -14,7 +16,7 @@
       "list": "Usage: nerio list [--registry <path-or-url>] [--allow-insecure-http]\n\nList component names, titles, and categories from the configured registry.",
       "migrate": "Usage: nerio migrate config 0.1.0 1.0.0 [--apply] [--dry-run] [--json]\n\nDry-run default; --apply writes.",
       "remove": "Usage: nerio remove <component...> [--dry-run] [--json] [--force]\n\nRemove direct source items and dependencies no longer referenced by another direct item.",
-      "root": "Usage: nerio <command> [options]\n\nCommands:\n  nerio init     Create nerio.json\n  nerio add      Install editable source components\n  nerio remove   Safely remove directly installed source components\n  nerio migrate  Migrate legacy configuration\n  nerio diff     Inspect local and upstream source drift\n  nerio update   Preview or apply non-destructive source updates\n  nerio list     List registry components\n  nerio info     Show metadata for one component\n  nerio search   Search documented registry metadata\n  nerio view     Inspect source and dependency metadata\n  nerio docs     Inspect usage and accessibility guidance\n  nerio doctor   Validate configuration and registry metadata\n\nRecommended local install: pnpm add -D @nerio-ui/registry@<version> @nerio-ui/cli@<version>\nRun local commands with: pnpm exec nerio <command> [options]\nOne-off example: pnpm dlx @nerio-ui/cli@<version> init\n\nRun nerio <command> --help for command options.",
+      "root": "Usage: nerio <command> [options]\n\nCommands:\n  nerio create   Create a maintained package-mode project\n  nerio init     Create nerio.json\n  nerio add      Install editable source components\n  nerio remove   Safely remove directly installed source components\n  nerio migrate  Migrate legacy configuration\n  nerio diff     Inspect local and upstream source drift\n  nerio update   Preview or apply non-destructive source updates\n  nerio list     List registry components\n  nerio info     Show metadata for one component\n  nerio search   Search documented registry metadata\n  nerio view     Inspect source and dependency metadata\n  nerio docs     Inspect usage and accessibility guidance\n  nerio doctor   Validate configuration and registry metadata\n\nRecommended local install: pnpm add -D @nerio-ui/registry@<version> @nerio-ui/cli@<version>\nRun local commands with: pnpm exec nerio <command> [options]\nOne-off example: pnpm dlx @nerio-ui/cli@<version> init\n\nRun nerio <command> --help for command options.",
       "search": "Usage: nerio search <query...> [--limit <1-50>] [--registry <path-or-url>] [--json] [--allow-insecure-http]\n\nSearch documented Registry metadata without installing source.",
       "update": "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force] [--allow-insecure-http]\n\nApply safe upstream source changes without overwriting local modifications.",
       "view": "Usage: nerio view <component> [--registry <path-or-url>] [--json] [--allow-insecure-http]\n\nInspect one Registry item's source, file, integrity, and dependency metadata."
@@ -13781,6 +13783,10 @@
     "name": "nerio",
     "publicCommands": {
       "cli": {
+        "bootstrapCommands": [
+          "pnpm dlx @nerio-ui/cli@<version> create my-next-app --framework next",
+          "pnpm dlx @nerio-ui/cli@<version> create my-vite-app --framework vite"
+        ],
         "localCommands": [
           "pnpm exec nerio init",
           "pnpm exec nerio list",

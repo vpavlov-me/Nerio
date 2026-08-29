@@ -70,7 +70,7 @@
   "currentRegistrySchemaVersion": "1.1.0",
   "currentRegistryItemCount": 56,
   "currentRegistryManifestSha256": "34e1b2f22203d00f60a346919fb2266bfb5adcbddaa87d77d46ccb1fbd229975",
-  "currentPublicApiSnapshotSha256": "ffbd79a026f780439d22cb3afea06b1e89a8234f0e3166361d606a4b94bec1b4",
+  "currentPublicApiSnapshotSha256": "5f8d6b53f9dec2fa610506a91d1053e53811ff11a399206e2069273bf4620100",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -357,12 +357,12 @@
     {
       "issue": 352,
       "title": "CLI lifecycle and bootstrap",
-      "disposition": "retain-with-slices",
+      "disposition": "implemented",
       "priority": "P2",
       "target": "Core 1.2",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "dependsOn": [341, 151],
-      "decision": "Modularization, source lifecycle, and project bootstrap can proceed independently now that #351 is complete."
+      "decision": "The modular CLI now provides transactional multi-item add, safe remove, bounded Registry inspection, explicit versioned migration, and atomic package-mode Next.js/Vite bootstrap with clean packed-consumer evidence."
     },
     {
       "issue": 353,
@@ -1152,7 +1152,7 @@
       "id": "cli-lifecycle",
       "kind": "tooling",
       "userProblem": "Source consumers need modular, transactional lifecycle and bounded bootstrap tools.",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "priority": "P2",
       "target": "Core 1.2",
       "nerioComponents": [],
@@ -1163,8 +1163,12 @@
       "complexity": "high",
       "dependencies": [151, 341],
       "semverImpact": "additive-minor",
-      "acceptanceBoundary": "Modularize first, then add independent transactional lifecycle slices; bootstrap follows #351.",
-      "nonGoals": ["Product scaffolding", "Unbounded package growth"],
+      "acceptanceBoundary": "Provide modular transactional source lifecycle plus deterministic package-mode Next.js/Vite bootstrap from clean-tested artifacts.",
+      "nonGoals": [
+        "Product, backend, authentication, database, or deployment scaffolding",
+        "React Router without maintained clean-consumer evidence",
+        "A second source-mode generator instead of init and add"
+      ],
       "issue": 352
     },
     {

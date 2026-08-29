@@ -33,6 +33,7 @@ test("CLI package output is deterministic, executable, and behavior-compatible",
 
   for (const args of [
     ["--help"],
+    ["create", "--help"],
     ["add", "--help"],
     ["diff", "--help"],
     ["update", "--help"],

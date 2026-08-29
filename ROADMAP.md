@@ -144,8 +144,8 @@ components they use.
 
 - #351 delivered ADR 0007 with deterministic unbundled compiled runtime output, declarations,
   package-mode consumer evidence, and a self-contained integrity-verified editable source Registry.
-- #352 can proceed with CLI modularization, independent source lifecycle work, and project
-  bootstrap now that #351 is complete.
+- #352 delivered modular transactional lifecycle commands plus deterministic package-mode Next.js
+  and Vite bootstrap with clean packed-consumer and served-preview evidence.
 - #353 waits only for the CLI modularization slice and reuses the existing Registry engine.
 - #354 owns bounded read-only MCP expansion; Agent Skill work is separate in #369.
 - #355 remains a measured build/expand/defer Component Lab decision; current docs and visual

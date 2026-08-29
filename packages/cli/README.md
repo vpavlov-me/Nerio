@@ -3,7 +3,8 @@
 [![npm version](https://img.shields.io/npm/v/%40nerio-ui%2Fcli)](https://www.npmjs.com/package/@nerio-ui/cli)
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fcli)](https://www.npmjs.com/package/@nerio-ui/cli)
 
-Command-line tools for installing, removing, inspecting, diffing, and safely updating editable Nerio source.
+Command-line tools for creating maintained package-mode starters and installing, removing,
+inspecting, diffing, and safely updating editable Nerio source.
 The current coordinated release is `1.0.0-beta.1`.
 
 ## Install
@@ -13,6 +14,18 @@ pnpm add -D @nerio-ui/cli @nerio-ui/registry
 ```
 
 ## Use
+
+Create a deterministic project with the current clean-tested Next.js or Vite package profile:
+
+```bash
+pnpm dlx @nerio-ui/cli create my-next-app --framework next
+pnpm dlx @nerio-ui/cli create my-vite-app --framework vite
+```
+
+Generated projects pin the supported stack, configure Tailwind, tokens, residual styles, and
+compiled package scanning, and preserve the static `@nerio-ui/ui` versus interactive
+`@nerio-ui/ui/client` boundary. Source-mode projects continue to use `init` and `add` inside an
+existing application.
 
 ```bash
 pnpm exec nerio init

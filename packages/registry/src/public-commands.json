@@ -4,6 +4,10 @@
     "pnpm add -D @tailwindcss/postcss postcss"
   ],
   "cli": {
+    "bootstrapCommands": [
+      "pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-next-app --framework next",
+      "pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-vite-app --framework vite"
+    ],
     "localInstall": "pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
     "localCommands": [
       "pnpm exec nerio init",

@@ -42,8 +42,14 @@ function requireText(source, expected, label, failures) {
   if (!source.includes(expected)) failures.push(`${label}: missing ${JSON.stringify(expected)}`);
 }
 
-const commandsPath = resolve(root, "packages/registry/src/public-commands.json");
+const commandsPath = optionPath("--commands", "packages/registry/src/public-commands.json");
 const commands = JSON.parse(read(commandsPath));
+const cliCommands = commands.cli ?? {};
+const bootstrapCommands = Array.isArray(cliCommands.bootstrapCommands)
+  ? cliCommands.bootstrapCommands
+  : [];
+const localCommands = Array.isArray(cliCommands.localCommands) ? cliCommands.localCommands : [];
+const oneOffCommands = Array.isArray(cliCommands.oneOffCommands) ? cliCommands.oneOffCommands : [];
 const sources = Object.fromEntries(
   [...optionNames].map(([option, fallback]) => [fallback, read(optionPath(option, fallback))]),
 );
@@ -67,16 +73,21 @@ const expectedLocalCommands = [
   "pnpm exec nerio update button --dry-run",
   "pnpm exec nerio doctor",
 ];
+const expectedBootstrapCommands = [
+  `pnpm dlx @nerio-ui/cli@${registryVersion} create my-next-app --framework next`,
+  `pnpm dlx @nerio-ui/cli@${registryVersion} create my-vite-app --framework vite`,
+];
 if (
   JSON.stringify(commands.packageInstall) !==
     JSON.stringify([
       `pnpm add @nerio-ui/tokens@${registryVersion} @nerio-ui/adapters@${registryVersion} @nerio-ui/ui@${registryVersion} tailwindcss`,
       "pnpm add -D @tailwindcss/postcss postcss",
     ]) ||
-  commands.cli.localInstall !==
+  cliCommands.localInstall !==
     `pnpm add -D @nerio-ui/registry@${registryVersion} @nerio-ui/cli@${registryVersion}` ||
-  JSON.stringify(commands.cli.localCommands) !== JSON.stringify(expectedLocalCommands) ||
-  JSON.stringify(commands.cli.oneOffCommands) !==
+  JSON.stringify(bootstrapCommands) !== JSON.stringify(expectedBootstrapCommands) ||
+  JSON.stringify(localCommands) !== JSON.stringify(expectedLocalCommands) ||
+  JSON.stringify(oneOffCommands) !==
     JSON.stringify([
       `pnpm dlx @nerio-ui/cli@${registryVersion} init`,
       `pnpm dlx @nerio-ui/cli@${registryVersion} add button`,
@@ -93,9 +104,10 @@ if (
 }
 
 for (const command of [
-  commands.cli.localInstall,
-  ...commands.cli.localCommands,
-  ...commands.cli.oneOffCommands,
+  ...bootstrapCommands,
+  cliCommands.localInstall,
+  ...localCommands,
+  ...oneOffCommands,
   commands.mcp.localInstall,
 ]) {
   requireText(sources["README.md"], command, "README.md", failures);
@@ -116,9 +128,10 @@ for (const command of [
   requireText(sources["RELEASE.md"], command, "RELEASE.md", failures);
 }
 for (const command of [
-  commands.cli.localInstall,
-  ...commands.cli.localCommands,
-  ...commands.cli.oneOffCommands,
+  ...bootstrapCommands,
+  cliCommands.localInstall,
+  ...localCommands,
+  ...oneOffCommands,
   commands.mcp.localInstall,
 ]) {
   requireText(sources["apps/docs/content/llms.txt"], command, "llms.txt", failures);
@@ -133,11 +146,7 @@ for (const path of [
   requireText(sources[path], "lib/public-commands", path, failures);
 }
 
-for (const command of [
-  commands.cli.localInstall,
-  "pnpm exec nerio <command>",
-  commands.cli.oneOffCommands[0],
-]) {
+for (const command of [cliCommands.localInstall, "pnpm exec nerio <command>", oneOffCommands[0]]) {
   requireText(sources["packages/cli/src/internal/command-line.js"], command, "CLI help", failures);
 }
 requireText(
@@ -168,7 +177,7 @@ const forbiddenPatterns = [
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
   [
-    /^\s*nerio (?:init|list|info|search|view|docs|migrate|add|remove|diff|update|doctor)\b/gm,
+    /^\s*nerio (?:create|init|list|info|search|view|docs|migrate|add|remove|diff|update|doctor)\b/gm,
     "bare public CLI command",
   ],
   [/@nerio\//g, "obsolete package scope"],

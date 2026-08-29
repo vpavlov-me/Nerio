@@ -2303,8 +2303,180 @@ async function verify() {
       assertExactInstall(target, expectedFiles, family);
     }
 
+    const nextCreateResult = JSON.parse(
+      await run(tempRoot, "create", "created-next", "--framework", "next", "--json"),
+    );
+    if (
+      nextCreateResult.schemaVersion !== "1.0.0" ||
+      nextCreateResult.command !== "create" ||
+      nextCreateResult.status !== "created" ||
+      nextCreateResult.framework !== "next" ||
+      nextCreateResult.mode !== "package" ||
+      nextCreateResult.profile !== "current" ||
+      !nextCreateResult.files.includes("app/client-example.tsx")
+    ) {
+      throw new Error("Create JSON did not expose the bounded project bootstrap contract.");
+    }
+    const createdNext = path.join(tempRoot, "created-next");
+    const nextPackage = JSON.parse(fs.readFileSync(path.join(createdNext, "package.json"), "utf8"));
+    const nextPage = fs.readFileSync(path.join(createdNext, "app/page.tsx"), "utf8");
+    const nextClient = fs.readFileSync(path.join(createdNext, "app/client-example.tsx"), "utf8");
+    const nextStyles = fs.readFileSync(path.join(createdNext, "app/globals.css"), "utf8");
+    if (
+      nextPackage.name !== "created-next" ||
+      (process.platform !== "win32" &&
+        (fs.statSync(createdNext).mode & 0o777) !== (0o777 & ~process.umask())) ||
+      nextPackage.engines.node !== ">=22" ||
+      nextPackage.dependencies.next !== "16.2.12" ||
+      !nextPage.includes('from "@nerio-ui/ui"') ||
+      !nextClient.startsWith('"use client";') ||
+      !nextClient.includes('from "@nerio-ui/ui/client"') ||
+      !nextStyles.includes('@source "../node_modules/@nerio-ui/ui/dist";') ||
+      fs.existsSync(path.join(createdNext, "next.config.mjs"))
+    ) {
+      throw new Error(
+        "Next.js bootstrap did not preserve package, Tailwind, or entrypoint contracts.",
+      );
+    }
+
+    const viteOutput = await run(tempRoot, "create", "created-vite", "--framework", "vite");
+    const createdVite = path.join(tempRoot, "created-vite");
+    const vitePackage = JSON.parse(fs.readFileSync(path.join(createdVite, "package.json"), "utf8"));
+    const viteApp = fs.readFileSync(path.join(createdVite, "src/app.tsx"), "utf8");
+    if (
+      !viteOutput.includes("Created vite package-mode project") ||
+      vitePackage.engines.node !== ">=22.12.0" ||
+      vitePackage.devDependencies.vite !== "8.1.4" ||
+      !viteApp.includes('from "@nerio-ui/ui"') ||
+      !viteApp.includes('from "@nerio-ui/ui/client"')
+    ) {
+      throw new Error("Vite bootstrap did not preserve its maintained package-mode contract.");
+    }
+    const unsupportedFramework = await runFailure(
+      tempRoot,
+      "create",
+      "created-router",
+      "--framework",
+      "react-router",
+    );
+    if (!unsupportedFramework.includes("Use --framework next or --framework vite")) {
+      throw new Error("Create did not reject an unsupported framework with clear guidance.");
+    }
+    const inheritedFramework = await runFailure(
+      tempRoot,
+      "create",
+      "created-inherited",
+      "--framework",
+      "constructor",
+    );
+    if (
+      !inheritedFramework.includes("Use --framework next or --framework vite") ||
+      fs.existsSync(path.join(tempRoot, "created-inherited"))
+    ) {
+      throw new Error("Create did not reject an inherited framework property before writing.");
+    }
+    const unsupportedProfile = await runFailure(
+      tempRoot,
+      "create",
+      "created-minimum",
+      "--framework",
+      "next",
+      "--profile",
+      "minimum",
+    );
+    if (!unsupportedProfile.includes("Use --profile current")) {
+      throw new Error("Create did not reject an unsupported dependency profile.");
+    }
+    const existingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "created-next",
+      "--framework",
+      "next",
+    );
+    if (!existingCreate.includes("Create target already exists")) {
+      throw new Error("Create did not preserve an existing target.");
+    }
+    const escapingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "../outside-project",
+      "--framework",
+      "next",
+    );
+    if (!escapingCreate.includes("must stay inside the current directory")) {
+      throw new Error("Create did not reject a directory escape.");
+    }
+    const unsafeNameCreate = await runFailure(
+      tempRoot,
+      "create",
+      "Uppercase-App",
+      "--framework",
+      "next",
+    );
+    if (!unsafeNameCreate.includes("lowercase letters, numbers, and hyphens")) {
+      throw new Error("Create did not reject an unsafe project package name.");
+    }
+    const unsafeParentCreate = await runFailure(
+      tempRoot,
+      "create",
+      "parent dir/my-app",
+      "--framework",
+      "next",
+    );
+    if (!unsafeParentCreate.includes("lowercase letters, numbers, and hyphens")) {
+      throw new Error("Create did not reject an unsafe project parent directory.");
+    }
+    const symlinkTarget = path.join(tempRoot, "create-symlink-target");
+    fs.mkdirSync(symlinkTarget);
+    fs.symlinkSync(symlinkTarget, path.join(tempRoot, "create-symlink"), "dir");
+    const symlinkCreate = await runFailure(
+      tempRoot,
+      "create",
+      "create-symlink/app",
+      "--framework",
+      "next",
+    );
+    if (
+      !symlinkCreate.includes("symlinked parent") ||
+      fs.existsSync(path.join(symlinkTarget, "app"))
+    ) {
+      throw new Error("Create did not reject a symlinked target parent before writing.");
+    }
+    const danglingCreatePath = path.join(tempRoot, "dangling-project");
+    fs.symlinkSync(path.join(tempRoot, "missing-create-target"), danglingCreatePath);
+    const danglingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "dangling-project",
+      "--framework",
+      "vite",
+    );
+    if (
+      !danglingCreate.includes("Create target already exists") ||
+      !fs.lstatSync(danglingCreatePath).isSymbolicLink()
+    ) {
+      throw new Error("Create did not preserve a dangling symlink target entry.");
+    }
+    const failedCreate = await runFailureWithEnv(
+      tempRoot,
+      { NERIO_TEST_CREATE_FAILURE: "before-commit" },
+      "create",
+      "failed-create",
+      "--framework",
+      "vite",
+    );
+    if (
+      !failedCreate.includes("Injected project creation failure") ||
+      fs.existsSync(path.join(tempRoot, "failed-create")) ||
+      fs.readdirSync(tempRoot).some((entry) => entry.startsWith(".nerio-create-"))
+    ) {
+      throw new Error("Create did not clean its staging directory after a handled failure.");
+    }
+
     const helpOutput = await run(localTarget, "--help");
     if (
+      !helpOutput.includes("nerio create") ||
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
       !helpOutput.includes("nerio search") ||
@@ -2328,6 +2500,16 @@ async function verify() {
       !addHelpOutput.includes("--dry-run")
     ) {
       throw new Error("Add help output does not describe the source install options.");
+    }
+    const createHelpOutput = await run(localTarget, "create", "--help");
+    if (
+      !createHelpOutput.includes("nerio create <directory>") ||
+      !createHelpOutput.includes("--framework <next|vite>") ||
+      !createHelpOutput.includes("--profile current") ||
+      !createHelpOutput.includes("package-mode") ||
+      !createHelpOutput.includes("source lifecycle remains init/add")
+    ) {
+      throw new Error("Create help output does not describe the bounded bootstrap profiles.");
     }
     const removeHelpOutput = await run(localTarget, "remove", "--help");
     if (

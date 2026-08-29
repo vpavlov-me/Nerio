@@ -10,6 +10,8 @@ Nerio Pro is the paid advanced layer: complex product components, templates, pre
 
 Core = building blocks. Pro = product-ready solutions.
 
+Create a maintained package-mode project with `pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-next-app --framework next` or `pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-vite-app --framework vite`. The current profile pins the clean-tested React, framework, TypeScript, and Tailwind versions, writes one deterministic project directory atomically, and configures tokens, residual styles, compiled package scanning, and the `@nerio-ui/ui` versus `@nerio-ui/ui/client` boundary. Source-mode ownership remains the `nerio init` and `nerio add` lifecycle inside an existing application. React Router and backend, authentication, database, deployment, or product scaffolding are unsupported.
+
 The canonical Core UI implementation and review standard is `docs/core-ui-best-practices.md`. Apply
 its four-owner model: the maintainer owns visual-language values and character, Core owns reusable
 technical primitive contracts, consumers own application policy and composition, and Pro owns

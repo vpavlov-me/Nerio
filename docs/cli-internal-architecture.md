@@ -1,9 +1,9 @@
 # CLI internal architecture
 
-Issue [#352](https://github.com/vpavlov-me/Nerio/issues/352) modularizes the CLI before adding new
-lifecycle or bootstrap commands. The published `nerio` bin remains the only public package
-entrypoint. Files under `packages/cli/src/internal/` are private implementation details and do not
-create supported package subpaths.
+Issue [#352](https://github.com/vpavlov-me/Nerio/issues/352) first modularized the CLI and then added
+reviewed lifecycle and bootstrap commands in focused slices. The published `nerio` bin remains the
+only public package entrypoint. Files under `packages/cli/src/internal/` are private implementation
+details and do not create supported package subpaths.
 
 ## Responsibility boundaries
 
@@ -11,6 +11,7 @@ create supported package subpaths.
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `index.js`                 | Compose the runtime and report the final process error.                                               |
 | `internal/command-line.js` | Parse current arguments and render existing help text.                                                |
+| `internal/create.js`       | Validate and atomically write maintained deterministic package-mode project profiles.                 |
 | `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
 | `internal/remove.js`       | Plan direct-root removal, shared ownership retention, conflicts, and human or JSON results.           |
 | `internal/discovery.js`    | Run bounded read-only Registry list, info, search, view, and docs inspection.                         |
@@ -64,16 +65,31 @@ The Phase 2.3 inspection slice was measured against the merged safe-remove basel
 The existing package budgets remain unchanged. The Terser pass offsets most compressed-package
 cost while keeping the internal source modules independently reviewable.
 
-The Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
+The final Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
 
-- deterministic generated bin: 57,437 to 56,004 bytes (`-1,433`, or `-2.5%`);
-- package tarball: 19,753 to 19,972 bytes (`+219`, or `+1.1%`);
-- package unpacked: 61,724 to 60,404 bytes (`-1,320`, or `-2.1%`);
+- deterministic generated bin: 57,437 to 56,716 bytes (`-721`, or `-1.3%`);
+- package tarball: 19,753 to 20,243 bytes (`+490`, or `+2.5%`);
+- package unpacked: 61,724 to 61,116 bytes (`-608`, or `-1.0%`);
 - direct `nerio --help`: 0.04–0.06 seconds across five warm runs;
 - complete built local and remote CLI fixtures: 63.89 and 87.90 seconds across two post-review
   runs.
 
-The 20,000-byte tarball and 82,000-byte unpacked package budgets remain unchanged.
+Phase 2.4 raised the tarball budget from 20,000 to 20,500 bytes for its reviewed migration safety
+checks; the unpacked budget remained 82,000 bytes. The separate Phase 3 adjustment follows.
+
+The Phase 3 project-bootstrap slice was measured against the merged versioned-migration baseline:
+
+- deterministic generated bin: 56,716 to 65,556 bytes (`+8,840`, or `+15.6%`);
+- package tarball: 20,243 to 23,424 bytes (`+3,181`, or `+15.7%`);
+- unpacked package: 61,116 to 70,525 bytes (`+9,409`, or `+15.4%`);
+- direct `nerio --help`: 0.05 seconds on both baselines;
+- complete built CLI fixtures plus generated Next.js/Vite packed-artifact builds and served-preview
+  smokes: 112.22 seconds.
+
+The unpacked budget remains 82,000 bytes. The tarball budget rises from 20,500 to 23,500 bytes in
+this focused feature slice: the measured 3,181-byte increase buys two maintained deterministic
+project profiles, atomic target creation, bounded JSON output, and clean package/build/browser
+evidence. The 76-byte remaining headroom keeps future additions review-gated.
 
 ## Multi-item add lifecycle
 
@@ -125,6 +141,22 @@ Structured output uses migration-result schema `1.0.0`, documented in
 `docs/cli-migrate-output.md`. Migration planning does not resolve, fetch, or execute Registry
 metadata, and unsupported targets or version routes fail before writes.
 
+## Supported project bootstrap
+
+Phase 3 adds `nerio create <directory> --framework <next|vite>` through the private create module.
+The only admitted profile is `current`, whose exact React, framework, TypeScript, Tailwind, and
+Nerio versions are synchronized with release and dependency-support metadata. Both templates use
+package mode because it has clean packed-consumer evidence; editable source remains the existing
+`init` and `add` lifecycle instead of a second generator implementation.
+
+Creation accepts a new relative path within the current directory, requires every path segment to
+use lowercase npm-safe letters, numbers, and hyphens, rejects existing entries (including dangling
+symlinks) and symlinked parents, stages every deterministic file adjacent to the target, and
+renames the complete directory into place. It never runs a package manager, generated script, Git
+command, or Registry code. JSON output uses create-result schema `1.0.0`, documented in
+`docs/cli-create-output.md`. React Router stays deferred until a maintained clean-consumer fixture
+proves its exact setup.
+
 ## Explicit non-goals
 
 - No configuration shape, lock schema, or exit-code semantics change beyond the explicit schema
@@ -132,6 +164,7 @@ metadata, and unsupported targets or version routes fail before writes.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
 - No change to existing Registry source transaction, rollback, crash recovery, concurrency, or
   source-ownership behavior.
-- No additional configuration or lock migration route, project bootstrap, or arbitrary script
-  execution.
+- No additional configuration or lock migration route or arbitrary script execution.
+- No source-mode bootstrap, React Router profile, package-manager execution, backend, auth,
+  database, deployment, or product scaffolding. Source ownership remains the existing lifecycle.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

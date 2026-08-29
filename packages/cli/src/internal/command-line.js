@@ -4,6 +4,10 @@ const path = require("node:path");
 function createCommandLine(cwd, args) {
   const command = args[0];
   const valueOptions = new Set(["--components", "--limit", "--registry"]);
+  if (command === "create") {
+    valueOptions.add("--framework");
+    valueOptions.add("--profile");
+  }
   const flagOptions = new Set([
     "--all",
     "--allow-insecure-http",
@@ -59,6 +63,12 @@ function createCommandLine(cwd, args) {
         "",
         "Create nerio.json for source-installed components.",
         "Defaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
+      ],
+      create: [
+        "Usage: nerio create <directory> --framework <next|vite> [--profile current] [--json]",
+        "",
+        "Create a maintained package-mode project with deterministic Nerio and Tailwind setup.",
+        "Only the current Next.js and Vite profiles are supported; source lifecycle remains init/add.",
       ],
       add: [
         "Usage: nerio add <component...> [--all] [--registry <path-or-url>] [--dry-run] [--json] [--overwrite] [--allow-insecure-http]",
@@ -119,6 +129,7 @@ function createCommandLine(cwd, args) {
         "Usage: nerio <command> [options]",
         "",
         "Commands:",
+        "  nerio create   Create a maintained package-mode project",
         "  nerio init     Create nerio.json",
         "  nerio add      Install editable source components",
         "  nerio remove   Safely remove directly installed source components",
