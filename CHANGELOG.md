@@ -60,6 +60,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added the explicit `nerio migrate config 0.1.0 1.0.0` route with dry-run by default, bounded
+  versioned JSON, additive-field preservation, project locking, durable backup, rollback, and crash
+  recovery. Unsupported routes fail before writes, and Registry scripts or other external code are
+  never executed.
 - Added bounded read-only `nerio search`, `nerio view`, and `nerio docs` inspection over immutable
   Registry metadata, including stable JSON, source path and integrity details, dependency metadata,
   usage, accessibility guidance, and remote-policy preservation without installing source.

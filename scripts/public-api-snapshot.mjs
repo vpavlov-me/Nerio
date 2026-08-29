@@ -416,6 +416,7 @@ function cliContracts() {
   return {
     addOutputSchema: constant("ADD_OUTPUT_SCHEMA_VERSION"),
     inspectionOutputSchema: constant("INSPECTION_OUTPUT_SCHEMA_VERSION"),
+    migrationOutputSchema: constant("MIGRATION_OUTPUT_SCHEMA_VERSION"),
     removeOutputSchema: constant("REMOVE_OUTPUT_SCHEMA_VERSION"),
     configSchemas: constant("SUPPORTED_CONFIG_SCHEMAS"),
     defaultRegistry: constant("DEFAULT_REGISTRY"),
@@ -425,6 +426,7 @@ function cliContracts() {
         "init",
         "add",
         "remove",
+        "migrate",
         "diff",
         "update",
         "list",

@@ -12,8 +12,9 @@
       "info": "Usage: nerio info <component> [--registry <path-or-url>] [--allow-insecure-http]\n\nShow registry metadata, dependencies, tokens, files, and usage for one component.",
       "init": "Usage: nerio init [--registry <path-or-url>] [--components <directory>] [--allow-insecure-http]\n\nCreate nerio.json for source-installed components.\nDefaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
       "list": "Usage: nerio list [--registry <path-or-url>] [--allow-insecure-http]\n\nList component names, titles, and categories from the configured registry.",
+      "migrate": "Usage: nerio migrate config 0.1.0 1.0.0 [--apply] [--json]\n\nDry-run default; --apply writes.",
       "remove": "Usage: nerio remove <component...> [--dry-run] [--json] [--force]\n\nRemove direct source items and dependencies no longer referenced by another direct item.",
-      "root": "Usage: nerio <command> [options]\n\nCommands:\n  nerio init     Create nerio.json\n  nerio add      Install editable source components\n  nerio remove   Safely remove directly installed source components\n  nerio diff     Inspect local and upstream source drift\n  nerio update   Preview or apply non-destructive source updates\n  nerio list     List registry components\n  nerio info     Show metadata for one component\n  nerio search   Search documented registry metadata\n  nerio view     Inspect source and dependency metadata\n  nerio docs     Inspect usage and accessibility guidance\n  nerio doctor   Validate configuration and registry metadata\n\nRecommended local install: pnpm add -D @nerio-ui/registry@<version> @nerio-ui/cli@<version>\nRun local commands with: pnpm exec nerio <command> [options]\nOne-off example: pnpm dlx @nerio-ui/cli@<version> init\n\nRun nerio <command> --help for command options.",
+      "root": "Usage: nerio <command> [options]\n\nCommands:\n  nerio init     Create nerio.json\n  nerio add      Install editable source components\n  nerio remove   Safely remove directly installed source components\n  nerio migrate  Migrate legacy configuration\n  nerio diff     Inspect local and upstream source drift\n  nerio update   Preview or apply non-destructive source updates\n  nerio list     List registry components\n  nerio info     Show metadata for one component\n  nerio search   Search documented registry metadata\n  nerio view     Inspect source and dependency metadata\n  nerio docs     Inspect usage and accessibility guidance\n  nerio doctor   Validate configuration and registry metadata\n\nRecommended local install: pnpm add -D @nerio-ui/registry@<version> @nerio-ui/cli@<version>\nRun local commands with: pnpm exec nerio <command> [options]\nOne-off example: pnpm dlx @nerio-ui/cli@<version> init\n\nRun nerio <command> --help for command options.",
       "search": "Usage: nerio search <query...> [--limit <1-50>] [--registry <path-or-url>] [--json] [--allow-insecure-http]\n\nSearch documented Registry metadata without installing source.",
       "update": "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force] [--allow-insecure-http]\n\nApply safe upstream source changes without overwriting local modifications.",
       "view": "Usage: nerio view <component> [--registry <path-or-url>] [--json] [--allow-insecure-http]\n\nInspect one Registry item's source, file, integrity, and dependency metadata."
@@ -61,6 +62,7 @@
       "requestedItems": ["string"],
       "schemaVersion": "string"
     },
+    "migrationOutputSchema": "\"1.0.0\"",
     "removeOutputSchema": "\"1.0.0\""
   },
   "docsRoutes": [
@@ -13786,6 +13788,7 @@
           "pnpm exec nerio search keyboard --limit 5",
           "pnpm exec nerio view button --json",
           "pnpm exec nerio docs button",
+          "pnpm exec nerio migrate config 0.1.0 1.0.0",
           "pnpm exec nerio add button --dry-run",
           "pnpm exec nerio add button card --dry-run",
           "pnpm exec nerio add --all --dry-run --json",

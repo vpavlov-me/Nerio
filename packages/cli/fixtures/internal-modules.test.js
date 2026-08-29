@@ -21,6 +21,7 @@ test("the CLI entrypoint only composes bounded internal modules", () => {
   }
   assert.ok(fs.statSync(path.join(sourceRoot, "internal", "add.js")).isFile());
   assert.ok(fs.statSync(path.join(sourceRoot, "internal", "discovery.js")).isFile());
+  assert.ok(fs.statSync(path.join(sourceRoot, "internal", "migrate.js")).isFile());
   assert.ok(fs.statSync(path.join(sourceRoot, "internal", "remove.js")).isFile());
 });
 
@@ -30,6 +31,7 @@ test("presentation, transport, diagnostics, and transactions stay separated", ()
   const remove = read("internal/remove.js");
   const diagnostics = read("internal/diagnostics.js");
   const discovery = read("internal/discovery.js");
+  const migrate = read("internal/migrate.js");
   const registry = read("internal/registry.js");
   const workspace = read("internal/workspace.js");
 
@@ -37,13 +39,29 @@ test("presentation, transport, diagnostics, and transactions stay separated", ()
   assert.match(commands, /createAddCommand/);
   assert.match(commands, /createRemoveCommand/);
   assert.match(commands, /createDiscoveryCommand/);
+  assert.match(commands, /createMigrationCommand/);
   assert.doesNotMatch(commands, /async function add/);
   assert.doesNotMatch(add, /worker_threads|REMOTE_(?:SOURCE|MANIFEST)_BYTES|TRANSACTION_PREFIX/);
   assert.doesNotMatch(remove, /worker_threads|REMOTE_(?:SOURCE|MANIFEST)_BYTES|TRANSACTION_PREFIX/);
   assert.doesNotMatch(discovery, /applyTransaction|nerio\.lock\.json|worker_threads/);
+  assert.doesNotMatch(migrate, /readManifest|registryLocation|eval|Function\(/);
   assert.doesNotMatch(diagnostics, /worker_threads|readRemoteText|applyTransaction/);
   assert.doesNotMatch(registry, /TRANSACTION_PREFIX|nerio\.lock\.json|Worker/);
   assert.doesNotMatch(workspace, /Usage: nerio|function help|process\.argv/);
+});
+
+test("migrate positional parsing keeps the explicit target and version route", () => {
+  const { createCommandLine } = require("../src/internal/command-line");
+  const parsed = createCommandLine(process.cwd(), [
+    "migrate",
+    "config",
+    "0.1.0",
+    "1.0.0",
+    "--apply",
+    "--json",
+  ]);
+  assert.deepEqual(parsed.migrationArguments, ["config", "0.1.0", "1.0.0"]);
+  assert.equal(parsed.hasFlag("--apply"), true);
 });
 
 test("search positional parsing excludes option values and keeps a multi-word query", () => {

@@ -14,6 +14,7 @@ create supported package subpaths.
 | `internal/add.js`          | Select add roots, build the deterministic preflight plan, and emit human or JSON results.             |
 | `internal/remove.js`       | Plan direct-root removal, shared ownership retention, conflicts, and human or JSON results.           |
 | `internal/discovery.js`    | Run bounded read-only Registry list, info, search, view, and docs inspection.                         |
+| `internal/migrate.js`      | Select reviewed version routes, build deterministic plans, and emit human or JSON results.            |
 | `internal/registry.js`     | Read and validate local or remote immutable Registry input.                                           |
 | `internal/workspace.js`    | Validate paths and state, plan source changes, and own locks, journals, recovery, and atomic commits. |
 | `internal/diagnostics.js`  | Inspect consumer dependencies, Tailwind setup, and installed-source drift.                            |
@@ -63,6 +64,16 @@ The Phase 2.3 inspection slice was measured against the merged safe-remove basel
 The existing package budgets remain unchanged. The Terser pass offsets most compressed-package
 cost while keeping the internal source modules independently reviewable.
 
+The Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
+
+- deterministic generated bin: 57,437 to 55,827 bytes (`-1,610`, or `-2.8%`);
+- package tarball: 19,753 to 19,970 bytes (`+217`, or `+1.1%`);
+- package unpacked: 61,724 to 60,446 bytes (`-1,278`, or `-2.1%`);
+- direct `nerio --help`: 0.04–0.06 seconds across five warm runs;
+- complete built local and remote CLI fixtures: 57.57 seconds.
+
+The 20,000-byte tarball and 82,000-byte unpacked package budgets remain unchanged.
+
 ## Multi-item add lifecycle
 
 The first Phase 2 slice accepts multiple explicit roots or `--all`. It sorts and deduplicates direct
@@ -98,10 +109,26 @@ without fetching source content. Docs returns one item's usage, accessibility gu
 optional docs path. Structured output uses inspection schema `1.0.0`, documented in
 `docs/cli-registry-inspection.md`.
 
+## Versioned configuration migration
+
+The fourth Phase 2 slice adds one reviewed route: `nerio migrate config 0.1.0 1.0.0`. The route is
+compiled into the private migration module and changes only the existing `schemaVersion` field in
+`nerio.json`; additive consumer fields remain intact. Preview is the default, while `--apply` uses
+the shared project lock and a dedicated durable transaction journal that backs up the exact
+configuration bytes, validates the planned hash, writes atomically, rolls back failures, and
+recovers an interrupted write on the next state-sensitive command.
+
+Structured output uses migration-result schema `1.0.0`, documented in
+`docs/cli-migrate-output.md`. Migration planning does not resolve, fetch, or execute Registry
+metadata, and unsupported targets or version routes fail before writes.
+
 ## Explicit non-goals
 
-- No configuration schema, lock schema, or exit-code semantics change.
+- No configuration shape, lock schema, or exit-code semantics change beyond the explicit schema
+  marker migration.
 - No Registry transport, integrity, timeout, redirect, or credential-policy change.
-- No transaction, rollback, crash recovery, concurrency, or source-ownership behavior change.
-- No versioned migration or project bootstrap implementation in this slice.
+- No change to existing Registry source transaction, rollback, crash recovery, concurrency, or
+  source-ownership behavior.
+- No additional configuration or lock migration route, project bootstrap, or arbitrary script
+  execution.
 - No package publication, tag movement, stable-line backport, or `main` promotion.

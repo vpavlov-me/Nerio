@@ -10,6 +10,7 @@ const INTEGRITY_PATTERN = /^sha256-([a-f0-9]{64})$/;
 const LOCK_CONTENT_HASH = Symbol("lock-content-hash");
 const TRANSACTION_PREFIX = ".nerio-transaction-";
 const TRANSACTION_SCHEMA_VERSION = "1.0.0";
+const CONFIG_MIGRATION_ID = "config:0.1.0-to-1.0.0";
 const REGISTRY_LOCK_DIRECTORY = ".nerio-registry-lock";
 const REGISTRY_LOCK_SCHEMA_VERSION = "1.0.0";
 const REGISTRY_LOCK_WAIT_MS = 60_000;
@@ -433,21 +434,45 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
   }
 
   function validateRecoveryJournal(transactionRoot, journal) {
-    const config = readConfig(true);
-    if (typeof config.components !== "string" || !config.components) {
-      throw new Error("nerio.json must define a components directory before recovery.");
-    }
-    const expectedRoot = path.resolve(cwd, config.components);
     if (
       journal?.schemaVersion !== TRANSACTION_SCHEMA_VERSION ||
       !["committing", "committed"].includes(journal.phase) ||
-      !Array.isArray(journal.snapshots) ||
-      !journal.lockSnapshot
+      !Array.isArray(journal.snapshots)
     ) {
       throw new Error(
         `Interrupted Registry transaction has an invalid journal: ${transactionRoot}`,
       );
     }
+    if (journal.migration !== undefined) {
+      const configTarget = path.join(cwd, "nerio.json");
+      if (
+        journal.migration !== CONFIG_MIGRATION_ID ||
+        journal.snapshots.length !== 0 ||
+        journal.lockSnapshot?.target !== configTarget ||
+        journal.lockSnapshot.existed !== true ||
+        typeof journal.lockSnapshot.mode !== "number"
+      ) {
+        throw new Error(
+          `Interrupted Registry transaction has an invalid journal: ${transactionRoot}`,
+        );
+      }
+      const configStats = fs.lstatSync(configTarget);
+      if (!configStats.isFile() || configStats.isSymbolicLink()) {
+        throw new Error(`Interrupted Registry transaction target is unsafe: ${configTarget}`);
+      }
+      backupPath(transactionRoot, journal.lockSnapshot);
+      return;
+    }
+    if (!journal.lockSnapshot) {
+      throw new Error(
+        `Interrupted Registry transaction has an invalid journal: ${transactionRoot}`,
+      );
+    }
+    const config = readConfig(true);
+    if (typeof config.components !== "string" || !config.components) {
+      throw new Error("nerio.json must define a components directory before recovery.");
+    }
+    const expectedRoot = path.resolve(cwd, config.components);
     const targets = new Set();
     for (const snapshot of journal.snapshots) {
       if (
@@ -566,17 +591,37 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       validateRecoveryJournal(transactionRoot, journal);
       if (journal.phase === "committing") {
         restoreTransaction(transactionRoot, journal.snapshots, journal.lockSnapshot);
-        report(`Recovered interrupted Registry transaction ${entry.name}.`);
+        report(
+          `Recovered interrupted ${journal.migration ? "Nerio migration" : "Registry transaction"} ${entry.name}.`,
+        );
       }
       fs.rmSync(transactionRoot, { recursive: true, force: true });
     }
   }
 
-  function applyTransaction(operations, nextState, expectedLockHash, validations = operations) {
-    const lockTarget = statePath();
+  function applyMigrationTransaction({ id, target, content, expectedHash }) {
+    const configTarget = path.join(cwd, "nerio.json");
+    if (id !== CONFIG_MIGRATION_ID || target !== configTarget) {
+      throw new Error("Invalid migration.");
+    }
+    applyTransaction([], JSON.parse(content), expectedHash, [], {
+      migration: id,
+      stateTarget: target,
+    });
+  }
+
+  function applyTransaction(
+    operations,
+    nextState,
+    expectedLockHash,
+    validations = operations,
+    journalMetadata = {},
+  ) {
+    const migration = Boolean(journalMetadata.migration);
+    const lockTarget = journalMetadata.stateTarget || statePath();
     try {
       if (fs.lstatSync(lockTarget).isSymbolicLink()) {
-        throw new Error(`${STATE_FILENAME} must not be a symlink.`);
+        throw new Error(`${path.basename(lockTarget)} must not be a symlink.`);
       }
     } catch (error) {
       if (error?.code !== "ENOENT") throw error;
@@ -621,7 +666,11 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       ? hashContent(fs.readFileSync(lockTarget))
       : null;
     if (currentLockHash !== expectedLockHash) {
-      throw new Error(`${STATE_FILENAME} changed after planning; no source files were written.`);
+      throw new Error(
+        migration
+          ? "nerio.json changed after planning; no files were written."
+          : `${STATE_FILENAME} changed after planning; no source files were written.`,
+      );
     }
 
     const transactionRoot = fs.mkdtempSync(path.join(cwd, TRANSACTION_PREFIX));
@@ -679,6 +728,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       fs.writeFileSync(path.join(stageRoot, "lock"), nextLock, { flag: "wx" });
       const journal = {
         schemaVersion: TRANSACTION_SCHEMA_VERSION,
+        ...(journalMetadata.migration ? { migration: journalMetadata.migration } : {}),
         phase: "committing",
         snapshots,
         lockSnapshot,
@@ -708,6 +758,8 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
         injectFailure("during-lock-write");
       }
       writeFileAtomic(lockTarget, fs.readFileSync(path.join(stageRoot, "lock")));
+      injectFailure("after-state-write");
+      injectCrash("after-state-write");
       writeTransactionJournal(transactionRoot, { ...journal, phase: "committed" });
       injectCrash("after-lock-write");
     } catch (error) {
@@ -720,7 +772,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
         );
       }
       throw new Error(
-        `${error.message}\nRegistry transaction rolled back without source or lock changes.`,
+        `${error.message}\n${migration ? "Migration rolled back." : "Registry transaction rolled back without source or lock changes."}`,
       );
     } finally {
       if (!preserveTransaction) fs.rmSync(transactionRoot, { recursive: true, force: true });
@@ -987,6 +1039,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
     acquireCommandLock,
     releaseCommandLock,
     recoverInterruptedTransactions,
+    applyMigrationTransaction,
     applyTransaction,
     collectItems,
     readState,
