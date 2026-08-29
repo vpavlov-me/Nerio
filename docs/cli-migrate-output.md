@@ -16,7 +16,10 @@ still matches the planned hash, backs up its exact bytes in a durable local tran
 new configuration atomically, and removes the temporary backup only after commit. A write failure
 restores the backup immediately. If the process stops during commit, the next state-sensitive CLI
 command restores an incomplete write or retains a fully committed migration before removing the
-journal.
+journal. The hash is checked again immediately before replacement, so a concurrent edit made while
+the transaction is staging is retained and the migration stops. The migration replaces only the
+top-level schema marker token in the original JSON bytes; unrelated values, including integers
+outside JavaScript's safe range, are not parsed and re-serialized into the written file.
 
 The current configuration must match the addressed `0.1.0` source version. Any other target, source
 version, destination version, malformed configuration, or unexpected current schema fails before

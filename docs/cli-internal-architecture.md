@@ -117,7 +117,9 @@ compiled into the private migration module and changes only the existing `schema
 `nerio.json`; additive consumer fields remain intact. Preview is the default, while `--apply` uses
 the shared project lock and a dedicated durable transaction journal that backs up the exact
 configuration bytes, validates the planned hash, writes atomically, rolls back failures, and
-recovers an interrupted write on the next state-sensitive command.
+recovers an interrupted write on the next state-sensitive command. The transaction rechecks the
+hash immediately before replacement, and the migration edits only the top-level schema marker token
+so additive JSON values are retained byte for byte.
 
 Structured output uses migration-result schema `1.0.0`, documented in
 `docs/cli-migrate-output.md`. Migration planning does not resolve, fetch, or execute Registry

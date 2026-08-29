@@ -3,6 +3,14 @@ const path = require("node:path");
 const CONFIG_MIGRATION_ID = "config:0.1.0-to-1.0.0";
 const MIGRATION_OUTPUT_SCHEMA_VERSION = "1.0.0";
 
+function migrateSchemaVersion(source) {
+  const marker = /("schemaVersion"\s*:\s*)"0\.1\.0"/g;
+  if (source.match(marker)?.length !== 1) throw new Error("Invalid migration source.");
+  const migrated = source.replace(marker, '$1"1.0.0"');
+  if (JSON.parse(migrated).schemaVersion !== "1.0.0") throw new Error("Invalid migration source.");
+  return migrated;
+}
+
 function createMigrationCommand(services) {
   const {
     cwd,
@@ -21,7 +29,6 @@ function createMigrationCommand(services) {
     if (hasFlag("--apply") && hasFlag("--dry-run")) {
       throw new Error("--dry-run conflicts with --apply.");
     }
-    const toVersion = migrationArguments[2];
     if (migrationArguments.join(":") !== "config:0.1.0:1.0.0") throw new Error(help("migrate"));
 
     const target = path.join(cwd, "nerio.json");
@@ -49,7 +56,7 @@ function createMigrationCommand(services) {
       applyMigrationTransaction({
         id: CONFIG_MIGRATION_ID,
         target,
-        content: `${JSON.stringify({ ...config, schemaVersion: toVersion }, null, 2)}\n`,
+        content: migrateSchemaVersion(raw),
         expectedHash: hashContent(raw),
       });
     }

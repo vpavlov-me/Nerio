@@ -63,7 +63,10 @@ Items under `Unreleased` may change before the next public release.
 - Added the explicit `nerio migrate config 0.1.0 1.0.0` route with dry-run by default, bounded
   versioned JSON, additive-field preservation, project locking, durable backup, rollback, and crash
   recovery. Unsupported routes fail before writes, and Registry scripts or other external code are
-  never executed.
+  never executed. Applying the migration preserves unrelated JSON tokens exactly and stops before
+  replacement if the configuration changes during staging. The reviewed CLI tarball budget moves
+  from 20,000 to 20,500 bytes for these checks; the measured archive is 20,092 bytes and the
+  unpacked limit remains unchanged.
 - Added bounded read-only `nerio search`, `nerio view`, and `nerio docs` inspection over immutable
   Registry metadata, including stable JSON, source path and integrity details, dependency metadata,
   usage, accessibility guidance, and remote-policy preservation without installing source.

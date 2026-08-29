@@ -604,7 +604,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
     if (id !== CONFIG_MIGRATION_ID || target !== configTarget) {
       throw new Error("Invalid migration.");
     }
-    applyTransaction([], JSON.parse(content), expectedHash, [], {
+    applyTransaction([], content, expectedHash, [], {
       migration: id,
       stateTarget: target,
     });
@@ -682,6 +682,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
     let lockSnapshot;
     let committed = 0;
     let preserveTransaction = false;
+    let preserveConcurrentTarget = false;
 
     try {
       for (const [index, operation] of operations.entries()) {
@@ -724,7 +725,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
           },
         );
       }
-      const nextLock = `${JSON.stringify(nextState, null, 2)}\n`;
+      const nextLock = migration ? nextState : `${JSON.stringify(nextState, null, 2)}\n`;
       fs.writeFileSync(path.join(stageRoot, "lock"), nextLock, { flag: "wx" });
       const journal = {
         schemaVersion: TRANSACTION_SCHEMA_VERSION,
@@ -737,6 +738,14 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       pauseTransactionForFixture();
       injectFailure("after-staging");
       injectCrash("after-staging");
+
+      const lockHashBeforeCommit = fs.existsSync(lockTarget)
+        ? hashContent(fs.readFileSync(lockTarget))
+        : null;
+      if (migration && lockHashBeforeCommit !== expectedLockHash) {
+        preserveConcurrentTarget = true;
+        throw new Error("nerio.json changed after planning; no files were written.");
+      }
 
       for (const [index, operation] of operations.entries()) {
         refreshActiveRegistryLockLease();
@@ -765,7 +774,9 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       injectCrash("after-lock-write");
     } catch (error) {
       try {
-        if (lockSnapshot) restoreTransaction(transactionRoot, snapshots, lockSnapshot);
+        if (lockSnapshot && !preserveConcurrentTarget) {
+          restoreTransaction(transactionRoot, snapshots, lockSnapshot);
+        }
       } catch (rollbackError) {
         preserveTransaction = true;
         throw new Error(
@@ -773,7 +784,13 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
         );
       }
       throw new Error(
-        `${error.message}\n${migration ? "Migration rolled back." : "Registry transaction rolled back without source or lock changes."}`,
+        `${error.message}\n${
+          migration
+            ? preserveConcurrentTarget
+              ? "Concurrent nerio.json change preserved."
+              : "Migration rolled back."
+            : "Registry transaction rolled back without source or lock changes."
+        }`,
       );
     } finally {
       if (!preserveTransaction) fs.rmSync(transactionRoot, { recursive: true, force: true });

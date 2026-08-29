@@ -1729,6 +1729,44 @@ async function verifyVersionedMigrations(tempRoot) {
   }
   assertNoTransactionArtifacts(malformedTarget, "Rejected invalid versioned migration");
 
+  const preciseTarget = path.join(tempRoot, "migration-precise-consumer");
+  fs.mkdirSync(preciseTarget);
+  const preciseInitial =
+    '{"extension":{"accountId":9007199254740993},"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio"}\n';
+  fs.writeFileSync(path.join(preciseTarget, "nerio.json"), preciseInitial);
+  await run(preciseTarget, ...route, "--apply");
+  const preciseMigrated = fs.readFileSync(path.join(preciseTarget, "nerio.json"), "utf8");
+  if (
+    preciseMigrated !== preciseInitial.replace('"schemaVersion":"0.1.0"', '"schemaVersion":"1.0.0"')
+  ) {
+    throw new Error("Versioned migration changed bytes outside the addressed schema marker.");
+  }
+  assertNoTransactionArtifacts(preciseTarget, "Exact-token versioned migration");
+
+  const concurrentTarget = path.join(tempRoot, "migration-concurrent-consumer");
+  writeLegacyConfig(concurrentTarget);
+  const concurrentMigration = runFailureWithEnv(
+    concurrentTarget,
+    { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" },
+    ...route,
+    "--apply",
+  );
+  await waitForFixture(
+    () => fs.readdirSync(concurrentTarget).some((entry) => entry.startsWith(".nerio-transaction-")),
+    "a staged versioned migration",
+  );
+  const concurrentEdit =
+    '{"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio","concurrent":true}\n';
+  fs.writeFileSync(path.join(concurrentTarget, "nerio.json"), concurrentEdit);
+  const concurrentResult = await concurrentMigration;
+  if (
+    !concurrentResult.includes("changed after planning") ||
+    fs.readFileSync(path.join(concurrentTarget, "nerio.json"), "utf8") !== concurrentEdit
+  ) {
+    throw new Error("Versioned migration replaced or rolled back a concurrent configuration edit.");
+  }
+  assertNoTransactionArtifacts(concurrentTarget, "Concurrent versioned migration");
+
   fs.chmodSync(path.join(target, "nerio.json"), 0o600);
   const applied = JSON.parse(await run(target, ...route, "--apply", "--json"));
   const migrated = JSON.parse(fs.readFileSync(path.join(target, "nerio.json"), "utf8"));
