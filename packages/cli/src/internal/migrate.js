@@ -4,9 +4,32 @@ const CONFIG_MIGRATION_ID = "config:0.1.0-to-1.0.0";
 const MIGRATION_OUTPUT_SCHEMA_VERSION = "1.0.0";
 
 function migrateSchemaVersion(source) {
-  const marker = /("schemaVersion"\s*:\s*)"0\.1\.0"/g;
-  if (source.match(marker)?.length !== 1) throw new Error("Invalid migration source.");
-  const migrated = source.replace(marker, '$1"1.0.0"');
+  let depth = 0;
+  let quoted = false;
+  let escaped = false;
+  let match = null;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (quoted) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') quoted = false;
+    } else if (character === '"') {
+      const candidate =
+        depth === 1 ? source.slice(index).match(/^"schemaVersion"\s*:\s*"0\.1\.0"/)?.[0] : null;
+      if (candidate) {
+        if (match) throw new Error("Invalid migration source.");
+        match = { start: index, end: index + candidate.length, candidate };
+      }
+      quoted = true;
+    } else if (character === "{" || character === "[") {
+      depth += 1;
+    } else if (character === "}" || character === "]") {
+      depth -= 1;
+    }
+  }
+  if (!match) throw new Error("Invalid migration source.");
+  const migrated = `${source.slice(0, match.start)}${match.candidate.replace("0.1.0", "1.0.0")}${source.slice(match.end)}`;
   if (JSON.parse(migrated).schemaVersion !== "1.0.0") throw new Error("Invalid migration source.");
   return migrated;
 }

@@ -65,7 +65,7 @@ Items under `Unreleased` may change before the next public release.
   recovery. Unsupported routes fail before writes, and Registry scripts or other external code are
   never executed. Applying the migration preserves unrelated JSON tokens exactly and stops before
   replacement if the configuration changes during staging. The reviewed CLI tarball budget moves
-  from 20,000 to 20,500 bytes for these checks; the measured archive is 20,092 bytes and the
+  from 20,000 to 20,500 bytes for these checks; the measured archive is 20,243 bytes and the
   unpacked limit remains unchanged.
 - Added bounded read-only `nerio search`, `nerio view`, and `nerio docs` inspection over immutable
   Registry metadata, including stable JSON, source path and integrity details, dependency metadata,

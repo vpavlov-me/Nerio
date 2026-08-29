@@ -1732,12 +1732,13 @@ async function verifyVersionedMigrations(tempRoot) {
   const preciseTarget = path.join(tempRoot, "migration-precise-consumer");
   fs.mkdirSync(preciseTarget);
   const preciseInitial =
-    '{"extension":{"accountId":9007199254740993},"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio"}\n';
+    '{"extension":{"schemaVersion":"0.1.0","accountId":9007199254740993},"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio"}\n';
   fs.writeFileSync(path.join(preciseTarget, "nerio.json"), preciseInitial);
   await run(preciseTarget, ...route, "--apply");
   const preciseMigrated = fs.readFileSync(path.join(preciseTarget, "nerio.json"), "utf8");
   if (
-    preciseMigrated !== preciseInitial.replace('"schemaVersion":"0.1.0"', '"schemaVersion":"1.0.0"')
+    preciseMigrated !==
+    preciseInitial.replace('},"schemaVersion":"0.1.0"', '},"schemaVersion":"1.0.0"')
   ) {
     throw new Error("Versioned migration changed bytes outside the addressed schema marker.");
   }
