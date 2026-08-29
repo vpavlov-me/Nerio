@@ -2360,6 +2360,19 @@ async function verify() {
     if (!unsupportedFramework.includes("Use --framework next or --framework vite")) {
       throw new Error("Create did not reject an unsupported framework with clear guidance.");
     }
+    const inheritedFramework = await runFailure(
+      tempRoot,
+      "create",
+      "created-inherited",
+      "--framework",
+      "constructor",
+    );
+    if (
+      !inheritedFramework.includes("Use --framework next or --framework vite") ||
+      fs.existsSync(path.join(tempRoot, "created-inherited"))
+    ) {
+      throw new Error("Create did not reject an inherited framework property before writing.");
+    }
     const unsupportedProfile = await runFailure(
       tempRoot,
       "create",

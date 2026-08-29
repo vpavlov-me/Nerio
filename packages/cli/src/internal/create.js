@@ -346,7 +346,7 @@ function createCreateCommand(services) {
     const requestedDirectory = positionalArguments[0];
     const { directory, name, target } = validateDirectory(requestedDirectory);
     const framework = option("--framework");
-    if (!frameworks[framework]) {
+    if (!Object.hasOwn(frameworks, framework)) {
       throw new Error("Unsupported framework. Use --framework next or --framework vite.");
     }
     const profile = option("--profile") || CREATE_PROFILE;
