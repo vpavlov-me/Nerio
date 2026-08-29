@@ -70,6 +70,12 @@ test("create parsing keeps one directory and excludes framework and profile valu
   assert.equal(parsed.option("--profile"), "current");
 });
 
+test("search parsing preserves create-only options as query terms", () => {
+  const { createCommandLine } = require("../src/internal/command-line");
+  const parsed = createCommandLine(process.cwd(), ["search", "--framework", "next"]);
+  assert.deepEqual(parsed.positionalArguments, ["--framework", "next"]);
+});
+
 test("create current profile matches coordinated release and dependency support metadata", () => {
   const release = require("../../../quality/release-metadata.json");
   const support = require("../../../quality/dependency-support.json").profiles.current;

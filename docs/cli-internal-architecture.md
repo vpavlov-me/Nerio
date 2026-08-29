@@ -79,17 +79,17 @@ checks; the unpacked budget remained 82,000 bytes. The separate Phase 3 adjustme
 
 The Phase 3 project-bootstrap slice was measured against the merged versioned-migration baseline:
 
-- deterministic generated bin: 56,716 to 65,522 bytes (`+8,806`, or `+15.5%`);
-- package tarball: 20,243 to 23,388 bytes (`+3,145`, or `+15.5%`);
-- unpacked package: 61,116 to 70,491 bytes (`+9,375`, or `+15.3%`);
+- deterministic generated bin: 56,716 to 65,556 bytes (`+8,840`, or `+15.6%`);
+- package tarball: 20,243 to 23,424 bytes (`+3,181`, or `+15.7%`);
+- unpacked package: 61,116 to 70,525 bytes (`+9,409`, or `+15.4%`);
 - direct `nerio --help`: 0.05 seconds on both baselines;
 - complete built CLI fixtures plus generated Next.js/Vite packed-artifact builds and served-preview
   smokes: 112.22 seconds.
 
 The unpacked budget remains 82,000 bytes. The tarball budget rises from 20,500 to 23,500 bytes in
-this focused feature slice: the measured 3,145-byte increase buys two maintained deterministic
+this focused feature slice: the measured 3,181-byte increase buys two maintained deterministic
 project profiles, atomic target creation, bounded JSON output, and clean package/build/browser
-evidence. The 112-byte remaining headroom keeps future additions review-gated.
+evidence. The 76-byte remaining headroom keeps future additions review-gated.
 
 ## Multi-item add lifecycle
 

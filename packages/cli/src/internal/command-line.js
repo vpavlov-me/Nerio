@@ -3,13 +3,11 @@ const path = require("node:path");
 
 function createCommandLine(cwd, args) {
   const command = args[0];
-  const valueOptions = new Set([
-    "--components",
-    "--framework",
-    "--limit",
-    "--profile",
-    "--registry",
-  ]);
+  const valueOptions = new Set(["--components", "--limit", "--registry"]);
+  if (command === "create") {
+    valueOptions.add("--framework");
+    valueOptions.add("--profile");
+  }
   const flagOptions = new Set([
     "--all",
     "--allow-insecure-http",
