@@ -66,11 +66,12 @@ cost while keeping the internal source modules independently reviewable.
 
 The Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
 
-- deterministic generated bin: 57,437 to 55,827 bytes (`-1,610`, or `-2.8%`);
-- package tarball: 19,753 to 19,970 bytes (`+217`, or `+1.1%`);
-- package unpacked: 61,724 to 60,446 bytes (`-1,278`, or `-2.1%`);
+- deterministic generated bin: 57,437 to 56,004 bytes (`-1,433`, or `-2.5%`);
+- package tarball: 19,753 to 19,972 bytes (`+219`, or `+1.1%`);
+- package unpacked: 61,724 to 60,404 bytes (`-1,320`, or `-2.1%`);
 - direct `nerio --help`: 0.04–0.06 seconds across five warm runs;
-- complete built local and remote CLI fixtures: 57.57 seconds.
+- complete built local and remote CLI fixtures: 63.89 and 87.90 seconds across two post-review
+  runs.
 
 The 20,000-byte tarball and 82,000-byte unpacked package budgets remain unchanged.
 

@@ -1,4 +1,3 @@
-const fs = require("node:fs");
 const path = require("node:path");
 
 const CONFIG_MIGRATION_ID = "config:0.1.0-to-1.0.0";
@@ -26,10 +25,16 @@ function createMigrationCommand(services) {
     if (migrationArguments.join(":") !== "config:0.1.0:1.0.0") throw new Error(help("migrate"));
 
     const target = path.join(cwd, "nerio.json");
-    const config = readConfig(true);
-    const raw = fs.readFileSync(target, "utf8");
-    if (config.schemaVersion !== "0.1.0") {
-      throw new Error(`Expected 0.1.0; found ${config.schemaVersion || "unknown"}.`);
+    const [config, raw] = readConfig(true, true);
+    if (config?.schemaVersion !== "0.1.0") {
+      throw new Error(`Expected 0.1.0; found ${config?.schemaVersion || "unknown"}.`);
+    }
+    if (
+      ![config.registry, config.components].every(
+        (value) => typeof value === "string" && value.trim(),
+      )
+    ) {
+      throw new Error("Legacy nerio.json requires non-empty registry and components strings.");
     }
 
     const apply = hasFlag("--apply");

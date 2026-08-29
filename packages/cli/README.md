@@ -43,10 +43,6 @@ whole operation unless `--force` explicitly authorizes each reported modified-fi
 Search, view, and docs inspect validated immutable metadata without installing or fetching source.
 Search is capped at 20 results by default or 50 explicitly; `--json` uses inspection schema `1.0.0`.
 
-Migrate supports only reviewed routes. Config `0.1.0` to `1.0.0` previews by default; `--apply`
-commits with rollback and recovery. It never runs Registry migration code; `--json` uses
-migration-result schema `1.0.0`.
-
 For a one-off command, use `pnpm dlx @nerio-ui/cli init`. A project-local installation is preferred
 for repeatable, version-aligned updates.
 

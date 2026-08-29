@@ -758,6 +758,7 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
         injectFailure("during-lock-write");
       }
       writeFileAtomic(lockTarget, fs.readFileSync(path.join(stageRoot, "lock")));
+      if (migration) fs.chmodSync(lockTarget, lockSnapshot.mode);
       injectFailure("after-state-write");
       injectCrash("after-state-write");
       writeTransactionJournal(transactionRoot, { ...journal, phase: "committed" });

@@ -71,7 +71,7 @@ function createCommandLine(cwd, args) {
         "Remove direct source items and dependencies no longer referenced by another direct item.",
       ],
       migrate: [
-        "Usage: nerio migrate config 0.1.0 1.0.0 [--apply] [--json]",
+        "Usage: nerio migrate config 0.1.0 1.0.0 [--apply] [--dry-run] [--json]",
         "",
         "Dry-run default; --apply writes.",
       ],

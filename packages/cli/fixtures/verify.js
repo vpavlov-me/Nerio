@@ -1705,14 +1705,42 @@ async function verifyVersionedMigrations(tempRoot) {
     throw new Error("Versioned migration accepted conflicting preview and apply modes.");
   }
 
+  const malformedTarget = path.join(tempRoot, "migration-malformed-consumer");
+  fs.mkdirSync(malformedTarget);
+  const malformed = `${JSON.stringify({ schemaVersion: "0.1.0" }, null, 2)}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), malformed);
+  const malformedResult = await runFailure(malformedTarget, ...route, "--apply");
+  if (
+    !malformedResult.includes("requires non-empty registry and components strings") ||
+    fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== malformed
+  ) {
+    throw new Error("Versioned migration wrote an incomplete legacy configuration.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected malformed versioned migration");
+  const invalid = `${JSON.stringify(
+    { schemaVersion: "0.1.0", registry: 42, components: [] },
+    null,
+    2,
+  )}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), invalid);
+  await runFailure(malformedTarget, ...route, "--apply");
+  if (fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== invalid) {
+    throw new Error("Versioned migration wrote invalid legacy configuration fields.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected invalid versioned migration");
+
+  fs.chmodSync(path.join(target, "nerio.json"), 0o600);
   const applied = JSON.parse(await run(target, ...route, "--apply", "--json"));
   const migrated = JSON.parse(fs.readFileSync(path.join(target, "nerio.json"), "utf8"));
   if (
     applied.status !== "applied" ||
     migrated.schemaVersion !== "1.0.0" ||
-    migrated.extension?.preserved !== true
+    migrated.extension?.preserved !== true ||
+    (fs.statSync(path.join(target, "nerio.json")).mode & 0o777) !== 0o600
   ) {
-    throw new Error("Reviewed config migration did not apply its bounded transformation.");
+    throw new Error(
+      "Reviewed config migration did not apply its bounded transformation or preserve permissions.",
+    );
   }
   const alreadyCurrent = await runFailure(target, ...route, "--json");
   if (!alreadyCurrent.includes("Expected 0.1.0; found 1.0.0")) {
@@ -2276,6 +2304,7 @@ async function verify() {
     if (
       !migrateHelpOutput.includes("nerio migrate config 0.1.0 1.0.0") ||
       !migrateHelpOutput.includes("--apply") ||
+      !migrateHelpOutput.includes("--dry-run") ||
       !migrateHelpOutput.includes("Dry-run default")
     ) {
       throw new Error("Migrate help output does not describe the explicit versioned route.");
