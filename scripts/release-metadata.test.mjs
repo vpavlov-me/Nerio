@@ -32,6 +32,8 @@ test("prints a deterministic dry-run without modifying files", () => {
   assert.ok(
     output.changes.some(({ path }) => path === "apps/docs/app/docs/foundations/motion/page.tsx"),
   );
+  assert.ok(output.changes.some(({ path }) => path === "docs/cli-create-output.md"));
+  assert.ok(output.changes.some(({ path }) => path === "packages/cli/src/internal/create.js"));
   for (const packageName of ["tokens", "adapters", "registry", "ui", "cli", "mcp"]) {
     assert.ok(
       output.changes.some(({ path }) => path === `packages/${packageName}/README.md`),

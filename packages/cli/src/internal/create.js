@@ -17,6 +17,16 @@ function json(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
 }
 
+function pathEntryExists(target) {
+  try {
+    fs.lstatSync(target);
+    return true;
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
 function commonPackage(name, scripts, dependencies, devDependencies, type) {
   return json({
     name,
@@ -121,7 +131,7 @@ function nextFiles(name) {
       "export default function Page() {",
       "  return (",
       '    <main className="mx-auto grid min-h-screen max-w-3xl content-center gap-6 p-8">',
-      '      <h1 className="text-3xl font-semibold text-n-text-primary">Nerio Next.js starter</h1>',
+      '      <h1 className="text-3xl font-semibold text-n-text">Nerio Next.js starter</h1>',
       "      <Card>",
       "        <CardHeader>",
       "          <CardTitle>Server-safe package entrypoint</CardTitle>",
@@ -253,7 +263,7 @@ function viteFiles(name) {
       "  const [ready, setReady] = useState(false);",
       "  return (",
       '    <main className="mx-auto grid min-h-screen max-w-3xl content-center gap-6 p-8">',
-      '      <h1 className="text-3xl font-semibold text-n-text-primary">Nerio Vite starter</h1>',
+      '      <h1 className="text-3xl font-semibold text-n-text">Nerio Vite starter</h1>',
       "      <Card>",
       "        <CardHeader>",
       "          <CardTitle>Compiled package entrypoints</CardTitle>",
@@ -302,11 +312,14 @@ function createCreateCommand(services) {
     if (target === path.resolve(cwd) || !isWithin(cwd, target)) {
       throw new Error("Create directory must stay inside the current directory.");
     }
-    const name = path.basename(target);
-    if (!/^[a-z0-9][a-z0-9-]*$/.test(name)) {
-      throw new Error("Project directory name must use lowercase letters, numbers, and hyphens.");
+    const directory = path.relative(cwd, target);
+    const segments = directory.split(path.sep);
+    if (segments.some((segment) => !/^[a-z0-9][a-z0-9-]*$/.test(segment))) {
+      throw new Error(
+        "Every project directory segment must use lowercase letters, numbers, and hyphens.",
+      );
     }
-    return { name, target };
+    return { directory: segments.join("/"), name: segments.at(-1), target };
   }
 
   function assertSafeParents(target) {
@@ -329,8 +342,8 @@ function createCreateCommand(services) {
   }
 
   async function create() {
-    const directory = positionalArguments[0];
-    const { name, target } = validateDirectory(directory);
+    const requestedDirectory = positionalArguments[0];
+    const { directory, name, target } = validateDirectory(requestedDirectory);
     const framework = option("--framework");
     if (!frameworks[framework]) {
       throw new Error("Unsupported framework. Use --framework next or --framework vite.");
@@ -339,7 +352,7 @@ function createCreateCommand(services) {
     if (profile !== CREATE_PROFILE) {
       throw new Error(`Unsupported profile: ${profile}. Use --profile ${CREATE_PROFILE}.`);
     }
-    if (fs.existsSync(target)) throw new Error(`Create target already exists: ${directory}`);
+    if (pathEntryExists(target)) throw new Error(`Create target already exists: ${directory}`);
     assertSafeParents(target);
 
     const files = frameworks[framework](name);
@@ -356,7 +369,7 @@ function createCreateCommand(services) {
       if (process.env.NERIO_TEST_CREATE_FAILURE === "before-commit") {
         throw new Error("Injected project creation failure: before-commit");
       }
-      if (fs.existsSync(target)) throw new Error(`Create target already exists: ${directory}`);
+      if (pathEntryExists(target)) throw new Error(`Create target already exists: ${directory}`);
       fs.renameSync(staging, target);
     } finally {
       fs.rmSync(staging, { recursive: true, force: true });

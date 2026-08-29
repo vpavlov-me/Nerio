@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const binaryExtension = process.platform === "win32" ? ".cmd" : "";
 const cli = join(root, "packages/cli/dist/index.cjs");
 const packages = ["@nerio-ui/tokens", "@nerio-ui/adapters", "@nerio-ui/ui"];
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-create-smoke-"));
@@ -124,13 +125,13 @@ try {
 
   await browserSmoke(
     nextDirectory,
-    join(nextDirectory, "node_modules/.bin/next"),
+    join(nextDirectory, "node_modules", ".bin", `next${binaryExtension}`),
     ["start", "--hostname", "127.0.0.1", "--port"],
     "Nerio Next.js starter",
   );
   await browserSmoke(
     viteDirectory,
-    join(viteDirectory, "node_modules/.bin/vite"),
+    join(viteDirectory, "node_modules", ".bin", `vite${binaryExtension}`),
     ["preview", "--host", "127.0.0.1", "--port"],
     "Nerio Vite starter",
   );

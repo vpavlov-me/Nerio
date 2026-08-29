@@ -33,6 +33,27 @@ test("public onboarding validator accepts the canonical command model", () => {
   assert.equal(result.status, 0, result.stderr);
 });
 
+test("public onboarding validator reports a missing bootstrap command list", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-public-onboarding-"));
+  const target = resolve(directory, "public-commands.json");
+  const commands = JSON.parse(
+    readFileSync(resolve(root, "packages/registry/src/public-commands.json"), "utf8"),
+  );
+  delete commands.cli.bootstrapCommands;
+  writeFileSync(target, `${JSON.stringify(commands, null, 2)}\n`);
+  try {
+    const result = spawnSync(process.execPath, [validator, "--commands", target], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.notEqual(result.status, 0);
+    assert.doesNotMatch(result.stderr, /TypeError/);
+    assert.match(result.stderr, /canonical package, CLI, or MCP command contract drifted/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("public onboarding validator reports a missing option path", () => {
   const result = spawnSync(process.execPath, [validator, "--readme"], {
     cwd: root,

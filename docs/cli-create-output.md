@@ -14,8 +14,9 @@ the residual UI stylesheet, then scan compiled `@nerio-ui/ui` output. The Next.j
 static imports in the server-safe entrypoint and interactive imports in a client component; it does
 not add `transpilePackages`.
 
-The directory must be relative to the current directory, stay within it, use a lowercase npm-safe
-basename, and not already exist. The CLI rejects symlinked existing parents. It writes every file to
+The directory must be relative to the current directory, stay within it, use lowercase npm-safe
+letters, numbers, and hyphens in every path segment, and not already exist. The CLI rejects existing
+target entries, including dangling symlinks, and symlinked existing parents. It writes every file to
 an adjacent temporary directory and renames that complete directory into place, so a handled write
 failure cannot leave a partial project at the requested target. It does not install packages,
 initialize Git, or run generated or third-party scripts.

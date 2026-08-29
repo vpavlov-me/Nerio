@@ -21,9 +21,11 @@ const activeVersionSurfaces = [
   "apps/docs/app/docs/getting-started/page.tsx",
   "apps/docs/app/docs/foundations/motion/page.tsx",
   "apps/docs/content/llms.txt",
+  "docs/cli-create-output.md",
   ...packageReadmePaths,
   "packages/registry/src/public-commands.json",
   "packages/cli/src/internal/command-line.js",
+  "packages/cli/src/internal/create.js",
   "packages/cli/fixtures/basic/README.md",
 ];
 

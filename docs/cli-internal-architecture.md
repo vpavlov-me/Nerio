@@ -65,30 +65,31 @@ The Phase 2.3 inspection slice was measured against the merged safe-remove basel
 The existing package budgets remain unchanged. The Terser pass offsets most compressed-package
 cost while keeping the internal source modules independently reviewable.
 
-The Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
+The final Phase 2.4 versioned-migration slice was measured against the merged inspection baseline:
 
-- deterministic generated bin: 57,437 to 56,004 bytes (`-1,433`, or `-2.5%`);
-- package tarball: 19,753 to 19,972 bytes (`+219`, or `+1.1%`);
-- package unpacked: 61,724 to 60,404 bytes (`-1,320`, or `-2.1%`);
+- deterministic generated bin: 57,437 to 56,716 bytes (`-721`, or `-1.3%`);
+- package tarball: 19,753 to 20,243 bytes (`+490`, or `+2.5%`);
+- package unpacked: 61,724 to 61,116 bytes (`-608`, or `-1.0%`);
 - direct `nerio --help`: 0.04–0.06 seconds across five warm runs;
 - complete built local and remote CLI fixtures: 63.89 and 87.90 seconds across two post-review
   runs.
 
-The 20,000-byte tarball and 82,000-byte unpacked package budgets remain unchanged.
+Phase 2.4 raised the tarball budget from 20,000 to 20,500 bytes for its reviewed migration safety
+checks; the unpacked budget remained 82,000 bytes. The separate Phase 3 adjustment follows.
 
 The Phase 3 project-bootstrap slice was measured against the merged versioned-migration baseline:
 
-- deterministic generated bin: 56,716 to 65,326 bytes (`+8,610`, or `+15.2%`);
-- package tarball: 20,243 to 23,322 bytes (`+3,079`, or `+15.2%`);
-- unpacked package: 61,116 to 70,295 bytes (`+9,179`, or `+15.0%`);
+- deterministic generated bin: 56,716 to 65,456 bytes (`+8,740`, or `+15.4%`);
+- package tarball: 20,243 to 23,351 bytes (`+3,108`, or `+15.4%`);
+- unpacked package: 61,116 to 70,425 bytes (`+9,309`, or `+15.2%`);
 - direct `nerio --help`: 0.05 seconds on both baselines;
 - complete built CLI fixtures plus generated Next.js/Vite packed-artifact builds and served-preview
   smokes: 112.22 seconds.
 
 The unpacked budget remains 82,000 bytes. The tarball budget rises from 20,500 to 23,500 bytes in
-this focused feature slice: the measured 3,079-byte increase buys two maintained deterministic
+this focused feature slice: the measured 3,108-byte increase buys two maintained deterministic
 project profiles, atomic target creation, bounded JSON output, and clean package/build/browser
-evidence. The 178-byte remaining headroom keeps future additions review-gated.
+evidence. The 149-byte remaining headroom keeps future additions review-gated.
 
 ## Multi-item add lifecycle
 
@@ -148,10 +149,11 @@ Nerio versions are synchronized with release and dependency-support metadata. Bo
 package mode because it has clean packed-consumer evidence; editable source remains the existing
 `init` and `add` lifecycle instead of a second generator implementation.
 
-Creation accepts a new relative path within the current directory, rejects existing targets and
-symlinked parents, stages every deterministic file adjacent to the target, and renames the complete
-directory into place. It never runs a package manager, generated script, Git command, or Registry
-code. JSON output uses create-result schema `1.0.0`, documented in
+Creation accepts a new relative path within the current directory, requires every path segment to
+use lowercase npm-safe letters, numbers, and hyphens, rejects existing entries (including dangling
+symlinks) and symlinked parents, stages every deterministic file adjacent to the target, and
+renames the complete directory into place. It never runs a package manager, generated script, Git
+command, or Registry code. JSON output uses create-result schema `1.0.0`, documented in
 `docs/cli-create-output.md`. React Router stays deferred until a maintained clean-consumer fixture
 proves its exact setup.
 

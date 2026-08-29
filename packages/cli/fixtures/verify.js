@@ -2400,6 +2400,16 @@ async function verify() {
     if (!unsafeNameCreate.includes("lowercase letters, numbers, and hyphens")) {
       throw new Error("Create did not reject an unsafe project package name.");
     }
+    const unsafeParentCreate = await runFailure(
+      tempRoot,
+      "create",
+      "parent dir/my-app",
+      "--framework",
+      "next",
+    );
+    if (!unsafeParentCreate.includes("lowercase letters, numbers, and hyphens")) {
+      throw new Error("Create did not reject an unsafe project parent directory.");
+    }
     const symlinkTarget = path.join(tempRoot, "create-symlink-target");
     fs.mkdirSync(symlinkTarget);
     fs.symlinkSync(symlinkTarget, path.join(tempRoot, "create-symlink"), "dir");
@@ -2415,6 +2425,21 @@ async function verify() {
       fs.existsSync(path.join(symlinkTarget, "app"))
     ) {
       throw new Error("Create did not reject a symlinked target parent before writing.");
+    }
+    const danglingCreatePath = path.join(tempRoot, "dangling-project");
+    fs.symlinkSync(path.join(tempRoot, "missing-create-target"), danglingCreatePath);
+    const danglingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "dangling-project",
+      "--framework",
+      "vite",
+    );
+    if (
+      !danglingCreate.includes("Create target already exists") ||
+      !fs.lstatSync(danglingCreatePath).isSymbolicLink()
+    ) {
+      throw new Error("Create did not preserve a dangling symlink target entry.");
     }
     const failedCreate = await runFailureWithEnv(
       tempRoot,
