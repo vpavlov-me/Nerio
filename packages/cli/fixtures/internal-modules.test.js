@@ -92,6 +92,48 @@ test("create current profile matches coordinated release and dependency support 
   });
 });
 
+test("create detects replacement of its validated parent directory", () => {
+  const {
+    assertDirectoryIdentity,
+    bindDirectory,
+    directoryIdentity,
+    hasDirectoryIdentity,
+  } = require("../src/internal/create");
+  const previousCwd = process.cwd();
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "nerio-create-parent-"));
+  const replacement = `${directory}-replacement`;
+  try {
+    const identity = directoryIdentity(directory);
+    fs.renameSync(directory, replacement);
+    fs.mkdirSync(directory);
+    assert.throws(
+      () => assertDirectoryIdentity(directory, identity),
+      /target parent changed during project creation/,
+    );
+    fs.rmSync(directory, { recursive: true });
+    fs.renameSync(replacement, directory);
+    const boundIdentity = directoryIdentity(directory);
+    bindDirectory(directory, boundIdentity);
+    fs.renameSync(directory, replacement);
+    fs.mkdirSync(directory);
+    fs.writeFileSync("bound-marker", "bound\n");
+    assert.equal(fs.existsSync(path.join(replacement, "bound-marker")), true);
+    assert.equal(fs.existsSync(path.join(directory, "bound-marker")), false);
+    assert.throws(
+      () => assertDirectoryIdentity(directory, boundIdentity),
+      /target parent changed during project creation/,
+    );
+    assert.equal(hasDirectoryIdentity(directory, boundIdentity), false);
+    assert.equal(hasDirectoryIdentity(".", boundIdentity), true);
+    fs.rmSync("bound-marker");
+    assert.equal(fs.existsSync(path.join(replacement, "bound-marker")), false);
+  } finally {
+    process.chdir(previousCwd);
+    fs.rmSync(directory, { recursive: true, force: true });
+    fs.rmSync(replacement, { recursive: true, force: true });
+  }
+});
+
 test("migrate positional parsing keeps the explicit target and version route", () => {
   const { createCommandLine } = require("../src/internal/command-line");
   const parsed = createCommandLine(process.cwd(), [
