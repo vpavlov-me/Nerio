@@ -213,9 +213,10 @@ origin drift, and incident response ambiguous.
 
 Each loaded Registry has one canonical origin record:
 
-- `kind`: `package`, `file`, or `https`;
+- `kind`: `package`, `file`, `https`, or `http`; `http` exists only for the existing explicit
+  trusted-local `--allow-insecure-http` exception and can never carry authentication;
 - `source`: the configured package export, normalized project-relative file path, or sanitized HTTPS
-  manifest URL;
+  or trusted-local HTTP manifest URL;
 - `manifestLocation`: the final sanitized manifest location after permitted redirects;
 - `registryId`: the verified manifest identity.
 
@@ -300,6 +301,15 @@ credentials requires a separate cache design.
 
 Namespaced implementation extends `list`, `info`, `search`, `view`, `docs`, `add`, `remove`, `diff`,
 `update`, and `doctor` without changing the meaning of unqualified schema 1 commands.
+
+For schema 2 discovery, `list` and `search` query only the default Registry when no namespace
+selector is present. They never contact or merge results from every configured Registry implicitly.
+An explicit `--namespace <alias>` selects exactly one canonical Registry entry; `default` selects
+the default entry, and its optional configured alias selects that same entry. Unknown, duplicated,
+or malformed aliases fail before any request. The initial contract has no `--all-registries` mode.
+`info`, `view`, and `docs` select through their qualified or unqualified item reference instead of a
+separate namespace flag. Schema 1 keeps its existing discovery behavior and rejects the new
+namespace selector.
 
 Structured output receives a new schema version before adding Registry IDs, aliases, canonical item
 references, origins, or cross-Registry dependencies. Existing `1.0.0` JSON schemas are not silently
