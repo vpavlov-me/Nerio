@@ -367,12 +367,12 @@
     {
       "issue": 353,
       "title": "Namespaced Registries",
-      "disposition": "retain",
+      "disposition": "accepted-adr-0008",
       "priority": "P2",
       "target": "Core 1.2",
       "classification": "later-core-candidate",
       "dependsOn": [341, 352, 151],
-      "decision": "Reuse the existing integrity, transport, planning, and transaction engine; wait for the CLI modularization slice, not full bootstrap."
+      "decision": "ADR 0008 accepts configuration-local namespace aliases over stable manifest-owned Registry IDs, one deterministic cross-Registry graph, explicit lock and origin migrations, and same-origin environment-backed authentication while reusing the existing engine."
     },
     {
       "issue": 354,
@@ -1186,7 +1186,7 @@
       "complexity": "high",
       "dependencies": [151, 341, 352],
       "semverImpact": "additive-schema",
-      "acceptanceBoundary": "Reuse existing integrity, transport, planning, transaction, and redaction contracts.",
+      "acceptanceBoundary": "Implement ADR 0008 with stable Registry IDs, local namespace aliases, one identity-keyed dependency graph, same-origin environment-backed authentication, and the existing integrity, transport, planning, transaction, and redaction contracts.",
       "nonGoals": ["Licensing", "Payments", "Hosted account service"],
       "issue": 353
     },
