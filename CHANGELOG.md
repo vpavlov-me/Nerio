@@ -60,6 +60,23 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added the first schema 2 Registry runtime foundation for namespaced configuration, stable
+  Registry IDs, schema-aware dependency metadata, required source integrity, and environment-backed
+  `Authorization` or `X-API-Key` authentication confined to one HTTPS origin. Existing schema 1
+  projects retain their current behavior, while schema 2 source mutations stop before writes until
+  the namespaced graph and lock migration land. Schema 2 item inspection also stops before Registry
+  access and waits for its versioned output contract instead of reshaping schema 1 JSON. Discovery rejects an explicit
+  `--namespace` selector across schema 1 and 2 until that selector can be honored, and authenticated
+  credentials must be 16 UTF-8 bytes or longer so reflection checks cannot confuse common short
+  response text with a secret; non-printable-ASCII or whitespace-bearing header values are rejected
+  before a request.
+  Reflection guards reject credentials in configured source URLs and retain exact credentials that
+  contain percent-like sequences through bounded decoding, and schema 2 manifest and cross-Registry
+  dependency names share one lowercase, single-segment contract.
+  The deterministic CLI bundle grows
+  from 66,645 to 76,113 bytes and the measured archive from 23,694 to 26,377 bytes; the reviewed
+  tarball budget moves from 23,750 to 26,400 bytes while the 82,000-byte unpacked limit remains
+  unchanged.
 - Added `nerio create <directory> --framework <next|vite>` for maintained package-mode starters
   with an explicit current dependency profile, deterministic atomic output, bounded JSON, exact
   Tailwind/token/style scanning, and Next.js server/client entrypoint guidance. Source mode remains

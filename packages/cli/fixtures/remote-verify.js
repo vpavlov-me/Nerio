@@ -11,6 +11,7 @@ const { setTimeout } = require("node:timers");
 const cli = path.resolve(__dirname, "..", process.env.NERIO_TEST_CLI_PATH || "src/index.js");
 const source = "export const remoteButton = true;\n";
 const sourceIntegrity = `sha256-${crypto.createHash("sha256").update(source).digest("hex")}`;
+const authenticatedToken = "fixture-authenticated-token";
 
 function item(files) {
   return {
@@ -41,6 +42,13 @@ function manifest(files) {
   });
 }
 
+function schemaTwoManifest(files) {
+  const current = JSON.parse(manifest(files));
+  current.schemaVersion = "2.0.0";
+  current.registryId = "com.nerio.fixture.authenticated";
+  return JSON.stringify(current);
+}
+
 const validFiles = [
   {
     source: "./button.ts",
@@ -59,6 +67,13 @@ function requestHandler(request, response) {
   const url = new URL(request.url, "http://registry.test");
   if (url.pathname === "/valid/manifest.json") {
     respondJson(response, manifest(validFiles));
+  } else if (url.pathname === "/authenticated/manifest.json") {
+    if (request.headers.authorization !== `Bearer ${authenticatedToken}`) {
+      response.writeHead(401, { "content-type": "application/json" });
+      response.end("{}");
+      return;
+    }
+    respondJson(response, schemaTwoManifest(validFiles));
   } else if (url.pathname === "/invalid-docs-path/manifest.json") {
     const invalid = JSON.parse(manifest(validFiles));
     invalid.items[0].docsPath = { path: "/docs/components/button" };
@@ -406,13 +421,58 @@ async function verify() {
     if (!fs.existsSync(path.join(httpsTarget, "nerio.lock.json"))) {
       throw new Error("Valid HTTPS Registry install did not commit source and lock metadata.");
     }
+
+    const authenticatedTarget = path.join(temporary, "authenticated-https");
+    fs.mkdirSync(authenticatedTarget);
+    fs.writeFileSync(
+      path.join(authenticatedTarget, "nerio.json"),
+      `${JSON.stringify(
+        {
+          schemaVersion: "2.0.0",
+          registry: {
+            alias: "fixture",
+            source: `https://127.0.0.1:${httpsPort}/authenticated/manifest.json`,
+            expectedId: "com.nerio.fixture.authenticated",
+            auth: {
+              headers: [
+                {
+                  name: "Authorization",
+                  environment: "NERIO_FIXTURE_REGISTRY_TOKEN",
+                  scheme: "Bearer",
+                },
+              ],
+            },
+          },
+          registries: {},
+          components: "components/nerio",
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    const authenticatedList = await execute(
+      authenticatedTarget,
+      { ...testTls, NERIO_FIXTURE_REGISTRY_TOKEN: authenticatedToken },
+      "list",
+    );
+    if (!authenticatedList.includes("button\tButton\tactions")) {
+      throw new Error("Authenticated HTTPS Registry discovery did not load schema 2 metadata.");
+    }
+    const unauthorized = await failure(
+      authenticatedTarget,
+      { ...testTls, NERIO_FIXTURE_REGISTRY_TOKEN: "wrong-secret-value" },
+      "list",
+    );
+    if (!unauthorized.includes("request failed (401)") || unauthorized.includes("wrong-secret")) {
+      throw new Error("Authenticated HTTPS Registry failure was not stable and secret-safe.");
+    }
   } finally {
     await close(httpServer);
     if (httpsServer) await close(httpsServer);
     fs.rmSync(temporary, { recursive: true, force: true });
   }
   console.log(
-    "CLI remote fixture passed HTTPS policy, bounds, redirects, integrity, rollback, and secret-safe errors.",
+    "CLI remote fixture passed HTTPS and authenticated schema 2 policy, bounds, redirects, integrity, rollback, and secret-safe errors.",
   );
 }
 

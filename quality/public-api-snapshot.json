@@ -2,7 +2,7 @@
   "baseline": "core-1.0",
   "cli": {
     "addOutputSchema": "\"1.0.0\"",
-    "configSchemas": "new Set([\"0.1.0\", \"1.0.0\"])",
+    "configSchemas": "new Set([\"0.1.0\", \"1.0.0\", \"2.0.0\"])",
     "createOutputSchema": "\"1.0.0\"",
     "defaultRegistry": "\"@nerio-ui/registry/manifest.json\"",
     "help": {

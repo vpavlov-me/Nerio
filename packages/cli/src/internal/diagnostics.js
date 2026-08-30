@@ -268,7 +268,7 @@ function createDiagnostics({
     const state = readState(true);
     const errors = [];
     const warnings = [];
-    if (manifest.version !== cliPackage.version) {
+    if (config.schemaVersion !== "2.0.0" && manifest.version !== cliPackage.version) {
       errors.push(
         `CLI ${cliPackage.version} and Registry ${manifest.version} do not match. Install coordinated @nerio-ui/cli and @nerio-ui/registry versions.`,
       );

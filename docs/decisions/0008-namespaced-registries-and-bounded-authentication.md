@@ -248,8 +248,11 @@ supports at most one case-insensitive instance of each of these headers:
 
 Every value comes from one environment variable matching `^[A-Z][A-Z0-9_]{0,63}$`. Inline values,
 URL credentials, query credentials, cookies, arbitrary headers, multiline values, control
-characters, and values larger than 8 KiB are rejected. Missing variables fail before the first
-authenticated request and identify the namespace and variable name, never a partial value.
+characters, non-printable-ASCII values, values shorter than 16 UTF-8 bytes, and values larger than 8
+KiB are rejected. The minimum keeps response reflection detection from treating common short text
+as a credential, while the printable-ASCII boundary makes request serialization and encoded
+reflection checks deterministic. Missing variables fail before the first authenticated request and
+identify the namespace and variable name, never a partial value.
 
 Credential scope is deliberately narrower than ordinary redirect behavior:
 

@@ -6,7 +6,7 @@ const { createDiscoveryCommand } = require("./discovery");
 const { createMigrationCommand } = require("./migrate");
 const { createRemoveCommand } = require("./remove");
 
-const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
+const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0", "2.0.0"]);
 
 function createCommands(services) {
   const { create } = createCreateCommand(services);
@@ -306,7 +306,7 @@ function createCommands(services) {
         "nerio.json uses the supported legacy 0.1.0 schema. Change schemaVersion to 1.0.0 after adopting installed source metadata.",
       );
     }
-    if (manifest.version !== cliPackage.version) {
+    if (config.schemaVersion !== "2.0.0" && manifest.version !== cliPackage.version) {
       errors.push(
         `CLI ${cliPackage.version} and Registry ${manifest.version} do not match. Install coordinated @nerio-ui/cli and @nerio-ui/registry versions.`,
       );
@@ -365,6 +365,14 @@ function createCommands(services) {
     if (hasFlag("--help") || hasFlag("-h")) {
       console.log(help(command));
       return;
+    }
+    if (["add", "remove", "diff", "update"].includes(command)) {
+      const config = readConfig(false);
+      if (config?.schemaVersion === "2.0.0") {
+        throw new Error(
+          "nerio.json schema 2 source mutations require namespaced lock and graph support. Use list, search, or doctor until the schema 2 migration is applied.",
+        );
+      }
     }
     const guardedCommand = [
       "init",
