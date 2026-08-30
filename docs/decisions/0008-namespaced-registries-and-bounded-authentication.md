@@ -36,8 +36,11 @@ The implementation must extend the current modules rather than create a second R
 - MCP remains read-only and projects canonical Registry metadata rather than owning transport or
   mutation behavior.
 
-The namespaced contract must not execute Registry code, fetch credentials, write consumer files, or
-relax any existing validation before the complete cross-Registry plan passes.
+The namespaced contract must not execute Registry code, write consumer files, or relax any existing
+validation before the complete cross-Registry plan passes. During bounded preflight it may resolve
+an approved environment-backed credential and perform the authenticated manifest and source reads
+needed to construct and validate that plan. Credential material remains request-local and is
+discarded without entering the plan, diagnostics, output, lock, or transaction state.
 
 ## Reference protocol evidence
 
@@ -287,10 +290,14 @@ origin check stops the complete plan before consumer-owned writes. Rollback rest
 prior source and lock state.
 
 Lock schema `1.0.0` remains readable for schema 1 projects. Migration to schema 2 is explicit and
-dry-run-first. It loads the configured default schema 2 manifest, verifies its `registryId`, maps all
-existing unqualified roots, items, owners, and files to that ID, preserves installed hashes and
-integrity, and commits config plus lock through the existing migration transaction. It never
-guesses an identity from the display name or URL.
+dry-run-first. Before the first schema 2 request, migration requires a trusted expected Registry ID:
+the packaged Nerio default uses its fixed built-in ID, while every package, local-file, or remote
+custom source requires an explicit `--expected-registry-id <id>` migration input. The CLI validates
+that input in memory, loads the configured default schema 2 manifest, verifies its `registryId`
+against the trusted value, maps all existing unqualified roots, items, owners, and files to that ID,
+preserves installed hashes and integrity, and commits config plus lock through the existing
+migration transaction. A manifest's self-asserted ID, display name, package name, or URL is never
+used to invent the trust anchor.
 
 The lock is reproducibility metadata, not an offline source cache. Offline use works only when the
 recorded package or local sources are available. Remote reproduction requires the configured origin
@@ -310,6 +317,13 @@ or malformed aliases fail before any request. The initial contract has no `--all
 `info`, `view`, and `docs` select through their qualified or unqualified item reference instead of a
 separate namespace flag. Schema 1 keeps its existing discovery behavior and rejects the new
 namespace selector.
+
+For schema 2 mutation, `add --all` likewise selects only the default Registry. The explicit form
+`add --all --namespace <alias>` selects every item from exactly one canonical Registry entry. It
+does not install every configured Registry and never contacts other origins merely because they are
+present in configuration; cross-Registry origins are loaded only when selected items declare
+dependencies on them. `--namespace` is not combined with explicit item references, which already
+carry their own qualified or unqualified selection.
 
 Structured output receives a new schema version before adding Registry IDs, aliases, canonical item
 references, origins, or cross-Registry dependencies. Existing `1.0.0` JSON schemas are not silently
