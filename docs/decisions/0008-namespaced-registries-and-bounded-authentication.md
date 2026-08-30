@@ -85,10 +85,13 @@ Registry item names retain the existing lowercase name contract. A qualified ref
 exactly one namespace and one item segment. URLs, package paths, nested namespaces, empty segments,
 fragments, query strings, and version selectors are not item references.
 
-The same stable Registry may have the virtual `@default` alias and one configured alias. Two
-configured entries must not claim the same namespace. A command fails before network or filesystem
-mutation when a namespace is absent, malformed, reserved, or ambiguously maps to more than one
-Registry identity.
+The default Registry may additionally expose one configured alias through its own `registry.alias`
+field. The unqualified name, virtual `@default` alias, and that optional alias all resolve through
+the same canonical default entry; they do not duplicate its source, authentication, or identity
+configuration. Two configured entries must not claim the same namespace, and each `expectedId`
+must occur in exactly one canonical entry across `registry` and `registries`. A command fails before
+network or filesystem mutation when a namespace is absent, malformed, reserved, duplicated, or
+maps to a non-canonical Registry entry.
 
 Unqualified names never search every configured Registry and never use first-match resolution.
 This preserves existing behavior and prevents a newly added Registry from taking over an existing
@@ -105,6 +108,7 @@ The accepted schema shape is:
 {
   "schemaVersion": "2.0.0",
   "registry": {
+    "alias": "nerio",
     "source": "@nerio-ui/registry/manifest.json",
     "expectedId": "com.vpavlov.nerio.core"
   },
@@ -127,7 +131,10 @@ The accepted schema shape is:
 }
 ```
 
-The default `registry` entry is required. `registries` may be empty. Every entry accepts one source:
+The default `registry` entry is required and may declare one optional `alias`. `registries` may be
+empty; each key is the alias for one additional canonical entry. An alias must be unique across the
+default entry and `registries`, and an `expectedId` must be unique across all entries. Every entry
+accepts one source:
 
 - a package export such as `@nerio-ui/registry/manifest.json`;
 - a project-relative local manifest path;
