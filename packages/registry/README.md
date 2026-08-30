@@ -18,8 +18,13 @@ pnpm add -D @nerio-ui/registry @nerio-ui/cli
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
+pnpm exec nerio search keyboard --limit 5
+pnpm exec nerio view button --json
+pnpm exec nerio docs button
+pnpm exec nerio migrate config 0.1.0 1.0.0
 pnpm exec nerio add button --dry-run
 pnpm exec nerio add button
+pnpm exec nerio remove button --dry-run
 pnpm exec nerio diff button
 pnpm exec nerio update button --dry-run
 pnpm exec nerio doctor

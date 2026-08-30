@@ -51,13 +51,12 @@ test("routes docs route report tooling through the docs gate", () => {
   }
 });
 
-test("keeps changelog edits in focused documentation validation", () => {
-  const result = scopes("CHANGELOG.md");
+test("keeps changelog and README changes on the Markdown-only path", () => {
+  const result = scopes("CHANGELOG.md", "README.md");
   assert.equal(result.docs, true);
   assert.equal(result.ui, false);
   assert.equal(result.browser, false);
   assert.equal(result.visual, false);
-  assert.equal(result.packages, false);
   assert.equal(result.docs_only, true);
 });
 
@@ -93,6 +92,18 @@ test("routes Registry runtime changes to browser, CLI, and MCP checks", () => {
   assert.equal(result.mcp, true);
 });
 
+test("routes every CLI build input through CLI and package checks", () => {
+  for (const path of [
+    "packages/cli/src/index.js",
+    "packages/cli/src/internal/commands.js",
+    "scripts/build-cli-output.mjs",
+  ]) {
+    const result = scopes(path);
+    assert.equal(result.cli, true, path);
+    assert.equal(result.packages, true, path);
+  }
+});
+
 test("routes adapter source without treating its manifest as visual", () => {
   const source = scopes("packages/adapters/src/icons.ts");
   assert.equal(source.adapters, true);
@@ -122,6 +133,7 @@ test("routes narrow public entrypoints and broad root package policy safely", ()
     "packages/ui/tsconfig.build.json",
     "quality/package-budgets.json",
     "scripts/build-package-output.mjs",
+    "scripts/build-cli-output.mjs",
     "scripts/pack-check.mjs",
     "scripts/validate-package-output.mjs",
   ]) {

@@ -3,11 +3,11 @@ const crypto = require("node:crypto");
 const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
-const { spawn } = require("node:child_process");
+const { spawn, spawnSync } = require("node:child_process");
 const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
-const cli = path.resolve(__dirname, "../src/index.js");
+const cli = path.resolve(__dirname, "..", process.env.NERIO_TEST_CLI_PATH || "src/index.js");
 const manifest = path.resolve(repoRoot, "packages/registry/src/manifest.json");
 const cliVersion = require("../package.json").version;
 const publicCommands = require("../../registry/src/public-commands.json");
@@ -622,18 +622,25 @@ function writeLifecycleRegistry(
   return manifestPath;
 }
 
-function writeConcurrencyRegistry(registryRoot) {
+function writeConcurrencyRegistry(
+  registryRoot,
+  {
+    alphaSource = "export const alpha = true;\n",
+    betaSource = "export const beta = true;\n",
+    sourceRevision = "fixture-concurrency",
+  } = {},
+) {
   const sourceRoot = path.join(registryRoot, "source");
   fs.mkdirSync(sourceRoot, { recursive: true });
   const items = ["alpha", "beta"].map((name) => {
-    const source = `export const ${name} = true;\n`;
+    const source = name === "alpha" ? alphaSource : betaSource;
     fs.writeFileSync(path.join(sourceRoot, `${name}.ts`), source);
     return {
       name,
       title: name[0].toUpperCase() + name.slice(1),
       description: `Fixture ${name} source.`,
       category: "foundation",
-      dependencies: [],
+      dependencies: name === "alpha" ? ["zeta-package"] : ["alpha-package"],
       registryDependencies: [],
       files: [
         {
@@ -659,7 +666,77 @@ function writeConcurrencyRegistry(registryRoot) {
         schemaVersion: "1.1.0",
         name: "nerio-concurrency-fixture",
         version: cliVersion,
-        sourceRevision: "fixture-concurrency",
+        sourceRevision,
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
+function writeRemoveRegistry(registryRoot) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  const sources = {
+    "shared.ts": "export const shared = true;\n",
+    "common.ts": "export const common = true;\n",
+    "alpha.ts": "export const alpha = true;\n",
+    "beta.ts": "export const beta = true;\n",
+  };
+  for (const [name, source] of Object.entries(sources)) {
+    fs.writeFileSync(path.join(sourceRoot, name), source);
+  }
+  const file = (source, target, role) => ({
+    source: `./source/${source}`,
+    target,
+    role,
+    integrity: `sha256-${crypto.createHash("sha256").update(sources[source]).digest("hex")}`,
+  });
+  const common = file("common.ts", "lib/common.ts", "utility");
+  const items = [
+    {
+      name: "shared",
+      title: "Shared",
+      description: "Shared dependency source.",
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [file("shared.ts", "lib/shared.ts", "utility")],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { shared } from '@/components/nerio/lib/shared';",
+    },
+    ...["alpha", "beta"].map((name) => ({
+      name,
+      title: name[0].toUpperCase() + name.slice(1),
+      description: `Fixture ${name} source.`,
+      category: "actions",
+      dependencies: [],
+      registryDependencies: ["shared"],
+      files: [file(`${name}.ts`, `components/${name}.ts`, "component"), common],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: `import { ${name} } from '@/components/nerio/components/${name}';`,
+    })),
+  ];
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion: "1.1.0",
+        name: "nerio-remove-fixture",
+        version: cliVersion,
+        sourceRevision: "fixture-remove",
         styleContractVersion: "tailwind-v1",
         items,
       },
@@ -1096,6 +1173,305 @@ async function verifyConcurrentTransactions(tempRoot) {
   assertNoTransactionArtifacts(invalidOwnerTarget, "Multi-contender stale Registry lock recovery");
 }
 
+async function verifyMultiItemAdd(tempRoot) {
+  const registryRoot = path.join(tempRoot, "multi-add-registry");
+  const explicitTarget = path.join(tempRoot, "multi-add-explicit");
+  const allTarget = path.join(tempRoot, "multi-add-all");
+  const conflictTarget = path.join(tempRoot, "multi-add-conflict");
+  const rollbackTarget = path.join(tempRoot, "multi-add-rollback");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(explicitTarget);
+  fs.mkdirSync(allTarget);
+  fs.mkdirSync(conflictTarget);
+  fs.mkdirSync(rollbackTarget);
+  const fixtureManifest = writeConcurrencyRegistry(registryRoot);
+
+  await run(explicitTarget, "init", "--registry", fixtureManifest);
+  const preview = JSON.parse(
+    await run(explicitTarget, "add", "beta", "alpha", "beta", "--dry-run", "--json"),
+  );
+  if (
+    preview.schemaVersion !== "1.0.0" ||
+    preview.status !== "planned" ||
+    preview.dryRun !== true ||
+    preview.all !== false ||
+    JSON.stringify(preview.requestedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    JSON.stringify(preview.resolvedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    JSON.stringify(preview.packageDependencies) !==
+      JSON.stringify(["alpha-package", "zeta-package"]) ||
+    preview.summary.writes !== 2 ||
+    preview.summary.conflicts !== 0 ||
+    preview.files.some((file) => file.action !== "write") ||
+    fs.existsSync(path.join(explicitTarget, "nerio.lock.json")) ||
+    fs.existsSync(path.join(explicitTarget, "components"))
+  ) {
+    throw new Error("Multi-item add dry-run was not deterministic or wrote consumer state.");
+  }
+
+  const applied = JSON.parse(await run(explicitTarget, "add", "beta", "alpha", "--json"));
+  const explicitLock = JSON.parse(
+    fs.readFileSync(path.join(explicitTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    applied.status !== "applied" ||
+    applied.summary.writes !== 2 ||
+    JSON.stringify(explicitLock.requestedItems) !== JSON.stringify(["alpha", "beta"]) ||
+    !explicitLock.items.alpha ||
+    !explicitLock.items.beta ||
+    !fs.existsSync(path.join(explicitTarget, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(explicitTarget, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Multi-item add did not commit one coherent source and lock result.");
+  }
+  const unchanged = JSON.parse(
+    await run(explicitTarget, "add", "alpha", "beta", "--dry-run", "--json"),
+  );
+  if (
+    unchanged.summary.writes !== 0 ||
+    unchanged.summary.unchanged !== 2 ||
+    unchanged.files.some((file) => file.action !== "unchanged")
+  ) {
+    throw new Error("Repeated multi-item add did not produce a stable unchanged plan.");
+  }
+  writeConcurrencyRegistry(registryRoot, {
+    alphaSource: "export const alpha = false;\n",
+    sourceRevision: "fixture-concurrency-updated",
+  });
+  const upstreamConflict = await runFailure(explicitTarget, "add", "alpha", "--dry-run", "--json");
+  if (
+    !upstreamConflict.includes('"action": "conflict-upstream-change"') ||
+    !upstreamConflict.includes("review upstream changes with nerio diff/update") ||
+    upstreamConflict.includes("move or rename existing untracked targets")
+  ) {
+    throw new Error("A pristine tracked target did not receive upstream update guidance.");
+  }
+
+  await run(allTarget, "init", "--registry", fixtureManifest);
+  const all = JSON.parse(await run(allTarget, "add", "--all", "--json"));
+  if (
+    all.status !== "applied" ||
+    all.all !== true ||
+    JSON.stringify(all.requestedItems) !== JSON.stringify(["alpha", "beta"])
+  ) {
+    throw new Error("nerio add --all did not select every Registry item deterministically.");
+  }
+  const invalidAll = await runFailure(allTarget, "add", "alpha", "--all");
+  if (!invalidAll.includes("cannot be combined with explicit Registry items")) {
+    throw new Error("nerio add accepted --all together with an explicit item.");
+  }
+
+  await run(conflictTarget, "init", "--registry", fixtureManifest);
+  const conflictPath = path.join(conflictTarget, "components/nerio/components/beta.ts");
+  fs.mkdirSync(path.dirname(conflictPath), { recursive: true });
+  fs.writeFileSync(conflictPath, "consumer-owned\n");
+  const conflict = await runFailure(conflictTarget, "add", "alpha", "beta", "--json");
+  if (
+    !conflict.includes('"status": "blocked"') ||
+    !conflict.includes('"action": "conflict-existing-content"') ||
+    fs.existsSync(path.join(conflictTarget, "components/nerio/components/alpha.ts")) ||
+    fs.readFileSync(conflictPath, "utf8") !== "consumer-owned\n" ||
+    fs.existsSync(path.join(conflictTarget, "nerio.lock.json"))
+  ) {
+    throw new Error("A multi-item conflict was not reported before every consumer write.");
+  }
+
+  await run(rollbackTarget, "init", "--registry", fixtureManifest);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-commit:1" },
+    "add",
+    "alpha",
+    "beta",
+  );
+  if (
+    !rollback.includes("rolled back without source or lock changes") ||
+    Object.keys(managedSnapshot(rollbackTarget)).length
+  ) {
+    throw new Error("A failed multi-item add did not roll back the complete operation.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Atomic multi-item add");
+}
+
+async function verifySafeRemove(tempRoot) {
+  const registryRoot = path.join(tempRoot, "remove-registry");
+  fs.mkdirSync(registryRoot);
+  const fixtureManifest = writeRemoveRegistry(registryRoot);
+  const makeConsumer = async (name) => {
+    const target = path.join(tempRoot, name);
+    fs.mkdirSync(target);
+    await run(target, "init", "--registry", fixtureManifest);
+    await run(target, "add", "alpha", "beta");
+    return target;
+  };
+
+  const target = await makeConsumer("remove-consumer");
+  await run(target, "add", "shared");
+  const retainedDependency = JSON.parse(
+    await run(target, "remove", "shared", "--dry-run", "--json"),
+  );
+  if (
+    retainedDependency.removedItems.length ||
+    retainedDependency.files.length ||
+    retainedDependency.summary.deletes !== 0
+  ) {
+    throw new Error(
+      "Safe remove planned deletion for a dependency retained by another direct root.",
+    );
+  }
+  const retainedApplied = await run(target, "remove", "shared");
+  if (
+    !retainedApplied.includes("0 source items became unreferenced") ||
+    retainedApplied.includes("Removed shared:")
+  ) {
+    throw new Error("Safe remove human output misreported a still-referenced direct item.");
+  }
+  const beforePreview = managedSnapshot(target);
+  const preview = JSON.parse(await run(target, "remove", "alpha", "--dry-run", "--json"));
+  if (
+    preview.schemaVersion !== "1.0.0" ||
+    preview.command !== "remove" ||
+    preview.status !== "planned" ||
+    preview.dryRun !== true ||
+    preview.force !== false ||
+    JSON.stringify(preview.requestedItems) !== JSON.stringify(["alpha"]) ||
+    JSON.stringify(preview.removedItems) !== JSON.stringify(["alpha"]) ||
+    preview.summary.deletes !== 1 ||
+    preview.summary.preserved !== 1 ||
+    preview.files.find((entry) => entry.path.endsWith("lib/common.ts"))?.action !==
+      "preserved-shared" ||
+    JSON.stringify(managedSnapshot(target)) !== JSON.stringify(beforePreview)
+  ) {
+    throw new Error("Safe remove dry-run did not preserve shared ownership or consumer state.");
+  }
+
+  const applied = JSON.parse(await run(target, "remove", "alpha", "--json"));
+  const lock = JSON.parse(fs.readFileSync(path.join(target, "nerio.lock.json"), "utf8"));
+  if (
+    applied.status !== "applied" ||
+    fs.existsSync(path.join(target, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/components/beta.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/lib/common.ts")) ||
+    JSON.stringify(lock.requestedItems) !== JSON.stringify(["beta"]) ||
+    lock.items.alpha ||
+    !lock.items.beta ||
+    !lock.items.shared ||
+    JSON.stringify(lock.files["components/nerio/lib/common.ts"].owners) !== JSON.stringify(["beta"])
+  ) {
+    throw new Error("Safe remove did not commit the expected direct-root and owner transition.");
+  }
+
+  const betaPath = path.join(target, "components/nerio/components/beta.ts");
+  fs.writeFileSync(betaPath, "consumer modification\n");
+  const blockedSnapshot = managedSnapshot(target);
+  const blocked = await runFailure(target, "remove", "beta", "--json");
+  if (
+    !blocked.includes('"status": "blocked"') ||
+    !blocked.includes('"action": "conflict-local-modification"') ||
+    !blocked.includes("re-run remove with --force") ||
+    JSON.stringify(managedSnapshot(target)) !== JSON.stringify(blockedSnapshot)
+  ) {
+    throw new Error("Safe remove did not block a locally modified tracked target before writes.");
+  }
+  const forced = JSON.parse(await run(target, "remove", "beta", "--force", "--json"));
+  if (
+    forced.status !== "applied" ||
+    forced.files.find((entry) => entry.path.endsWith("components/beta.ts"))?.action !==
+      "delete-modified" ||
+    listInstalledFiles(target).length !== 0
+  ) {
+    throw new Error("Intentional forced remove did not delete the final unreferenced closure.");
+  }
+
+  const missingTarget = await makeConsumer("remove-missing-consumer");
+  fs.rmSync(path.join(missingTarget, "components/nerio/components/alpha.ts"));
+  fs.rmSync(path.join(missingTarget, "components/nerio/lib/common.ts"));
+  const missing = JSON.parse(await run(missingTarget, "remove", "alpha", "--json"));
+  const missingLock = JSON.parse(
+    fs.readFileSync(path.join(missingTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    missing.summary.missing !== 2 ||
+    missing.files.find((entry) => entry.path.endsWith("components/alpha.ts"))?.action !==
+      "already-missing" ||
+    missing.files.find((entry) => entry.path.endsWith("lib/common.ts"))?.action !==
+      "already-missing" ||
+    JSON.stringify(missingLock.files["components/nerio/lib/common.ts"].owners) !==
+      JSON.stringify(["beta"])
+  ) {
+    throw new Error("Safe remove did not classify missing unowned and shared tracked targets.");
+  }
+  const indirect = await runFailure(missingTarget, "remove", "shared");
+  if (!indirect.includes("not recorded as a directly installed Registry item")) {
+    throw new Error("Safe remove accepted a dependency that was not directly installed.");
+  }
+
+  const ambiguousTarget = await makeConsumer("remove-ambiguous-consumer");
+  const ambiguousLockPath = path.join(ambiguousTarget, "nerio.lock.json");
+  const ambiguousLock = JSON.parse(fs.readFileSync(ambiguousLockPath, "utf8"));
+  ambiguousLock.files["components/nerio/lib/common.ts"].owners = ["alpha"];
+  fs.writeFileSync(ambiguousLockPath, `${JSON.stringify(ambiguousLock, null, 2)}\n`);
+  const ambiguousSnapshot = managedSnapshot(ambiguousTarget);
+  const ambiguous = await runFailure(ambiguousTarget, "remove", "alpha", "--json");
+  if (
+    !ambiguous.includes('"action": "conflict-ambiguous-ownership"') ||
+    !fs.existsSync(path.join(ambiguousTarget, "components/nerio/lib/common.ts")) ||
+    JSON.stringify(managedSnapshot(ambiguousTarget)) !== JSON.stringify(ambiguousSnapshot)
+  ) {
+    throw new Error("Safe remove did not block incomplete source ownership metadata.");
+  }
+
+  const rollbackTarget = await makeConsumer("remove-rollback-consumer");
+  const rollbackSnapshot = managedSnapshot(rollbackTarget);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-commit:1" },
+    "remove",
+    "alpha",
+    "beta",
+  );
+  if (
+    !rollback.includes("rolled back without source or lock changes") ||
+    JSON.stringify(managedSnapshot(rollbackTarget)) !== JSON.stringify(rollbackSnapshot)
+  ) {
+    throw new Error("A failed multi-item remove did not roll back the complete operation.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Atomic safe remove");
+
+  const recoveryTarget = await makeConsumer("remove-recovery-consumer");
+  const recoverySnapshot = managedSnapshot(recoveryTarget);
+  await runFailureWithEnv(
+    recoveryTarget,
+    { NERIO_TEST_CRASH: "after-commit:1" },
+    "remove",
+    "alpha",
+    "beta",
+  );
+  assertInterruptedTransaction(recoveryTarget, "Interrupted safe remove");
+  discardCrashedRegistryLock(recoveryTarget);
+  const recovery = spawnSync(
+    process.execPath,
+    [cli, "remove", "alpha", "beta", "--dry-run", "--json"],
+    {
+      cwd: recoveryTarget,
+      encoding: "utf8",
+      env: process.env,
+    },
+  );
+  const recoveredPlan = recovery.status === 0 ? JSON.parse(recovery.stdout) : null;
+  if (
+    recovery.status !== 0 ||
+    recoveredPlan?.status !== "planned" ||
+    recovery.stdout.includes("Recovered interrupted Registry transaction") ||
+    !recovery.stderr.includes("Recovered interrupted Registry transaction") ||
+    JSON.stringify(managedSnapshot(recoveryTarget)) !== JSON.stringify(recoverySnapshot)
+  ) {
+    throw new Error(
+      `Safe remove recovery did not restore the snapshot or isolate JSON stdout.\n${recovery.stdout}\n${recovery.stderr}`,
+    );
+  }
+  assertNoTransactionArtifacts(recoveryTarget, "Recovered safe remove");
+}
+
 async function verifyAtomicTransactions(tempRoot) {
   const registryRoot = path.join(tempRoot, "transaction-registry");
   const baselineTarget = path.join(tempRoot, "transaction-baseline");
@@ -1140,6 +1516,36 @@ async function verifyAtomicTransactions(tempRoot) {
     }
     assertNoTransactionArtifacts(target, `Interrupted add ${point}`);
   }
+
+  const jsonRecoveryTarget = path.join(tempRoot, "transaction-add-json-recovery");
+  fs.mkdirSync(jsonRecoveryTarget);
+  await run(jsonRecoveryTarget, "init", "--registry", fixtureManifest);
+  await runFailureWithEnv(
+    jsonRecoveryTarget,
+    { NERIO_TEST_CRASH: "after-commit:1" },
+    "add",
+    "button",
+  );
+  assertInterruptedTransaction(jsonRecoveryTarget, "Interrupted JSON add");
+  discardCrashedRegistryLock(jsonRecoveryTarget);
+  const jsonRecovery = spawnSync(process.execPath, [cli, "add", "button", "--dry-run", "--json"], {
+    cwd: jsonRecoveryTarget,
+    encoding: "utf8",
+  });
+  let jsonRecoveryResult;
+  try {
+    jsonRecoveryResult = JSON.parse(jsonRecovery.stdout);
+  } catch {
+    throw new Error(`Recovered add did not preserve JSON stdout:\n${jsonRecovery.stdout}`);
+  }
+  if (
+    jsonRecovery.status !== 0 ||
+    jsonRecoveryResult.status !== "planned" ||
+    !jsonRecovery.stderr.includes("Recovered interrupted Registry transaction")
+  ) {
+    throw new Error("Recovered add did not keep its notice separate from JSON stdout.");
+  }
+  assertNoTransactionArtifacts(jsonRecoveryTarget, "Interrupted JSON add");
 
   await run(baselineTarget, "init", "--registry", fixtureManifest);
   await run(baselineTarget, "add", "button");
@@ -1254,6 +1660,193 @@ async function verifyAtomicTransactions(tempRoot) {
   ) {
     throw new Error("Recovery accepted an unsafe journal or removed its evidence.");
   }
+}
+
+async function verifyVersionedMigrations(tempRoot) {
+  const route = ["migrate", "config", "0.1.0", "1.0.0"];
+  const writeLegacyConfig = (target) => {
+    fs.mkdirSync(target);
+    const config = {
+      schemaVersion: "0.1.0",
+      registry: "./registry-does-not-need-to-exist.json",
+      components: "components/nerio",
+      extension: { preserved: true },
+    };
+    const raw = `${JSON.stringify(config, null, 2)}\n`;
+    fs.writeFileSync(path.join(target, "nerio.json"), raw);
+    return raw;
+  };
+
+  const target = path.join(tempRoot, "migration-consumer");
+  const initial = writeLegacyConfig(target);
+  const firstPlan = await run(target, ...route, "--json");
+  const secondPlan = await run(target, ...route, "--dry-run", "--json");
+  const plan = JSON.parse(firstPlan);
+  if (
+    firstPlan !== secondPlan ||
+    plan.schemaVersion !== "1.0.0" ||
+    plan.command !== "migrate" ||
+    plan.status !== "planned" ||
+    plan.migration !== "config:0.1.0-to-1.0.0" ||
+    plan.files[0] !== "nerio.json" ||
+    fs.readFileSync(path.join(target, "nerio.json"), "utf8") !== initial
+  ) {
+    throw new Error("Versioned migration preview was not deterministic or wrote configuration.");
+  }
+  const unsupported = await runFailure(target, "migrate", "config", "1.0.0", "2.0.0");
+  if (
+    !unsupported.includes("nerio migrate config 0.1.0 1.0.0") ||
+    fs.readFileSync(path.join(target, "nerio.json"), "utf8") !== initial
+  ) {
+    throw new Error("Versioned migration accepted an unreviewed route or changed configuration.");
+  }
+  const conflictingMode = await runFailure(target, ...route, "--apply", "--dry-run");
+  if (!conflictingMode.includes("--dry-run conflicts with --apply")) {
+    throw new Error("Versioned migration accepted conflicting preview and apply modes.");
+  }
+
+  const malformedTarget = path.join(tempRoot, "migration-malformed-consumer");
+  fs.mkdirSync(malformedTarget);
+  const malformed = `${JSON.stringify({ schemaVersion: "0.1.0" }, null, 2)}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), malformed);
+  const malformedResult = await runFailure(malformedTarget, ...route, "--apply");
+  if (
+    !malformedResult.includes("requires non-empty registry and components strings") ||
+    fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== malformed
+  ) {
+    throw new Error("Versioned migration wrote an incomplete legacy configuration.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected malformed versioned migration");
+  const invalid = `${JSON.stringify(
+    { schemaVersion: "0.1.0", registry: 42, components: [] },
+    null,
+    2,
+  )}\n`;
+  fs.writeFileSync(path.join(malformedTarget, "nerio.json"), invalid);
+  await runFailure(malformedTarget, ...route, "--apply");
+  if (fs.readFileSync(path.join(malformedTarget, "nerio.json"), "utf8") !== invalid) {
+    throw new Error("Versioned migration wrote invalid legacy configuration fields.");
+  }
+  assertNoTransactionArtifacts(malformedTarget, "Rejected invalid versioned migration");
+
+  const preciseTarget = path.join(tempRoot, "migration-precise-consumer");
+  fs.mkdirSync(preciseTarget);
+  const preciseInitial =
+    '{"extension":{"schemaVersion":"0.1.0","accountId":9007199254740993},"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio"}\n';
+  fs.writeFileSync(path.join(preciseTarget, "nerio.json"), preciseInitial);
+  await run(preciseTarget, ...route, "--apply");
+  const preciseMigrated = fs.readFileSync(path.join(preciseTarget, "nerio.json"), "utf8");
+  if (
+    preciseMigrated !==
+    preciseInitial.replace('},"schemaVersion":"0.1.0"', '},"schemaVersion":"1.0.0"')
+  ) {
+    throw new Error("Versioned migration changed bytes outside the addressed schema marker.");
+  }
+  assertNoTransactionArtifacts(preciseTarget, "Exact-token versioned migration");
+
+  const concurrentTarget = path.join(tempRoot, "migration-concurrent-consumer");
+  writeLegacyConfig(concurrentTarget);
+  const concurrentMigration = runFailureWithEnv(
+    concurrentTarget,
+    { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" },
+    ...route,
+    "--apply",
+  );
+  await waitForFixture(
+    () => fs.readdirSync(concurrentTarget).some((entry) => entry.startsWith(".nerio-transaction-")),
+    "a staged versioned migration",
+  );
+  const concurrentEdit =
+    '{"schemaVersion":"0.1.0","registry":"./registry.json","components":"components/nerio","concurrent":true}\n';
+  fs.writeFileSync(path.join(concurrentTarget, "nerio.json"), concurrentEdit);
+  const concurrentResult = await concurrentMigration;
+  if (
+    !concurrentResult.includes("changed after planning") ||
+    fs.readFileSync(path.join(concurrentTarget, "nerio.json"), "utf8") !== concurrentEdit
+  ) {
+    throw new Error("Versioned migration replaced or rolled back a concurrent configuration edit.");
+  }
+  assertNoTransactionArtifacts(concurrentTarget, "Concurrent versioned migration");
+
+  fs.chmodSync(path.join(target, "nerio.json"), 0o600);
+  const applied = JSON.parse(await run(target, ...route, "--apply", "--json"));
+  const migrated = JSON.parse(fs.readFileSync(path.join(target, "nerio.json"), "utf8"));
+  if (
+    applied.status !== "applied" ||
+    migrated.schemaVersion !== "1.0.0" ||
+    migrated.extension?.preserved !== true ||
+    (fs.statSync(path.join(target, "nerio.json")).mode & 0o777) !== 0o600
+  ) {
+    throw new Error(
+      "Reviewed config migration did not apply its bounded transformation or preserve permissions.",
+    );
+  }
+  const alreadyCurrent = await runFailure(target, ...route, "--json");
+  if (!alreadyCurrent.includes("Expected 0.1.0; found 1.0.0")) {
+    throw new Error("Reviewed config migration did not enforce its addressed source version.");
+  }
+  assertNoTransactionArtifacts(target, "Applied versioned migration");
+
+  const rollbackTarget = path.join(tempRoot, "migration-rollback-consumer");
+  const rollbackInitial = writeLegacyConfig(rollbackTarget);
+  const rollback = await runFailureWithEnv(
+    rollbackTarget,
+    { NERIO_TEST_FAILURE: "after-state-write" },
+    ...route,
+    "--apply",
+  );
+  if (
+    !rollback.includes("Migration rolled back") ||
+    fs.readFileSync(path.join(rollbackTarget, "nerio.json"), "utf8") !== rollbackInitial
+  ) {
+    throw new Error("Versioned migration did not restore configuration after a write failure.");
+  }
+  assertNoTransactionArtifacts(rollbackTarget, "Rolled-back versioned migration");
+
+  const recoveryTarget = path.join(tempRoot, "migration-recovery-consumer");
+  const recoveryInitial = writeLegacyConfig(recoveryTarget);
+  await runFailureWithEnv(
+    recoveryTarget,
+    { NERIO_TEST_CRASH: "after-state-write" },
+    ...route,
+    "--apply",
+  );
+  assertInterruptedTransaction(recoveryTarget, "Interrupted versioned migration");
+  discardCrashedRegistryLock(recoveryTarget);
+  const recovery = spawnSync(process.execPath, [cli, ...route, "--json"], {
+    cwd: recoveryTarget,
+    encoding: "utf8",
+  });
+  const recoveredPlan = recovery.status === 0 ? JSON.parse(recovery.stdout) : null;
+  if (
+    recovery.status !== 0 ||
+    recoveredPlan?.status !== "planned" ||
+    !recovery.stderr.includes("Recovered interrupted Nerio migration") ||
+    fs.readFileSync(path.join(recoveryTarget, "nerio.json"), "utf8") !== recoveryInitial
+  ) {
+    throw new Error("Interrupted versioned migration did not recover its durable backup.");
+  }
+  assertNoTransactionArtifacts(recoveryTarget, "Recovered versioned migration");
+
+  const committedTarget = path.join(tempRoot, "migration-committed-consumer");
+  writeLegacyConfig(committedTarget);
+  await runFailureWithEnv(
+    committedTarget,
+    { NERIO_TEST_CRASH: "after-lock-write" },
+    ...route,
+    "--apply",
+  );
+  assertInterruptedTransaction(committedTarget, "Committed interrupted versioned migration");
+  discardCrashedRegistryLock(committedTarget);
+  const committedResult = await runFailure(committedTarget, ...route, "--json");
+  if (
+    !committedResult.includes("Expected 0.1.0; found 1.0.0") ||
+    JSON.parse(fs.readFileSync(path.join(committedTarget, "nerio.json"), "utf8")).schemaVersion !==
+      "1.0.0"
+  ) {
+    throw new Error("Recovery rolled back a versioned migration that had fully committed.");
+  }
+  assertNoTransactionArtifacts(committedTarget, "Committed versioned migration recovery");
 }
 
 async function verifySourceLifecycle(tempRoot) {
@@ -1598,6 +2191,9 @@ async function verify() {
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await verifySourceLifecycle(tempRoot);
+    await verifyMultiItemAdd(tempRoot);
+    await verifySafeRemove(tempRoot);
+    await verifyVersionedMigrations(tempRoot);
     await verifyAtomicTransactions(tempRoot);
     await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
@@ -1707,10 +2303,187 @@ async function verify() {
       assertExactInstall(target, expectedFiles, family);
     }
 
+    const nextCreateResult = JSON.parse(
+      await run(tempRoot, "create", "created-next", "--framework", "next", "--json"),
+    );
+    if (
+      nextCreateResult.schemaVersion !== "1.0.0" ||
+      nextCreateResult.command !== "create" ||
+      nextCreateResult.status !== "created" ||
+      nextCreateResult.framework !== "next" ||
+      nextCreateResult.mode !== "package" ||
+      nextCreateResult.profile !== "current" ||
+      !nextCreateResult.files.includes("app/client-example.tsx")
+    ) {
+      throw new Error("Create JSON did not expose the bounded project bootstrap contract.");
+    }
+    const createdNext = path.join(tempRoot, "created-next");
+    const nextPackage = JSON.parse(fs.readFileSync(path.join(createdNext, "package.json"), "utf8"));
+    const nextPage = fs.readFileSync(path.join(createdNext, "app/page.tsx"), "utf8");
+    const nextClient = fs.readFileSync(path.join(createdNext, "app/client-example.tsx"), "utf8");
+    const nextStyles = fs.readFileSync(path.join(createdNext, "app/globals.css"), "utf8");
+    if (
+      nextPackage.name !== "created-next" ||
+      (process.platform !== "win32" &&
+        (fs.statSync(createdNext).mode & 0o777) !== (0o777 & ~process.umask())) ||
+      nextPackage.engines.node !== ">=22" ||
+      nextPackage.dependencies.next !== "16.2.12" ||
+      !nextPage.includes('from "@nerio-ui/ui"') ||
+      !nextClient.startsWith('"use client";') ||
+      !nextClient.includes('from "@nerio-ui/ui/client"') ||
+      !nextStyles.includes('@source "../node_modules/@nerio-ui/ui/dist";') ||
+      fs.existsSync(path.join(createdNext, "next.config.mjs"))
+    ) {
+      throw new Error(
+        "Next.js bootstrap did not preserve package, Tailwind, or entrypoint contracts.",
+      );
+    }
+
+    const viteOutput = await run(tempRoot, "create", "created-vite", "--framework", "vite");
+    const createdVite = path.join(tempRoot, "created-vite");
+    const vitePackage = JSON.parse(fs.readFileSync(path.join(createdVite, "package.json"), "utf8"));
+    const viteApp = fs.readFileSync(path.join(createdVite, "src/app.tsx"), "utf8");
+    if (
+      !viteOutput.includes("Created vite package-mode project") ||
+      vitePackage.engines.node !== ">=22.12.0" ||
+      vitePackage.devDependencies.vite !== "8.1.4" ||
+      !viteApp.includes('from "@nerio-ui/ui"') ||
+      !viteApp.includes('from "@nerio-ui/ui/client"')
+    ) {
+      throw new Error("Vite bootstrap did not preserve its maintained package-mode contract.");
+    }
+    const unsupportedFramework = await runFailure(
+      tempRoot,
+      "create",
+      "created-router",
+      "--framework",
+      "react-router",
+    );
+    if (!unsupportedFramework.includes("Use --framework next or --framework vite")) {
+      throw new Error("Create did not reject an unsupported framework with clear guidance.");
+    }
+    const inheritedFramework = await runFailure(
+      tempRoot,
+      "create",
+      "created-inherited",
+      "--framework",
+      "constructor",
+    );
+    if (
+      !inheritedFramework.includes("Use --framework next or --framework vite") ||
+      fs.existsSync(path.join(tempRoot, "created-inherited"))
+    ) {
+      throw new Error("Create did not reject an inherited framework property before writing.");
+    }
+    const unsupportedProfile = await runFailure(
+      tempRoot,
+      "create",
+      "created-minimum",
+      "--framework",
+      "next",
+      "--profile",
+      "minimum",
+    );
+    if (!unsupportedProfile.includes("Use --profile current")) {
+      throw new Error("Create did not reject an unsupported dependency profile.");
+    }
+    const existingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "created-next",
+      "--framework",
+      "next",
+    );
+    if (!existingCreate.includes("Create target already exists")) {
+      throw new Error("Create did not preserve an existing target.");
+    }
+    const escapingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "../outside-project",
+      "--framework",
+      "next",
+    );
+    if (!escapingCreate.includes("must stay inside the current directory")) {
+      throw new Error("Create did not reject a directory escape.");
+    }
+    const unsafeNameCreate = await runFailure(
+      tempRoot,
+      "create",
+      "Uppercase-App",
+      "--framework",
+      "next",
+    );
+    if (!unsafeNameCreate.includes("lowercase letters, numbers, and hyphens")) {
+      throw new Error("Create did not reject an unsafe project package name.");
+    }
+    const unsafeParentCreate = await runFailure(
+      tempRoot,
+      "create",
+      "parent dir/my-app",
+      "--framework",
+      "next",
+    );
+    if (!unsafeParentCreate.includes("lowercase letters, numbers, and hyphens")) {
+      throw new Error("Create did not reject an unsafe project parent directory.");
+    }
+    const symlinkTarget = path.join(tempRoot, "create-symlink-target");
+    fs.mkdirSync(symlinkTarget);
+    fs.symlinkSync(symlinkTarget, path.join(tempRoot, "create-symlink"), "dir");
+    const symlinkCreate = await runFailure(
+      tempRoot,
+      "create",
+      "create-symlink/app",
+      "--framework",
+      "next",
+    );
+    if (
+      !symlinkCreate.includes("symlinked parent") ||
+      fs.existsSync(path.join(symlinkTarget, "app"))
+    ) {
+      throw new Error("Create did not reject a symlinked target parent before writing.");
+    }
+    const danglingCreatePath = path.join(tempRoot, "dangling-project");
+    fs.symlinkSync(path.join(tempRoot, "missing-create-target"), danglingCreatePath);
+    const danglingCreate = await runFailure(
+      tempRoot,
+      "create",
+      "dangling-project",
+      "--framework",
+      "vite",
+    );
+    if (
+      !danglingCreate.includes("Create target already exists") ||
+      !fs.lstatSync(danglingCreatePath).isSymbolicLink()
+    ) {
+      throw new Error("Create did not preserve a dangling symlink target entry.");
+    }
+    const failedCreate = await runFailureWithEnv(
+      tempRoot,
+      { NERIO_TEST_CREATE_FAILURE: "before-commit" },
+      "create",
+      "failed-create",
+      "--framework",
+      "vite",
+    );
+    if (
+      !failedCreate.includes("Injected project creation failure") ||
+      fs.existsSync(path.join(tempRoot, "failed-create")) ||
+      fs.readdirSync(tempRoot).some((entry) => entry.startsWith(".nerio-create-"))
+    ) {
+      throw new Error("Create did not clean its staging directory after a handled failure.");
+    }
+
     const helpOutput = await run(localTarget, "--help");
     if (
+      !helpOutput.includes("nerio create") ||
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
+      !helpOutput.includes("nerio search") ||
+      !helpOutput.includes("nerio view") ||
+      !helpOutput.includes("nerio docs") ||
+      !helpOutput.includes("nerio remove") ||
+      !helpOutput.includes("nerio migrate") ||
       !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
       !helpOutput.includes(publicCommands.cli.oneOffCommands[0])
@@ -1720,8 +2493,42 @@ async function verify() {
       );
     }
     const addHelpOutput = await run(localTarget, "add", "--help");
-    if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
+    if (
+      !addHelpOutput.includes("nerio add <component...>") ||
+      !addHelpOutput.includes("--all") ||
+      !addHelpOutput.includes("--json") ||
+      !addHelpOutput.includes("--dry-run")
+    ) {
       throw new Error("Add help output does not describe the source install options.");
+    }
+    const createHelpOutput = await run(localTarget, "create", "--help");
+    if (
+      !createHelpOutput.includes("nerio create <directory>") ||
+      !createHelpOutput.includes("--framework <next|vite>") ||
+      !createHelpOutput.includes("--profile current") ||
+      !createHelpOutput.includes("package-mode") ||
+      !createHelpOutput.includes("source lifecycle remains init/add")
+    ) {
+      throw new Error("Create help output does not describe the bounded bootstrap profiles.");
+    }
+    const removeHelpOutput = await run(localTarget, "remove", "--help");
+    if (
+      !removeHelpOutput.includes("nerio remove <component...>") ||
+      !removeHelpOutput.includes("--dry-run") ||
+      !removeHelpOutput.includes("--json") ||
+      !removeHelpOutput.includes("--force") ||
+      !removeHelpOutput.includes("no longer referenced")
+    ) {
+      throw new Error("Remove help output does not describe the safe source-removal options.");
+    }
+    const migrateHelpOutput = await run(localTarget, "migrate", "--help");
+    if (
+      !migrateHelpOutput.includes("nerio migrate config 0.1.0 1.0.0") ||
+      !migrateHelpOutput.includes("--apply") ||
+      !migrateHelpOutput.includes("--dry-run") ||
+      !migrateHelpOutput.includes("Dry-run default")
+    ) {
+      throw new Error("Migrate help output does not describe the explicit versioned route.");
     }
     const initHelpOutput = await run(localTarget, "init", "--help");
     if (
@@ -1759,6 +2566,130 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const inspectionSnapshot = managedSnapshot(localTarget);
+    const searchResult = JSON.parse(
+      await run(localTarget, "search", "keyboard", "navigation", "--limit", "3", "--json"),
+    );
+    if (
+      searchResult.schemaVersion !== "1.0.0" ||
+      searchResult.command !== "search" ||
+      searchResult.limit !== 3 ||
+      searchResult.count > 3 ||
+      searchResult.total < searchResult.count ||
+      !searchResult.items.every(
+        (item) => item.name && item.title && item.description && item.category,
+      )
+    ) {
+      throw new Error("Search JSON did not expose the bounded Registry inspection contract.");
+    }
+    const tokenSearchResult = JSON.parse(
+      await run(localTarget, "search", "--n-card-padding-inline", "--json"),
+    );
+    if (!tokenSearchResult.items.some(({ name }) => name === "card")) {
+      throw new Error("Search did not preserve a hyphen-prefixed Registry token query.");
+    }
+    const fieldNameSearchResult = JSON.parse(
+      await run(localTarget, "search", "optionalPeerDependencies", "--json"),
+    );
+    if (fieldNameSearchResult.total !== 0) {
+      throw new Error("Search matched Registry schema field names instead of metadata values.");
+    }
+    const extensionManifest = path.join(tempRoot, "extension-metadata-manifest.json");
+    const extensionRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    extensionRegistry.items[0].internalNotes = "private-extension-keyword";
+    extensionRegistry.items[0].sourceContent = "private source content";
+    extensionRegistry.items[0].files[0].privateFileNote = "private file metadata";
+    fs.writeFileSync(extensionManifest, `${JSON.stringify(extensionRegistry, null, 2)}\n`);
+    const extensionSearchResult = JSON.parse(
+      await run(
+        localTarget,
+        "search",
+        "private-extension-keyword",
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (extensionSearchResult.total !== 0) {
+      throw new Error("Search matched an undocumented Registry extension field.");
+    }
+    const extensionViewResult = JSON.parse(
+      await run(
+        localTarget,
+        "view",
+        extensionRegistry.items[0].name,
+        "--registry",
+        extensionManifest,
+        "--json",
+      ),
+    );
+    if (
+      "internalNotes" in extensionViewResult.item ||
+      "sourceContent" in extensionViewResult.item ||
+      extensionViewResult.item.files.some((file) => "privateFileNote" in file)
+    ) {
+      throw new Error("View JSON exposed an undocumented Registry extension field.");
+    }
+    const viewResult = JSON.parse(await run(localTarget, "view", "button", "--json"));
+    if (
+      viewResult.schemaVersion !== "1.0.0" ||
+      viewResult.command !== "view" ||
+      viewResult.item.name !== "button" ||
+      !viewResult.item.files.some(
+        (file) =>
+          file.source &&
+          file.target === "components/button.tsx" &&
+          file.role === "component" &&
+          /^sha256-[a-f0-9]{64}$/.test(file.integrity),
+      ) ||
+      !viewResult.item.registryDependencies.includes("spinner")
+    ) {
+      throw new Error("View JSON did not expose source, integrity, and dependency metadata.");
+    }
+    const docsResult = JSON.parse(await run(localTarget, "docs", "button", "--json"));
+    if (
+      docsResult.schemaVersion !== "1.0.0" ||
+      docsResult.command !== "docs" ||
+      docsResult.item.name !== "button" ||
+      !docsResult.item.usage.includes("<Button") ||
+      !docsResult.item.accessibility.length
+    ) {
+      throw new Error("Docs JSON did not expose Registry usage and accessibility guidance.");
+    }
+    const invalidDocsPathManifest = path.join(tempRoot, "invalid-docs-path-manifest.json");
+    const invalidDocsPathRegistry = JSON.parse(fs.readFileSync(manifest, "utf8"));
+    invalidDocsPathRegistry.items[0].docsPath = { path: "/docs/components/button" };
+    fs.writeFileSync(
+      invalidDocsPathManifest,
+      `${JSON.stringify(invalidDocsPathRegistry, null, 2)}\n`,
+    );
+    const invalidDocsPath = await runFailure(
+      localTarget,
+      "docs",
+      invalidDocsPathRegistry.items[0].name,
+      "--registry",
+      invalidDocsPathManifest,
+      "--json",
+    );
+    if (!invalidDocsPath.includes("docsPath as a non-empty string")) {
+      throw new Error("Docs did not reject a non-string local Registry docsPath.");
+    }
+    const invalidLimit = await runFailure(localTarget, "search", "button", "--limit", "51");
+    if (!invalidLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject an out-of-range result limit.");
+    }
+    const missingLimit = await runFailure(localTarget, "search", "button", "--limit");
+    if (!missingLimit.includes("integer from 1 to 50")) {
+      throw new Error("Search did not reject a missing result limit.");
+    }
+    const unknownView = await runFailure(localTarget, "view", "not-a-component", "--json");
+    if (!unknownView.includes("Unknown registry item")) {
+      throw new Error("View did not report an unknown Registry item.");
+    }
+    if (JSON.stringify(managedSnapshot(localTarget)) !== JSON.stringify(inspectionSnapshot)) {
+      throw new Error("Read-only Registry inspection changed consumer source or lock state.");
+    }
+    assertNoTransactionArtifacts(localTarget, "Read-only Registry inspection");
     const fileInputInfoOutput = await run(localTarget, "info", "file-input");
     if (
       !fileInputInfoOutput.includes("FileInput (file-input)") ||

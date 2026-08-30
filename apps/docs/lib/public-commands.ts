@@ -2,6 +2,7 @@ import publicCommands from "@nerio-ui/registry/public-commands.json";
 
 export const packageInstall = publicCommands.packageInstall.join("\n");
 export const localCliInstall = publicCommands.cli.localInstall;
+export const bootstrapCommands = publicCommands.cli.bootstrapCommands.join("\n");
 export const localCliWorkflow = publicCommands.cli.localCommands.join("\n");
 export const oneOffCliWorkflow = publicCommands.cli.oneOffCommands.join("\n");
 export const mcpInstall = publicCommands.mcp.localInstall;

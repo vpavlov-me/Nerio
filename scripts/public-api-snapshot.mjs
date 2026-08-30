@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -171,10 +171,14 @@ function entrypointContracts() {
   const files = Object.values(entrypoints).map((path) => join(root, path));
   const program = ts.createProgram(files, {
     allowJs: true,
+    baseUrl: root,
     esModuleInterop: true,
     jsx: ts.JsxEmit.ReactJSX,
     module: ts.ModuleKind.ESNext,
     moduleResolution: ts.ModuleResolutionKind.Bundler,
+    paths: {
+      "@nerio-ui/adapters/icons": ["packages/adapters/src/icons.ts"],
+    },
     skipLibCheck: true,
     target: ts.ScriptTarget.ESNext,
   });
@@ -393,17 +397,47 @@ function generatedLockContract() {
 }
 
 function cliContracts() {
-  const runtime = readFileSync(join(root, "packages/cli/src/index.js"), "utf8");
+  const cliSource = join(root, "packages/cli/src");
+  const cliInternalSource = join(cliSource, "internal");
+  const runtime = [
+    join(cliSource, "index.js"),
+    ...readdirSync(cliInternalSource, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
+      .map((entry) => join(cliInternalSource, entry.name))
+      .sort(),
+  ]
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
   const constant = (name) =>
     runtime
       .match(new RegExp(`const ${name} = ([^;]+);`))?.[1]
       ?.replace(/\s+/g, " ")
       .trim() ?? null;
   return {
+    addOutputSchema: constant("ADD_OUTPUT_SCHEMA_VERSION"),
+    createOutputSchema: constant("CREATE_OUTPUT_SCHEMA_VERSION"),
+    inspectionOutputSchema: constant("INSPECTION_OUTPUT_SCHEMA_VERSION"),
+    migrationOutputSchema: constant("MIGRATION_OUTPUT_SCHEMA_VERSION"),
+    removeOutputSchema: constant("REMOVE_OUTPUT_SCHEMA_VERSION"),
     configSchemas: constant("SUPPORTED_CONFIG_SCHEMAS"),
     defaultRegistry: constant("DEFAULT_REGISTRY"),
     help: Object.fromEntries(
-      ["root", "init", "add", "diff", "update", "list", "info", "doctor"].map((command) => [
+      [
+        "root",
+        "create",
+        "init",
+        "add",
+        "remove",
+        "migrate",
+        "diff",
+        "update",
+        "list",
+        "info",
+        "search",
+        "view",
+        "docs",
+        "doctor",
+      ].map((command) => [
         command,
         command === "root" ? runCli("--help") : runCli(command, "--help"),
       ]),

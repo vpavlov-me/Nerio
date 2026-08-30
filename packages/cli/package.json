@@ -24,15 +24,16 @@
     "node": ">=22"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "bin": {
-    "nerio": "./src/index.js"
+    "nerio": "./dist/index.cjs"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "node ../../scripts/build-cli-output.mjs && tsc --noEmit",
     "lint": "eslint .",
-    "test:fixture": "node fixtures/verify.js && node fixtures/remote-verify.js",
+    "prepack": "node ../../scripts/build-cli-output.mjs",
+    "test:fixture": "node --test fixtures/internal-modules.test.js ../../scripts/build-cli-output.test.mjs && NERIO_TEST_CLI_PATH=dist/index.cjs node fixtures/verify.js && NERIO_TEST_CLI_PATH=dist/index.cjs node fixtures/remote-verify.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

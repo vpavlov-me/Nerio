@@ -4,8 +4,7 @@ on:
   pull_request:
     branches:
       - main
-      - dev
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -20,6 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Defer required checks for draft pull requests
+        if: github.event.pull_request.draft == true
+        run: |
+          echo "Full CI is deferred while the pull request is a draft. Mark it ready for review to run required checks." >&2
+          exit 1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0

@@ -8,7 +8,7 @@ const { Buffer } = require("node:buffer");
 const { execFileSync, spawn } = require("node:child_process");
 const { setTimeout } = require("node:timers");
 
-const cli = path.resolve(__dirname, "../src/index.js");
+const cli = path.resolve(__dirname, "..", process.env.NERIO_TEST_CLI_PATH || "src/index.js");
 const source = "export const remoteButton = true;\n";
 const sourceIntegrity = `sha256-${crypto.createHash("sha256").update(source).digest("hex")}`;
 
@@ -59,6 +59,10 @@ function requestHandler(request, response) {
   const url = new URL(request.url, "http://registry.test");
   if (url.pathname === "/valid/manifest.json") {
     respondJson(response, manifest(validFiles));
+  } else if (url.pathname === "/invalid-docs-path/manifest.json") {
+    const invalid = JSON.parse(manifest(validFiles));
+    invalid.items[0].docsPath = { path: "/docs/components/button" };
+    respondJson(response, JSON.stringify(invalid));
   } else if (url.pathname === "/redirect-valid") {
     response.writeHead(302, { location: "/valid/manifest.json" });
     response.end();
@@ -228,6 +232,7 @@ async function verify() {
       ["/wrong-content", "unsupported content type"],
       ["/missing", "request failed (404)"],
       ["/duplicates/manifest.json", "duplicate target"],
+      ["/invalid-docs-path/manifest.json", "docsPath as a non-empty string"],
     ]) {
       const output = await failure(
         policyTarget,
@@ -241,6 +246,66 @@ async function verify() {
         throw new Error(`Remote ${route} failure did not report ${message}:\n${output}`);
       }
     }
+
+    const remoteSearch = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "search",
+        "remote",
+        "--limit",
+        "1",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    const remoteNullSearch = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "search",
+        "null",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    const remoteView = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "view",
+        "button",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    const remoteDocs = JSON.parse(
+      await execute(
+        policyTarget,
+        {},
+        "docs",
+        "button",
+        "--json",
+        "--registry",
+        `${httpUrl}/valid/manifest.json`,
+        "--allow-insecure-http",
+      ),
+    );
+    if (
+      remoteSearch.count !== 1 ||
+      remoteNullSearch.total !== 0 ||
+      remoteView.item.files[0].integrity !== sourceIntegrity ||
+      !remoteDocs.item.usage.includes("remoteButton")
+    ) {
+      throw new Error("Remote read-only inspection did not preserve validated Registry metadata.");
+    }
+    assertUntouched(policyTarget, "Remote read-only inspection");
 
     for (const [route, message] of [
       ["/mismatch/manifest.json", "integrity mismatch"],

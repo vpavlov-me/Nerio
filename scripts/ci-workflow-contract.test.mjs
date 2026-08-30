@@ -60,7 +60,7 @@ test("requires deterministic package output in the release gate", () => {
 
 test("requires the repository artifact guard in the development gate", () => {
   const sources = readCiWorkflowSources(root);
-  sources.prGate = sources.prGate.replace("          pnpm validate:repo-artifacts\n", "");
+  sources.prGate = sources.prGate.replace("      - run: pnpm validate:repo-artifacts\n", "");
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
       `${ciWorkflowPaths.prGate}: missing pnpm validate:repo-artifacts`,
@@ -68,12 +68,12 @@ test("requires the repository artifact guard in the development gate", () => {
   );
 });
 
-test("caps development dependency installation at three runner lanes", () => {
+test("caps development dependency installation at two runner lanes", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate += "\n      - run: pnpm install --frozen-lockfile\n";
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
-      `${ciWorkflowPaths.prGate}: expected at most 3 frozen-lockfile installs, found 4`,
+      `${ciWorkflowPaths.prGate}: expected at most 2 dependency installs, found 3`,
     ),
   );
 });
@@ -94,7 +94,7 @@ test("requires draft deferral and CI-infrastructure self-validation", () => {
   );
   assert.ok(
     failures.includes(
-      `${ciWorkflowPaths.prGate}: missing github.event.pull_request.draft == false`,
+      `${ciWorkflowPaths.prGate}: missing if: \${{ github.event.pull_request.draft == false && always() }}`,
     ),
   );
 });
@@ -105,6 +105,16 @@ test("keeps branch policy dependency-free", () => {
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
       `${ciWorkflowPaths.branchPolicy}: forbidden pnpm install --frozen-lockfile`,
+    ),
+  );
+});
+
+test("requires stale branch-policy runs to be cancelled", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.branchPolicy = sources.branchPolicy.replace("  cancel-in-progress: true\n", "");
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.branchPolicy}: missing cancel-in-progress: true`,
     ),
   );
 });

@@ -93,6 +93,14 @@ source Registry artifact. Package mode does not require Next.js `transpilePackag
 remains editable and integrity-verified. Public import paths and the single Tailwind/token contract
 remain unchanged.
 
+[ADR 0008](./docs/decisions/0008-namespaced-registries-and-bounded-authentication.md) accepts
+configuration-local `@namespace/item` aliases over stable manifest-owned Registry IDs, one
+deterministic cross-Registry dependency graph, schema-versioned lock and output migrations, and
+environment-backed authentication scoped to one exact HTTPS origin. Unqualified projects retain
+their single default Registry behavior. Core reuses the existing integrity, transport, planning,
+transaction, and redaction engine and contains no licensing, account, payment, or hosted-service
+behavior.
+
 Core distribution should be public through the repository, public docs, public registry, and public packages where needed.
 
 Pro distribution may use a private repository, private registry, private package, license token, paid Figma kit, and Pro MCP access.

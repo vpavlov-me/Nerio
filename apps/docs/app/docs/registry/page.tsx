@@ -1,13 +1,18 @@
 import { registry, registryMetadata } from "@nerio-ui/registry";
 import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
-import { localCliInstall, localCliWorkflow, oneOffCliWorkflow } from "../../../lib/public-commands";
+import {
+  bootstrapCommands,
+  localCliInstall,
+  localCliWorkflow,
+  oneOffCliWorkflow,
+} from "../../../lib/public-commands";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
   title: "Registry and CLI",
   description:
-    "Configure the Nerio registry and CLI to discover, validate, and install editable component source into an application.",
+    "Use the Nerio CLI to create maintained package projects or discover, validate, and install editable component source.",
   path: "/docs/registry",
 });
 
@@ -31,14 +36,42 @@ export default function Page() {
 
       <section className="doc-section">
         <h2>Quick start</h2>
+        <CodeExample code={bootstrapCommands} label="Create a package-mode project" />
+        <p>
+          <code>create</code> bootstraps one new package-mode project with the maintained current
+          Next.js or Vite profile. It pins the tested stack, writes deterministic files atomically,
+          and configures Tailwind, tokens, residual styles, compiled source scanning, and the
+          server/client entrypoint boundary. It does not guess unsupported frameworks or generate
+          backend, authentication, database, deployment, or product code. Source mode remains the
+          existing <code>init</code> and <code>add</code> lifecycle inside an application.
+        </p>
         <CodeExample code={localCliInstall} label="Install the local CLI" />
         <CodeExample code={localCliWorkflow} label="CLI quick start" />
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and source dependencies. Use{" "}
-          <code>list</code> to discover components, <code>info</code> to inspect metadata, and{" "}
-          <code>add --dry-run</code> to review the initial install plan. Use <code>diff</code> and{" "}
-          <code>update --dry-run</code> before applying an upstream source update.
+          <code>search</code> to discover documented metadata, <code>view</code> to inspect source
+          and integrity metadata, <code>docs</code> to read usage and accessibility guidance, and{" "}
+          <code>add --dry-run</code> to review the initial install plan. The compatible{" "}
+          <code>list</code> and <code>info</code> commands remain available. Use <code>diff</code>{" "}
+          and <code>update --dry-run</code> before applying an upstream source update, or{" "}
+          <code>remove --dry-run</code> before pruning directly installed source.
+        </p>
+        <p>
+          Pass multiple names to install one dependency union, or use <code>add --all</code> to
+          select every Registry item. Both paths preflight the complete set and commit one source
+          and lock transaction. Add <code>--json</code> for the stable structured result and combine
+          it with <code>--dry-run</code> for automation-safe planning.
+        </p>
+        <p>
+          Read-only discovery uses the same validated immutable manifest without fetching source.
+          Search returns at most 20 name-sorted matches by default and accepts a limit from 1 to 50.
+          Search, view, and docs support a bounded JSON schema for automation.
+        </p>
+        <p>
+          <code>migrate config 0.1.0 1.0.0</code> previews the only reviewed configuration
+          migration. Add <code>--apply</code> to write through the project lock with durable backup,
+          rollback, and crash recovery. The CLI never reads or executes Registry migration scripts.
         </p>
         <p>
           For a one-off initialization or component install, invoke the real package name. Keep the
@@ -72,6 +105,36 @@ export default function Page() {
         </p>
         <ul className="doc-list">
           <li>
+            <code>add button card</code> resolves the explicit roots and their shared dependencies
+            once, then updates source and <code>nerio.lock.json</code> atomically.
+          </li>
+          <li>
+            <code>add --all</code> selects every Registry item in name order. It cannot be combined
+            with explicit item names.
+          </li>
+          <li>
+            <code>add --dry-run --json</code> emits schema <code>1.0.0</code> with a deterministic
+            planned, applied, or blocked status, portable file actions and owners, dependency
+            unions, and summary counts. Exit code 0 means the plan or transaction succeeded; exit
+            code 1 means input, conflict, Registry, or transaction failure.
+          </li>
+          <li>
+            <code>remove button card</code> accepts direct items only and removes their source plus
+            dependencies no longer referenced by another direct item. Shared files remain installed
+            with narrowed owner metadata.
+          </li>
+          <li>
+            <code>remove --dry-run --json</code> emits its bounded schema <code>1.0.0</code> without
+            writes. Locally modified or ambiguous tracked source blocks the complete operation;
+            <code>--force</code> is an explicit opt-in for every reported modified-file deletion and
+            never bypasses ownership or path validation.
+          </li>
+          <li>
+            <code>migrate config 0.1.0 1.0.0</code> preserves additive configuration fields and
+            previews by default. <code>--apply</code> changes only the schema marker in one
+            recoverable transaction; unsupported routes fail before writes.
+          </li>
+          <li>
             <code>diff [component]</code> reports unchanged, locally modified, upstream changed,
             added, removed, and combined conflict states.
           </li>
@@ -93,14 +156,16 @@ export default function Page() {
             dependency closures update without duplicate files.
           </li>
           <li>
-            Add and update fetch and validate the complete plan before writing, stage every change,
-            commit source before lock metadata, and restore both source and lock state after any
-            handled failure. A durable local journal recovers an interrupted process on the next
-            state-sensitive command (<code>add</code>, <code>diff</code>, <code>update</code>, or{" "}
-            <code>doctor</code>); already-committed source and lock state is retained. A
-            project-local process lock serializes installs, updates, validation, and recovery so
-            parallel commands cannot lose source ownership or lock metadata; <code>list</code> and{" "}
-            <code>info</code> remain read-only inspection commands. An owner heartbeat also makes
+            Add and update fetch and validate the complete plan before writing; remove validates the
+            recorded source and ownership graph. Registry mutations stage a complete plan, commit
+            source before lock metadata, and restore both after any handled failure. Migration uses
+            the same project lock with a dedicated configuration backup. A durable local journal
+            recovers an interrupted process on the next state-sensitive command (<code>add</code>,{" "}
+            <code>remove</code>, <code>migrate</code>, <code>diff</code>, <code>update</code>, or{" "}
+            <code>doctor</code>); already-committed state is retained. The process lock serializes
+            mutations, validation, and recovery so parallel commands cannot lose state;{" "}
+            <code>list</code>, <code>info</code>, <code>search</code>, <code>view</code>, and{" "}
+            <code>docs</code> remain read-only inspection commands. An owner heartbeat also makes
             locks reclaimable after process death, restart, or PID reuse.
           </li>
         </ul>
@@ -165,6 +230,18 @@ export default function Page() {
           <li>
             <code>info &lt;component&gt;</code> prints dependencies, registry dependencies, files,
             tokens, and usage.
+          </li>
+          <li>
+            <code>search &lt;query&gt;</code> matches documented metadata with a bounded name-sorted
+            result set.
+          </li>
+          <li>
+            <code>view &lt;component&gt;</code> prints source paths, targets, roles, integrity,
+            dependencies, and component metadata without fetching source content.
+          </li>
+          <li>
+            <code>docs &lt;component&gt;</code> prints Registry usage, accessibility guidance, and
+            the optional canonical documentation path.
           </li>
           <li>Registry dependencies are traversed before the requested component is installed.</li>
           <li>

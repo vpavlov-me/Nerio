@@ -247,7 +247,7 @@ function packageReadinessFailures() {
     failures.push("packages/tokens/package.json: missing ./styles.css export");
   }
 
-  if (cliPackage.bin?.nerio !== "./src/index.js") {
+  if (cliPackage.bin?.nerio !== "./dist/index.cjs") {
     failures.push("packages/cli/package.json: missing nerio bin entry");
   }
 

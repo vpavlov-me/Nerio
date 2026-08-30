@@ -60,6 +60,38 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added `nerio create <directory> --framework <next|vite>` for maintained package-mode starters
+  with an explicit current dependency profile, deterministic atomic output, bounded JSON, exact
+  Tailwind/token/style scanning, and Next.js server/client entrypoint guidance. Source mode remains
+  the existing `init`/`add` lifecycle; unsupported frameworks and existing targets fail before
+  writes. The clean generated projects build from packed Nerio artifacts and pass served-preview
+  smoke tests. Parent traversal binds each segment's identity before target preflight, and the
+  parent identity is revalidated around commit so a concurrent replacement aborts and rolls back
+  the operation. The measured CLI archive grows from 20,243 to 23,694 bytes,
+  and the reviewed tarball budget moves from 20,500 to 23,750 bytes while the unpacked limit remains
+  unchanged.
+- Added the explicit `nerio migrate config 0.1.0 1.0.0` route with dry-run by default, bounded
+  versioned JSON, additive-field preservation, project locking, durable backup, rollback, and crash
+  recovery. Unsupported routes fail before writes, and Registry scripts or other external code are
+  never executed. Applying the migration preserves unrelated JSON tokens exactly and stops before
+  replacement if the configuration changes during staging. The reviewed CLI tarball budget moves
+  from 20,000 to 20,500 bytes for these checks; the measured archive is 20,243 bytes and the
+  unpacked limit remains unchanged.
+- Added bounded read-only `nerio search`, `nerio view`, and `nerio docs` inspection over immutable
+  Registry metadata, including stable JSON, source path and integrity details, dependency metadata,
+  usage, accessibility guidance, and remote-policy preservation without installing source.
+- Added transactional `nerio remove` for one or more direct source items. It prunes only their
+  unreferenced dependency closure, preserves shared files and owners, blocks modified or ambiguous
+  source before writes, and provides deterministic dry-run, bounded JSON, explicit-force, rollback,
+  and recovery behavior without changing the lock or transaction schemas.
+- Expanded `nerio add` with transactional multi-item roots and `--all`, one deterministic Registry
+  and package dependency union, complete preflight conflict reporting, one coherent lock update,
+  deterministic dry-run output, and a bounded versioned `--json` result without changing the lock,
+  Registry, transport, rollback, or recovery schemas.
+- Modularized the public CLI runtime behind its unchanged seven-command contract, isolated Registry
+  transport, source transactions, diagnostics, and command presentation, and switched the packed
+  CLI to one deterministic generated CommonJS bin so internal modules remain private and package
+  budgets do not increase.
 - Expanded `DropdownMenu` into a complete bounded compound family while preserving the existing
   trigger-and-items API. The new anatomy covers Root, Trigger, Portal, Positioner, Content, groups,
   action and link items, checkbox and radio selection, one submenu level, separators, labels,

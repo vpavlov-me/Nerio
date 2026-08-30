@@ -4,13 +4,24 @@
     "pnpm add -D @tailwindcss/postcss postcss"
   ],
   "cli": {
+    "bootstrapCommands": [
+      "pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-next-app --framework next",
+      "pnpm dlx @nerio-ui/cli@1.0.0-beta.1 create my-vite-app --framework vite"
+    ],
     "localInstall": "pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
     "localCommands": [
       "pnpm exec nerio init",
       "pnpm exec nerio list",
       "pnpm exec nerio info button",
+      "pnpm exec nerio search keyboard --limit 5",
+      "pnpm exec nerio view button --json",
+      "pnpm exec nerio docs button",
+      "pnpm exec nerio migrate config 0.1.0 1.0.0",
       "pnpm exec nerio add button --dry-run",
+      "pnpm exec nerio add button card --dry-run",
+      "pnpm exec nerio add --all --dry-run --json",
       "pnpm exec nerio add button",
+      "pnpm exec nerio remove button --dry-run",
       "pnpm exec nerio diff button",
       "pnpm exec nerio update button --dry-run",
       "pnpm exec nerio doctor"
