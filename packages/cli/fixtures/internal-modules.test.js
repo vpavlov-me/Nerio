@@ -95,6 +95,7 @@ test("create current profile matches coordinated release and dependency support 
 test("create detects replacement of its validated parent directory", () => {
   const {
     assertDirectoryIdentity,
+    bindCreateParent,
     bindDirectory,
     directoryIdentity,
     hasDirectoryIdentity,
@@ -127,6 +128,16 @@ test("create detects replacement of its validated parent directory", () => {
     assert.equal(hasDirectoryIdentity(".", boundIdentity), true);
     fs.rmSync("bound-marker");
     assert.equal(fs.existsSync(path.join(replacement, "bound-marker")), false);
+
+    process.chdir(directory);
+    fs.mkdirSync("nested");
+    const nestedIdentity = bindCreateParent("nested/project");
+    assert.equal(hasDirectoryIdentity(".", nestedIdentity), true);
+    process.chdir(directory);
+    fs.renameSync("nested", "nested-original");
+    fs.mkdirSync("nested");
+    assert.equal(hasDirectoryIdentity("nested", nestedIdentity), false);
+    process.chdir("nested-original");
   } finally {
     process.chdir(previousCwd);
     fs.rmSync(directory, { recursive: true, force: true });

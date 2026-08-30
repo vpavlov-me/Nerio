@@ -70,6 +70,41 @@ function hasDirectoryIdentity(target, expected) {
   }
 }
 
+function bindCreateParent(directory) {
+  const parentSegments = directory.split("/").slice(0, -1);
+  let identity = directoryIdentity(".");
+  bindDirectory(".", identity);
+  const traversed = [];
+
+  for (const segment of parentSegments) {
+    traversed.push(segment);
+    let stats;
+    try {
+      stats = fs.lstatSync(segment);
+    } catch (error) {
+      if (error?.code !== "ENOENT") {
+        throw new Error("Create target parent changed during project creation.");
+      }
+      try {
+        fs.mkdirSync(segment);
+        stats = fs.lstatSync(segment);
+      } catch {
+        throw new Error("Create target parent changed during project creation.");
+      }
+    }
+    if (stats.isSymbolicLink()) {
+      throw new Error(`Create directory contains a symlinked parent: ${traversed.join("/")}`);
+    }
+    if (!stats.isDirectory()) {
+      throw new Error("Create target parent must remain a real directory.");
+    }
+    identity = { dev: stats.dev, ino: stats.ino };
+    bindDirectory(segment, identity);
+  }
+
+  return identity;
+}
+
 function commonPackage(name, scripts, dependencies, devDependencies, type, nodeEngine = ">=22") {
   return json({
     name,
@@ -366,25 +401,6 @@ function createCreateCommand(services) {
     return { directory: segments.join("/"), name: segments.at(-1), target };
   }
 
-  function assertSafeParents(target) {
-    let current = path.resolve(cwd);
-    for (const segment of path
-      .relative(cwd, path.dirname(target))
-      .split(path.sep)
-      .filter(Boolean)) {
-      current = path.join(current, segment);
-      try {
-        if (fs.lstatSync(current).isSymbolicLink()) {
-          throw new Error(
-            `Create directory contains a symlinked parent: ${path.relative(cwd, current)}`,
-          );
-        }
-      } catch (error) {
-        if (error?.code !== "ENOENT") throw error;
-      }
-    }
-  }
-
   async function create() {
     const requestedDirectory = positionalArguments[0];
     const { directory, name, target } = validateDirectory(requestedDirectory);
@@ -396,16 +412,10 @@ function createCreateCommand(services) {
     if (profile !== CREATE_PROFILE) {
       throw new Error(`Unsupported profile: ${profile}. Use --profile ${CREATE_PROFILE}.`);
     }
-    if (pathEntryExists(target)) throw new Error(`Create target already exists: ${directory}`);
-    assertSafeParents(target);
-
     const files = frameworks[framework](name);
     const orderedFiles = Object.keys(files).sort();
     const parent = path.dirname(target);
-    fs.mkdirSync(parent, { recursive: true });
-    assertSafeParents(target);
-    const parentIdentity = directoryIdentity(parent);
-    bindDirectory(parent, parentIdentity);
+    const parentIdentity = bindCreateParent(directory);
     const targetEntry = path.basename(target);
     if (pathEntryExists(targetEntry)) throw new Error(`Create target already exists: ${directory}`);
     const staging = fs.mkdtempSync(".nerio-create-");
@@ -461,6 +471,7 @@ module.exports = {
   CREATE_OUTPUT_SCHEMA_VERSION,
   CREATE_PROFILE,
   CREATE_VERSIONS,
+  bindCreateParent,
   assertDirectoryIdentity,
   bindDirectory,
   createCreateCommand,
