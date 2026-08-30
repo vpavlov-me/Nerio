@@ -65,9 +65,9 @@ Items under `Unreleased` may change before the next public release.
   Tailwind/token/style scanning, and Next.js server/client entrypoint guidance. Source mode remains
   the existing `init`/`add` lifecycle; unsupported frameworks and existing targets fail before
   writes. The clean generated projects build from packed Nerio artifacts and pass served-preview
-  smoke tests. Parent-directory identity is revalidated around staging and commit so a concurrent
-  replacement aborts and rolls back the operation. The measured CLI archive grows from 20,243 to
-  23,669 bytes,
+  smoke tests. Parent traversal binds each segment's identity before target preflight, and the
+  parent identity is revalidated around commit so a concurrent replacement aborts and rolls back
+  the operation. The measured CLI archive grows from 20,243 to 23,694 bytes,
   and the reviewed tarball budget moves from 20,500 to 23,750 bytes while the unpacked limit remains
   unchanged.
 - Added the explicit `nerio migrate config 0.1.0 1.0.0` route with dry-run by default, bounded
