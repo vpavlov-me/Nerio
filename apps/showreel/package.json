@@ -18,7 +18,7 @@
     "@nerio-ui/adapters": "workspace:*",
     "@nerio-ui/ui": "workspace:*",
     "@remotion/tailwind-v4": "4.0.512",
-    "@remotion/transitions": "4.0.512",
+    "@remotion/transitions": "4.0.518",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "remotion": "4.0.512",
