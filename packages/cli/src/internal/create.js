@@ -27,6 +27,49 @@ function pathEntryExists(target) {
   }
 }
 
+function directoryIdentity(target) {
+  let stats;
+  try {
+    stats = fs.lstatSync(target);
+  } catch {
+    throw new Error("Create target parent changed during project creation.");
+  }
+  if (!stats.isDirectory() || stats.isSymbolicLink()) {
+    throw new Error("Create target parent must remain a real directory.");
+  }
+  return { dev: stats.dev, ino: stats.ino };
+}
+
+function bindDirectory(target, expected) {
+  try {
+    process.chdir(target);
+  } catch {
+    throw new Error("Create target parent changed during project creation.");
+  }
+  assertDirectoryIdentity(".", expected);
+}
+
+function assertDirectoryIdentity(target, expected) {
+  const current = directoryIdentity(target);
+  if (current.dev !== expected.dev || current.ino !== expected.ino) {
+    throw new Error("Create target parent changed during project creation.");
+  }
+}
+
+function hasDirectoryIdentity(target, expected) {
+  try {
+    const current = fs.lstatSync(target);
+    return (
+      current.isDirectory() &&
+      !current.isSymbolicLink() &&
+      current.dev === expected.dev &&
+      current.ino === expected.ino
+    );
+  } catch {
+    return false;
+  }
+}
+
 function commonPackage(name, scripts, dependencies, devDependencies, type, nodeEngine = ">=22") {
   return json({
     name,
@@ -360,7 +403,12 @@ function createCreateCommand(services) {
     const orderedFiles = Object.keys(files).sort();
     const parent = path.dirname(target);
     fs.mkdirSync(parent, { recursive: true });
-    const staging = fs.mkdtempSync(path.join(parent, ".nerio-create-"));
+    assertSafeParents(target);
+    const parentIdentity = directoryIdentity(parent);
+    bindDirectory(parent, parentIdentity);
+    const targetEntry = path.basename(target);
+    if (pathEntryExists(targetEntry)) throw new Error(`Create target already exists: ${directory}`);
+    const staging = fs.mkdtempSync(".nerio-create-");
     try {
       for (const file of orderedFiles) {
         const destination = path.join(staging, file);
@@ -370,9 +418,19 @@ function createCreateCommand(services) {
       if (process.env.NERIO_TEST_CREATE_FAILURE === "before-commit") {
         throw new Error("Injected project creation failure: before-commit");
       }
-      if (pathEntryExists(target)) throw new Error(`Create target already exists: ${directory}`);
+      if (pathEntryExists(targetEntry))
+        throw new Error(`Create target already exists: ${directory}`);
       fs.chmodSync(staging, 0o777 & ~process.umask());
-      fs.renameSync(staging, target);
+      const committedIdentity = directoryIdentity(staging);
+      fs.renameSync(staging, targetEntry);
+      try {
+        assertDirectoryIdentity(parent, parentIdentity);
+      } catch (error) {
+        if (hasDirectoryIdentity(targetEntry, committedIdentity)) {
+          fs.rmSync(targetEntry, { recursive: true, force: true });
+        }
+        throw error;
+      }
     } finally {
       fs.rmSync(staging, { recursive: true, force: true });
     }
@@ -403,5 +461,9 @@ module.exports = {
   CREATE_OUTPUT_SCHEMA_VERSION,
   CREATE_PROFILE,
   CREATE_VERSIONS,
+  assertDirectoryIdentity,
+  bindDirectory,
   createCreateCommand,
+  directoryIdentity,
+  hasDirectoryIdentity,
 };
