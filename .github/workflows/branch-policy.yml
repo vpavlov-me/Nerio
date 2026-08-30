@@ -6,6 +6,10 @@ on:
       - main
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -13,7 +17,7 @@ jobs:
   branch-policy:
     name: branch-policy
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - name: Defer required checks for draft pull requests
         if: github.event.pull_request.draft == true

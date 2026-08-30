@@ -68,6 +68,57 @@ test("requires the repository artifact guard in the development gate", () => {
   );
 });
 
+test("caps development dependency installation at two runner lanes", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate += "\n      - run: pnpm install --frozen-lockfile\n";
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: expected at most 2 dependency installs, found 3`,
+    ),
+  );
+});
+
+test("requires draft deferral and CI-infrastructure self-validation", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate
+    .replace(
+      "types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]",
+      "types: [opened, synchronize, reopened, ready_for_review]",
+    )
+    .replaceAll("github.event.pull_request.draft == false", "false");
+  const failures = ciWorkflowContractFailures(sources);
+  assert.ok(
+    failures.includes(
+      `${ciWorkflowPaths.prGate}: missing types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]`,
+    ),
+  );
+  assert.ok(
+    failures.includes(
+      `${ciWorkflowPaths.prGate}: missing if: \${{ github.event.pull_request.draft == false && always() }}`,
+    ),
+  );
+});
+
+test("keeps branch policy dependency-free", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.branchPolicy += "\n      - run: pnpm install --frozen-lockfile\n";
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.branchPolicy}: forbidden pnpm install --frozen-lockfile`,
+    ),
+  );
+});
+
+test("requires stale branch-policy runs to be cancelled", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.branchPolicy = sources.branchPolicy.replace("  cancel-in-progress: true\n", "");
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.branchPolicy}: missing cancel-in-progress: true`,
+    ),
+  );
+});
+
 test("retains the route bundle diagnostic from the existing docs build", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate = sources.prGate.replace(

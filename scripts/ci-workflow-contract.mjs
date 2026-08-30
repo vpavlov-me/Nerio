@@ -263,6 +263,9 @@ export function ciWorkflowContractFailures({
     [
       "branches:\n      - main",
       "types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]",
+      "group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
+      "cancel-in-progress: true",
+      "timeout-minutes: 5",
       "if: github.event.pull_request.draft == true",
       "Full CI is deferred while the pull request is a draft.",
       "node --test scripts/check-branch-policy.test.mjs scripts/check-dco.test.mjs",
