@@ -1,238 +1,177 @@
 # Nerio roadmap
 
-## Product direction
+Nerio is an open-source, source-first design system for modern digital products.
 
-Nerio is a source-first design system for modern digital products.
+The roadmap develops three compatible layers:
 
-The project has two product layers:
+- **Nerio Core** — tokens, themes, accessible components, package and source installation, Registry,
+  CLI, MCP, and public documentation.
+- **Nerio Ecosystem** — recipes, agent guidance, Figma interoperability, visualization foundations,
+  and developer tooling.
+- **Nerio Pro** — optional product-ready starters, templates, advanced patterns, themes, and design
+  assets built on Core.
 
-- **Nerio Core**: open-source foundation and base components.
-- **Nerio Pro**: paid advanced components, templates, premium themes, Figma assets, and AI tooling.
+Core remains independently useful and open source. Ecosystem and Pro work must preserve Core's public
+API, accessibility, source ownership, and distribution guarantees.
 
-Core = building blocks. Pro = product-ready solutions.
+## Roadmap principles
 
-## Phase 1 — Core foundation
+1. Finish and verify Core 1.0 before expanding the stable API.
+2. Deliver new capabilities as bounded, reviewable vertical slices.
+3. Use real consumer evidence to prioritize components, recipes, tooling, and product patterns.
+4. Keep Core independent from private source, licensing, accounts, payments, and hosted Nerio
+   services.
+5. Keep code, packages, Registry metadata, CLI, MCP, documentation, examples, and Figma mappings
+   synchronized.
+6. Preserve package and source-install workflows that remain deterministic, inspectable, and safe for
+   consumer modification.
 
-Goal: make Nerio usable as a credible open-source component system.
+## Current release state
 
-Scope:
+- `1.0.0-beta.1` is public across six coordinated packages.
+- The signed beta candidate passed the complete release workflow and public consumer verification.
+- Package mode, source installation, Registry, CLI, MCP, documentation, and clean Next.js consumer
+  paths are available.
+- The intended Core 1.0 component and API surface is frozen.
+- Stable `1.0.0` still requires #143, #146, #148, #150, and #151.
+- Core 1.1 primitive-parity work and the first developer-platform foundations are available on `dev`
+  and remain outside the isolated Core 1.0 release candidate.
 
-- Monorepo tooling, linting, formatting, typechecking, build scripts, and CI
-- Token package
-- Theme axis: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, plus custom theme support
-- Mode axis: `system`, `light`, `dark`
-- Density axis: `comfortable`, `compact`
-- Token-customizable values: font, radius, motion, spacing, shadow/elevation, contrast
-- No additional runtime appearance axes in v1: no `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale`
-- Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`
-- Public docs app
-- Public registry foundation
-- `nerio init`
-- Minimal `nerio add button` flow
-- `llms.txt`
-- Minimal public MCP component index
-- Demo app foundation
-
-## Phase 2A — Core quality stabilization
-
-Goal: make the existing Core foundations and components stable enough for future Pro work.
-
-Scope:
-
-- Token foundation, semantic aliases, and component aliases
-- Token validation for missing CSS variable references
-- Button and IconButton quality pass
-- Forms quality pass: Field, FormMessage, Label, Input, Textarea, Checkbox, Switch, Select
-- Overlay quality pass: Dialog, Popover, Tooltip, Dropdown Menu, Toast
-- Data-display quality pass: Table, Card, Badge, Avatar, Progress, Skeleton, Empty State, Stat, KeyValue, Separator
-- Registry metadata, docs reference, CLI fixture, and MCP fixture alignment
-- Maturity status updates using `planned`, `implemented-initial`, `quality-pass-needed`, `stable-core`, and `future`
-
-## Phase 2B — Core coverage expansion
-
-Goal: add missing Core components after the foundation is stable.
-
-### Pre-release readiness
-
-Before continuing broad Phase 2B expansion, prepare Core for a future public pre-release without publishing:
-
-- audit package metadata, exports, bins, and intended public/private boundaries;
-- keep CI aligned with format, lint, typecheck, docs validation, CLI fixture, MCP fixture, and build checks;
-- run package pack dry-runs for intended public Core packages before any manual publishing decision;
-- maintain concise changelog and manual release notes;
-- document package imports, client imports, styles, and source installs;
-- improve CLI discovery with `list`, `info`, and clearer help;
-- document that npm publishing requires maintainer approval.
-
-Scope:
-
-- Actions: Button link variant
-- Forms: FormGroup, Radio Group
-- Overlays: Sheet
-- Data display: List
-- Feedback: Alert
-- Navigation and layout: Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive
-- Registry metadata, docs pages, CLI fixtures, and MCP fixtures for newly released components
-
-## Core 1.0 stable sequence
-
-The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 1.0 remains blocked
-by the manual accessibility/device gate #143 and the public beta.1/external-feedback gate #146,
-followed by #148, #150, and the manual publication issue #151.
+## Phase 1 — Core 1.0 stable
 
 <!-- parity-track:manual-stable-gates issues:#143,#146,#148,#150,#151 depends-on: -->
 
-Do not start post-1.0 runtime, package, Registry, token, export, or component implementation on the
-release line before #151 unless issue #152 accepts a focused blocker from real manual or beta
-evidence.
+The remaining stable sequence is:
 
-## Phase 2C — Core 1.x capability parity
+1. #143 — complete the accessibility and real-device audit.
+2. #146 — complete the external beta.1 feedback cycle.
+3. #148 — finalize stable documentation, governance, security, support, and migration policy.
+4. #150 — run the final exact-candidate release gate.
+5. #151 — publish and verify the exact `1.0.0` candidate.
 
-The canonical decision and complete evidence-backed classification live in
-[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
-`quality/core-1-x-capability-parity.json`. That decision supersedes component-count comparison as a
-roadmap method.
+#143 and #146 may proceed in parallel. Preparatory work under #148 may continue, while final stable
+claims remain dependent on accepted human evidence.
 
-### Core 1.1 shared contract
+### Stable release outcome
 
-<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341 -->
+- six coordinated stable packages under npm `latest`;
+- an immutable version-aligned Registry;
+- verified package and source consumers;
+- stable CLI and MCP contracts;
+- complete migration and support documentation;
+- evidence-backed accessibility, browser, framework, and device coverage;
+- a signed tag, GitHub Release, and stable documentation deployment from one exact candidate.
 
-- #342 establishes the minimum inherited direction, RTL, locale, and localization contract on
-  `dev`; it stays outside the isolated stable 1.0 candidate.
-- The full #342 audit continues as a parallel shared track. A direction-sensitive component API
-  waits only for the relevant accepted contract, not for the complete cross-repository audit.
+## Phase 2 — adoption and developer experience
 
-### Core 1.1 primitive parity
+After Core 1.0, prioritize work that helps teams discover, evaluate, and use Nerio in real products.
 
-<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#341,#342 -->
-
-After the relevant #342 foundation, these may proceed in parallel:
-
-- #343 — Accordion and Collapsible (complete on `dev`);
-- #344 — additive compound Dialog anatomy and AlertDialog (complete on `dev`);
-- #345 — bounded single-select Combobox (complete on `dev`);
-- #346 — SearchField (complete on `dev`);
-- #347 — OTPField (complete on `dev`);
-- #370 — NumberField, split from #346 (complete on `dev`).
-
-<!-- parity-track:primitive-parity-b issues:#348 depends-on:#151,#341,#342 -->
-
-<!-- parity-track:compound-menu issues:#350 depends-on:#341,#342 -->
-
-These are independent parallel slices:
-
-- #348 — separate ToggleGroup and CheckboxGroup responsibilities (complete on `dev`);
-- #350 — complete bounded DropdownMenu anatomy (complete on `dev`).
-
-<!-- parity-track:multi-select-decision issues:#349 depends-on:#151,#341,#342,#345,#348 -->
-
-#349 completed its Core 1.2 decision spike after #345 and #348. ADR 0006 accepts a separate bounded
-MultiSelect implementation while keeping remote data, creation, virtualization, quotas, and product
-filtering outside Core.
-
-### Adoption
+### Documentation and composition
 
 <!-- parity-track:adoption issues:#356,#369 depends-on:#151,#341 -->
 
-After stable 1.0, the first #356 recipe tranche and the repository-native Agent Skill #369 may
-proceed without waiting for new Core 1.1 components. Later recipes depend only on the exact
-components they use.
+- #485 and its remaining children — complete the public foundation documentation and
+  source-consistency program.
+- #356 — publish a bounded collection of maintained Core recipes for recurring product-interface
+  compositions.
+- #369 — provide a repository-native Agent Skill for building product interfaces with Nerio.
+- #355 — decide whether a dedicated Component Lab adds enough value beyond the current documentation
+  and visual fixtures.
 
-### Core 1.2 developer platform
+### Developer platform
 
 <!-- parity-track:developer-platform issues:#351,#352,#353,#354,#355 depends-on:#151,#341 -->
 
-- #351 delivered ADR 0007 with deterministic unbundled compiled runtime output, declarations,
-  package-mode consumer evidence, and a self-contained integrity-verified editable source Registry.
-- #352 delivered modular transactional lifecycle commands plus deterministic package-mode Next.js
-  and Vite bootstrap with clean packed-consumer and served-preview evidence.
-- #353 has an accepted Phase 1 contract in ADR 0008 and next implements stable Registry identities,
-  local namespaces, one global dependency graph, and same-origin bounded authentication by reusing
-  the existing Registry engine.
-- #354 owns bounded read-only MCP expansion; Agent Skill work is separate in #369.
-- #355 remains a measured build/expand/defer Component Lab decision; current docs and visual
-  fixtures remain the default.
+- #351 — compiled package output and simpler package-mode setup, complete on `dev`.
+- #352 — expanded CLI lifecycle and project bootstrap, complete on `dev`.
+- #353 — complete namespaced Registry and bounded authentication contracts in reviewable slices.
+- #354 — expand MCP into a bounded read-only design-system interface using canonical Registry, CLI,
+  and documentation data.
 
-### Ecosystem
+Developer-platform tools remain optional and independent from commercial account or licensing
+behavior.
+
+### Data visualization
+
+- #424 and related focused work — establish an optional token-aligned chart foundation and canonical
+  Recharts integration without making charts part of the default Core runtime.
+
+## Phase 3 — design-to-code ecosystem
 
 <!-- parity-track:ecosystem issues:#357 depends-on:#151,#341,#342 -->
 
-#357 owns code-to-Figma export and drift tooling after stable 1.0. Its component tranche waits for
-the first accepted Core 1.1 subset, and completion still requires a real file and maintainer visual
-approval.
+- #490 — define the public token lifecycle and generate a deterministic DTCG-compatible interchange
+  artifact.
+- #357 — create the open Nerio Core Figma library and synchronization contract from the accepted
+  interchange artifact.
 
-## Phase 3 — Pro alpha
+Code and generated canonical metadata remain authoritative. Figma must not become a divergent source
+of token or component truth.
 
-Goal: build the first commercially useful Pro package.
+## Phase 4 — product-ready offerings
 
-Scope:
+Nerio will extend beyond primitives through a focused first product rather than an undifferentiated
+catalog of templates.
 
-- DataGrid
-- Advanced Table
-- Filter Bar
-- Saved Views
-- Column Settings
-- KPI Card
-- KPI Group
-- Trend Chip
-- Chart Card
-- Activity Feed
-- Analytics Panel
-- AppShell
-- AppSidebar
-- Documentation Shell
-- Documentation Sidebar
-- Page Table of Contents
-- Documentation Search
-- Settings Layout
-- Billing Settings
-- Team Members
-- Crypto Portfolio components
-- AI Chat Shell
-- Prompt Input
-- Private registry structure
-- Private package install strategy
+- #578 — launch public early access for Nerio Pro and the Nerio SaaS Starter.
+- #579 — build the first Nerio SaaS Starter after the early-access audience and scope are reviewed.
 
-## Phase 4 — Pro commercial
+The initial Starter is expected to provide one coherent Next.js and Figma foundation for a modern
+SaaS or B2B product, including:
 
-Goal: prepare Nerio Pro for paid release.
+- authentication and onboarding surfaces;
+- responsive application shell and navigation;
+- representative list, detail, create, and settings workflows;
+- provider-neutral plan and billing presentation;
+- complete loading, empty, error, success, permission, disabled, and destructive states;
+- theme, mode, density, responsive, accessibility, and localization resilience;
+- explicit integration boundaries for auth, data, analytics, email, payments, and deployment.
 
-Scope:
+The Starter remains a product built with released Nerio Core contracts. It must not require changes
+to Core merely for template convenience.
 
-- License key flow
-- Personal token
-- CI token
-- Pro docs and gated source access
-- Public Pro previews and API pages
-- Figma Pro kit
-- Pro templates
-- Private MCP tools
-- Pricing page
-- License agreement
-- Team license model
+## Phase 5 — broader Nerio Pro ecosystem
 
-## Phase 5 — Ecosystem
+Future Pro work may include:
 
-Goal: expand Nerio into a broader design/dev ecosystem.
+- additional product starters and templates;
+- advanced data, navigation, billing, AI, and dashboard patterns;
+- premium themes and design assets;
+- a broader Figma product kit;
+- optional private source distribution and commercial licensing;
+- product-specific MCP and agent guidance;
+- documented support and update policies.
 
-Scope:
+Each expansion should follow released-product feedback and be tracked as a focused issue rather than
+implemented as one broad Pro program.
 
-- Theme Builder
-- Optional future runtime axes for radius, font, motion, contrast, or scale after explicit architecture decisions
-- More premium brand themes
-- More product templates
-- AI agent skills
-- MCP documentation tools
-- Figma variables sync
-- Team and enterprise workflows
-- Priority support model
+## Branch and release policy
+
+- `release/1.0` or an equivalent exact-candidate worktree owns the stable release line.
+- `dev` owns post-1.0 development and ecosystem work.
+- Forward features must not enter the stable candidate accidentally.
+- Every accepted stable blocker receives a focused change and an explicit backport decision.
+- Public packages, tags, Releases, and dist-tags require maintainer authorization and exact-candidate
+  verification.
+
+## Task selection
+
+Use this order when selecting roadmap work:
+
+1. A real security, accessibility, compatibility, or stable-release blocker.
+2. The next incomplete task in #143 → #146 → #148 → #150 → #151.
+3. A ready adoption or ecosystem issue whose documented dependencies are complete.
+4. #578 early access and #579 SaaS Starter according to their issue-specific dependencies.
+5. Broader Pro work through separately scoped issues.
 
 ## Maintenance rule
 
-When roadmap scope changes, update these files in the same pull request:
+When roadmap scope changes, update the affected canonical sources in the same pull request, including
+where applicable:
 
-- `PROJECT.md`
-- `DECISIONS.md`
-- `COMPONENTS.md`
-- `data/component-catalog.json`
-- `AGENTS.md` when agent behavior or boundaries change
+- `ROADMAP.md`;
+- issue #152;
+- `PROJECT.md` and `DECISIONS.md`;
+- `COMPONENTS.md` and `data/component-catalog.json` when public capability changes;
+- Registry, CLI, MCP, documentation, examples, and release metadata;
+- `AGENTS.md` when implementation or coordination rules change.
