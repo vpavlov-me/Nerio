@@ -50,8 +50,10 @@ const concreteMacDevicePattern =
   /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac (?:mini|Studio|Pro)\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
 const concreteDesktopDevicePattern =
   /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
-const concreteMobileDevicePattern =
-  /\b(?:iPhone\s+(?:\d{1,2}|SE\b)|iPad\s+(?:\d{1,2}|(?:Air|Pro|mini)\b.*\d+)|Pixel\s+\d+|Galaxy\s+(?:[A-Z]+\s*)?\d+|OnePlus\s+\d+|Xperia\s+\d+|Moto(?:rola)?\s+\S*\d+|Nothing Phone\s+\d+|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d+)\b/i;
+const concreteAppleMobileDevicePattern =
+  /^(?:iPhone|iPad)\s+(?!(?:emulator|simulator|virtual)\b)[A-Za-z0-9][A-Za-z0-9 .()+_-]{1,60}$/i;
+const concreteAndroidMobileDevicePattern =
+  /^(?!.*\b(?:iPhone|iPad|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|desktop|laptop|computer|hardware|machine|test device|sample device|generic device|emulator|simulator|virtual)\b)(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9 .()+_-]{2,79}$/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -69,15 +71,10 @@ const environmentMetadataRequirements = {
     operatingSystem: /\b(?:macOS|Windows|Linux)\b.*\d/i,
     browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
     device: concreteDesktopDevicePattern,
-    zoom: /(?=.*\b200%)(?=.*\b400%)/,
-    notes:
-      /\b(?:high|increased|increase) contrast\b.*\b(?:enabled|active|on)\b|\b(?:enabled|active|on)\b.*\b(?:high|increased|increase) contrast\b/i,
   },
   "mobile-touch": {
     operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
     browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
-    device: concreteMobileDevicePattern,
-    notes: /\bphysical\b.*\b(?:touch|device)\b|\b(?:touch|device)\b.*\bphysical\b/i,
   },
 };
 const errors = [];
@@ -95,6 +92,30 @@ const isIsoUtc = (value) =>
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(value) &&
   Number.isFinite(Date.parse(value));
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
+const negatedSetupPattern = /\b(?:not|never|without|disabled|off|untested|skipped)\b/i;
+const hasRequiredZoom = (value) =>
+  typeof value === "string" &&
+  /\b200%/.test(value) &&
+  /\b400%/.test(value) &&
+  !/\b(?:not|never|without|skipped|untested)\b[^.;\n]{0,32}\b(?:200%|400%)\b|\b(?:200%|400%)\b[^.;\n]{0,32}\b(?:not|never|without|skipped|untested)\b/i.test(
+    value,
+  );
+const hasEnabledContrast = (value) =>
+  typeof value === "string" &&
+  /\b(?:high|increased|increase) contrast\b.*\b(?:enabled|active|on)\b|\b(?:enabled|active|on)\b.*\b(?:high|increased|increase) contrast\b/i.test(
+    value,
+  ) &&
+  !/\b(?:not|never|without)\b[^.;\n]{0,40}\b(?:high|increased|increase) contrast\b|\b(?:high|increased|increase) contrast\b[^.;\n]{0,40}(?:\b(?:not|never|without)\b[^.;\n]{0,24}\b(?:enabled|active|on)\b|\b(?:disabled|off)\b)/i.test(
+    value,
+  );
+const hasPhysicalTouchClaim = (value) =>
+  typeof value === "string" &&
+  /\bphysical(?:\s+mobile)?\s+(?:touch\s+)?device\b|\bphysical\s+(?:phone|tablet)\b|\bphysical\b[^.;\n]{0,32}\btouch\b/i.test(
+    value,
+  ) &&
+  !/\b(?:not|never|without)\b[^.;\n]{0,32}\bphysical\b|\bphysical\b[^.;\n]{0,32}\b(?:not|never|without|virtual|simulated|emulated)\b/i.test(
+    value,
+  );
 const isEvidenceUrl = (value) => {
   try {
     return new URL(value).protocol === "https:";
@@ -241,17 +262,44 @@ for (const [index, environment] of environments.entries()) {
   if (complete) {
     const requirements = environmentMetadataRequirements[environment?.id] ?? {};
     for (const [field, pattern] of Object.entries(requirements)) {
-      if (nonEmpty(environment?.[field]) && !pattern.test(environment[field])) {
+      const value = environment?.[field];
+      const negated =
+        ["operatingSystem", "browser", "assistiveTechnology"].includes(field) &&
+        negatedSetupPattern.test(value);
+      if (nonEmpty(value) && (!pattern.test(value.trim()) || negated)) {
         errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
       }
     }
+    if (environment?.id === "zoom-reflow-contrast" && !hasRequiredZoom(environment.zoom)) {
+      errors.push(`${prefix}.zoom must confirm both 200% and 400% without negation.`);
+    }
+    if (environment?.id === "zoom-reflow-contrast" && !hasEnabledContrast(environment.notes)) {
+      errors.push(`${prefix}.notes must confirm increased or high contrast was enabled.`);
+    }
     if (
       environment?.id === "mobile-touch" &&
-      /\b(?:emulator|simulator|virtual device)\b/i.test(
+      /\b(?:emulator|simulator|virtual(?:\s+device)?)\b/i.test(
         `${environment.device ?? ""} ${environment.notes ?? ""}`,
       )
     ) {
       errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
+    }
+    if (environment?.id === "mobile-touch" && !hasPhysicalTouchClaim(environment.notes)) {
+      errors.push(`${prefix}.notes must affirm use of a physical mobile touch device.`);
+    }
+    if (environment?.id === "mobile-touch") {
+      const operatingSystem = environment.operatingSystem ?? "";
+      const device = environment.device?.trim() ?? "";
+      const deviceMatchesOperatingSystem = /\b(?:iOS|iPadOS)\b/i.test(operatingSystem)
+        ? concreteAppleMobileDevicePattern.test(device)
+        : /\bAndroid\b/i.test(operatingSystem)
+          ? concreteAndroidMobileDevicePattern.test(device)
+          : false;
+      if (!deviceMatchesOperatingSystem) {
+        errors.push(
+          `${prefix}.device must be a concrete physical model for its recorded mobile OS.`,
+        );
+      }
     }
   }
 }

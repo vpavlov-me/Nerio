@@ -206,21 +206,51 @@ test("strict validation rejects evidence recorded against the wrong required env
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /browser does not match the required macos-safari-voiceover setup/);
-    assert.match(result.stderr, /notes does not match the required mobile-touch setup/);
+    assert.match(result.stderr, /notes must affirm use of a physical mobile touch device/);
     assert.match(result.stderr, /must use a physical mobile touch device/);
   });
 });
 
-test("strict validation accepts a maintained mobile browser and multi-digit device model", () => {
+test("strict validation accepts a maintained mobile browser and any concrete physical model", () => {
   const record = completedRecord();
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
   mobile.operatingSystem = "Android 16";
   mobile.browser = "Firefox 143.0";
-  mobile.device = "Pixel 10 Pro";
+  mobile.device = "Fairphone 5";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation rejects negated contrast and physical-device claims", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "Reflow passed, but Increase Contrast was not enabled.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Touch passed, but this was not a physical device.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation rejects a mobile OS and device-family mismatch", () => {
+  const record = completedRecord();
+  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+  mobile.operatingSystem = "Android 16";
+  mobile.browser = "Firefox 143.0";
+  mobile.device = "iPhone 15 Pro";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(
+      result.stderr,
+      /device must be a concrete physical model for its recorded mobile OS/,
+    );
   });
 });
 
