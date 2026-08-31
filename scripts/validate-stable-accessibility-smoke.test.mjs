@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -13,15 +13,53 @@ function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
 }
 
-function withRecord(record, callback) {
+const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+
+function withRecord(record, callback, release = {}) {
   const directory = mkdtempSync(resolve(tmpdir(), "nerio-stable-smoke-"));
   const target = resolve(directory, "record.json");
+  const releaseMetadata = resolve(directory, "release-metadata.json");
+  const packagesRoot = resolve(directory, "packages");
+  const coreVersion = release.coreVersion ?? "1.0.0";
   writeFileSync(target, JSON.stringify(record, null, 2));
+  writeFileSync(
+    releaseMetadata,
+    JSON.stringify(
+      {
+        channel: release.channel ?? "stable",
+        coreVersion,
+        registryVersion: release.registryVersion ?? coreVersion,
+        publicInstallationVersion: release.publicInstallationVersion ?? coreVersion,
+      },
+      null,
+      2,
+    ),
+  );
+  for (const packageName of coordinatedPackages) {
+    const packageDirectory = resolve(packagesRoot, packageName);
+    mkdirSync(packageDirectory, { recursive: true });
+    writeFileSync(
+      resolve(packageDirectory, "package.json"),
+      JSON.stringify({ version: release.packageVersion ?? coreVersion }, null, 2),
+    );
+  }
   try {
-    callback(target);
+    callback(target, releaseMetadata, packagesRoot);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+}
+
+function strictArgs(record, releaseMetadata, packagesRoot) {
+  return [
+    "--expect-pass",
+    "--record",
+    record,
+    "--release-metadata",
+    releaseMetadata,
+    "--packages-root",
+    packagesRoot,
+  ];
 }
 
 function completedRecord() {
@@ -84,8 +122,8 @@ test("strict validation rejects pending evidence", () => {
 });
 
 test("strict validation accepts a complete scoped smoke", () => {
-  withRecord(completedRecord(), (target) => {
-    const result = run(["--expect-pass", "--record", target]);
+  withRecord(completedRecord(), (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
   });
@@ -97,11 +135,25 @@ test("strict validation rejects a stale ancestor after non-evidence changes", ()
     cwd: root,
     encoding: "utf8",
   }).trim();
-  withRecord(record, (target) => {
-    const result = run(["--expect-pass", "--record", target]);
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /stale after non-evidence changes/);
   });
+});
+
+test("strict validation rejects release metadata and package versions outside the candidate", () => {
+  withRecord(
+    completedRecord(),
+    (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /requires release metadata channel "stable"/);
+      assert.match(result.stderr, /must match release metadata coreVersion 1\.0\.0-beta\.1/);
+      assert.match(result.stderr, /package\.json version must match/);
+    },
+    { channel: "beta", coreVersion: "1.0.0-beta.1" },
+  );
 });
 
 test("strict validation rejects missing coverage and accepted blockers", () => {
@@ -114,8 +166,8 @@ test("strict validation rejects missing coverage and accepted blockers", () => {
     releaseImpact: "blocking",
     summary: "Representative blocker",
   });
-  withRecord(record, (target) => {
-    const result = run(["--expect-pass", "--record", target]);
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /mobile-touch/);
     assert.match(result.stderr, /unresolved accepted blocker/);

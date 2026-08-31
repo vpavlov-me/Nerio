@@ -1,14 +1,20 @@
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const expectPass = process.argv.includes("--expect-pass");
 const args = process.argv.slice(2).filter((argument) => argument !== "--expect-pass");
-const { "--record": recordPath } = parsePathOptions(args, {
+const {
+  "--record": recordPath,
+  "--release-metadata": releaseMetadataPath,
+  "--packages-root": packagesRoot,
+} = parsePathOptions(args, {
   "--record": resolve(root, "quality/stable-accessibility-smoke.json"),
+  "--release-metadata": resolve(root, "quality/release-metadata.json"),
+  "--packages-root": resolve(root, "packages"),
 });
 
 const requiredEnvironmentIds = [
@@ -39,6 +45,7 @@ const allowedPostCandidateEvidencePaths = new Set([
   "docs/audits/core-1-0-stable-accessibility-smoke.md",
   "quality/stable-accessibility-smoke.json",
 ]);
+const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
 const errors = [];
 
 let record;
@@ -147,6 +154,47 @@ if (record.status === "evidence-pending") {
 }
 
 const complete = record.status === "complete";
+if (complete) {
+  let releaseMetadata;
+  try {
+    releaseMetadata = JSON.parse(await readFile(releaseMetadataPath, "utf8"));
+  } catch (error) {
+    errors.push(`Release metadata must be readable JSON: ${error.message}`);
+  }
+
+  if (releaseMetadata) {
+    if (releaseMetadata.channel !== "stable") {
+      errors.push('Completed stable smoke requires release metadata channel "stable".');
+    }
+    if (candidate.version !== releaseMetadata.coreVersion) {
+      errors.push(
+        `Completed smoke candidate.version must match release metadata coreVersion ${releaseMetadata.coreVersion}.`,
+      );
+    }
+    for (const field of ["registryVersion", "publicInstallationVersion"]) {
+      if (releaseMetadata[field] !== candidate.version) {
+        errors.push(
+          `Release metadata ${field} must match completed smoke candidate.version ${candidate.version}.`,
+        );
+      }
+    }
+
+    for (const packageDirectory of coordinatedPackages) {
+      const manifestPath = join(packagesRoot, packageDirectory, "package.json");
+      try {
+        const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+        if (manifest.version !== candidate.version) {
+          errors.push(
+            `${manifestPath} version must match completed smoke candidate.version ${candidate.version}.`,
+          );
+        }
+      } catch (error) {
+        errors.push(`Coordinated package manifest must be readable JSON: ${error.message}`);
+      }
+    }
+  }
+}
+
 const environments = validateExactRows(record.environments, requiredEnvironmentIds, "Environments");
 for (const [index, environment] of environments.entries()) {
   const prefix = `environments[${index}]`;
