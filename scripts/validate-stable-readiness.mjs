@@ -5,6 +5,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
+export function readDeferredStatus(path) {
+  try {
+    return JSON.parse(readFileSync(path, "utf8")).status;
+  } catch {
+    return undefined;
+  }
+}
+
 export function commandsForChannel(channel, deferredStatuses = {}) {
   return channel === "stable"
     ? [
@@ -36,11 +44,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const strict = metadata.channel === "stable";
   const deferredStatuses = strict
     ? {
-        manualAudit: JSON.parse(
-          readFileSync(resolve(root, "quality/manual-audit-plan.json"), "utf8"),
-        ).status,
-        betaFeedback: JSON.parse(readFileSync(resolve(root, "quality/beta-feedback.json"), "utf8"))
-          .status,
+        manualAudit: readDeferredStatus(resolve(root, "quality/manual-audit-plan.json")),
+        betaFeedback: readDeferredStatus(resolve(root, "quality/beta-feedback.json")),
       }
     : {};
   for (const [script, label, args = []] of commandsForChannel(metadata.channel, deferredStatuses)) {

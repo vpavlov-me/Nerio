@@ -211,6 +211,19 @@ test("strict validation rejects evidence recorded against the wrong required env
   });
 });
 
+test("strict validation accepts a maintained mobile browser and multi-digit device model", () => {
+  const record = completedRecord();
+  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+  mobile.operatingSystem = "Android 16";
+  mobile.browser = "Firefox 143.0";
+  mobile.device = "Pixel 10 Pro";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
 test("strict validation rejects missing coverage and accepted blockers", () => {
   const record = completedRecord();
   record.environments.pop();

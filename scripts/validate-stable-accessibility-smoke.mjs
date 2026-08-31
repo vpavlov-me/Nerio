@@ -51,7 +51,7 @@ const concreteMacDevicePattern =
 const concreteDesktopDevicePattern =
   /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
 const concreteMobileDevicePattern =
-  /\b(?:iPhone\s+(?:\d{1,2}|SE\b)|iPad\s+(?:\d{1,2}|(?:Air|Pro|mini)\b.*\d)|Pixel\s+\d|Galaxy\s+(?:[A-Z]+\s*)?\d|OnePlus\s+\d|Xperia\s+\d|Moto(?:rola)?\s+\S*\d|Nothing Phone\s+\d|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d)\b/i;
+  /\b(?:iPhone\s+(?:\d{1,2}|SE\b)|iPad\s+(?:\d{1,2}|(?:Air|Pro|mini)\b.*\d+)|Pixel\s+\d+|Galaxy\s+(?:[A-Z]+\s*)?\d+|OnePlus\s+\d+|Xperia\s+\d+|Moto(?:rola)?\s+\S*\d+|Nothing Phone\s+\d+|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d+)\b/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -75,7 +75,7 @@ const environmentMetadataRequirements = {
   },
   "mobile-touch": {
     operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
-    browser: /\b(?:Safari|Chrome)\b.*\d/i,
+    browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
     device: concreteMobileDevicePattern,
     notes: /\bphysical\b.*\b(?:touch|device)\b|\b(?:touch|device)\b.*\bphysical\b/i,
   },
@@ -252,15 +252,6 @@ for (const [index, environment] of environments.entries()) {
       )
     ) {
       errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
-    }
-    if (
-      environment?.id === "mobile-touch" &&
-      ((/\b(?:iOS|iPadOS)\b/i.test(environment.operatingSystem) &&
-        !/\bSafari\b/i.test(environment.browser)) ||
-        (/\bAndroid\b/i.test(environment.operatingSystem) &&
-          !/\bChrome\b/i.test(environment.browser)))
-    ) {
-      errors.push(`${prefix}.browser must match the recorded mobile operating system.`);
     }
   }
 }
