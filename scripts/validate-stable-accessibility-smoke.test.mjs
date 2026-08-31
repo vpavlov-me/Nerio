@@ -226,6 +226,8 @@ test("strict validation accepts a maintained mobile browser and any concrete phy
 
 test("strict validation rejects negated contrast and physical-device claims", () => {
   const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
+    "200% and 400% were not tested";
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
     "Reflow passed, but Increase Contrast was not enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
@@ -233,8 +235,20 @@ test("strict validation rejects negated contrast and physical-device claims", ()
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /contrast was enabled/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation accepts an explicitly negated simulator mention", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Verified touch interaction on a physical mobile device, not a simulator.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
   });
 });
 

@@ -97,7 +97,7 @@ const hasRequiredZoom = (value) =>
   typeof value === "string" &&
   /\b200%/.test(value) &&
   /\b400%/.test(value) &&
-  !/\b(?:not|never|without|skipped|untested)\b[^.;\n]{0,32}\b(?:200%|400%)\b|\b(?:200%|400%)\b[^.;\n]{0,32}\b(?:not|never|without|skipped|untested)\b/i.test(
+  !/\b(?:not|never|without|skipped|untested)\b[^.;\n]{0,32}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,32}\b(?:not|never|without|skipped|untested)\b/i.test(
     value,
   );
 const hasEnabledContrast = (value) =>
@@ -113,9 +113,22 @@ const hasPhysicalTouchClaim = (value) =>
   /\bphysical(?:\s+mobile)?\s+(?:touch\s+)?device\b|\bphysical\s+(?:phone|tablet)\b|\bphysical\b[^.;\n]{0,32}\btouch\b/i.test(
     value,
   ) &&
-  !/\b(?:not|never|without)\b[^.;\n]{0,32}\bphysical\b|\bphysical\b[^.;\n]{0,32}\b(?:not|never|without|virtual|simulated|emulated)\b/i.test(
+  !/\b(?:not|never|without)\b[^.;\n]{0,32}\bphysical\b|\bphysical(?:\s+mobile)?\s+(?:touch\s+)?device\b[^.;\n]{0,24}\b(?:was|is)?\s*(?:not|never)\s+(?:used|available|tested)\b/i.test(
     value,
   );
+const hasNonNegatedVirtualMention = (value) => {
+  if (typeof value !== "string") return false;
+  const matches = value.matchAll(/\b(?:emulator|simulator|virtual(?:\s+device)?)\b/gi);
+  return [...matches].some((match) => {
+    const before = value.slice(Math.max(0, match.index - 32), match.index);
+    const after = value.slice(match.index + match[0].length, match.index + match[0].length + 32);
+    const negatedBefore = /\b(?:no|not|never|without)\b[^.;\n]{0,24}$/i.test(before);
+    const negatedAfter = /^\s*(?:was|is)?\s*(?:not|never)\s+(?:used|involved|present)\b/i.test(
+      after,
+    );
+    return !negatedBefore && !negatedAfter;
+  });
+};
 const isEvidenceUrl = (value) => {
   try {
     return new URL(value).protocol === "https:";
@@ -278,9 +291,8 @@ for (const [index, environment] of environments.entries()) {
     }
     if (
       environment?.id === "mobile-touch" &&
-      /\b(?:emulator|simulator|virtual(?:\s+device)?)\b/i.test(
-        `${environment.device ?? ""} ${environment.notes ?? ""}`,
-      )
+      (/\b(?:emulator|simulator|virtual(?:\s+device)?)\b/i.test(environment.device ?? "") ||
+        hasNonNegatedVirtualMention(environment.notes))
     ) {
       errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
     }
