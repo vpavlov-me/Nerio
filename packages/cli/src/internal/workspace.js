@@ -933,11 +933,15 @@ function createWorkspace({ cwd, cliPackage, readConfig, readText, resolveSource 
       for (const file of item.files) {
         const target = relativeTarget(componentsRoot, file.target);
         const source = resolveSource(registry, file.source);
-        let resolved = sources.get(source);
+        const sourceKey =
+          source && typeof source === "object"
+            ? `${source.expectedId || ""}:${source.source}`
+            : source;
+        let resolved = sources.get(sourceKey);
         if (!resolved) {
           const content = await readText(source);
           resolved = { content, hash: hashContent(content) };
-          sources.set(source, resolved);
+          sources.set(sourceKey, resolved);
         }
         const { content, hash } = resolved;
         const expectedHash = file.integrity?.match(INTEGRITY_PATTERN)?.[1];

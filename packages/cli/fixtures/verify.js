@@ -2095,7 +2095,7 @@ async function verifySourceLifecycle(tempRoot) {
   }
 
   const incompatibleManifest = writeLifecycleRegistry(registryRoot, {
-    schemaVersion: "2.0.0",
+    schemaVersion: "3.0.0",
     sourceRevision: "fixture-future-schema",
   });
   const incompatibleOutput = await runFailure(target, "list", "--registry", incompatibleManifest);

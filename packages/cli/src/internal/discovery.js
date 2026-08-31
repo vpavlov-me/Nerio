@@ -42,7 +42,18 @@ function createDiscoveryCommand(services) {
         } [--allow-insecure-http]`,
       );
     }
-    const manifest = await load();
+    const config = readConfig(false);
+    if (config?.schemaVersion === "2.0.0") {
+      throw new Error(
+        `nerio ${command} for schema 2 requires versioned namespaced inspection output. Use list, search, or doctor until that contract lands.`,
+      );
+    }
+    const manifest = await readManifest(registryLocation(config));
+    if (manifest.schemaVersion.startsWith("2.")) {
+      throw new Error(
+        `nerio ${command} for schema 2 requires versioned namespaced inspection output. Use list, search, or doctor until that contract lands.`,
+      );
+    }
     const item = manifest.items.find(({ name }) => name === positionalArguments[0]);
     if (!item) throw new Error(`Unknown registry item: ${positionalArguments[0]}`);
     return { manifest, item };
@@ -120,6 +131,7 @@ function createDiscoveryCommand(services) {
       .filter((item) => {
         const text = INSPECTION_ITEM_FIELDS.map((field) => item[field])
           .flat()
+          .flatMap((value) => (value && typeof value === "object" ? Object.values(value) : value))
           .join("\n")
           .toLowerCase();
         return terms.every((term) => text.includes(term));
