@@ -5,7 +5,7 @@ evidence collected for the coordinated `1.0.0-beta.1` candidate. Beta.1 was subs
 on 2026-08-09 from exact commit `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`; the historical
 pre-publication evidence below remains pinned to the candidate-preparation sequence.
 
-**Decision: Technical gaps closed; manual beta and accessibility gates remain**
+**Historical decision: Technical gaps closed; human evidence was pending at beta.1**
 
 This is a beta engineering decision, not stable approval. The candidate-preparation work recorded
 here did not itself publish an npm package, move a dist-tag, create a Git tag or GitHub Release, or
@@ -264,33 +264,34 @@ Recharts SVG reveal animation mid-frame. The harness now waits for the hover sta
 chart reveal only in deterministic visual capture. Focused 10-iteration checks and the full clean
 repeat/visual gates passed without changing runtime behavior or visual baselines.
 
-## Remaining manual requirements
+## Human evidence status after beta.1
 
-Technical automation cannot close either remaining human gate:
+At the time of beta.1, technical automation could not close either human evidence program. The
+stable 1.0 plan later narrowed the publication prerequisite to the maintainer-run smoke recorded in
+`quality/stable-accessibility-smoke.json`; the broader work below continues after stable:
 
 - [#143](https://github.com/vpavlov-me/Nerio/issues/143) remains open with
-  `manual-evidence-pending`. It still requires a locked candidate plus real VoiceOver, NVDA,
+  `manual-evidence-pending`. The broader post-release audit still requires a locked candidate plus real VoiceOver, NVDA,
   TalkBack, physical iOS/Android device, 200%/400% zoom and reflow, reduced-motion, high-contrast,
   native-control, and scenario-level evidence. The issue was reopened because its canonical record
   had no candidate, CI/Vercel lock, environment results, finding dispositions, or allowed final
   decision.
-- [#146](https://github.com/vpavlov-me/Nerio/issues/146) remains open. Stable readiness still
-  requires the complete external feedback window, at least three independent consumers, package
-  and source modes, date controls, Registry update evidence, finding dispositions, and an
-  affirmative human proceed decision.
+- [#146](https://github.com/vpavlov-me/Nerio/issues/146) remains open for the external feedback
+  window, at least three independent consumers, package and source modes, date controls, Registry
+  update evidence, and finding dispositions.
 
-`pnpm validate:stable-readiness` passed only because the active channel is beta and the pending
-records are truthful. A stable channel automatically selects strict completion validators, which
-reject missing or future-dated human evidence and blocking decisions.
+The historical beta.1 run accepted truthful pending records. The current stable channel requires
+strict completion only for the bounded stable accessibility smoke and keeps these broader records
+truthful until their post-release programs close.
 
 ## Known limitations and next authority boundary
 
 - `1.0.0-beta.1` is published under npm `beta` from signed tag `v1.0.0-beta.1` and exact commit
   `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`.
-- Any future publication, dist-tag movement, Git tag, GitHub Release, or `dev -> main` promotion
+- Any future publication, dist-tag movement, Git tag, GitHub Release, or promotion to `main`
   requires separate explicit authorization.
 - This work does not claim stable readiness.
 - Vite evidence covers the maintained fixture, not every Vite/plugin combination.
 - Windows and mobile operating systems do not have native CI runners; their assistive-technology
   and real-device claims remain manual.
-- No automated result in this report substitutes for the evidence required by #143 or #146.
+- No automated result in this report substitutes for the human evidence tracked by #143 or #146.

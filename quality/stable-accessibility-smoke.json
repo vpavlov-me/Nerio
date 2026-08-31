@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "status": "evidence-pending",
+  "trackingIssue": 143,
+  "candidate": {
+    "version": "1.0.0",
+    "commit": null,
+    "deployment": null,
+    "recordedAt": null
+  },
+  "environments": [
+    {
+      "id": "macos-safari-voiceover",
+      "result": "Pending",
+      "operatingSystem": null,
+      "browser": null,
+      "assistiveTechnology": null,
+      "device": null,
+      "viewport": null,
+      "zoom": null,
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "macos-chromium-keyboard",
+      "result": "Pending",
+      "operatingSystem": null,
+      "browser": null,
+      "assistiveTechnology": null,
+      "device": null,
+      "viewport": null,
+      "zoom": null,
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "zoom-reflow-contrast",
+      "result": "Pending",
+      "operatingSystem": null,
+      "browser": null,
+      "assistiveTechnology": null,
+      "device": null,
+      "viewport": null,
+      "zoom": null,
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "mobile-touch",
+      "result": "Pending",
+      "operatingSystem": null,
+      "browser": null,
+      "assistiveTechnology": null,
+      "device": null,
+      "viewport": null,
+      "zoom": null,
+      "evidence": [],
+      "notes": null
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "docs-navigation",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "forms-and-native-controls",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "overlays-and-focus",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "calendar-and-date-picker",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "feedback-and-status",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    },
+    {
+      "id": "responsive-touch-and-reflow",
+      "result": "Pending",
+      "evidence": [],
+      "notes": null
+    }
+  ],
+  "findings": [],
+  "decision": {
+    "recommendation": "pending",
+    "recordedAt": null,
+    "summary": "The scoped internal stable accessibility smoke has not yet run against an exact 1.0.0 candidate."
+  }
+}

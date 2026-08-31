@@ -15,9 +15,11 @@ or GitHub Release.
 
 ## Release-candidate checks
 
-The `release-gate` workflow runs the complete gate for the separately reviewed `dev -> main`
-release-candidate pull request. To reproduce it, use a clean checkout with Node 22 and the pinned
-pnpm version. First run the same always-on development commands and focused Chromium smoke:
+The `release-gate` workflow runs the complete gate for a separately reviewed approved release-line
+pull request into `main`. Stable `1.0.0` uses `release/1.0`; later release trains may use `dev` only
+when that branch is the explicitly approved release line. To reproduce it, use a clean checkout
+with Node 22 and the pinned pnpm version. First run the same always-on development commands and
+focused Chromium smoke:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -56,6 +58,8 @@ pnpm test:visual
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm test:stable-accessibility-smoke
+pnpm validate:stable-accessibility-smoke
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm test:beta-feedback
@@ -122,11 +126,13 @@ Motion gate additionally snapshot-protects the stable API, checks SSR/hydration 
 changes, and measures Core, token-only, `domAnimation`, and `domMax` bundles. CI validates only; it
 never publishes, changes package privacy, creates tags, or creates a GitHub Release.
 
-`test:manual-audit-plan` and `validate:manual-audit-plan` protect the required environments,
-scenario coverage, routes, evidence fields, and pending-state language for the manual Core 1.0
-accessibility and real-device audit. Passing these checks means the audit is prepared; it never
-means VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom, contrast, or lived
-interaction evidence exists.
+`test:stable-accessibility-smoke` and `validate:stable-accessibility-smoke` protect the bounded
+maintainer-run human gate for stable 1.0. The strict stable channel requires the exact candidate,
+deployment, all smoke environments and scenarios, evidence links, no unresolved accepted blocker,
+and a `release-ready` decision. `test:manual-audit-plan` and `validate:manual-audit-plan` keep the
+broader post-release accessibility and real-device plan truthful. Passing those plan checks never
+claims VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom, contrast, or lived
+interaction evidence that has not been collected.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
 CI, and the documented policy aligned. `audit:prod` blocks known production dependency
@@ -141,11 +147,13 @@ second styling layer.
 
 ## Branch and release flow
 
-Normal changes start from `dev` and merge through a reviewed pull request back into `dev`. The only
-supported path to the stable `main` branch is a separately reviewed release pull request from `dev`:
+Normal changes start from `dev` and merge through a reviewed pull request back into `dev`. Stable
+1.0 fixes are selected into the isolated `release/1.0` branch from `main`. The supported paths are:
 
 ```text
-feat/*, fix/*, refactor/*, docs/*, test/*, chore/* -> dev -> main
+feat/*, fix/*, refactor/*, docs/*, test/*, chore/* -> dev
+main + selected stable-safe fixes -> release/1.0 -> main
+main -> dev -> approved later release pull request -> main
 ```
 
 Development pull requests into `dev` require the fast aggregate `PR gate` and the independent
@@ -155,15 +163,17 @@ detector adds the seven-scenario Chromium smoke and matching visual, CLI, MCP, a
 package, manual-audit, or branch-policy jobs only when their surfaces change. Development never
 installs Firefox or WebKit and never runs packed release-consumer smoke.
 
-The separately reviewed `dev -> main` pull request requires the full `release-gate`. Its final
+The separately reviewed approved release-line pull request into `main` requires the full
+`release-gate`. Its final
 `Release gate` check aggregates every command above, including separate Chromium, Firefox, and
 WebKit jobs, package consumers, visual regression, release smoke, and pack inspection. Direct
 pushes, force pushes, and branch deletion are
 prohibited for `main` and `dev`. `main` remains the default stable branch, and `dev` remains the
-permanent integration branch after a release. Release pull requests and merges to `main` are manual
-maintainer actions; coding agents must not merge them without a separate, direct request from the
-maintainer. Dependabot's reserved `dependabot/*` branches are the only automated development-branch
-exception and target `dev`.
+permanent integration branch after a release. After stable publication, synchronize `main` back
+into `dev` before preparing the 1.1 prerelease. Release pull requests and merges to `main` are
+manual maintainer actions; coding agents must not merge them without a separate, direct request
+from the maintainer. Dependabot's reserved `dependabot/*` branches are the only automated
+development-branch exception and target `dev`.
 
 ## Versioning and package order
 

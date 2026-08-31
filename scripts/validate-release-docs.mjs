@@ -58,6 +58,8 @@ const requiredReleaseCommands = [
   "pnpm test:cli",
   "pnpm test:mcp",
   "pnpm test:adapters",
+  "pnpm test:stable-accessibility-smoke",
+  "pnpm validate:stable-accessibility-smoke",
   "pnpm test:manual-audit-plan",
   "pnpm validate:manual-audit-plan",
   "pnpm test:beta-feedback",

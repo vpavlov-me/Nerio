@@ -29,6 +29,13 @@ export function validateReleaseCandidate(
     failures.push(`${candidate} is not an ancestor of the release branch ${releaseRef}`);
   }
 
+  if (releaseRef === "HEAD") {
+    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd, encoding: "utf8" }).trim();
+    if (candidate !== head)
+      failures.push(`${candidate} is not the exact checked-out release HEAD ${head}`);
+    return failures;
+  }
+
   const containingRefs = execFileSync("git", ["branch", "-r", "--contains", candidate], {
     cwd,
     encoding: "utf8",

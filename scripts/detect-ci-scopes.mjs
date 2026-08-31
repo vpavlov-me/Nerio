@@ -83,9 +83,13 @@ function isPackageBoundary(path) {
 
 function isManualAuditContract(path) {
   return matchesAny(path, [
+    "quality/stable-accessibility-smoke.json",
     "quality/manual-audit-plan.json",
     "quality/beta-feedback.json",
+    "docs/audits/core-1-0-stable-accessibility-smoke.md",
     "docs/audits/core-1-0-accessibility-device-audit.md",
+    "scripts/validate-stable-accessibility-smoke.mjs",
+    "scripts/validate-stable-accessibility-smoke.test.mjs",
     "scripts/validate-manual-audit-plan.mjs",
     "scripts/validate-manual-audit-plan.test.mjs",
     "scripts/validate-beta-feedback.mjs",

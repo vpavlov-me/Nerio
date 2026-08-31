@@ -7,11 +7,13 @@ import { checkBranchPolicy } from "./check-branch-policy.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
-test("allows only dev release pull requests into main", () => {
+test("allows only approved same-repository release branches into main", () => {
   assert.equal(checkBranchPolicy("main", "dev").allowed, true);
+  assert.equal(checkBranchPolicy("main", "release/1.0").allowed, true);
   assert.deepEqual(checkBranchPolicy("main", "fix/security"), {
     allowed: false,
-    message: "Pull requests to main are allowed only from the dev integration branch.",
+    message:
+      "Pull requests to main are allowed only from the same-repository dev or release/1.0 branch.",
   });
   assert.equal(
     checkBranchPolicy("main", "dev", {
@@ -22,6 +24,20 @@ test("allows only dev release pull requests into main", () => {
   );
   assert.equal(
     checkBranchPolicy("main", "dev", {
+      repository: "vpavlov-me/Nerio",
+      headRepository: "vpavlov-me/Nerio",
+    }).allowed,
+    true,
+  );
+  assert.equal(
+    checkBranchPolicy("main", "release/1.0", {
+      repository: "vpavlov-me/Nerio",
+      headRepository: "contributor/Nerio",
+    }).allowed,
+    false,
+  );
+  assert.equal(
+    checkBranchPolicy("main", "release/1.0", {
       repository: "vpavlov-me/Nerio",
       headRepository: "vpavlov-me/Nerio",
     }).allowed,

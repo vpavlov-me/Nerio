@@ -183,9 +183,9 @@
       "id": "manual-stable-gates",
       "target": "current",
       "mayStart": "now",
-      "issues": [143, 146, 148, 150, 151],
+      "issues": [143, 148, 150, 151],
       "dependsOn": [],
-      "rule": "Only real manual evidence and the existing stable sequence may change the Core 1.0 release line."
+      "rule": "Only the bounded stable smoke, exact-candidate release evidence, and focused blocker fixes may change the Core 1.0 release line; broader device and external validation continue post-release."
     },
     {
       "id": "shared-direction-contract",

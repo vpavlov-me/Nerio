@@ -76,15 +76,24 @@ Scope:
 
 ## Core 1.0 stable sequence
 
-The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 1.0 remains blocked
-by the manual accessibility/device gate #143 and the public beta.1/external-feedback gate #146,
-followed by #148, #150, and the manual publication issue #151.
+The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 1.0 uses the
+isolated `release/1.0` line and the following bounded sequence:
 
-<!-- parity-track:manual-stable-gates issues:#143,#146,#148,#150,#151 depends-on: -->
+1. complete the maintainer-run accessibility smoke in #143 against the exact candidate;
+2. finish stable documentation, governance, security, support, and migration work in #148;
+3. run the complete automated exact-candidate release gate in #150;
+4. publish and verify stable artifacts manually through #151 after explicit approval.
 
-Do not start post-1.0 runtime, package, Registry, token, export, or component implementation on the
-release line before #151 unless issue #152 accepts a focused blocker from real manual or beta
-evidence.
+The broader real-device and assistive-technology matrix from #143 and the external-consumer cycle
+in #146 continue after stable publication. They may produce patch or 1.1 follow-up work, but missing
+cohort or device coverage alone does not block `1.0.0`. Any discovered P0, P1, or accepted
+stable-blocking defect still stops the release.
+
+<!-- parity-track:manual-stable-gates issues:#143,#148,#150,#151 depends-on: -->
+
+Do not add post-1.0 runtime, package, Registry, token, export, or component implementation to the
+release line before #151. Forward work remains on `dev`; only a focused stable blocker may be
+backported.
 
 ## Phase 2C — Core 1.x capability parity
 
