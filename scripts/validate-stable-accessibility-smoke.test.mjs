@@ -163,7 +163,15 @@ test("strict validation accepts a complete scoped smoke", () => {
 
 test("strict validation rejects a stale ancestor after non-evidence changes", () => {
   const record = completedRecord();
-  record.candidate.commit = execFileSync("git", ["rev-parse", "HEAD^"], {
+  const latestValidatorChange = execFileSync(
+    "git",
+    ["rev-list", "-n", "1", "HEAD", "--", "scripts/validate-stable-accessibility-smoke.mjs"],
+    {
+      cwd: root,
+      encoding: "utf8",
+    },
+  ).trim();
+  record.candidate.commit = execFileSync("git", ["rev-parse", `${latestValidatorChange}^`], {
     cwd: root,
     encoding: "utf8",
   }).trim();
