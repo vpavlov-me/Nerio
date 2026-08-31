@@ -33,8 +33,9 @@ This repository is the source of truth for Nerio. Read the following documents b
 
 ## Current roadmap focus
 
-- Current work is completing the manual accessibility/device and beta.1 evidence gates before the
-  stable Core 1.0 sequence.
+- Current work is the isolated Core 1.0 stable release sequence. Stable publication requires the
+  scoped internal accessibility smoke in `quality/stable-accessibility-smoke.json`, not completion
+  of the exhaustive device matrix or an external beta cohort.
 - Follow issue #152 for the executable sequence,
   `docs/core-platform-primitive-coverage.md` for the frozen 1.0 native/component boundary, and
   `docs/core-1-x-capability-parity.md` for post-1.0 classification and ordering.
@@ -44,9 +45,9 @@ This repository is the source of truth for Nerio. Read the following documents b
   other product workflows.
 - Do not add another Core component unless the coverage matrix identifies an objective 1.0 blocker and the roadmap contains a focused issue.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
-- Do not start #343–#370 runtime, package, Registry, token, export, or component implementation
-  before their current roadmap dependencies are complete. Roadmap #152 explicitly authorizes #342
-  on `dev` before stable 1.0 while keeping it outside the isolated release candidate.
+- Keep #342–#370 runtime, package, Registry, token, export, and component implementation on `dev`.
+  Do not backport it to `release/1.0` unless roadmap #152 classifies an exact security,
+  compatibility, packaging, or existing-contract defect as a stable blocker.
 - Use the parity decision's parallel tracks. The minimum #342
   direction/localization contract precedes direction-sensitive API merges, but the full #342 audit
   is not a global serialization barrier.
@@ -155,9 +156,10 @@ Before moving any Core component toward `stable-core`, verify:
 
 ## Workflow
 
-1. Determine the intended base branch before starting. Normal work always targets `dev`.
-2. Update `dev` and create a `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `test/*`, or `chore/*`
-   branch from it. Do not create a feature branch from `main`.
+1. Determine the intended base branch before starting. Normal work targets `dev`; the explicitly
+   isolated Core 1.0 release line uses `release/1.0` from the approved `main` baseline.
+2. For normal work, update `dev` and create a `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `test/*`,
+   or `chore/*` branch from it. Do not create an ordinary feature branch from `main`.
 3. Inspect the current workspace and relevant documentation.
 4. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
 5. State a concise implementation plan in the pull request or task output.
@@ -165,7 +167,8 @@ Before moving any Core component toward `stable-core`, verify:
 7. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
 8. Run the repository checks and report exact results.
 9. Open ordinary pull requests into `dev`; never open a feature pull request directly into `main`.
-10. Use `dev -> main` only for an explicitly requested release pull request. Never merge a pull
+10. Use `release/1.0 -> main` for the isolated stable 1.0 candidate. A later coordinated release
+    may use `dev -> main` only when `dev` itself is the approved release line. Never merge a pull
     request into `main` without a separate, direct request from the user.
 11. After a task pull request is merged and the final remote state is verified, stop processes
     started from its worktree, remove that worktree from the local machine, and run
@@ -175,5 +178,5 @@ Before moving any Core component toward `stable-core`, verify:
 Working-branch pull requests use the fast, scope-aware `PR gate`: Chromium smoke and visual,
 CLI/MCP/adapter, package, or manual-audit jobs run only for their matching surfaces. Firefox,
 WebKit, packed release-consumer smoke, and the complete package contract remain mandatory in the
-`Release gate` for `dev -> main`. Do not move release-only work back into every development pull
-request or weaken the public cross-browser and package guarantees.
+`Release gate` for an approved release branch into `main`. Do not move release-only work back into
+every development pull request or weaken the public cross-browser and package guarantees.

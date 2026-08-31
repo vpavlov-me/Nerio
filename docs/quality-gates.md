@@ -22,25 +22,26 @@ safe by selecting every contract. Conditional jobs may be `success` or `skipped`
 The workflow-topology measurement below excludes the independent `branch-policy` status, counts
 expanded matrix legs as jobs, and counts one frozen-lockfile install per selected contract job:
 
-| Representative change | Before jobs / installs | After jobs / installs | Material difference                                                                         |
-| --------------------- | ---------------------- | --------------------- | ------------------------------------------------------------------------------------------- |
-| Markdown-only docs    | 3 / 1                  | 3 / 1                 | The install count stays flat; runtime, build, package, and browser commands no longer run.  |
-| UI runtime + visual   | 5 / 3                  | 5 / 3                 | UI, Chromium, and visual evidence remain; unrelated docs/package/tool commands are removed. |
-| `dev -> main` release | 12 / 11                | 13 / 11               | Exact-candidate validation adds one no-install job; the complete release boundary remains.  |
+| Representative change  | Before jobs / installs | After jobs / installs | Material difference                                                                         |
+| ---------------------- | ---------------------- | --------------------- | ------------------------------------------------------------------------------------------- |
+| Markdown-only docs     | 3 / 1                  | 3 / 1                 | The install count stays flat; runtime, build, package, and browser commands no longer run.  |
+| UI runtime + visual    | 5 / 3                  | 5 / 3                 | UI, Chromium, and visual evidence remain; unrelated docs/package/tool commands are removed. |
+| release line -> `main` | 12 / 11                | 13 / 11               | Exact-candidate validation adds one no-install job; the complete release boundary remains.  |
 
 The independent `branch-policy` status validates direction and DCO for every pull request. A DCO
 match is required for each human commit; Dependabot and recognized bot authors remain exempt.
 Development pull requests install Chromium only when selected, never run the full browser suite,
 and never run the supported-version Next.js release-consumer matrix.
 
-Pull requests from `dev` into `main` run `.github/workflows/release-gate.yml`. The required
-`Release gate` aggregate succeeds only after an exact candidate job proves that the requested
-40-character SHA is a repository commit contained by `origin/dev`. Every downstream checkout uses
-that immutable SHA. The gate then requires release quality, separate Chromium, Firefox, and WebKit
-jobs, visual regression, CLI/MCP/adapter contracts, package contracts, the consumer matrix, and the
-manual/beta contract. Candidate identity and the all-package SBOM are retained as SHA-named
-artifacts. Browser engines run in parallel with `fail-fast: false`, and package work does not wait
-for browser completion.
+Pull requests from an approved same-repository release line into `main` run
+`.github/workflows/release-gate.yml`. Stable 1.0 uses `release/1.0`; `dev` remains valid for a later
+explicitly approved release train. The required `Release gate` aggregate succeeds only after an
+exact candidate job proves that the requested 40-character SHA is the checked-out release HEAD.
+Every downstream checkout uses that immutable SHA. The gate then requires release quality,
+separate Chromium, Firefox, and WebKit jobs, visual regression, CLI/MCP/adapter contracts, package
+contracts, the consumer matrix, and the human-evidence contract. Candidate identity and the
+all-package SBOM are retained as SHA-named artifacts. Browser engines run in parallel with
+`fail-fast: false`, and package work does not wait for browser completion.
 
 Baseline changes still require the `visual-baseline-approved` label. Label changes are not workflow
 events, so they never restart development quality. After a maintainer reviews and applies the
@@ -121,7 +122,13 @@ and actionable doctor diagnostics. The previous 8,000-byte ceiling was raised to
 50,000-byte unpacked limit remains unchanged. This records the reviewed product value and retains
 roughly 15% compressed maintenance headroom without weakening runtime bundle budgets.
 
-## Manual accessibility and device evidence
+## Human accessibility evidence
+
+[`quality/stable-accessibility-smoke.json`](../quality/stable-accessibility-smoke.json) defines the
+bounded stable 1.0 human gate. It covers maintainer-run VoiceOver, keyboard-only navigation,
+zoom/reflow/contrast, and mobile touch across the release-critical scenario groups. A stable
+channel requires `pnpm validate:stable-accessibility-smoke --expect-pass` against the exact
+candidate and deployment, with evidence for every result and no unresolved accepted blocker.
 
 [`quality/manual-audit-plan.json`](../quality/manual-audit-plan.json) defines the required
 environments, evidence fields, stable routes, steps, and expected outcomes for issue #143.
@@ -130,17 +137,16 @@ is the human evidence record. `pnpm test:manual-audit-plan` and
 `pnpm validate:manual-audit-plan` prevent the plan and report from drifting or claiming a manual
 pass while evidence is still pending.
 
-These validators prepare the audit only. Automated accessibility, browser, visual, and package
-checks never substitute for VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom,
-contrast, or lived interaction evidence.
+These validators prepare the broader post-release audit only. Automated accessibility, browser,
+visual, and package checks never substitute for VoiceOver, NVDA, TalkBack, native picker,
+physical-device, zoom, contrast, or lived interaction evidence.
 
-`pnpm validate:stable-readiness` reads the release channel. Beta candidates accept the truthful
-pending manual and external-feedback records. A stable channel automatically switches to
-`pnpm validate:manual-audit-complete` and `pnpm validate:beta-feedback-complete`; those commands
-reject missing evidence, future-dated completion timestamps, and blocking decisions. Stable
-readiness requires both **Pass for real consumer pilots** and
-`proceed-to-stable-docs`. `quality/beta-feedback.json` is the machine-readable record for issue
-#146 and remains `evidence-pending` until real external consumers complete the documented cycle.
+`pnpm validate:stable-readiness` reads the release channel. Beta candidates accept truthful pending
+human records. A stable channel switches the scoped smoke to strict completion while continuing to
+validate the broader manual-audit and external-feedback records in their truthful current states.
+`quality/beta-feedback.json` remains the machine-readable record for issue #146 until real external
+consumers complete the post-release cycle. The optional strict completion validators remain
+available for closing those follow-up programs; they are not stable 1.0 publication prerequisites.
 
 ## Local gate
 

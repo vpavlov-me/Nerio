@@ -3,8 +3,9 @@ import { pathToFileURL } from "node:url";
 
 export const allowedDevelopmentBranchPattern =
   "^(feat|feature|fix|refactor|docs|test|chore|dependabot)/[A-Za-z0-9._/-]+$";
+export const stableReleaseBranch = "release/1.0";
 export const branchPolicyMessages = {
-  main: "Pull requests to main are allowed only from the dev integration branch.",
+  main: "Pull requests to main are allowed only from the same-repository dev or release/1.0 branch.",
   mainToDev: "Pull requests from main to dev are allowed only for same-repository synchronization.",
   development:
     "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch.",
@@ -14,13 +15,14 @@ const allowedDevelopmentBranch = new RegExp(allowedDevelopmentBranchPattern);
 
 export function checkBranchPolicy(baseRef, headRef, repositories = {}) {
   if (baseRef === "main") {
-    const isRepositoryDev =
-      headRef === "dev" &&
+    const isApprovedReleaseBranch = headRef === "dev" || headRef === stableReleaseBranch;
+    const isRepositoryRelease =
+      isApprovedReleaseBranch &&
       (!repositories.repository ||
         !repositories.headRepository ||
         repositories.repository === repositories.headRepository);
-    return isRepositoryDev
-      ? { allowed: true, message: "Release pull request dev -> main is allowed." }
+    return isRepositoryRelease
+      ? { allowed: true, message: `Release pull request ${headRef} -> main is allowed.` }
       : {
           allowed: false,
           message: branchPolicyMessages.main,

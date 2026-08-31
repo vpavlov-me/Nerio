@@ -21,6 +21,14 @@ test("accepts an exact commit owned by the repository release branch", () => {
   assert.deepEqual(validateReleaseCandidate(candidate, "origin/dev", root), []);
 });
 
+test("accepts only the exact checked-out release HEAD when requested", () => {
+  const candidate = execFileSync("git", ["rev-parse", "HEAD"], {
+    cwd: root,
+    encoding: "utf8",
+  }).trim();
+  assert.deepEqual(validateReleaseCandidate(candidate, "HEAD", root), []);
+});
+
 test("rejects a syntactically valid commit absent from the repository", () => {
   assert.match(validateReleaseCandidate("f".repeat(40), "HEAD", root)[0], /not a commit/);
 });

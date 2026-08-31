@@ -63,6 +63,10 @@ test("isolates the manual audit contract", () => {
 
 test("routes beta feedback and stable readiness to the manual contract", () => {
   for (const path of [
+    "quality/stable-accessibility-smoke.json",
+    "docs/audits/core-1-0-stable-accessibility-smoke.md",
+    "scripts/validate-stable-accessibility-smoke.mjs",
+    "scripts/validate-stable-accessibility-smoke.test.mjs",
     "quality/beta-feedback.json",
     "scripts/validate-beta-feedback.mjs",
     "scripts/validate-beta-feedback.test.mjs",

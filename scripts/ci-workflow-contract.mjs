@@ -48,6 +48,7 @@ const developmentScopedCommands = [
   "pnpm test:adapters",
   "pnpm validate:package-budgets",
   "pnpm pack:check",
+  "pnpm test:stable-accessibility-smoke",
   "pnpm test:manual-audit-plan",
   "pnpm test:beta-feedback",
   "pnpm validate:stable-readiness",
@@ -60,6 +61,7 @@ const releaseCommands = [
   "pnpm test:cli",
   "pnpm test:mcp",
   "pnpm test:adapters",
+  "pnpm test:stable-accessibility-smoke",
   "pnpm test:manual-audit-plan",
   "pnpm test:beta-feedback",
   "pnpm validate:stable-readiness",
@@ -177,6 +179,7 @@ export function ciWorkflowContractFailures({
       "types: [opened, synchronize, reopened, ready_for_review]",
       "workflow_dispatch:",
       "candidate_sha:",
+      "release_ref:",
       "required: true",
       "group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
       "cancel-in-progress: true",
@@ -184,6 +187,8 @@ export function ciWorkflowContractFailures({
       "contents: read",
       "name: exact-release-candidate",
       "DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}",
+      'git fetch --no-tags origin "+refs/heads/$RELEASE_REF:refs/remotes/origin/$RELEASE_REF"',
+      'node scripts/validate-release-candidate.mjs --candidate "$CANDIDATE_SHA" --release-ref "origin/$RELEASE_REF"',
       "node scripts/validate-release-candidate.mjs",
       "ref: ${{ needs.candidate.outputs.candidate_sha }}",
       "release-candidate-${{ steps.candidate.outputs.candidate_sha }}",
@@ -230,7 +235,9 @@ export function ciWorkflowContractFailures({
   if (
     releaseCheckoutCount === 0 ||
     exactCandidateCheckoutCount !== releaseCheckoutCount - 1 ||
-    !releaseGate.includes("ref: dev")
+    !releaseGate.includes(
+      "ref: ${{ github.event.pull_request.head.sha || github.event.inputs.candidate_sha }}",
+    )
   ) {
     failures.push(
       `${ciWorkflowPaths.releaseGate}: every downstream checkout must use the exact validated candidate SHA`,

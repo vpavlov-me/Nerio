@@ -1,8 +1,9 @@
-# Core 1.0 beta feedback cycle
+# Core 1.x external feedback cycle
 
-This document records the completed beta.1 publication and the external evaluation required by
-issue #146. It does not authorize another npm publication, dist-tag change, Git tag, GitHub
-Release, additional tester outreach, or a stable-release decision.
+This document records the completed beta.1 publication and the external evaluation tracked by
+issue #146. The cohort may complete after stable 1.0 and informs patch or 1.1 follow-up work; missing
+cohort coverage alone is not a stable publication blocker. It does not authorize another npm
+publication, dist-tag change, Git tag, GitHub Release, or additional tester outreach.
 
 ## Candidate record
 
@@ -137,24 +138,23 @@ Create one GitHub issue per actionable finding. Record:
 - expected and actual behavior;
 - Core defect, native-platform guidance, consumer-owned workflow, Pro candidate, or rejected
   request classification;
-- release impact: blocks current beta, blocks stable 1.0, or non-blocking;
+- release impact: immediate stable defect, patch candidate, 1.1 candidate, or non-blocking;
 - resolution, verification, and follow-up beta when applicable.
 
-P0/P1 findings require an immediate stop and a new beta. Resolve accepted API, accessibility,
-installation, migration, Registry/source-upgrade, or public-command P2 blockers before stable 1.0.
-Do not add speculative product components or reopen the frozen Core boundary for isolated requests.
+Any P0/P1 finding discovered before stable publication requires an immediate stop. After stable,
+handle it through the security or patch-release process as appropriate. Do not add speculative
+product components or reopen the frozen Core boundary for isolated requests.
 
 ## Progress ledger
 
 `quality/beta-feedback.json` is the canonical machine-readable status record. Keep it
 `evidence-pending` while this ledger is incomplete; do not add invented participants, links, dates,
 or findings. `pnpm validate:beta-feedback` accepts that truthful prerelease state.
-`pnpm validate:beta-feedback-complete` is reserved for the stable gate and requires the real
+`pnpm validate:beta-feedback-complete` is the optional closing validator and requires the real
 three-person cohort, both package and source modes, Calendar/DatePicker and Registry update
 coverage, a 14-day window, timestamps that have already occurred, issue-linked findings, and a
-blocker-consistent closing decision. `pnpm validate:stable-readiness` additionally requires the
-affirmative `proceed-to-stable-docs` recommendation; a completed `blocked-before-stable` record
-remains truthful evidence but cannot pass the stable release gate.
+blocker-consistent closing decision. `pnpm validate:stable-readiness` validates the record's current
+state without requiring cohort completion for stable 1.0.
 
 | Participant | Role    | Package mode | Source mode | Calendar/DatePicker | Registry update | Completed | Findings |
 | ----------- | ------- | ------------ | ----------- | ------------------- | --------------- | --------- | -------- |
@@ -164,8 +164,9 @@ remains truthful evidence but cannot pass the stable release gate.
 
 ## Closing report
 
-The maintainer records one final recommendation: **Proceed to stable documentation** or
-**Blocked before stable**. Include:
+The maintainer records one final recommendation using the existing machine-readable decision
+values: **Proceed to stable documentation** or **Blocked before stable**. In the post-release
+program, interpret these as whether the evidence is ready to inform the next release train. Include:
 
 - every beta version, exact commit, npm package, Registry, tag, and GitHub Release link;
 - the UTC feedback-window start and end and proof that at least 14 calendar days elapsed;

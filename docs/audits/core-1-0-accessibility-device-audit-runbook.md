@@ -1,7 +1,8 @@
 # Core 1.0 accessibility and device audit runbook
 
-This runbook reduces issue #143 to the human observations that automation cannot supply. It does
-not replace the canonical scope in `quality/manual-audit-plan.json` or the evidence record in
+This runbook reduces the broad post-release portion of issue #143 to the human observations that
+automation cannot supply. It does not replace the bounded stable smoke, the canonical broader scope
+in `quality/manual-audit-plan.json`, or the evidence record in
 `docs/audits/core-1-0-accessibility-device-audit.md`.
 
 ## What is already automated

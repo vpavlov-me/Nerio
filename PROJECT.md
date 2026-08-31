@@ -16,15 +16,17 @@ Core = building blocks. Pro = product-ready solutions.
 Nerio Core `1.0.0-beta.1` is the published public beta for the frozen Core 1.0 API under npm
 `beta` and `latest`. The protected `alpha` tag remains on `0.1.0-alpha.2`. An unqualified install
 therefore resolves to the newest coordinated public release, including a prerelease while Nerio is
-pre-stable. The external feedback cycle, accessibility/device evidence, and every future publication
-remain manual and are governed by the roadmap and `RELEASE.md`.
+pre-stable. Stable `1.0.0` is prepared from the isolated `release/1.0` line. Its human release gate
+is a narrow maintainer-run accessibility smoke against the exact candidate; the broader real-device
+matrix and external-consumer cycle continue after stable publication. Every publication remains
+manual and is governed by the roadmap and `RELEASE.md`.
 
 Post-1.0 scope is governed by
 [`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md). That decision
 classifies current coverage, native guidance, accepted Core 1.1 primitives, later candidates,
-recipes, adapters, Pro, consumer ownership, and explicit rejections. Roadmap #152 authorizes the
-#342 shared direction/localization contract on `dev` before the stable sequence completes because
-that work stays outside the isolated Core 1.0 release candidate.
+recipes, adapters, Pro, consumer ownership, and explicit rejections. Post-1.0 work may continue on
+`dev`, but it stays outside the isolated Core 1.0 release candidate and cannot be backported unless
+it resolves a focused stable blocker.
 
 ## Primary users
 

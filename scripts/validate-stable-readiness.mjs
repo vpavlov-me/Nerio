@@ -9,17 +9,15 @@ export function commandsForChannel(channel) {
   return channel === "stable"
     ? [
         [
-          "validate:manual-audit-complete",
-          "manual accessibility and device evidence",
+          "validate:stable-accessibility-smoke",
+          "scoped internal stable accessibility evidence",
           ["--expect-pass"],
         ],
-        [
-          "validate:beta-feedback-complete",
-          "external beta feedback evidence",
-          ["--expect-proceed"],
-        ],
+        ["validate:manual-audit-plan", "deferred exhaustive accessibility audit record"],
+        ["validate:beta-feedback", "deferred external validation record"],
       ]
     : [
+        ["validate:stable-accessibility-smoke", "scoped stable accessibility smoke record"],
         ["validate:manual-audit-plan", "manual accessibility and device plan"],
         ["validate:beta-feedback", "external beta feedback record"],
       ];
@@ -42,7 +40,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
 
   console.log(
     strict
-      ? "Stable channel selected: strict manual audit and external beta feedback evidence passed."
-      : `Release channel is ${metadata.channel}: strict stable-only evidence gates remain deferred.`,
+      ? "Stable channel selected: scoped internal accessibility evidence passed; exhaustive device and external validation remain tracked post-release."
+      : `Release channel is ${metadata.channel}: scoped stable evidence remains pending and deferred records remain truthful.`,
   );
 }

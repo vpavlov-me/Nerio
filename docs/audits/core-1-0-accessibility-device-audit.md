@@ -6,14 +6,15 @@
 - Candidate commit: **Pending**
 - Final decision: **Pending**
 
-This document is the evidence record for the final manual accessibility and real-device audit before
-Nerio Core 1.0 consumer pilots. Automated contract, accessibility, browser, visual, package, and
-release checks prepare a stable candidate; they do not count as VoiceOver, NVDA, TalkBack, native
-picker, physical-device, zoom, contrast, or lived interaction evidence.
+This document is the evidence record for the broad accessibility and real-device audit that
+continues after stable 1.0. The bounded publication prerequisite is documented in
+[`core-1-0-stable-accessibility-smoke.md`](./core-1-0-stable-accessibility-smoke.md). Automated
+contract, accessibility, browser, visual, package, and release checks do not count as VoiceOver,
+NVDA, TalkBack, native picker, physical-device, zoom, contrast, or lived interaction evidence.
 
-Do not change the final decision until every required environment has evidence and every blocking
-finding is resolved. The only closing decisions allowed by issue #143 are
-**Pass for real consumer pilots** or **Blocked before pilots**.
+Do not change this broader audit's final decision until every required environment has evidence and
+every blocking finding is resolved. Its closing decisions remain **Pass for real consumer pilots**
+or **Blocked before pilots**; they close the post-release program rather than gate stable 1.0.
 
 ## Candidate lock
 

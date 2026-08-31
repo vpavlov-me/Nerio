@@ -305,6 +305,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm test:stable-accessibility-smoke
       - run: pnpm test:manual-audit-plan
       - run: pnpm test:beta-feedback
       - run: pnpm validate:stable-readiness

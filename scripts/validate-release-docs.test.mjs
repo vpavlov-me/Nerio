@@ -31,7 +31,7 @@ test("release documentation validator accepts the complete gate", () => {
 });
 
 test("release documentation validator fails when focused tests disappear from RELEASE.md", () => {
-  invalidFixture("--release", "RELEASE.md", "pnpm test:catalog");
+  invalidFixture("--release", "RELEASE.md", "pnpm validate:stable-accessibility-smoke");
 });
 
 test("release documentation validator fails when focused tests disappear from the release gate", () => {
