@@ -13,6 +13,16 @@ test("stable channel selects the scoped smoke and keeps deferred records truthfu
   );
 });
 
+test("stable channel rejects blocking outcomes from deferred programs that already completed", () => {
+  assert.deepEqual(
+    commandsForChannel("stable", {
+      manualAudit: "complete",
+      betaFeedback: "complete",
+    }).map(([, , args]) => args),
+    [["--expect-pass"], ["--expect-pass"], ["--expect-proceed"]],
+  );
+});
+
 test("prerelease channels preserve truthful pending validation", () => {
   assert.deepEqual(
     commandsForChannel("beta").map(([command]) => command),

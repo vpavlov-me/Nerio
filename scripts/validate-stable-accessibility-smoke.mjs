@@ -46,6 +46,40 @@ const allowedPostCandidateEvidencePaths = new Set([
   "quality/stable-accessibility-smoke.json",
 ]);
 const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+const concreteMacDevicePattern =
+  /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac (?:mini|Studio|Pro)\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
+const concreteDesktopDevicePattern =
+  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
+const concreteMobileDevicePattern =
+  /\b(?:iPhone\s+(?:\d{1,2}|SE\b)|iPad\s+(?:\d{1,2}|(?:Air|Pro|mini)\b.*\d)|Pixel\s+\d|Galaxy\s+(?:[A-Z]+\s*)?\d|OnePlus\s+\d|Xperia\s+\d|Moto(?:rola)?\s+\S*\d|Nothing Phone\s+\d|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d)\b/i;
+const environmentMetadataRequirements = {
+  "macos-safari-voiceover": {
+    operatingSystem: /\bmacOS\b.*\d/i,
+    browser: /\bSafari\b.*\d/i,
+    assistiveTechnology: /\bVoiceOver\b/i,
+    device: concreteMacDevicePattern,
+  },
+  "macos-chromium-keyboard": {
+    operatingSystem: /\bmacOS\b.*\d/i,
+    browser: /\b(?:Chrome|Chromium|Edge)\b.*\d/i,
+    assistiveTechnology: /keyboard[- ]only/i,
+    device: concreteMacDevicePattern,
+  },
+  "zoom-reflow-contrast": {
+    operatingSystem: /\b(?:macOS|Windows|Linux)\b.*\d/i,
+    browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
+    device: concreteDesktopDevicePattern,
+    zoom: /(?=.*\b200%)(?=.*\b400%)/,
+    notes:
+      /\b(?:high|increased|increase) contrast\b.*\b(?:enabled|active|on)\b|\b(?:enabled|active|on)\b.*\b(?:high|increased|increase) contrast\b/i,
+  },
+  "mobile-touch": {
+    operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
+    browser: /\b(?:Safari|Chrome)\b.*\d/i,
+    device: concreteMobileDevicePattern,
+    notes: /\bphysical\b.*\b(?:touch|device)\b|\b(?:touch|device)\b.*\bphysical\b/i,
+  },
+};
 const errors = [];
 
 let record;
@@ -202,6 +236,31 @@ for (const [index, environment] of environments.entries()) {
   for (const field of evidenceFields) {
     if (complete && !nonEmpty(environment?.[field])) {
       errors.push(`${prefix}.${field} is required when complete.`);
+    }
+  }
+  if (complete) {
+    const requirements = environmentMetadataRequirements[environment?.id] ?? {};
+    for (const [field, pattern] of Object.entries(requirements)) {
+      if (nonEmpty(environment?.[field]) && !pattern.test(environment[field])) {
+        errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
+      }
+    }
+    if (
+      environment?.id === "mobile-touch" &&
+      /\b(?:emulator|simulator|virtual device)\b/i.test(
+        `${environment.device ?? ""} ${environment.notes ?? ""}`,
+      )
+    ) {
+      errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
+    }
+    if (
+      environment?.id === "mobile-touch" &&
+      ((/\b(?:iOS|iPadOS)\b/i.test(environment.operatingSystem) &&
+        !/\bSafari\b/i.test(environment.browser)) ||
+        (/\bAndroid\b/i.test(environment.operatingSystem) &&
+          !/\bChrome\b/i.test(environment.browser)))
+    ) {
+      errors.push(`${prefix}.browser must match the recorded mobile operating system.`);
     }
   }
 }

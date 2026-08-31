@@ -65,6 +65,44 @@ function strictArgs(record, releaseMetadata, packagesRoot) {
 function completedRecord() {
   const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   const evidence = ["https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-1"];
+  const environmentMetadata = {
+    "macos-safari-voiceover": {
+      operatingSystem: "macOS 15.5",
+      browser: "Safari 18.5",
+      assistiveTechnology: "VoiceOver 15.5",
+      device: "Mac Studio M2 Max (2023)",
+      viewport: "1280x800",
+      zoom: "100%",
+      notes: "Verified the scoped scenarios with Safari and VoiceOver.",
+    },
+    "macos-chromium-keyboard": {
+      operatingSystem: "macOS 15.5",
+      browser: "Chrome 138.0",
+      assistiveTechnology: "Keyboard-only navigation",
+      device: "Mac Studio M2 Max (2023)",
+      viewport: "1280x800",
+      zoom: "100%",
+      notes: "Verified the scoped scenarios with keyboard-only navigation.",
+    },
+    "zoom-reflow-contrast": {
+      operatingSystem: "macOS 15.5",
+      browser: "Chrome 138.0",
+      assistiveTechnology: "Not applicable",
+      device: "Mac Studio M2 Max (2023)",
+      viewport: "1280x800",
+      zoom: "200% and 400%",
+      notes: "Verified reflow with macOS Increase Contrast enabled.",
+    },
+    "mobile-touch": {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      assistiveTechnology: "Touch-only navigation",
+      device: "iPhone 15 Pro",
+      viewport: "393x852",
+      zoom: "100%",
+      notes: "Verified touch interaction on a physical mobile device.",
+    },
+  };
   return {
     schemaVersion: 1,
     status: "complete",
@@ -83,14 +121,8 @@ function completedRecord() {
     ].map((id) => ({
       id,
       result: "Pass",
-      operatingSystem: "Test OS",
-      browser: "Test browser",
-      assistiveTechnology: "VoiceOver, keyboard, or not applicable",
-      device: "Test device",
-      viewport: "1280x800",
-      zoom: "100% or required zoom",
+      ...environmentMetadata[id],
       evidence,
-      notes: "Representative stable smoke passed.",
     })),
     scenarios: [
       "docs-navigation",
@@ -154,6 +186,21 @@ test("strict validation rejects release metadata and package versions outside th
     },
     { channel: "beta", coreVersion: "1.0.0-beta.1" },
   );
+});
+
+test("strict validation rejects evidence recorded against the wrong required environments", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").browser = "Chrome 138.0";
+  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+  mobile.device = "iPhone 15 Pro Simulator";
+  mobile.notes = "Verified touch interaction on an iOS simulator.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /browser does not match the required macos-safari-voiceover setup/);
+    assert.match(result.stderr, /notes does not match the required mobile-touch setup/);
+    assert.match(result.stderr, /must use a physical mobile touch device/);
+  });
 });
 
 test("strict validation rejects missing coverage and accepted blockers", () => {
