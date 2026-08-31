@@ -91,6 +91,19 @@ test("strict validation accepts a complete scoped smoke", () => {
   });
 });
 
+test("strict validation rejects a stale ancestor after non-evidence changes", () => {
+  const record = completedRecord();
+  record.candidate.commit = execFileSync("git", ["rev-parse", "HEAD^"], {
+    cwd: root,
+    encoding: "utf8",
+  }).trim();
+  withRecord(record, (target) => {
+    const result = run(["--expect-pass", "--record", target]);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /stale after non-evidence changes/);
+  });
+});
+
 test("strict validation rejects missing coverage and accepted blockers", () => {
   const record = completedRecord();
   record.environments.pop();

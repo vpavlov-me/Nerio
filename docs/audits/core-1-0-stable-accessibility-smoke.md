@@ -50,7 +50,7 @@ Validate the record with:
 ```bash
 pnpm test:stable-accessibility-smoke
 pnpm validate:stable-accessibility-smoke
-pnpm validate:stable-accessibility-smoke -- --expect-pass
+pnpm validate:stable-accessibility-smoke --expect-pass
 ```
 
 The last command is intentionally expected to fail while evidence remains pending.

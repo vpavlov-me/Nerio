@@ -35,6 +35,10 @@ const evidenceFields = [
   "notes",
 ];
 const allowedResults = ["Pending", "Pass", "Fail", "Blocked"];
+const allowedPostCandidateEvidencePaths = new Set([
+  "docs/audits/core-1-0-stable-accessibility-smoke.md",
+  "quality/stable-accessibility-smoke.json",
+]);
 const errors = [];
 
 let record;
@@ -115,6 +119,21 @@ if (record.status === "evidence-pending") {
     });
     if (object.status !== 0 || ancestry.status !== 0) {
       errors.push("Completed smoke candidate.commit must be contained by the current history.");
+    } else {
+      const changedPaths = spawnSync("git", ["diff", "--name-only", `${candidate.commit}..HEAD`], {
+        cwd: root,
+        encoding: "utf8",
+      });
+      const changedPathOutput = typeof changedPaths.stdout === "string" ? changedPaths.stdout : "";
+      const disallowedPaths = changedPathOutput
+        .split("\n")
+        .filter(Boolean)
+        .filter((path) => !allowedPostCandidateEvidencePaths.has(path));
+      if (changedPaths.status !== 0 || disallowedPaths.length > 0) {
+        errors.push(
+          `Completed smoke candidate is stale after non-evidence changes: ${disallowedPaths.join(", ") || "unable to inspect candidate diff"}.`,
+        );
+      }
     }
   }
   if (!isEvidenceUrl(candidate.deployment)) {
