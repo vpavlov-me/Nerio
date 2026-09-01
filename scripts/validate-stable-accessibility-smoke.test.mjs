@@ -19,12 +19,56 @@ const supportedEdge = `Edge ${browserFloor("chromium")}`;
 const supportedFirefox = `Firefox ${browserFloor("firefox")}`;
 const passiveReportingVerbs = [
   "alleged",
+  "asserted",
   "claimed",
+  "confirmed",
   "hoped",
+  "indicated",
   "meant",
+  "noted",
   "purported",
   "reported",
   "said",
+  "stated",
+];
+const activeReportedClaims = (claim) => [
+  ...passiveReportingVerbs.map((verb) => `QA ${verb} that ${claim}`),
+  `QA claims that ${claim}`,
+  `QA did claim that ${claim}`,
+  `QA has claimed that ${claim}`,
+  `QA is claiming that ${claim}`,
+  `QA announced that ${claim}`,
+  `QA believed that ${claim}`,
+  `QA documented that ${claim}`,
+  `QA insisted that ${claim}`,
+  `QA maintained that ${claim}`,
+  `QA wrote that ${claim}`,
+  `QA assumed that ${claim}`,
+  `QA concluded that ${claim}`,
+  `QA declared that ${claim}`,
+  `Alice claimed that ${claim}`,
+  `The vendor reported that ${claim}`,
+  `QA and engineering report that ${claim}`,
+  `QA claimed and maintained that ${claim}`,
+  `QA claimed and later stated that ${claim}`,
+  `QA claimed, then maintained that ${claim}`,
+  `Reviewers claim that ${claim}`,
+  `We state that ${claim}`,
+  `QA claimed: "${claim}"`,
+  `QA said, "${claim}"`,
+  `QA claimed — "${claim}"`,
+  `"${claim}" — QA claimed`,
+  `"${claim}" (QA claimed)`,
+  `QA claimed, after reviewing the run, that ${claim}`,
+  `QA claimed (after reviewing the run) that ${claim}`,
+  `QA claimed—after reviewing the run—that ${claim}`,
+  `According to QA, ${claim}`,
+  `According to QA: ${claim}`,
+  `Per QA, ${claim}`,
+  `It was asserted that ${claim}`,
+  `${claim}, QA claimed`,
+  `${claim} as QA reported`,
+  `${claim} as reported by QA`,
 ];
 
 function run(args = []) {
@@ -304,9 +348,39 @@ test("strict validation rejects browsers below the maintained policy floor", () 
 test("strict validation accepts ordinary Mac hardware descriptions without inventory details", () => {
   const record = completedRecord();
   record.environments.find(({ id }) => id === "macos-safari-voiceover").device =
+    "MacBook Pro 14-inch (M4 Pro)";
+  record.environments.find(({ id }) => id === "macos-chromium-keyboard").device =
     "MacBook Pro without Touch Bar";
-  record.environments.find(({ id }) => id === "macos-chromium-keyboard").device = "Mac Studio";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").device = "Mac mini";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").device = "Mac mini M4";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts concrete legacy and Touch Bar Mac descriptions", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").device = "iMac Pro";
+  record.environments.find(({ id }) => id === "macos-chromium-keyboard").device =
+    "MacBook Pro with Touch Bar";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").device =
+    "Mac Pro (Late 2013)";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts concrete Apple-formatted Mac descriptions", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").device =
+    "MacBook Air (M2, 2022)";
+  record.environments.find(({ id }) => id === "macos-chromium-keyboard").device =
+    "MacBook Pro (13-inch, M1, 2020)";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").device =
+    "iMac (Retina 5K, 27-inch, 2020)";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -317,11 +391,20 @@ test("strict validation accepts ordinary Mac hardware descriptions without inven
 test("strict validation accepts ordinary concrete desktop descriptions without inventory details", () => {
   for (const device of [
     "Dell XPS",
+    "Dell XPS 13",
+    "Acer Aspire 5",
+    "Dell Inspiron 15",
+    "HP Pavilion 15",
+    "HP EliteBook 840 G10",
+    "HP ProBook 450 G10",
+    "ASUS Vivobook S 15 OLED",
     "Lenovo ThinkPad",
+    "Lenovo ThinkPad X1 Carbon Gen 12",
     "Framework Laptop",
     "Framework Laptop 13",
     "Microsoft Surface Laptop 7",
     "Microsoft Surface Pro",
+    "Microsoft Surface Book 3",
     "Dell Latitude",
     "Acer Swift",
     "Acer Swift Go",
@@ -337,6 +420,19 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
     "HP EliteDesk 800 G9 asset No. 42",
     "Intel NUC 13 Pro",
     "TUXEDO InfinityBook",
+    "MSI Prestige 16",
+    "System76 Lemur Pro",
+    "Huawei MateBook X Pro",
+    "Gigabyte Aero 16",
+    "Razer Book 13",
+    "Samsung Galaxy Book5 Pro",
+    "Samsung Galaxy Book4 Ultra",
+    "TUXEDO InfinityBook Pro 14",
+    "HP EliteBook x360 1040 G11",
+    "Dell XPS 13 2-in-1",
+    "Samsung Galaxy Book4 360",
+    "Microsoft Surface Laptop Studio 2",
+    "ASUS ROG Zephyrus G14",
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
@@ -404,6 +500,11 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "macos-safari-voiceover", device: "No Mac Studio" },
     { id: "macos-safari-voiceover", device: "This is not a MacBook Pro" },
     { id: "macos-safari-voiceover", device: "Definitely not a MacBook Pro" },
+    { id: "macos-safari-voiceover", device: "MacBook Pro Widget" },
+    { id: "macos-safari-voiceover", device: "MacBook Pro ROOM 42" },
+    { id: "macos-safari-voiceover", device: "MacBook Pro QA2026" },
+    { id: "macos-safari-voiceover", device: "iMac ROOM 42" },
+    { id: "macos-safari-voiceover", device: "MacBook Pro (not available)" },
     { id: "zoom-reflow-contrast", device: "desktop device 123" },
     { id: "zoom-reflow-contrast", device: "Windows desktop" },
     { id: "zoom-reflow-contrast", device: "PC 123" },
@@ -412,6 +513,23 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "My computer" },
     { id: "zoom-reflow-contrast", device: "Available device" },
     { id: "zoom-reflow-contrast", device: "Kitchen Chair" },
+    { id: "zoom-reflow-contrast", device: "Kitchen Chair 2026" },
+    { id: "zoom-reflow-contrast", device: "Conference Room 42" },
+    { id: "zoom-reflow-contrast", device: "Audit Checklist 2026" },
+    { id: "zoom-reflow-contrast", device: "Accessibility QA 2026" },
+    { id: "zoom-reflow-contrast", device: "QA REPORT 2026" },
+    { id: "zoom-reflow-contrast", device: "Release Notes 2026" },
+    { id: "zoom-reflow-contrast", device: "Evidence Matrix 2026" },
+    { id: "zoom-reflow-contrast", device: "Compliance Record 2026" },
+    { id: "zoom-reflow-contrast", device: "HP Widget" },
+    { id: "zoom-reflow-contrast", device: "LG Widget" },
+    { id: "zoom-reflow-contrast", device: "ASUS Widget" },
+    { id: "zoom-reflow-contrast", device: "TUXEDO Widget" },
+    { id: "zoom-reflow-contrast", device: "HP Kitchen Chair" },
+    { id: "zoom-reflow-contrast", device: "HP QA 2026" },
+    { id: "zoom-reflow-contrast", device: "HP WIDGET 2026" },
+    { id: "zoom-reflow-contrast", device: "HP ROOM 42" },
+    { id: "zoom-reflow-contrast", device: "ASUS ABC 8" },
     { id: "zoom-reflow-contrast", device: "office workstation" },
     { id: "zoom-reflow-contrast", device: "Home PC" },
     { id: "zoom-reflow-contrast", device: "The Machine" },
@@ -443,6 +561,8 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "Microsoft 365 Account" },
     { id: "zoom-reflow-contrast", device: "Dell SupportAssist" },
     { id: "zoom-reflow-contrast", device: "Dell Latitude Dock" },
+    { id: "zoom-reflow-contrast", device: "Dell XPS 13 User Guide" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Surface Pro 9 Manual" },
     { id: "zoom-reflow-contrast", device: "Microsoft Surface Pro Keyboard" },
     { id: "zoom-reflow-contrast", device: "Razer Blade Mouse" },
     { id: "zoom-reflow-contrast", device: "Samsung Galaxy Book Adapter" },
@@ -854,7 +974,21 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Touch interaction was reported as successfully tested on a physical iPhone 15 Pro.",
     "Touch interaction was reported to have already been tested on a physical iPhone 15 Pro.",
     "Touch interaction was alleged to have been tested on a physical iPhone 15 Pro.",
+    ...activeReportedClaims("touch interaction was tested on a physical iPhone 15 Pro"),
+    "QA claimed that they tested touch interaction on a physical iPhone 15 Pro.",
+    "QA claimed during the audit that they tested touch interaction on a physical iPhone 15 Pro.",
+    "QA claimed that engineers tested touch interaction on a physical iPhone 15 Pro.",
+    "QA claimed that on the physical iPhone 15 Pro touch interaction was tested.",
+    "Touch interaction was tested on a physical iPhone 15 Pro according to QA.",
+    "Touch interaction was tested on a physical iPhone 15 Pro per QA.",
+    "They tested touch interaction on a physical iPhone 15 Pro, QA claimed.",
+    "According to QA, they tested touch interaction on a physical iPhone 15 Pro.",
+    "“Touch interaction was tested on a physical iPhone 15 Pro,” QA claimed.",
+    "According to QA, “touch interaction was tested on a physical iPhone 15 Pro”.",
+    "Touch interaction was tested on a physical iPhone 15 Pro, according to QA.",
+    "QA claimed to have tested touch interaction on a physical iPhone 15 Pro.",
     "Touch interaction was claimed to be tested on a physical iPhone 15 Pro, but was actually reported to be tested on a physical iPhone 15 Pro.",
+    "QA claimed that touch interaction was tested on a physical iPhone 15 Pro, but the lead reported that touch interaction was tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -890,9 +1024,51 @@ test("strict validation accepts concrete mobile names and model codes", () => {
     "OnePlus Pad 2",
     "ASUS ROG Phone 8",
     "ASUS ROG Phone 9",
+    "Xiaomi Redmi Note 14 Pro",
+    "OnePlus Nord 4",
+    "ASUS Zenfone 11 Ultra",
+    "Honor Magic7 Pro",
+    "Huawei P60 Pro",
+    "POCO X7 Pro",
+    "realme GT 7 Pro",
+    "vivo X200 Pro",
+    "ZTE Axon 60 Ultra",
+    "Nubia RedMagic 10 Pro",
+    "TCL 50 Pro",
+    "OPPO Reno12 Pro",
+    "Motorola Moto G Power 2025",
+    "Nothing Phone (3a) Pro",
+    "OnePlus Nord CE 4",
+    "Honor Magic V3",
+    "Huawei Mate 70 Pro",
+    "realme 14 Pro",
+    "Honor 400 Pro",
+    "Honor X9c",
+    "OnePlus Nord N30 5G",
+    "Motorola Razr+ 2024",
+    "Motorola Moto G Stylus 5G 2025",
+    "Huawei Mate X6",
+    "Huawei Nova 13i",
+    "POCO C75",
+    "realme C75",
+    "LG V60 ThinQ 5G",
+    "Samsung Galaxy Tab S10 FE+",
+    "OnePlus Nord CE4 Lite 5G",
+    "realme Note 60",
+    "Redmi Note 14 Pro 5G",
+    "ZTE Blade A75 5G",
+    "Nubia Flip 5G",
+    "Lenovo Legion Y700",
+    "TCL 50 XL NXTPAPER 5G",
     "SM-S921B/DS",
+    "Samsung SM-S938U1",
+    "Samsung SM-A546E/DSN",
+    "Sony XQ-EC54",
     "CPH2581",
+    "OPPO CPH2581",
     "XQ-EC54",
+    "Motorola XT2453-3",
+    "Nokia TA-1688",
   ]) {
     const record = completedRecord();
     const mobile = record.environments.find(({ id }) => id === "mobile-touch");
@@ -928,6 +1104,43 @@ test("strict validation rejects placeholder and browser-only mobile device value
       device: "Physical mobile device 123",
     },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mobile phone" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Widget 1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung WID1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung ABC1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Huawei ABC1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "OPPO QA1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "SM-WIDGET1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "XQ-WIDGET1" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "CPH123WIDGET" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "XT123-WIDGET" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "TA-123-WIDGET" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Widget 2" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Lenovo Widget P12" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "ASUS Widget 8" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Nokia Widget 7.2" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Fairphone Widget 5" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Nothing Widget (2)" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "LG Widget 16" },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedFirefox,
+      device: "Samsung Galaxy Widget 24",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedFirefox,
+      device: "Google Pixel Widget 9",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedFirefox,
+      device: "Samsung Widget SM-S921B/DS",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedFirefox,
+      device: "Samsung SM-S921B/DS Manual",
+    },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: "Apple iPhone 15 Pro" },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Chrome 143.0" },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mozilla/5.0" },
@@ -1050,7 +1263,27 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "High contrast was reported as enabled during the test.",
     "High contrast was reported as successfully enabled during the test.",
     "High contrast was alleged to have been enabled during the test.",
+    ...activeReportedClaims("high contrast was enabled during the test"),
+    "QA claimed that they enabled high contrast during the test.",
+    "QA claimed during the audit that they enabled high contrast during the test.",
+    "QA claimed that engineers enabled high contrast during the test.",
+    "QA claimed that in high contrast mode the setting was enabled during the test.",
+    "High contrast was reported by QA as enabled during the test.",
+    "High contrast was said by QA to be enabled during the test.",
+    "High contrast was enabled during the test according to QA.",
+    "High contrast was enabled during the test per QA.",
+    "The high contrast setting according to QA was enabled during the test.",
+    "QA claimed that high contrast was enabled, but the accessibility team actually enabled high contrast during the test, according to the lead.",
+    "QA claimed that high contrast was enabled, but the accessibility team actually enabled high contrast during the test, the lead claimed.",
+    "They enabled high contrast during the test, QA claimed.",
+    "According to QA, they enabled high contrast during the test.",
+    "QA claimed that the high contrast setting was enabled during the test.",
+    "“High contrast was enabled during the test,” QA claimed.",
+    "According to QA, “high contrast was enabled during the test”.",
+    "High contrast was enabled during the test, according to QA.",
+    "QA claimed to have enabled high contrast during the test.",
     "High contrast was claimed to be enabled but was actually reported to be enabled during the test.",
+    "QA claimed that high contrast was enabled, but the lead reported that high contrast was enabled during the test.",
     "High contrast was claimed to be enabled, keyboard navigation was actually verified during the test.",
   ]) {
     const record = completedRecord();
@@ -1103,6 +1336,146 @@ test("strict validation accepts completed evidence after a reported claim", () =
       assert.match(result.stdout, /internally approved/);
     });
   }
+});
+
+test("strict validation accepts factual evidence after an active reported claim", () => {
+  for (const verb of passiveReportingVerbs) {
+    const record = completedRecord();
+    const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    zoomContrast.zoom =
+      `QA ${verb} that 200% and 400% were tested, ` +
+      "but the accessibility team actually tested 200% and 400%.";
+    zoomContrast.notes =
+      `QA ${verb} that high contrast was enabled, ` +
+      "but the accessibility team actually enabled high contrast during the test.";
+    record.environments.find(({ id }) => id === "mobile-touch").notes =
+      `QA ${verb} that touch interaction was tested on a physical iPhone 15 Pro, ` +
+      "but the accessibility team actually tested touch interaction on a physical iPhone 15 Pro.";
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation accepts factual corrections with parenthetical review context", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom =
+    "QA claimed that 200% and 400% were tested, but, after reviewing the logs, the accessibility team actually tested 200% and 400%.";
+  zoomContrast.notes =
+    "QA claimed that high contrast was enabled, but the accessibility team, after reviewing the logs, actually enabled high contrast during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "QA claimed that touch interaction was tested on a physical iPhone 15 Pro, but the accessibility team, after reviewing the logs, actually tested touch interaction on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation keeps unrelated reports separate from factual evidence", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "QA reported a lab scheduling issue; 200% and 400% were actually tested.";
+  zoomContrast.notes =
+    "QA claimed ownership of the setup, but high contrast was actually enabled during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "QA reported a device booking issue. Touch interaction was actually tested on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts factual evidence after reporting nouns used as labels", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "Test reports: 200% and 400% were actually tested.";
+  zoomContrast.notes = "Audit notes: high contrast was actually enabled during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Run reports: touch interaction was actually tested on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts factual evidence followed by unrelated observations", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "We tested 200% and 400% and noted no defects.";
+  zoomContrast.notes =
+    "High contrast was enabled during the test and QA confirmed keyboard navigation.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "We tested touch interaction on a physical iPhone 15 Pro and noted no defects.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts per-requirement evidence without treating it as attribution", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "200% and 400% were actually tested per viewport requirement.";
+  zoomContrast.notes = "High contrast was enabled per the documented test plan.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Touch interaction was tested on a physical iPhone 15 Pro per the smoke checklist.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation keeps while-separated reports apart from factual evidence", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "QA reported a scheduling issue, while 200% and 400% were actually tested.";
+  zoomContrast.notes =
+    "QA claimed ownership of the setup, while high contrast was actually enabled during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "QA reported a booking issue, while touch interaction was actually tested on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts QA requirements as requirements rather than attribution", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "Per QA testing requirements, 200% and 400% were actually tested.";
+  zoomContrast.notes =
+    "Per QA accessibility testing requirements, high contrast was actually enabled during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Per QA smoke testing requirements, touch interaction was actually tested on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation keeps whereas-separated reports apart from factual evidence", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "QA reported a scheduling issue, whereas 200% and 400% were actually tested.";
+  zoomContrast.notes =
+    "QA claimed ownership of the setup, whereas high contrast was actually enabled during the test.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "QA reported a booking issue, whereas touch interaction was actually tested on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
 });
 
 test("strict validation rejects straight and curly contracted negations", () => {
@@ -1177,6 +1550,23 @@ test("strict validation requires affirmative zoom testing language", () => {
     ...passiveReportingVerbs.map((verb) => `200% and 400% were ${verb} to be tested`),
     "200% and 400% were reported as tested",
     "200% and 400% were alleged to have been tested",
+    ...activeReportedClaims("200% and 400% were tested"),
+    "QA claimed that testing passed at 200% and 400%",
+    "QA claimed yesterday that 200% and 400% were tested",
+    "QA claimed that engineers tested at 200% and 400%",
+    "QA claimed that 200% and 400% testing was completed",
+    "200% and 400% were tested per QA",
+    "QA claimed that 200% and 400% were tested, but the accessibility team actually tested 200% and actually tested 400%, according to the lead",
+    "Testing passed at 200% and 400%, QA claimed",
+    "According to QA, testing passed at 200% and 400%",
+    "QA claimed that the 200% and 400% were tested",
+    "QA claimed that both 200% and 400% were tested",
+    "“200% and 400% were tested,” QA claimed",
+    "According to QA, “200% and 400% were tested”",
+    "200% and 400% were tested, according to QA",
+    "QA claimed that 200% and 400% were unsuccessfully tested and then verified",
+    "QA claimed to have tested 200% and 400%",
+    "QA claimed that 200% and 400% were tested, but the lead reported that 200% and 400% were tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;

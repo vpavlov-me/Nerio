@@ -62,13 +62,26 @@ const allowedPostCandidateEvidencePaths = new Set([
   "quality/stable-accessibility-smoke.json",
 ]);
 const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
-const macDeviceFamilyPattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
+const macHardwareQualifierSource =
+  "(?:M\\d+(?:\\s+(?:Max|Pro|Ultra))?|Retina\\s+\\dK|\\d{2,4}(?:-inch)?|Late\\s+\\d{4}|Pro|with(?:out)?\\s+Touch\\s+Bar)";
+const macDeviceFamilyPattern = new RegExp(
+  `^(?:MacBook\\s+(?:Air|Pro)|Mac\\s+(?:mini|Studio|Pro)|iMac)` +
+    `(?:\\s+${macHardwareQualifierSource}){0,2}` +
+    `(?:\\s+\\(${macHardwareQualifierSource}(?:,\\s*${macHardwareQualifierSource}){0,2}\\))?$`,
+  "i",
+);
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
 const knownUnnumberedDesktopFamilyPattern =
-  /^(?:Acer\s+Swift(?:\s+(?:Edge|Go))?|ASUS\s+(?:Zenbook|Vivobook)|Dell\s+Latitude|Framework\s+Laptop|HP\s+(?:EliteBook|ProBook)|Lenovo\s+Yoga|LG\s+Gram|Microsoft\s+Surface\s+(?:Laptop|Pro)|Purism\s+Librem\s+Mini|Razer\s+Blade|Samsung\s+Galaxy\s+Book(?:\s+(?:Edge|Pro))?)$/i;
+  /^(?:Acer\s+Swift(?:\s+(?:Edge|Go))?|ASUS\s+(?:Zenbook|Vivobook)|Dell\s+(?:Latitude|XPS)|Framework\s+Laptop|HP\s+(?:EliteBook|ProBook)|Huawei\s+MateBook\s+X\s+Pro|Lenovo\s+(?:ThinkPad|Yoga)|LG\s+Gram|Microsoft\s+Surface\s+(?:Book|Laptop|Pro)|Purism\s+Librem\s+Mini|Razer\s+(?:Blade|Book)|Samsung\s+Galaxy\s+Book(?:\s+(?:Edge|Pro))?|System76\s+Lemur\s+Pro|TUXEDO\s+InfinityBook)$/i;
 const knownDesktopEdgeHardwarePattern =
   /^(?:Acer\s+Swift\s+Edge(?:\s+\d+(?:\.\d+)?)?|Samsung\s+Galaxy\s+Book\s*\d*\s+Edge(?:\s+\d+(?:\.\d+)?)?)$/i;
+const knownNumberedDesktopFamilyPattern =
+  /^(?:Acer\s+(?:Aspire|Swift(?:\s+(?:Edge|Go))?)|ASUS\s+(?:Zenbook|Vivobook)(?:\s+[A-Z])?|Dell\s+(?:Inspiron|Latitude|XPS)|Framework\s+Laptop|Gigabyte\s+Aero|HP\s+(?:EliteBook|Pavilion|ProBook)|Lenovo\s+Yoga|LG\s+Gram|Microsoft\s+Surface\s+(?:Book|Laptop(?:\s+Studio)?|Pro)|MSI\s+Prestige|Purism\s+Librem\s+Mini|Razer\s+(?:Blade|Book))\s+\d+(?:\.\d+)?(?:\s+(?:2-in-1|G\d+|Gen\s+\d+|OLED|Plus|Pro|Ultra)){0,2}$/i;
+const knownStructuredDesktopFamilyPattern =
+  /^(?:Acer\s+Chromebook\s+\d{3,4}(?:\s+[A-Z]{1,3})?|ASUS\s+ROG\s+(?:Strix|Zephyrus)\s+[A-Z]\d+|HP\s+(?:EliteBook|ProBook)\s+x360\s+\d{3,4}\s+G\d+|HP\s+EliteDesk\s+\d{3,4}(?:\s+[A-Z]\d+)?(?:\s+(?:Desktop\s+Mini\s+PC|asset\s+No\.\s+\d+))?|Intel\s+NUC\s+\d{1,2}(?:\s+Pro)?|Lenovo\s+ThinkPad\s+[A-Z]\d{1,2}(?:\s+[A-Za-z]+){0,2}(?:\s+Gen\s+\d+)?|Samsung\s+Galaxy\s+Book\s*\d+(?:\s+(?:360|Edge|Pro|Ultra)(?:\s+\d+(?:\.\d+)?)?)?|TUXEDO\s+InfinityBook(?:\s+Pro)?\s+\d+(?:\.\d+)?)$/i;
+const desktopEvidenceDocumentPattern =
+  /\b(?:accessibility|audit|checklist|compliance|documentation|evidence|guide|manual|matrix|release|report|roadmap|worksheet)\b/i;
 const desktopSoftwareProductSource =
   "(?:account|android|browser|chrome(?:\\s*os)?|chromium(?:\\s*os)?|edge(?:html)?|firefox|ios|ipados|linux|mac\\s*os|(?:microsoft|ms)\\s*edge|music|office|safari|support(?:assist)?|teams|ubuntu|webkit|windows|workspace)";
 const desktopPeripheralSource =
@@ -78,23 +91,6 @@ const nonDesktopProductDescriptionPattern = new RegExp(
   "i",
 );
 const identityNegationPattern = /\b(?:not|never|without|no(?!\.))\b/i;
-const genericDesktopWords = new Set([
-  "desktop",
-  "laptop",
-  "computer",
-  "chromebook",
-  "chromeos",
-  "hardware",
-  "machine",
-  "pc",
-  "device",
-  "model",
-  "workstation",
-  "windows",
-  "macos",
-  "linux",
-  "ubuntu",
-]);
 const genericDesktopOperatingSystemWords = new Set([
   "build",
   "computer",
@@ -198,27 +194,19 @@ function isConcreteDesktopDeviceDescription(value) {
   if (
     typeof normalized !== "string" ||
     explicitDesktopPlaceholderPattern.test(normalized) ||
+    desktopEvidenceDocumentPattern.test(normalized) ||
     (!isKnownEdgeHardware && nonDesktopProductDescriptionPattern.test(normalized))
   ) {
     return false;
   }
   if (macDeviceFamilyPattern.test(normalized)) return isMacDeviceDescription(normalized);
-  const words = [...normalized.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)];
-  const identityWords = words.filter(([word]) => !genericDesktopWords.has(word.toLowerCase()));
-  const numericIdentifier = /\d/.exec(normalized);
-  const modelToken = identityWords.find(
-    ([word]) => /^[A-Z]{2,}$/.test(word) || /^[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]*)+$/.test(word),
-  );
-  const knownFamily = knownUnnumberedDesktopFamilyPattern.exec(normalized);
-  const identity = knownFamily ?? modelToken ?? numericIdentifier;
-  const hasModelIdentity =
-    knownFamily !== null ||
-    (modelToken !== undefined && identityWords.length >= 2) ||
-    (numericIdentifier !== null && identityWords.length >= 1);
+  const knownFamily =
+    knownUnnumberedDesktopFamilyPattern.exec(normalized) ??
+    knownNumberedDesktopFamilyPattern.exec(normalized) ??
+    knownStructuredDesktopFamilyPattern.exec(normalized) ??
+    knownDesktopEdgeHardwarePattern.exec(normalized);
   return (
-    hasModelIdentity &&
-    identity !== null &&
-    !identityNegationPattern.test(normalized.slice(0, identity.index))
+    knownFamily !== null && !identityNegationPattern.test(normalized.slice(0, knownFamily.index))
   );
 }
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
@@ -231,14 +219,42 @@ const nonAndroidFamilyPattern =
   /(?:iPhones?|iPads?|\bApple\b|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|\b(?:Android|iOS|iPadOS|Windows|macOS|Linux)\b)/i;
 const browserOnlyDevicePattern =
   /^(?:(?:Google|Microsoft|Mozilla|Apple|Mobile)\s+)?(?:Safari|Chrome|Chromium|Firefox|Edge|WebKit|Mozilla)(?:$|[\s/-].*)/i;
-const knownAndroidManufacturerPattern =
-  /^(?:Acer|ASUS|Fairphone|Google|Honor|HTC|Huawei|Lenovo|LG|Microsoft|Motorola|Nokia|Nothing|Nubia|OnePlus|OPPO|POCO|realme|Samsung|Sony|TCL|vivo|Xiaomi|ZTE)\b/i;
 const knownUnnumberedAndroidModelPattern =
   /^(?:(?:Google\s+)?Pixel\s+(?:Fold|Tablet)|Samsung\s+Galaxy\s+Fold|OnePlus\s+Open|Microsoft\s+Surface\s+Duo|Motorola\s+Razr\+?)$/i;
 const nonMobileAndroidDescriptionPattern =
   /\b(?:account|adapter|aspire|audit|book|browser|buds?|camera|case|charger|checklist|chromebook|cover|desktop|display|dock|documentation|ear(?:buds?)?|fit|gear|gram|headphones?|headset|hub|ideapad|keyboard|laptop|magicbook|matebook|monitor|mouse|nest|office|pen|pixelbook|printer|projector|redmibook|release|report|ring|router|scanner|sleeve|speaker|stand|strix|support|swift|tag|television|thinkbook|thinkcentre|thinkpad|travelmate|tuf|tv|ultrapc|vaio|vivobook|watch|wearable|workspace|zenbook|zephyrus)\d*[A-Za-z]*\b|\b[A-Za-z]+Book\d*[A-Za-z]*\b|\bSurface\s+(?:Laptop|Pro|Studio)\b|\bYoga\b(?!\s+Tab\b)|\bROG\b(?!\s+Phone\b)/i;
 const knownAndroidModelCodePattern =
-  /^(?:(?:Samsung\s+)?SM-[A-Z0-9]*\d[A-Z0-9]*(?:\/[A-Z0-9]+)?|(?:Sony\s+)?XQ-[A-Z0-9]*\d[A-Z0-9]*(?:\/[A-Z0-9]+)?|(?:(?:OPPO|OnePlus)\s+)?CPH\d+[A-Z0-9]*|(?:Motorola\s+)?XT\d+[A-Z0-9-]*|(?:Nokia\s+)?TA-\d+[A-Z0-9-]*)$/i;
+  /^(?:(?:Samsung\s+)?SM-[A-Z]\d{3}[A-Z0-9]{0,2}(?:\/[A-Z]{2,3})?|(?:Sony\s+)?XQ-[A-Z]{2}\d{2}(?:\/[A-Z]{2})?|(?:(?:OPPO|OnePlus)\s+)?CPH\d{4}|(?:Motorola\s+)?XT\d{4}(?:-\d{1,2})?|(?:Nokia\s+)?TA-\d{4})$/i;
+const numberedAndroidQualifierSource =
+  "(?:\\s+(?:5G|Edge|FE\\+?|Fold|Lite|Max|Neo|Plus|Pro|Pro\\+|Pro XL|Ultra)){0,2}";
+const knownNumberedAndroidModelPattern = new RegExp(
+  `^(?:(?:Google\\s+)?Pixel\\s+\\d{1,2}[A-Za-z]?${numberedAndroidQualifierSource}|` +
+    `Fairphone\\s+\\d+(?:\\.\\d+)?|Nothing\\s+Phone\\s*(?:\\d+[A-Za-z]?|\\(\\d+[A-Za-z]?\\))${numberedAndroidQualifierSource}|` +
+    `Nokia\\s+\\d+(?:\\.\\d+)?${numberedAndroidQualifierSource}|` +
+    `Samsung\\s+Galaxy\\s+(?:S\\d{1,3}\\+?|[AMF]\\d{1,3}|Note\\s*\\d{1,3}|XCover\\s*\\d{1,3}|Z\\s+(?:Fold|Flip)\\s*\\d{1,2}|Tab\\s+[A-Z]\\d{1,2}\\+?)${numberedAndroidQualifierSource}|` +
+    `Motorola\\s+(?:(?:Edge|Razr\\+?)\\s+\\d+${numberedAndroidQualifierSource}|Moto\\s+(?:[A-Z]\\s*\\d+|G(?:\\s+(?:Power|Stylus)(?:\\s+5G)?)?\\s+\\d+)${numberedAndroidQualifierSource})|` +
+    `Sony\\s+Xperia\\s+(?:\\d{1,2}(?:\\s+[IVX]+)?|[A-Z]\\d+[A-Za-z0-9-]*)${numberedAndroidQualifierSource}|` +
+    `(?:Xiaomi\\s+)?Redmi\\s+Note\\s+\\d{1,3}[A-Za-z]?${numberedAndroidQualifierSource}|` +
+    `Xiaomi\\s+(?:(?:Redmi\\s+)?\\d{1,3}[A-Za-z]?|Pad\\s+\\d{1,2})${numberedAndroidQualifierSource}|` +
+    `OPPO\\s+(?:A\\d+|Find\\s+[A-Z]?\\d+|Reno\\s*\\d+)${numberedAndroidQualifierSource}|` +
+    `OnePlus\\s+(?:\\d{1,2}[A-Za-z]?|Nord\\s+(?:CE\\s*)?[A-Z]?\\d{1,2}|Pad\\s+\\d{1,2})${numberedAndroidQualifierSource}|` +
+    `Microsoft\\s+Surface\\s+Duo\\s+\\d+${numberedAndroidQualifierSource}|` +
+    `Lenovo\\s+(?:(?:Yoga\\s+)?Tab\\s+[A-Z]?\\d+|Legion\\s+[A-Z]\\d+)${numberedAndroidQualifierSource}|` +
+    `ASUS\\s+(?:ROG\\s+Phone|Zenfone)\\s+\\d+${numberedAndroidQualifierSource}|` +
+    `Honor\\s+(?:Magic\\s*V?\\d+|X\\s*\\d+[A-Za-z]?|\\d+)${numberedAndroidQualifierSource}|` +
+    `Huawei\\s+(?:Mate\\s+(?:X\\s*)?\\d+[A-Za-z]?|Nova\\s+\\d+[A-Za-z]?|P\\s*\\d+[A-Za-z]?)${numberedAndroidQualifierSource}|` +
+    `realme\\s+(?:(?:GT\\s+)?\\d+|(?:C|P)\\s*\\d+|Note\\s+\\d+)${numberedAndroidQualifierSource}|` +
+    `Nubia\\s+(?:Flip|RedMagic\\s+\\d+|Z\\s*\\d+)${numberedAndroidQualifierSource}|` +
+    `POCO\\s+[CFMX]\\s*\\d+${numberedAndroidQualifierSource}|` +
+    `vivo\\s+[XVY]\\s*\\d+${numberedAndroidQualifierSource}|` +
+    `ZTE\\s+(?:A\\s*\\d+|Axon\\s+\\d+|Blade\\s+[A-Z]\\d+)${numberedAndroidQualifierSource}|` +
+    `TCL\\s+\\d+(?:\\s+XL)?(?:\\s+NXTPAPER)?${numberedAndroidQualifierSource}|` +
+    `HTC\\s+U\\s*\\d+${numberedAndroidQualifierSource}|` +
+    `LG\\s+[GV]\\s*\\d+(?:\\s+ThinQ)?${numberedAndroidQualifierSource}|` +
+    `Motorola\\s+[GE]\\s*\\d+${numberedAndroidQualifierSource}|` +
+    `Samsung\\s+[AMFS]\\s*\\d+${numberedAndroidQualifierSource})$`,
+  "i",
+);
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -297,20 +313,91 @@ const nonCompletionModifierSource =
 const completionModifierTokenSource =
   "(?:actually|already|both|carefully|completely|conclusively|correctly|directly|eventually|explicitly|finally|fully|independently|later|locally|manually|now|only|previously|properly|really|remotely|repeatedly|separately|simply|subsequently|successfully|thoroughly|today|ultimately|yesterday)";
 const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
-const passiveReportingVerbSource = "(?:alleged|claimed|hoped|meant|purported|reported|said)";
+const reportingBaseVerbSource =
+  "(?:allege|announce|assert|assume|believe|claim|conclude|confirm|declare|document|hope|indicate|insist|maintain|mean|note|purport|report|say|state|write)";
+const reportingVerbSource =
+  "(?:alleg(?:ed|es|ing)|announc(?:ed|es|ing)|assert(?:ed|s|ing)|assum(?:ed|es|ing)|believ(?:ed|es|ing)|claim(?:ed|s|ing)|conclud(?:ed|es|ing)|confirm(?:ed|s|ing)|declar(?:ed|es|ing)|document(?:ed|s|ing)|hop(?:ed|es|ing)|indicat(?:ed|es|ing)|insist(?:ed|s|ing)|maintain(?:ed|s|ing)|mean(?:s|ing)|meant|not(?:ed|es|ing)|purport(?:ed|s|ing)|report(?:ed|s|ing)|say(?:s|ing)|said|stat(?:ed|es|ing)|writ(?:es|ing|ten)|wrote)";
+const reportingContinuationVerbSource =
+  "(?:alleged|announced|asserted|assumed|believed|claimed|concluded|confirmed|declared|documented|hoped|indicated|insisted|maintained|meant|noted|purported|reported|said|stated|wrote)";
+const reportingKnownSubjectSource =
+  "(?:(?:I|we|they|he|she|it|QA|engineering|management|reviewers?|engineers?|testers?|auditors?|maintainers?|authors?|vendors?)|" +
+  "(?:(?:the|a|this)\\s+)?(?:lead|team|group|reviewer|engineer|tester|auditor|maintainer|author|vendor)|" +
+  "(?:QA|engineering)\\s+and\\s+(?:QA|engineering))";
+const reportingGenericSubjectSource =
+  "(?:(?:the|a|this)\\s+)?(?!(?:audit|evidence|note|plan|release|report|result|run|smoke|test)s?\\b)[A-Za-z][A-Za-z0-9_-]*";
+const reportingSubjectSource = `(?:${reportingKnownSubjectSource}|${reportingGenericSubjectSource})`;
+const reportingPerActorSource =
+  `(?:${reportingKnownSubjectSource})` +
+  `(?!\\s+(?:(?:accessibility|smoke|testing)\\s+){0,2}requirements?\\b)`;
+const reportingActorSource =
+  "(?!(?:and|but)\\b)(?:(?:the|a)\\s+)?(?:[A-Za-z][A-Za-z0-9_-]*\\s+){0,4}[A-Za-z][A-Za-z0-9_-]*";
+const reportingPredicateSource =
+  `(?:(?:can|could|did|do|does|has|have|had|is|are|was|were|may|might|should|will|would)\\s+(?:been\\s+)?)?` +
+  `(?:(?:${completionModifierTokenSource}|${nonCompletionModifierSource})\\s+){0,2}` +
+  `(?:${reportingVerbSource}|${reportingBaseVerbSource})` +
+  `(?:\\s+and(?:\\s+later)?\\s+(?:(?:${completionModifierTokenSource}|${nonCompletionModifierSource})\\s+){0,2}(?:${reportingVerbSource}|${reportingBaseVerbSource}))?`;
+const reportingAttributionSource =
+  `(?:${reportingSubjectSource}\\s+${reportingPredicateSource}|` +
+  `according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource})`;
+const reportingAgentBridgeSource =
+  "(?:by\\s+(?:(?:the|a)\\s+)?(?:[A-Za-z][A-Za-z0-9_-]*\\s+){1,4})?";
 const passiveReportingActionBridgeSource =
-  `(?:to\\s+${completionModifierSource}(?:be\\s+${completionModifierSource}|have\\s+${completionModifierSource}been\\s+${completionModifierSource})|` +
+  `${reportingAgentBridgeSource}(?:to\\s+${completionModifierSource}(?:be\\s+${completionModifierSource}|have\\s+${completionModifierSource}(?:been\\s+${completionModifierSource})?)|` +
   `as\\s+${completionModifierSource})`;
-const hasNonEvidenceAction = (value, actionSource, completedCorrectionSource) => {
+const hasNonEvidenceAction = (
+  value,
+  actionSource,
+  completedCorrectionSource,
+  reportedTargetSource,
+) => {
+  const correctionSource =
+    completedCorrectionSource ??
+    `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`;
+  if (reportedTargetSource) {
+    const reportedAttributionBridgeSource =
+      "(?:(?!\\b(?:and|but|however|then|whereas|while|yet)\\b|[.;\\n])[\\s\\S]){0,180}";
+    const postposedAttributionSource =
+      `(?:${reportingActorSource}\\s+${reportingVerbSource}|` +
+      `according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource})`;
+    const inlinePostposedAttributionSource =
+      `(?:according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource}|` +
+      `as\\s+(?:${reportingActorSource}\\s+${reportingVerbSource}|` +
+      `${reportingVerbSource}(?:\\s+by\\s+${reportingActorSource})?))`;
+    const preposedReportedAttributionSource =
+      `(?:\\b${reportingAttributionSource}\\b|` +
+      `(?:^|\\bthen\\b|,)\\s*${reportingContinuationVerbSource}\\b)` +
+      `${reportedAttributionBridgeSource}${reportedTargetSource}`;
+    const postposedReportedAttributionSource =
+      `${reportedTargetSource}${reportedAttributionBridgeSource}` +
+      `(?:(?:,\\s*["'“”]?|[–—]|\\()\\s*(?:as\\s+)?${postposedAttributionSource}|` +
+      `\\s+${inlinePostposedAttributionSource})`;
+    const attribution = new RegExp(
+      `(?:${preposedReportedAttributionSource}|${postposedReportedAttributionSource})`,
+      "i",
+    ).exec(value);
+    if (attribution) {
+      const factualCorrectionBridgeSource = `(?:(?!\\b(?:${reportingVerbSource}|${reportingBaseVerbSource}|according\\s+to|per|no|not|never|without)\\b|[.;\\n])[\\s\\S]){0,120}?`;
+      const factualCorrection = new RegExp(
+        `\\bbut(?:\\s+also)?\\b${factualCorrectionBridgeSource}${correctionSource}`,
+        "i",
+      );
+      const attributionTail = value.slice(attribution.index + attribution[0].length);
+      const correction = factualCorrection.exec(attributionTail);
+      if (!correction) return true;
+      const postposedCorrectionAttribution = new RegExp(
+        `(?:${postposedReportedAttributionSource}|` +
+          `(?:,\\s*["'“”]?|[–—]|\\()\\s*(?:as\\s+)?${postposedAttributionSource})`,
+        "i",
+      );
+      return postposedCorrectionAttribution.test(attributionTail.slice(correction.index));
+    }
+  }
   const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|${passiveReportingVerbSource}\\s+${passiveReportingActionBridgeSource}${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})\\b`,
+    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|${reportingVerbSource}\\s+${passiveReportingActionBridgeSource}${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})(?![A-Za-z0-9_])`,
     "i",
   );
   const match = nonEvidenceAction.exec(value);
   if (!match) return false;
-  const correctionSource =
-    completedCorrectionSource ??
-    `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`;
   const completedCorrection = new RegExp(
     `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${correctionSource}`,
     "i",
@@ -350,7 +437,7 @@ const isConcreteAndroidMobileDevice = (value) => {
   return (
     knownAndroidModelCodePattern.test(device) ||
     knownUnnumberedAndroidModelPattern.test(device) ||
-    (knownAndroidManufacturerPattern.test(device) && /\d/.test(device))
+    knownNumberedAndroidModelPattern.test(device)
   );
 };
 const hasRequiredZoom = (value) => {
@@ -358,7 +445,9 @@ const hasRequiredZoom = (value) => {
   const affirmativeZoomAction = "(?:tested|verified|checked|completed|passed)";
   const levelSource = (level) => `\\b${level}%`;
   const coordinatedLevelsSource = `(?:${levelSource(200)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(400)}|${levelSource(400)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(200)})`;
-  const followingLevelBoundarySource = `(?=\\s*(?:$|(?:,\\s*(?:and\\s+)?|(?:and|&)\\s+)(?:${levelSource(200)}|${levelSource(400)})))`;
+  const factualObservationTailSource =
+    "(?:and\\s+(?:(?:we|QA|the\\s+team)\\s+)?(?:noted|confirmed)\\b|per\\b)";
+  const followingLevelBoundarySource = `(?=\\s*(?:$|(?:,\\s*(?:and\\s+)?|(?:and|&)\\s+)(?:${levelSource(200)}|${levelSource(400)})|${factualObservationTailSource}))`;
   const completionTailSource = `(?:\\s+${completionModifierTokenSource}){0,2}${followingLevelBoundarySource}`;
   const actionBeforeTargetSource = `\\b${affirmativeZoomAction}\\b(?:\\s+(?:reflow|zoom|layout|content|testing|verification|checks?))?(?:\\s+(?:at|with|on|under))?\\s+`;
   const actionAfterTargetSource = `(?:\\s+|\\s*,\\s*)(?:(?:reflow|zoom|layout|content|testing|verification|checks?)\\s+)?(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${affirmativeZoomAction}\\b${completionTailSource}`;
@@ -370,10 +459,18 @@ const hasRequiredZoom = (value) => {
       "i",
     );
     const correctedEvidence = new RegExp(`${targetSource}${correctedActionAfterTargetSource}`, "i");
+    const targetBoundCorrection =
+      `(?:${targetSource}${actionAfterTargetSource}|` +
+      `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${affirmativeZoomAction}\\b)`;
     return evidenceClauses.some(
       (clause) =>
         (directEvidence.test(clause) || correctedEvidence.test(clause)) &&
-        !hasNonEvidenceAction(clause, affirmativeZoomAction),
+        !hasNonEvidenceAction(
+          clause,
+          affirmativeZoomAction,
+          targetBoundCorrection,
+          `(?:(?:the|both)\\s+)?(?:${targetSource}|${coordinatedLevelsSource})`,
+        ),
     );
   };
   const hasSharedLevelEvidence = hasTargetEvidence(coordinatedLevelsSource, true);
@@ -409,7 +506,7 @@ const hasEnabledContrast = (value) => {
   const anaphoricCompletionTail = `(?=(?:\\s+${completionModifierTokenSource}){0,2}\\s*(?:$|(?:during|throughout|for)\\s+(?:(?:the|this)\\s+)?(?:test|testing|smoke|audit|verification)\\b))`;
   const targetBoundCorrection = `(?:${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${completionModifierSource}(?:enabled|active)\\b${anaphoricCompletionTail}|${completionModifierSource}(?:enabled|activated|turned\\s+on)\\b\\s+(?:(?:the|macOS)\\s+){0,2}${target}\\b|(?:the\\s+)?${target}\\b\\s+${completionModifierSource}(?:(?:is|was|remained|stayed|kept)\\s+)?${completionModifierSource}(?:enabled|active)\\b)`;
   return normalized
-    .split(/[.;\n]+|,(?!\s*(?:but|and\s+then|then)\b)/i)
+    .split(/[.;\n]+/)
     .some(
       (clause) =>
         positive.test(clause) &&
@@ -418,6 +515,7 @@ const hasEnabledContrast = (value) => {
           clause,
           "(?:enabled|active|activated|turned\\s+on)",
           targetBoundCorrection,
+          `(?:(?:the|this)\\s+)?${target}(?:\\s+(?:setting|mode))?`,
         ),
     );
 };
@@ -551,7 +649,7 @@ const hasPhysicalTouchClaim = (value, device) => {
     ),
   ];
   let hasPhysicalEvidence = false;
-  for (const clause of normalized.split(/(?<![A-Za-z0-9])\.|\.(?![A-Za-z0-9])|[;:\n]+/)) {
+  for (const clause of normalized.split(/(?<![A-Za-z0-9])\.|\.(?![A-Za-z0-9])|[;\n]+/)) {
     const semanticClause = clause.replace(
       /\bnot\s+(?:only|just|merely|simply)\b(?=[^;,:\n]{0,96}\bbut(?:\s+also)?\b)/gi,
       "",
@@ -593,7 +691,13 @@ const hasPhysicalTouchClaim = (value, device) => {
           contextualPositive.test(segment));
       const hasInvalidEvidenceTiming =
         hasEvidenceCandidate &&
-        (hasNonEvidenceAction(segment, negativeAction) || futureEvidenceTiming.test(segment));
+        (hasNonEvidenceAction(
+          segment,
+          negativeAction,
+          undefined,
+          `(?:(?:the|this)\\s+)?(?:${actualTestSubjectSource}|${boundedTarget})`,
+        ) ||
+          futureEvidenceTiming.test(segment));
       if (
         hasInvalidEvidenceTiming ||
         (absentTestContext.test(segment) && !hasCorrectedTerminalState)
