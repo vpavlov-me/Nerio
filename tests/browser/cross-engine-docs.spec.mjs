@@ -201,6 +201,7 @@ test("keeps Collapsible and Accordion disclosure behavior portable", async ({
     ),
   ).toBeLessThanOrEqual(1);
 
+  await page.waitForLoadState("networkidle");
   await page.goto("/docs/components/accordion");
   const billing = page.getByRole("button", { name: "How does billing work?" });
   const members = page.getByRole("button", { name: "Can I invite collaborators?" });
@@ -219,6 +220,7 @@ test("keeps Collapsible and Accordion disclosure behavior portable", async ({
     ),
   ).toBeLessThanOrEqual(1);
 
+  await page.waitForLoadState("networkidle");
   await page.goto("/visual-test/disclosure");
   const disabledDisclosure = page.getByRole("button", { name: "Managed by your organization" });
   const disabledBackground = await disabledDisclosure.evaluate(

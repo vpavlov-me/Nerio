@@ -267,15 +267,19 @@ const normalizeContractedNegations = (value) =>
   typeof value === "string"
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
+const nonCompletionModifierSource =
+  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|only|ostensibly|partially|partly|perhaps|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively)";
+const completionModifierTokenSource = `(?!(?:${nonCompletionModifierSource})\\b)(?:[A-Za-z]+ly|already|both|later|now|today|yesterday)`;
+const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
 const hasNonEvidenceAction = (value, actionSource) => {
   const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
+    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})\\b`,
     "i",
   );
   const match = nonEvidenceAction.exec(value);
   if (!match) return false;
   const completedCorrection = new RegExp(
-    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+(?:(?:actually|already|finally|later|subsequently|today)\\s+){0,2}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${actionSource}\\b`,
+    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`,
     "i",
   );
   return !completedCorrection.test(value.slice(match.index + match[0].length));
@@ -320,19 +324,33 @@ const isConcreteAndroidMobileDevice = (value) => {
 const hasRequiredZoom = (value) => {
   const normalized = normalizeContractedNegations(value);
   const affirmativeZoomAction = "(?:tested|verified|checked|completed|passed)";
+  const levelSource = (level) => `\\b${level}%`;
+  const coordinatedLevelsSource = `(?:${levelSource(200)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(400)}|${levelSource(400)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(200)})`;
+  const followingLevelBoundarySource = `(?=\\s*(?:$|(?:,\\s*(?:and\\s+)?|(?:and|&)\\s+)(?:${levelSource(200)}|${levelSource(400)})))`;
+  const completionTailSource = `(?:\\s+${completionModifierTokenSource}){0,2}${followingLevelBoundarySource}`;
+  const actionBeforeTargetSource = `\\b${affirmativeZoomAction}\\b(?:\\s+(?:reflow|zoom|layout|content|testing|verification|checks?))?(?:\\s+(?:at|with|on|under))?\\s+`;
+  const actionAfterTargetSource = `(?:\\s+|\\s*,\\s*)(?:(?:reflow|zoom|layout|content|testing|verification|checks?)\\s+)?(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${affirmativeZoomAction}\\b${completionTailSource}`;
+  const correctedActionAfterTargetSource = `[^.;\\n]{0,56}\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${affirmativeZoomAction}\\b${completionTailSource}`;
+  const evidenceClauses = typeof normalized === "string" ? normalized.split(/[.;\n]+/) : [];
+  const hasTargetEvidence = (targetSource, requireTargetBoundary = false) => {
+    const directEvidence = new RegExp(
+      `(?:${actionBeforeTargetSource}${targetSource}${requireTargetBoundary ? followingLevelBoundarySource : ""}|${targetSource}${actionAfterTargetSource})`,
+      "i",
+    );
+    const correctedEvidence = new RegExp(`${targetSource}${correctedActionAfterTargetSource}`, "i");
+    return evidenceClauses.some(
+      (clause) =>
+        (directEvidence.test(clause) || correctedEvidence.test(clause)) &&
+        !hasNonEvidenceAction(clause, affirmativeZoomAction),
+    );
+  };
+  const hasSharedLevelEvidence = hasTargetEvidence(coordinatedLevelsSource, true);
   return (
     typeof normalized === "string" &&
     /\b200%/.test(normalized) &&
     /\b400%/.test(normalized) &&
-    normalized
-      .split(/[.;\n]+/)
-      .some(
-        (clause) =>
-          /\b200%/.test(clause) &&
-          /\b400%/.test(clause) &&
-          new RegExp(`\\b${affirmativeZoomAction}\\b`, "i").test(clause) &&
-          !hasNonEvidenceAction(clause, affirmativeZoomAction),
-      ) &&
+    (hasSharedLevelEvidence ||
+      (hasTargetEvidence(levelSource(200)) && hasTargetEvidence(levelSource(400)))) &&
     !/\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b[^.;\n]{0,40}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,40}\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b/i.test(
       normalized,
     ) &&

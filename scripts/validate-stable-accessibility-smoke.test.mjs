@@ -566,6 +566,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Touch interaction is going to be tested on a physical iPhone 15 Pro.",
     "Touch interaction should have been tested on a physical iPhone 15 Pro.",
     "Touch interaction was supposed to be tested on a physical iPhone 15 Pro.",
+    "Touch interaction was intended to be tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -669,6 +670,7 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "High contrast is going to be enabled during the test.",
     "High contrast should have been enabled during the test.",
     "High contrast was supposed to be enabled during the test.",
+    "High contrast was intended to be enabled during the test.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -763,6 +765,7 @@ test("strict validation requires affirmative zoom testing language", () => {
     "200% and 400% are going to be tested",
     "200% and 400% should have been tested",
     "200% and 400% were supposed to be tested",
+    "200% and 400% were intended to be tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
@@ -770,6 +773,53 @@ test("strict validation requires affirmative zoom testing language", () => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.notEqual(result.status, 0, zoom);
       assert.match(result.stderr, /both 200% and 400% without negation/);
+    });
+  }
+});
+
+test("strict validation binds affirmative evidence to both required zoom levels", () => {
+  for (const zoom of [
+    "200% was planned, but 400% was tested",
+    "200% remained pending, while 400% was verified",
+    "200% remained pending and the unrelated keyboard check passed; 400% was tested",
+    "200% was planned, but tested at 400%",
+    "400% was planned, but verified at 200%",
+    "200% remained pending, but passed the unrelated keyboard check; 400% was verified",
+    "200% and 400% were planned, but ultimately tested at 400%",
+    "200% passed the unrelated keyboard check; 400% was verified",
+    "200% and 400% were possibly tested",
+    "200% and 400% were only partially tested",
+    "200% and 400% were barely tested",
+    "200% and 400% were hardly tested",
+    "200% and 400% were incompletely tested",
+    "Tested at 200%, and 400% was planned",
+    "Verified at 400%, and 200% remained pending",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, zoom);
+      assert.match(result.stderr, /both 200% and 400% without negation/);
+    });
+  }
+});
+
+test("strict validation accepts completed evidence bound to both zoom levels", () => {
+  for (const zoom of [
+    "200% was tested and 400% was verified",
+    "200% was planned, but ultimately tested; 400% was verified",
+    "200% and 400% were both tested",
+    "200% and 400% were successfully tested",
+    "200% and 400% were thoroughly tested",
+    "At 200% and 400%, testing passed",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${zoom}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
     });
   }
 });
