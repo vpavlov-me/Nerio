@@ -72,25 +72,105 @@ const macDeviceFamilyPattern = new RegExp(
 );
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
-const knownUnnumberedDesktopFamilyPattern =
-  /^(?:Acer\s+Swift(?:\s+(?:Edge|Go))?|ASUS\s+(?:Zenbook|Vivobook)|Dell\s+(?:Latitude|XPS)|Framework\s+Laptop|HP\s+(?:EliteBook|ProBook)|Huawei\s+MateBook\s+X\s+Pro|Lenovo\s+(?:ThinkPad|Yoga)|LG\s+Gram|Microsoft\s+Surface\s+(?:Book|Laptop|Pro)|Purism\s+Librem\s+Mini|Razer\s+(?:Blade|Book)|Samsung\s+Galaxy\s+Book(?:\s+(?:Edge|Pro))?|System76\s+Lemur\s+Pro|TUXEDO\s+InfinityBook)$/i;
-const knownDesktopEdgeHardwarePattern =
-  /^(?:Acer\s+Swift\s+Edge(?:\s+\d+(?:\.\d+)?)?|Samsung\s+Galaxy\s+Book\s*\d*\s+Edge(?:\s+\d+(?:\.\d+)?)?)$/i;
-const knownNumberedDesktopFamilyPattern =
-  /^(?:Acer\s+(?:Aspire|Swift(?:\s+(?:Edge|Go))?)|ASUS\s+(?:Zenbook|Vivobook)(?:\s+[A-Z])?|Dell\s+(?:Inspiron|Latitude|XPS)|Framework\s+Laptop|Gigabyte\s+Aero|HP\s+(?:EliteBook|Pavilion|ProBook)|Lenovo\s+Yoga|LG\s+Gram|Microsoft\s+Surface\s+(?:Book|Laptop(?:\s+Studio)?|Pro)|MSI\s+Prestige|Purism\s+Librem\s+Mini|Razer\s+(?:Blade|Book))\s+\d+(?:\.\d+)?(?:\s+(?:2-in-1|G\d+|Gen\s+\d+|OLED|Plus|Pro|Ultra)){0,2}$/i;
-const knownStructuredDesktopFamilyPattern =
-  /^(?:Acer\s+Chromebook\s+\d{3,4}(?:\s+[A-Z]{1,3})?|ASUS\s+ROG\s+(?:Strix|Zephyrus)\s+[A-Z]\d+|HP\s+(?:EliteBook|ProBook)\s+x360\s+\d{3,4}\s+G\d+|HP\s+EliteDesk\s+\d{3,4}(?:\s+[A-Z]\d+)?(?:\s+(?:Desktop\s+Mini\s+PC|asset\s+No\.\s+\d+))?|Intel\s+NUC\s+\d{1,2}(?:\s+Pro)?|Lenovo\s+ThinkPad\s+[A-Z]\d{1,2}(?:\s+[A-Za-z]+){0,2}(?:\s+Gen\s+\d+)?|Samsung\s+Galaxy\s+Book\s*\d+(?:\s+(?:360|Edge|Pro|Ultra)(?:\s+\d+(?:\.\d+)?)?)?|TUXEDO\s+InfinityBook(?:\s+Pro)?\s+\d+(?:\.\d+)?)$/i;
 const desktopEvidenceDocumentPattern =
   /\b(?:accessibility|audit|checklist|compliance|documentation|evidence|guide|manual|matrix|release|report|roadmap|worksheet)\b/i;
 const desktopSoftwareProductSource =
-  "(?:account|android|browser|chrome(?:\\s*os)?|chromium(?:\\s*os)?|edge(?:html)?|firefox|ios|ipados|linux|mac\\s*os|(?:microsoft|ms)\\s*edge|music|office|safari|support(?:assist)?|teams|ubuntu|webkit|windows|workspace)";
+  "(?:account|android|browser|calendar|chrome(?:\\s*os)?|chromium(?:\\s*os)?|edgehtml|firefox|ios|ipados|linux|mac\\s*os|(?:microsoft|ms)\\s*edge|music|office|safari|support(?:assist)?|teams|ubuntu|webkit|windows|workspace)";
 const desktopPeripheralSource =
-  "(?:adapter|camera|case|charger|cover|display|dock|headset|hub|keyboard|monitor|mouse|phone|printer|router|scanner|sleeve|speaker|stand|tablet|television|watch)";
+  "(?:adapter|camera|case|charger|console|cover|display|dock|headset|hub|keyboard|monitor|mouse|phone|printer|projector|router|scanner|server|sleeve|speaker|stand|tablet|television|watch)";
 const nonDesktopProductDescriptionPattern = new RegExp(
   `\\b(?:${desktopSoftwareProductSource}|${desktopPeripheralSource})\\b`,
   "i",
 );
+const browserOnlyDesktopDevicePattern =
+  /^(?:(?:desktop|google|os)\s+)?(?:edge|edgehtml)(?:\s+\d+(?:\.\d+)*)?$/i;
+const desktopNonIdentityPattern =
+  /\b(?:abc\d*|chair|conference|fake|fixture|kitchen|mock|qa\d*|room|widget)\b/i;
+const desktopDeviceNegationPattern =
+  /\b(?:absent|former|free|lacks?|missing|neither|never|nil|no|non|none|nor|not|unavailable|without)\b/i;
+const desktopMissingValuePattern = /^(?:n\s*a|none|nil|null|pending|tba|tbd|unset)$/i;
+const desktopForbiddenCompoundPattern =
+  /(?:test|sample|generic|unknown|placeholder|example|qa|widget|mock|fake)(?:device|laptop|pc|machine|notebook|book|computer|desktop|workstation)|(?:accessibility|audit|compliance|evidence|release|roadmap|user)(?:checklist|guide|item|matrix|notes?|record|report)|(?:(?:microsoftoffice|googleworkspace|applemusic|googlecalendar|chrome(?:os)?browser|chromiumbrowser|firefoxbrowser|edgebrowser|safaribrowser|windows(?:pc|laptop)|androidlaptop|desktopbrowser|edgehtml|webkit)(?=\d|$)\d*)|(?:(?:dell|gaming|desktop)monitor(?:[a-z]?\d[a-z0-9]*)?|hpprinter\d[a-z0-9]*|usbkeyboard[a-z]?\d[a-z0-9]*|printermodel\d[a-z0-9]*)/i;
+const desktopCompactSoftwareOnlyPattern = /^(?:microsoft(?:365)?)?copilot[a-z0-9]*$/i;
+const desktopCopilotTokenPattern = /\bcopilot\b/i;
+const desktopCopilotPcPattern = /\bcopilot\s+pc\b/i;
+const desktopCopilotSoftwarePrefixPattern = /\b(?:azure|dynamics|github|security)\b/i;
+const desktopCompactMobileOsPattern = /^(?:ios|ipados)\d*$/i;
+const genericDesktopDeviceWords = new Set([
+  "a",
+  "actual",
+  "an",
+  "available",
+  "chromebook",
+  "company",
+  "computer",
+  "configured",
+  "corporate",
+  "current",
+  "default",
+  "development",
+  "desktop",
+  "device",
+  "environment",
+  "hardware",
+  "home",
+  "laptop",
+  "local",
+  "main",
+  "machine",
+  "my",
+  "number",
+  "office",
+  "operating",
+  "other",
+  "our",
+  "pc",
+  "personal",
+  "physical",
+  "platform",
+  "primary",
+  "production",
+  "real",
+  "some",
+  "standard",
+  "system",
+  "that",
+  "the",
+  "their",
+  "this",
+  "those",
+  "user",
+  "work",
+  "workstation",
+  "your",
+  "acer",
+  "asus",
+  "dell",
+  "google",
+  "hp",
+  "huawei",
+  "lenovo",
+  "lg",
+  "microsoft",
+  "msi",
+  "panasonic",
+  "razer",
+  "samsung",
+  "sony",
+]);
 const identityNegationPattern = /\b(?:not|never|without|no(?!\.))\b/i;
+const normalizeDesktopDeviceVocabulary = (value) =>
+  typeof value === "string"
+    ? value
+        .replace(/\bNo\.\s*(?=\d)/gi, "number ")
+        .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+        .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+        .replace(/([A-Za-z])(\d)/g, "$1 $2")
+        .replace(/(\d)([A-Za-z])/g, "$1 $2")
+        .replace(/[_./()+,-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+    : value;
 const genericDesktopOperatingSystemWords = new Set([
   "build",
   "computer",
@@ -189,24 +269,55 @@ function isMacDeviceDescription(value) {
 }
 function isConcreteDesktopDeviceDescription(value) {
   const normalized = normalizeContractedNegations(value);
-  const isKnownEdgeHardware =
-    typeof normalized === "string" && knownDesktopEdgeHardwarePattern.test(normalized);
   if (
     typeof normalized !== "string" ||
-    explicitDesktopPlaceholderPattern.test(normalized) ||
-    desktopEvidenceDocumentPattern.test(normalized) ||
-    (!isKnownEdgeHardware && nonDesktopProductDescriptionPattern.test(normalized))
+    !/^[A-Za-z0-9][A-Za-z0-9 ,.()+_/-]{1,79}$/.test(normalized)
   ) {
     return false;
   }
   if (macDeviceFamilyPattern.test(normalized)) return isMacDeviceDescription(normalized);
-  const knownFamily =
-    knownUnnumberedDesktopFamilyPattern.exec(normalized) ??
-    knownNumberedDesktopFamilyPattern.exec(normalized) ??
-    knownStructuredDesktopFamilyPattern.exec(normalized) ??
-    knownDesktopEdgeHardwarePattern.exec(normalized);
+  const vocabulary = normalizeDesktopDeviceVocabulary(normalized);
+  const compactVocabulary = vocabulary.replace(/\s+/g, "").toLowerCase();
+  const copilot = desktopCopilotTokenPattern.exec(vocabulary);
+  const copilotHardwarePrefixWords =
+    copilot === null
+      ? []
+      : (vocabulary.slice(0, copilot.index).match(/[A-Za-z][A-Za-z0-9+]*/g) ?? []);
+  const copilotHardwarePrefix = copilot === null ? "" : vocabulary.slice(0, copilot.index);
+  const isCopilotPcHardware =
+    copilot !== null &&
+    desktopCopilotPcPattern.test(vocabulary) &&
+    !desktopCopilotSoftwarePrefixPattern.test(copilotHardwarePrefix) &&
+    copilotHardwarePrefixWords.some((word) => !genericDesktopDeviceWords.has(word.toLowerCase()));
+  if (
+    explicitDesktopPlaceholderPattern.test(vocabulary) ||
+    explicitDesktopPlaceholderPattern.test(normalized) ||
+    desktopEvidenceDocumentPattern.test(vocabulary) ||
+    desktopEvidenceDocumentPattern.test(normalized) ||
+    desktopNonIdentityPattern.test(vocabulary) ||
+    desktopNonIdentityPattern.test(normalized) ||
+    nonDesktopProductDescriptionPattern.test(vocabulary) ||
+    nonDesktopProductDescriptionPattern.test(normalized) ||
+    browserOnlyDesktopDevicePattern.test(normalized) ||
+    browserOnlyDesktopDevicePattern.test(vocabulary) ||
+    desktopDeviceNegationPattern.test(vocabulary) ||
+    desktopMissingValuePattern.test(vocabulary) ||
+    desktopForbiddenCompoundPattern.test(compactVocabulary) ||
+    (copilot !== null && !isCopilotPcHardware) ||
+    desktopCompactSoftwareOnlyPattern.test(compactVocabulary) ||
+    desktopCompactMobileOsPattern.test(compactVocabulary)
+  ) {
+    return false;
+  }
+  const identityWords = vocabulary.match(/[A-Za-z][A-Za-z0-9+]*/g) ?? [];
+  const uppercaseCount = (normalized.match(/[A-Z]/g) ?? []).length;
+  const hasDescriptionStructure =
+    /\d/.test(normalized) || /[\s_./()+,-]/.test(normalized) || uppercaseCount >= 2;
+  // The release contract requires a maintained desktop browser, not a closed hardware catalog.
+  // Keep the device label non-placeholder while allowing real and future product families.
   return (
-    knownFamily !== null && !identityNegationPattern.test(normalized.slice(0, knownFamily.index))
+    hasDescriptionStructure &&
+    identityWords.some((word) => !genericDesktopDeviceWords.has(word.toLowerCase()))
   );
 }
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
@@ -490,34 +601,6 @@ const hasRequiredZoom = (value) => {
       normalized,
     )
   );
-};
-const hasEnabledContrast = (value) => {
-  const normalized = normalizeContractedNegations(value);
-  if (typeof normalized !== "string") return false;
-  const target = "(?:high|increased|increase) contrast";
-  const positive = new RegExp(
-    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|remained|stayed|kept)\\s+)?(?:enabled|active)\\b|\\b(?:enabled|activated|turned\\s+on)\\b[^.;,\\n]{0,40}\\b${target}\\b)`,
-    "i",
-  );
-  const negative = new RegExp(
-    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|disabled|off|unavailable|absent|failed|impossible)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|remained)\\s+)?(?:enabled|active|available)\\b|\\b(?:not|never|without)\\s+(?:(?:using|having|enabling|activating)\\s+)?(?:the\\s+)?${target}\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
-    "i",
-  );
-  const anaphoricCompletionTail = `(?=(?:\\s+${completionModifierTokenSource}){0,2}\\s*(?:$|(?:during|throughout|for)\\s+(?:(?:the|this)\\s+)?(?:test|testing|smoke|audit|verification)\\b))`;
-  const targetBoundCorrection = `(?:${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${completionModifierSource}(?:enabled|active)\\b${anaphoricCompletionTail}|${completionModifierSource}(?:enabled|activated|turned\\s+on)\\b\\s+(?:(?:the|macOS)\\s+){0,2}${target}\\b|(?:the\\s+)?${target}\\b\\s+${completionModifierSource}(?:(?:is|was|remained|stayed|kept)\\s+)?${completionModifierSource}(?:enabled|active)\\b)`;
-  return normalized
-    .split(/[.;\n]+/)
-    .some(
-      (clause) =>
-        positive.test(clause) &&
-        !negative.test(clause) &&
-        !hasNonEvidenceAction(
-          clause,
-          "(?:enabled|active|activated|turned\\s+on)",
-          targetBoundCorrection,
-          `(?:(?:the|this)\\s+)?${target}(?:\\s+(?:setting|mode))?`,
-        ),
-    );
 };
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const asFlexibleRegexPhrase = (value) => value.trim().split(/\s+/).map(escapeRegExp).join("\\s+");
@@ -886,6 +969,15 @@ for (const [index, environment] of environments.entries()) {
       errors.push(`${prefix}.${field} is required when complete.`);
     }
   }
+  if (
+    !complete &&
+    environment?.id === "zoom-reflow-contrast" &&
+    environment?.increasedOrHighContrastEnabled !== null
+  ) {
+    errors.push(
+      `${prefix}.increasedOrHighContrastEnabled must remain null while evidence is pending.`,
+    );
+  }
   if (complete) {
     const requirements = environmentMetadataRequirements[environment?.id] ?? {};
     for (const [field, requirement] of Object.entries(requirements)) {
@@ -906,8 +998,13 @@ for (const [index, environment] of environments.entries()) {
     if (environment?.id === "zoom-reflow-contrast" && !hasRequiredZoom(environment.zoom)) {
       errors.push(`${prefix}.zoom must affirm testing both 200% and 400% without negation.`);
     }
-    if (environment?.id === "zoom-reflow-contrast" && !hasEnabledContrast(environment.notes)) {
-      errors.push(`${prefix}.notes must confirm increased or high contrast was enabled.`);
+    if (
+      environment?.id === "zoom-reflow-contrast" &&
+      environment?.increasedOrHighContrastEnabled !== true
+    ) {
+      errors.push(
+        `${prefix}.increasedOrHighContrastEnabled must equal true after the setting was tested.`,
+      );
     }
     if (
       environment?.id === "mobile-touch" &&

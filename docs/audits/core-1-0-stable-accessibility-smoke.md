@@ -38,6 +38,9 @@ publication blocker unless this scoped smoke exposes a release-impacting defect.
 
 Record concise evidence links and notes for every environment and scenario. Do not include private
 consumer content, credentials, recordings with personal data, or invented results.
+For `zoom-reflow-contrast`, set `increasedOrHighContrastEnabled` to `true` only after the setting
+was exercised on the locked candidate. Notes remain descriptive and are not parsed as a substitute
+for that structured result.
 
 ## Decision rule
 

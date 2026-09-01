@@ -153,6 +153,7 @@ function completedRecord() {
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
       zoom: "Verified reflow at 200% and 400%",
+      increasedOrHighContrastEnabled: true,
       notes: "Verified reflow with macOS Increase Contrast enabled.",
     },
     "mobile-touch": {
@@ -207,6 +208,22 @@ test("pending repository smoke record is valid without claiming completion", () 
   const result = run();
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /evidence remains pending/);
+});
+
+test("pending evidence cannot pre-claim a structured contrast result", () => {
+  for (const value of [true, false, "true", undefined]) {
+    const record = JSON.parse(
+      readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
+    );
+    record.environments.find(
+      ({ id }) => id === "zoom-reflow-contrast",
+    ).increasedOrHighContrastEnabled = value;
+    withRecord(record, (target) => {
+      const result = run(["--record", target]);
+      assert.notEqual(result.status, 0, String(value));
+      assert.match(result.stderr, /must remain null while evidence is pending/);
+    });
+  }
 });
 
 test("strict validation rejects pending evidence", () => {
@@ -433,6 +450,43 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
     "Samsung Galaxy Book4 360",
     "Microsoft Surface Laptop Studio 2",
     "ASUS ROG Zephyrus G14",
+    "Dell Precision",
+    "Dell Precision 5680",
+    "Dell Precision 3680 Tower",
+    "HP ZBook",
+    "HP ZBook Firefly 14 G11",
+    "HP ZBook Power 16 G11",
+    "HP ZBook 15 G6",
+    "ASUS ExpertBook",
+    "ASUS ExpertBook B5",
+    "ASUS ExpertBook B1 B1503",
+    "Acer Predator Helios 16",
+    "HP OMEN 45L desktop",
+    "Lenovo LOQ 15IRX9 laptop",
+    "ASUS NUC 14 Pro mini PC",
+    "MSI MAG Infinite S3 14NUE7 desktop",
+    "Fujitsu Lifebook U9413 notebook",
+    "VAIO FE16",
+    "Beelink SER8 mini PC",
+    "MINISFORUM UM790 Pro mini PC",
+    "Custom Ryzen 7950X workstation",
+    "FutureBrand Model-Z9 desktop",
+    "System76 Thelio",
+    "Lenovo ThinkStation Tiny",
+    "Dell OptiPlex Micro",
+    "X1",
+    "Custom Sprinter X1 workstation",
+    "Sprinter X1 workstation",
+    "Monitorium X1 workstation",
+    "Keyboardist X1 workstation",
+    "WebKitten X1 workstation",
+    "Printerton X1 workstation",
+    "Microsoft Surface Laptop 7 Copilot+ PC",
+    "Surface Pro 11 Copilot+ PC",
+    "ASUS Vivobook S 15 Copilot+ PC",
+    "Dell XPS Copilot+ PC",
+    "HP OmniBook X Copilot+ PC",
+    "Microsoft Surface Pro Copilot+ PC",
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
@@ -512,6 +566,117 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "Office laptop" },
     { id: "zoom-reflow-contrast", device: "My computer" },
     { id: "zoom-reflow-contrast", device: "Available device" },
+    { id: "zoom-reflow-contrast", device: "TestDevice 123" },
+    { id: "zoom-reflow-contrast", device: "SampleLaptop 14" },
+    { id: "zoom-reflow-contrast", device: "GenericPC 42" },
+    { id: "zoom-reflow-contrast", device: "UnknownDevice X1" },
+    { id: "zoom-reflow-contrast", device: "PlaceholderMachine 1" },
+    { id: "zoom-reflow-contrast", device: "ExampleNotebook 14" },
+    { id: "zoom-reflow-contrast", device: "QALaptop 14" },
+    { id: "zoom-reflow-contrast", device: "WidgetBook 14" },
+    { id: "zoom-reflow-contrast", device: "test_device 123" },
+    { id: "zoom-reflow-contrast", device: "AuditReport 2026" },
+    { id: "zoom-reflow-contrast", device: "ReleaseNotes 2026" },
+    { id: "zoom-reflow-contrast", device: "AccessibilityChecklist 2026" },
+    { id: "zoom-reflow-contrast", device: "ComplianceMatrix 2026" },
+    { id: "zoom-reflow-contrast", device: "UserGuide 2026" },
+    { id: "zoom-reflow-contrast", device: "MicrosoftOffice 365" },
+    { id: "zoom-reflow-contrast", device: "GoogleWorkspace 2026" },
+    { id: "zoom-reflow-contrast", device: "ChromeBrowser 140" },
+    { id: "zoom-reflow-contrast", device: "FirefoxBrowser 143" },
+    { id: "zoom-reflow-contrast", device: "EdgeBrowser 140" },
+    { id: "zoom-reflow-contrast", device: "SafariBrowser 26" },
+    { id: "zoom-reflow-contrast", device: "WindowsPC 11" },
+    { id: "zoom-reflow-contrast", device: "AndroidLaptop 16" },
+    { id: "zoom-reflow-contrast", device: "DesktopBrowser 140" },
+    { id: "zoom-reflow-contrast", device: "DellMonitor U2723QE" },
+    { id: "zoom-reflow-contrast", device: "HPPrinter 123" },
+    { id: "zoom-reflow-contrast", device: "GamingMonitor U27" },
+    { id: "zoom-reflow-contrast", device: "USBKeyboard K1" },
+    { id: "zoom-reflow-contrast", device: "PrinterModel 123" },
+    { id: "zoom-reflow-contrast", device: "DesktopMonitor U27" },
+    { id: "zoom-reflow-contrast", device: "Primary laptop" },
+    { id: "zoom-reflow-contrast", device: "Work computer" },
+    { id: "zoom-reflow-contrast", device: "Corporate workstation" },
+    { id: "zoom-reflow-contrast", device: "Physical device" },
+    { id: "zoom-reflow-contrast", device: "Desktop environment" },
+    { id: "zoom-reflow-contrast", device: "Current device" },
+    { id: "zoom-reflow-contrast", device: "Local machine" },
+    { id: "zoom-reflow-contrast", device: "Company PC" },
+    { id: "zoom-reflow-contrast", device: "Main desktop" },
+    { id: "zoom-reflow-contrast", device: "Dell XPS unavailable" },
+    { id: "zoom-reflow-contrast", device: "Unavailable Dell XPS" },
+    { id: "zoom-reflow-contrast", device: "Dell XPS absent" },
+    { id: "zoom-reflow-contrast", device: "Missing Dell XPS" },
+    { id: "zoom-reflow-contrast", device: "Non-Dell XPS" },
+    { id: "zoom-reflow-contrast", device: "NotDell XPS 13" },
+    { id: "zoom-reflow-contrast", device: "NoDell XPS 13" },
+    { id: "zoom-reflow-contrast", device: "WithoutDell XPS 13" },
+    { id: "zoom-reflow-contrast", device: "N/A" },
+    { id: "zoom-reflow-contrast", device: "None" },
+    { id: "zoom-reflow-contrast", device: "This device" },
+    { id: "zoom-reflow-contrast", device: "Our standard system" },
+    { id: "zoom-reflow-contrast", device: "testdevice" },
+    { id: "zoom-reflow-contrast", device: "samplelaptop" },
+    { id: "zoom-reflow-contrast", device: "genericpc" },
+    { id: "zoom-reflow-contrast", device: "unknowndevice" },
+    { id: "zoom-reflow-contrast", device: "placeholdermachine" },
+    { id: "zoom-reflow-contrast", device: "examplenotebook" },
+    { id: "zoom-reflow-contrast", device: "qalaptop" },
+    { id: "zoom-reflow-contrast", device: "widgetbook" },
+    { id: "zoom-reflow-contrast", device: "mockbook" },
+    { id: "zoom-reflow-contrast", device: "fakebook" },
+    { id: "zoom-reflow-contrast", device: "auditreport" },
+    { id: "zoom-reflow-contrast", device: "releasenotes" },
+    { id: "zoom-reflow-contrast", device: "accessibilitychecklist" },
+    { id: "zoom-reflow-contrast", device: "compliancematrix" },
+    { id: "zoom-reflow-contrast", device: "userguide" },
+    { id: "zoom-reflow-contrast", device: "evidencerecord" },
+    { id: "zoom-reflow-contrast", device: "roadmapitem" },
+    { id: "zoom-reflow-contrast", device: "microsoftoffice" },
+    { id: "zoom-reflow-contrast", device: "googleworkspace" },
+    { id: "zoom-reflow-contrast", device: "chromebrowser" },
+    { id: "zoom-reflow-contrast", device: "firefoxbrowser" },
+    { id: "zoom-reflow-contrast", device: "edgebrowser" },
+    { id: "zoom-reflow-contrast", device: "safaribrowser" },
+    { id: "zoom-reflow-contrast", device: "dellmonitor" },
+    { id: "zoom-reflow-contrast", device: "hpprinter" },
+    { id: "zoom-reflow-contrast", device: "usbkeyboard" },
+    { id: "zoom-reflow-contrast", device: "Edge_HTML 18" },
+    { id: "zoom-reflow-contrast", device: "Web_Kit 26" },
+    { id: "zoom-reflow-contrast", device: "i_OS 18" },
+    { id: "zoom-reflow-contrast", device: "iPad_OS 18" },
+    { id: "zoom-reflow-contrast", device: "Configured device" },
+    { id: "zoom-reflow-contrast", device: "Actual laptop" },
+    { id: "zoom-reflow-contrast", device: "Real workstation" },
+    { id: "zoom-reflow-contrast", device: "Some PC" },
+    { id: "zoom-reflow-contrast", device: "Other computer" },
+    { id: "zoom-reflow-contrast", device: "User device" },
+    { id: "zoom-reflow-contrast", device: "Development machine" },
+    { id: "zoom-reflow-contrast", device: "Neither Dell nor HP" },
+    { id: "zoom-reflow-contrast", device: "Neither a Dell XPS nor an HP ZBook" },
+    { id: "zoom-reflow-contrast", device: "Dell XPS lacks availability" },
+    { id: "zoom-reflow-contrast", device: "Dell-XPS-free" },
+    { id: "zoom-reflow-contrast", device: "Null" },
+    { id: "zoom-reflow-contrast", device: "TBD" },
+    { id: "zoom-reflow-contrast", device: "TBA" },
+    { id: "zoom-reflow-contrast", device: "Unset" },
+    { id: "zoom-reflow-contrast", device: "Pending" },
+    { id: "zoom-reflow-contrast", device: "applemusic 2026" },
+    { id: "zoom-reflow-contrast", device: "microsoftcopilot 2026" },
+    { id: "zoom-reflow-contrast", device: "Copilot 2026" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Copilot Pro" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Copilot Chat" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Copilot for Microsoft 365" },
+    { id: "zoom-reflow-contrast", device: "GitHub Copilot" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Security Copilot" },
+    { id: "zoom-reflow-contrast", device: "Security Copilot+ PC" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Security Copilot+ PC" },
+    { id: "zoom-reflow-contrast", device: "GitHub Copilot+ PC" },
+    { id: "zoom-reflow-contrast", device: "Azure Copilot+ PC" },
+    { id: "zoom-reflow-contrast", device: "Dynamics Copilot+ PC" },
+    { id: "zoom-reflow-contrast", device: "googlecalendar 2026" },
+    { id: "zoom-reflow-contrast", device: "Former Dell XPS" },
     { id: "zoom-reflow-contrast", device: "Kitchen Chair" },
     { id: "zoom-reflow-contrast", device: "Kitchen Chair 2026" },
     { id: "zoom-reflow-contrast", device: "Conference Room 42" },
@@ -530,6 +695,12 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "HP WIDGET 2026" },
     { id: "zoom-reflow-contrast", device: "HP ROOM 42" },
     { id: "zoom-reflow-contrast", device: "ASUS ABC 8" },
+    { id: "zoom-reflow-contrast", device: "Dell Precision Widget 5680" },
+    { id: "zoom-reflow-contrast", device: "HP ZBook Widget 14 G11" },
+    { id: "zoom-reflow-contrast", device: "ASUS ExpertBook QA5" },
+    { id: "zoom-reflow-contrast", device: "Google Calendar" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Copilot" },
+    { id: "zoom-reflow-contrast", device: "Acer Projector" },
     { id: "zoom-reflow-contrast", device: "office workstation" },
     { id: "zoom-reflow-contrast", device: "Home PC" },
     { id: "zoom-reflow-contrast", device: "The Machine" },
@@ -1228,72 +1399,62 @@ test("strict validation rejects placeholder and browser-only mobile device value
 
 test("strict validation rejects negated contrast and physical-device claims", () => {
   const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
-    "200% and 400% were not tested";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "Reflow passed, but Increase Contrast was not enabled.";
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "200% and 400% were not tested";
+  zoomContrast.increasedOrHighContrastEnabled = false;
+  zoomContrast.notes = "Reflow passed, but Increase Contrast was not enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "Touch passed, but this was not a physical device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
 
-test("strict validation rejects negated or future contrast evidence", () => {
+test("strict validation does not let notes substitute for a structured contrast result", () => {
   for (const notes of [
-    "Verified reflow without high contrast enabled.",
-    "High contrast will be enabled during the test.",
-    "High contrast is going to be enabled during the test.",
-    "High contrast should have been enabled during the test.",
-    "High contrast was supposed to be enabled during the test.",
-    "High contrast was intended to be enabled during the test.",
-    "High contrast was intended to be enabled but enabled dark mode instead.",
-    "High contrast was intended to be enabled but enabled dark mode instead of high contrast.",
-    "High contrast was intended to be enabled but high contrast was intended to be enabled.",
-    ...passiveReportingVerbs.map(
-      (verb) => `High contrast was ${verb} to be enabled during the test.`,
-    ),
-    "High contrast claimed to be enabled during the test.",
-    "High contrast is being claimed to be enabled during the test.",
-    "High contrast was claimed to already be enabled during the test.",
-    "High contrast was reported as enabled during the test.",
-    "High contrast was reported as successfully enabled during the test.",
-    "High contrast was alleged to have been enabled during the test.",
-    ...activeReportedClaims("high contrast was enabled during the test"),
-    "QA claimed that they enabled high contrast during the test.",
-    "QA claimed during the audit that they enabled high contrast during the test.",
-    "QA claimed that engineers enabled high contrast during the test.",
-    "QA claimed that in high contrast mode the setting was enabled during the test.",
-    "High contrast was reported by QA as enabled during the test.",
-    "High contrast was said by QA to be enabled during the test.",
-    "High contrast was enabled during the test according to QA.",
-    "High contrast was enabled during the test per QA.",
-    "The high contrast setting according to QA was enabled during the test.",
-    "QA claimed that high contrast was enabled, but the accessibility team actually enabled high contrast during the test, according to the lead.",
-    "QA claimed that high contrast was enabled, but the accessibility team actually enabled high contrast during the test, the lead claimed.",
-    "They enabled high contrast during the test, QA claimed.",
-    "According to QA, they enabled high contrast during the test.",
-    "QA claimed that the high contrast setting was enabled during the test.",
-    "“High contrast was enabled during the test,” QA claimed.",
-    "According to QA, “high contrast was enabled during the test”.",
-    "High contrast was enabled during the test, according to QA.",
-    "QA claimed to have enabled high contrast during the test.",
-    "High contrast was claimed to be enabled but was actually reported to be enabled during the test.",
-    "QA claimed that high contrast was enabled, but the lead reported that high contrast was enabled during the test.",
-    "High contrast was claimed to be enabled, keyboard navigation was actually verified during the test.",
+    "High contrast was enabled during the test.",
+    "QA reported that high contrast was enabled.",
+    "Was high contrast enabled?",
+    "If high contrast was enabled, the audit could pass.",
   ]) {
     const record = completedRecord();
-    record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
+    const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    zoomContrast.increasedOrHighContrastEnabled = false;
+    zoomContrast.notes = notes;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.notEqual(result.status, 0, notes);
-      assert.match(result.stderr, /contrast was enabled/);
+      assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
     });
   }
+});
+test("strict validation requires an explicit structured contrast result", () => {
+  for (const value of [undefined, null, false, "true", 1]) {
+    const record = completedRecord();
+    record.environments.find(
+      ({ id }) => id === "zoom-reflow-contrast",
+    ).increasedOrHighContrastEnabled = value;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, String(value));
+      assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
+    });
+  }
+});
+
+test("structured contrast evidence does not depend on free-form note phrasing", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "Was high contrast enabled? See the linked evidence for the recorded result.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
 });
 
 test("strict validation accepts completed evidence after an unmet expectation", () => {
@@ -1304,17 +1465,6 @@ test("strict validation accepts completed evidence after an unmet expectation", 
     "High contrast should have been enabled earlier and was enabled during the test";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "Touch interaction should have been completed yesterday and was completed today on a physical iPhone 15 Pro.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts a target-bound contrast correction", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "High contrast was intended to be enabled but high contrast was enabled during the test";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1484,8 +1634,9 @@ test("strict validation rejects straight and curly contracted negations", () => 
     "VoiceOver wasn't enabled";
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
     "200% and 400% weren't tested";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "Increase Contrast wasn’t enabled.";
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.increasedOrHighContrastEnabled = false;
+  zoomContrast.notes = "Increase Contrast wasn’t enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "This wasn’t a physical mobile device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
@@ -1496,7 +1647,7 @@ test("strict validation rejects straight and curly contracted negations", () => 
       /assistiveTechnology does not match the required macos-safari-voiceover setup/,
     );
     assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
@@ -1507,8 +1658,9 @@ test("strict validation rejects no, neither, and cannot evidence negations", () 
     "No VoiceOver was used";
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
     "Neither 200% nor 400% was tested";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "Increase Contrast cannot be enabled.";
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.increasedOrHighContrastEnabled = false;
+  zoomContrast.notes = "Increase Contrast cannot be enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "No physical mobile device was used.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
@@ -1519,7 +1671,7 @@ test("strict validation rejects no, neither, and cannot evidence negations", () 
       /assistiveTechnology does not match the required macos-safari-voiceover setup/,
     );
     assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
@@ -1634,17 +1786,17 @@ test("strict validation accepts completed evidence bound to both zoom levels", (
 
 test("strict validation rejects failed or unavailable target evidence", () => {
   const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
-    "200% and 400% testing failed.";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "High contrast was unavailable; keyboard navigation remained enabled.";
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "200% and 400% testing failed.";
+  zoomContrast.increasedOrHighContrastEnabled = false;
+  zoomContrast.notes = "High contrast was unavailable; keyboard navigation remained enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "Physical mobile device was unavailable; no simulator was used.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
