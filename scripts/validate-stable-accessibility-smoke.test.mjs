@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -8,6 +8,15 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-stable-accessibility-smoke.mjs");
+const platformSupport = JSON.parse(
+  readFileSync(resolve(root, "quality/platform-support.json"), "utf8"),
+);
+const browserFloor = (engine) => platformSupport.browsers[engine].replace(/\+$/, "");
+const supportedSafari = `Safari ${browserFloor("webkit")}`;
+const supportedChrome = `Chrome ${browserFloor("chromium")}`;
+const supportedChromium = `Chromium ${browserFloor("chromium")}`;
+const supportedEdge = `Edge ${browserFloor("chromium")}`;
+const supportedFirefox = `Firefox ${browserFloor("firefox")}`;
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -68,7 +77,7 @@ function completedRecord() {
   const environmentMetadata = {
     "macos-safari-voiceover": {
       operatingSystem: "macOS 15.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       assistiveTechnology: "VoiceOver 15.5",
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
@@ -77,7 +86,7 @@ function completedRecord() {
     },
     "macos-chromium-keyboard": {
       operatingSystem: "macOS 15.5",
-      browser: "Chrome 138.0",
+      browser: supportedChrome,
       assistiveTechnology: "Keyboard-only navigation",
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
@@ -86,7 +95,7 @@ function completedRecord() {
     },
     "zoom-reflow-contrast": {
       operatingSystem: "macOS 15.5",
-      browser: "Chrome 138.0",
+      browser: supportedChrome,
       assistiveTechnology: "Not applicable",
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
@@ -95,7 +104,7 @@ function completedRecord() {
     },
     "mobile-touch": {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       assistiveTechnology: "Touch-only navigation",
       device: "iPhone 15 Pro",
       viewport: "393x852",
@@ -226,7 +235,7 @@ test("strict validation rejects release metadata and package versions outside th
 
 test("strict validation rejects evidence recorded against the wrong required environments", () => {
   const record = completedRecord();
-  record.environments.find(({ id }) => id === "macos-safari-voiceover").browser = "Chrome 138.0";
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").browser = supportedChrome;
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
   mobile.device = "iPhone 15 Pro Simulator";
   mobile.notes = "Verified touch interaction on an iOS simulator.";
@@ -237,6 +246,49 @@ test("strict validation rejects evidence recorded against the wrong required env
     assert.match(result.stderr, /notes must affirm use of a physical mobile touch device/);
     assert.match(result.stderr, /must use a physical mobile touch device/);
   });
+});
+
+test("strict validation accepts browser families at the maintained policy floor", () => {
+  for (const browser of [
+    supportedSafari,
+    supportedChrome,
+    supportedChromium,
+    supportedEdge,
+    supportedFirefox,
+    "Safari 26.10",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").browser = browser;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${browser}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation rejects browsers below the maintained policy floor", () => {
+  for (const { id, browser } of [
+    { id: "macos-safari-voiceover", browser: "Safari 1" },
+    { id: "macos-safari-voiceover", browser: supportedChrome },
+    { id: "macos-chromium-keyboard", browser: "Chrome 1" },
+    { id: "macos-chromium-keyboard", browser: supportedSafari },
+    { id: "zoom-reflow-contrast", browser: "Safari 26.4" },
+    { id: "zoom-reflow-contrast", browser: "Chrome 150" },
+    { id: "zoom-reflow-contrast", browser: "Chromium 150" },
+    { id: "zoom-reflow-contrast", browser: "Edge 150" },
+    { id: "zoom-reflow-contrast", browser: "Firefox 1" },
+    { id: "zoom-reflow-contrast", browser: "Firefox 152" },
+    { id: "mobile-touch", browser: "Firefox 1" },
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id: candidateId }) => candidateId === id).browser = browser;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, `${id}: ${browser}`);
+      assert.match(result.stderr, new RegExp(`browser does not match the required ${id} setup`));
+    });
+  }
 });
 
 test("strict validation accepts ordinary Mac hardware descriptions without inventory details", () => {
@@ -286,7 +338,7 @@ test("strict validation accepts a concrete ChromeOS desktop environment", () => 
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
     desktop.operatingSystem = operatingSystem;
-    desktop.browser = "Chrome 140.0";
+    desktop.browser = supportedChrome;
     desktop.device = "Acer Chromebook 516 GE";
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
@@ -302,7 +354,7 @@ test("strict validation rejects placeholder, mobile, and browser-only desktop OS
     "Generic OS 140",
     "Desktop OS 140",
     "Android 16",
-    "Chrome 140.0",
+    supportedChrome,
     "Desktop Chrome 140.0",
     "OS Firefox 143.0",
   ]) {
@@ -361,7 +413,7 @@ test("strict validation accepts a maintained mobile browser and any concrete phy
   const record = completedRecord();
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
   mobile.operatingSystem = "Android 16";
-  mobile.browser = "Firefox 143.0";
+  mobile.browser = supportedFirefox;
   mobile.device = "Fairphone 5";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
@@ -374,97 +426,97 @@ test("strict validation accepts physical-device claims naming the concrete mobil
   for (const setup of [
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Tested touch interaction on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "Android 16",
-      browser: "Firefox 143.0",
+      browser: supportedFirefox,
       device: "Fairphone 5",
       notes: "Verified touch interaction using a physical Fairphone 5.",
     },
     {
       operatingSystem: "Android 16",
-      browser: "Firefox 143.0",
+      browser: supportedFirefox,
       device: "Nothing Phone (2)",
       notes: "Tested touch interaction on a physical Nothing Phone (2).",
     },
     {
       operatingSystem: "iPadOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPad Pro (M4)",
       notes: "Tested touch interaction on a physical iPad Pro (M4).",
     },
     {
       operatingSystem: "Android 16",
-      browser: "Firefox 143.0",
+      browser: supportedFirefox,
       device: "Nokia 7.2",
       notes: "Tested in Android 16.0 on a physical Nokia 7.2.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Not only tested on a physical iPhone 15 Pro but also verified.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was not only performed on a physical iPhone 15 Pro but also passed.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was not merely performed but completed on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was not simply performed but completed on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Used touch interaction on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Using touch controls with a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was not performed remotely but was verified on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Tested touch interaction on a physical iPhone 15 Pro — not a simulator.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Tested touch interaction on a physical iPhone 15 Pro with VoiceOver off.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was planned, then completed on a physical iPhone 15 Pro.",
     },
     {
       operatingSystem: "iOS 18.5",
-      browser: "Safari 18.5",
+      browser: supportedSafari,
       device: "iPhone 15 Pro",
       notes: "Testing was required by policy and completed on a physical iPhone 15 Pro.",
     },
@@ -540,7 +592,7 @@ test("strict validation accepts concrete mobile names and model codes", () => {
     const record = completedRecord();
     const mobile = record.environments.find(({ id }) => id === "mobile-touch");
     mobile.operatingSystem = "Android 16";
-    mobile.browser = "Firefox 143.0";
+    mobile.browser = supportedFirefox;
     mobile.device = device;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
@@ -562,20 +614,20 @@ test("strict validation accepts a concrete named Apple model", () => {
 
 test("strict validation rejects placeholder and browser-only mobile device values", () => {
   for (const setup of [
-    { operatingSystem: "iOS 18.5", browser: "Safari 18.5", device: "iPhone test device" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Firefox 143.0" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Physical mobile device" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone test device" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: supportedFirefox },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Physical mobile device" },
     {
       operatingSystem: "Android 16",
-      browser: "Firefox 143.0",
+      browser: supportedFirefox,
       device: "Physical mobile device 123",
     },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Mobile phone" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Apple iPhone 15 Pro" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Google Chrome 143.0" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Mozilla/5.0" },
-    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "WebKit 605.1" },
-    { operatingSystem: "iOS 18.5", browser: "Safari 18.5", device: "iPhone Safari 18.5" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mobile phone" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Apple iPhone 15 Pro" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Chrome 143.0" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mozilla/5.0" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "WebKit 605.1" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone Safari 18.5" },
   ]) {
     const record = completedRecord();
     Object.assign(
@@ -816,7 +868,7 @@ test("strict validation rejects a mobile OS and device-family mismatch", () => {
   const record = completedRecord();
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
   mobile.operatingSystem = "Android 16";
-  mobile.browser = "Firefox 143.0";
+  mobile.browser = supportedFirefox;
   mobile.device = "iPhone 15 Pro";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));

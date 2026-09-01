@@ -18,6 +18,11 @@ Run the smoke against one locked candidate and deployment:
 3. 200% and 400% zoom/reflow plus increased or high contrast in a maintained desktop browser;
 4. one maintained mobile browser on a physical touch device.
 
+Recorded product versions must meet the canonical minimum engine lines in
+[`quality/platform-support.json`](../../quality/platform-support.json): Safari maps to WebKit,
+Chrome/Chromium/Edge map to Chromium, and Firefox maps to Firefox. This is a maintained-release
+floor for the evidence, not a claim that every mobile product uses that engine at runtime.
+
 The broader Windows/NVDA, Android/TalkBack, iOS/VoiceOver, native-picker, reduced-motion, and
 complete physical-device matrix remains valuable post-release evidence. It is not a `1.0.0`
 publication blocker unless this scoped smoke exposes a release-impacting defect.

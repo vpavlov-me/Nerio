@@ -11,11 +11,27 @@ const {
   "--record": recordPath,
   "--release-metadata": releaseMetadataPath,
   "--packages-root": packagesRoot,
+  "--platform-support": platformSupportPath,
 } = parsePathOptions(args, {
   "--record": resolve(root, "quality/stable-accessibility-smoke.json"),
   "--release-metadata": resolve(root, "quality/release-metadata.json"),
   "--packages-root": resolve(root, "packages"),
+  "--platform-support": resolve(root, "quality/platform-support.json"),
 });
+
+const errors = [];
+const isJsonObject = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+let platformSupport;
+try {
+  platformSupport = JSON.parse(await readFile(platformSupportPath, "utf8"));
+} catch (error) {
+  errors.push(`Platform support policy must be readable JSON: ${error.message}`);
+}
+if (platformSupport !== undefined && !isJsonObject(platformSupport)) {
+  errors.push("Platform support policy must be a JSON object.");
+  platformSupport = undefined;
+}
 
 const requiredEnvironmentIds = [
   "macos-safari-voiceover",
@@ -89,6 +105,51 @@ const browserOnlyOperatingSystemPattern = new RegExp(
   `^(?:(?:${genericDesktopOperatingSystemSource})\\s+)*(?:(?:Apple|Google|Microsoft|Mozilla)\\s+)?(?:Safari|Chrome(?!\\s+OS\\b)|Chromium(?!\\s+OS\\b)|Firefox|Edge|WebKit)(?:$|[\\s/-].*)`,
   "i",
 );
+const browserPolicyEngine = new Map([
+  ["safari", "webkit"],
+  ["chrome", "chromium"],
+  ["chromium", "chromium"],
+  ["edge", "chromium"],
+  ["firefox", "firefox"],
+]);
+const parsePolicyMinimum = (value) => {
+  const match = typeof value === "string" ? /^(\d+(?:\.\d+)*)\+$/.exec(value) : null;
+  return match ? match[1].split(".").map(Number) : null;
+};
+const browserPolicyMinimums = Object.fromEntries(
+  ["chromium", "firefox", "webkit"].map((engine) => [
+    engine,
+    parsePolicyMinimum(platformSupport?.browsers?.[engine]),
+  ]),
+);
+for (const [engine, minimum] of Object.entries(browserPolicyMinimums)) {
+  if (minimum === null) {
+    errors.push(`Platform support policy must define browsers.${engine} as a numeric minimum+.`);
+  }
+}
+const compareVersionParts = (left, right) => {
+  const length = Math.max(left.length, right.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = (left[index] ?? 0) - (right[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return 0;
+};
+function isMaintainedBrowserDescription(value, allowedProducts) {
+  if (typeof value !== "string") return false;
+  const match =
+    /^(?:(?:Apple|Google|Microsoft|Mozilla)\s+)?(Safari|Chrome|Chromium|Firefox|Edge)\s+(\d+(?:\.\d+){0,3})$/i.exec(
+      value.trim(),
+    );
+  if (!match) return false;
+  const product = match[1].toLowerCase();
+  if (!allowedProducts.has(product)) return false;
+  const minimum = browserPolicyMinimums[browserPolicyEngine.get(product)];
+  return minimum !== null && compareVersionParts(match[2].split(".").map(Number), minimum) >= 0;
+}
+const safariProducts = new Set(["safari"]);
+const chromiumProducts = new Set(["chrome", "chromium", "edge"]);
+const maintainedBrowserProducts = new Set(browserPolicyEngine.keys());
 function isConcreteDesktopOperatingSystem(value) {
   const normalized = normalizeContractedNegations(value);
   if (
@@ -164,29 +225,26 @@ const genericMobileWords = new Set([
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
-    browser: /\bSafari\b.*\d/i,
+    browser: (value) => isMaintainedBrowserDescription(value, safariProducts),
     assistiveTechnology: /\bVoiceOver\b/i,
     device: isMacDeviceDescription,
   },
   "macos-chromium-keyboard": {
     operatingSystem: /\bmacOS\b.*\d/i,
-    browser: /\b(?:Chrome|Chromium|Edge)\b.*\d/i,
+    browser: (value) => isMaintainedBrowserDescription(value, chromiumProducts),
     assistiveTechnology: /keyboard[- ]only/i,
     device: isMacDeviceDescription,
   },
   "zoom-reflow-contrast": {
     operatingSystem: isConcreteDesktopOperatingSystem,
-    browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
+    browser: (value) => isMaintainedBrowserDescription(value, maintainedBrowserProducts),
     device: isConcreteDesktopDeviceDescription,
   },
   "mobile-touch": {
     operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
-    browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
+    browser: (value) => isMaintainedBrowserDescription(value, maintainedBrowserProducts),
   },
 };
-const errors = [];
-const isJsonObject = (value) =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
 
 let record;
 try {
