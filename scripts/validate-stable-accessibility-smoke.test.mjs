@@ -308,13 +308,15 @@ test("strict validation rejects evidence recorded against the wrong required env
   record.environments.find(({ id }) => id === "macos-safari-voiceover").browser = supportedChrome;
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
   mobile.device = "iPhone 15 Pro Simulator";
-  mobile.notes = "Verified touch interaction on an iOS simulator.";
+  mobile.notes = "Verified touch interaction on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /browser does not match the required macos-safari-voiceover setup/);
-    assert.match(result.stderr, /notes must affirm use of a physical mobile touch device/);
-    assert.match(result.stderr, /must use a physical mobile touch device/);
+    assert.match(
+      result.stderr,
+      /device must be a concrete physical model for its recorded mobile OS/,
+    );
   });
 });
 
@@ -835,341 +837,56 @@ test("strict validation rejects mobile browser products unavailable on the recor
   }
 });
 
-test("strict validation accepts physical-device claims naming the concrete mobile model", () => {
-  for (const setup of [
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Tested touch interaction on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Fairphone 5",
-      notes: "Verified touch interaction using a physical Fairphone 5.",
-    },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Nothing Phone (2)",
-      notes: "Tested touch interaction on a physical Nothing Phone (2).",
-    },
-    {
-      operatingSystem: "iPadOS 18.5",
-      browser: supportedSafari,
-      device: "iPad Pro (M4)",
-      notes: "Tested touch interaction on a physical iPad Pro (M4).",
-    },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Nokia 7.2",
-      notes: "Tested in Android 16.0 on a physical Nokia 7.2.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Not only tested on a physical iPhone 15 Pro but also verified.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not only performed on a physical iPhone 15 Pro but also passed.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not merely performed but completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not simply performed but completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Used touch interaction on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Using touch controls with a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not performed remotely but was verified on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not conducted remotely but was verified on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not run remotely but was verified on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was not executed remotely but was verified on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Tested touch interaction on a physical iPhone 15 Pro — not a simulator.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Tested touch interaction on a physical iPhone 15 Pro with VoiceOver off.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was planned, then completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was pending, then completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was incomplete, then completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was unavailable remotely and completed on a physical iPhone 15 Pro.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Testing was completed on a physical iPhone 15 Pro today and will be repeated tomorrow.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable the next day.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was completed.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing had been completed.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after all testing was completed.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Tested touch interaction on a physical iPhone 15 Pro, and a simulator was not used.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Testing was completed on a physical iPhone 15 Pro to reduce regressions in the future.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Testing was completed on a physical iPhone 15 Pro after the release candidate was cut.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes:
-        "Testing was completed on a physical iPhone 15 Pro only after the release candidate was cut.",
-    },
-    {
-      operatingSystem: "iOS 18.5",
-      browser: supportedSafari,
-      device: "iPhone 15 Pro",
-      notes: "Testing was required by policy and completed on a physical iPhone 15 Pro.",
-    },
-  ]) {
-    const record = completedRecord();
-    Object.assign(
-      record.environments.find(({ id }) => id === "mobile-touch"),
-      setup,
-    );
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${setup.device}: ${result.stderr}`);
-      assert.match(result.stdout, /internally approved/);
-    });
-  }
-});
-
-test("strict validation rejects negated testing claims naming the concrete mobile model", () => {
+test("mobile-touch note phrasing does not override valid structured evidence", () => {
   for (const notes of [
-    "Not tested on a physical iPhone 15 Pro.",
-    "No testing was performed on a physical iPhone 15 Pro.",
-    "No touch testing was performed on a physical iPhone 15 Pro.",
-    "Testing was not performed on a physical iPhone 15 Pro.",
-    "Testing was never completed on a physical iPhone 15 Pro.",
-    "Testing was not actually performed on a physical iPhone 15 Pro.",
-    "Testing was never fully completed on a physical iPhone 15 Pro.",
-    "Testing hasn't been performed on a physical iPhone 15 Pro.",
-    "Testing couldn't be performed on a physical iPhone 15 Pro.",
-    "Testing has not yet been performed on a physical iPhone 15 Pro.",
-    "Testing was not previously performed on a physical iPhone 15 Pro.",
-    "Testing was never before completed on a physical iPhone 15 Pro.",
-    "Testing passed but not on a physical iPhone 15 Pro.",
-    "Testing passed but not on the physical iPhone 15 Pro.",
-    "Testing passed without a physical iPhone 15 Pro.",
-    "Testing was not performed on another device because a physical iPhone 15 Pro was merely available.",
-    "Testing was not performed on another device or on a physical iPhone 15 Pro.",
-    "Testing was not performed on a lab phone nor on a physical iPhone 15 Pro.",
-    "Testing was not performed: only planned on a physical iPhone 15 Pro.",
-    "Testing was anything but performed on a physical iPhone 15 Pro.",
-    "Completed the checklist assignment with a physical mobile device available.",
-    "Testing was planned, but completed the documentation with a physical mobile device available.",
-    "Testing did not occur, but completed the audit with a physical mobile device available.",
-    "Testing did not occur and completed the audit with a physical mobile device available.",
-    "Testing was skipped, but completed the audit with a physical mobile device available.",
-    "Testing was skipped remotely, but completed the audit with a physical mobile device available.",
-    "Testing was unavailable remotely and the documentation was completed on a physical iPhone 15 Pro.",
-    "Testing was unavailable remotely and the audit was completed on a physical iPhone 15 Pro.",
-    "The documentation for testing was unavailable remotely and completed on a physical iPhone 15 Pro.",
-    "The audit for testing was unavailable remotely and completed on a physical iPhone 15 Pro.",
-    "Testing was skipped, but the audit was completed on a physical iPhone 15 Pro.",
-    "Testing was unavailable remotely, the documentation was reviewed and completed on a physical iPhone 15 Pro.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, but the test never happened.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro tomorrow.",
-    "Testing was completed on a physical iPhone 15 Pro, but the test never happened, but completed the audit with a physical iPhone 15 Pro.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, although the test never happened.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, but testing was not actually completed.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro next Monday.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro in two business days.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was not used.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was not really used.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was never fully tested.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which had not yet been used.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, but it was not used.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was in fact not used.",
-    "Tested touch interaction on a physical iPhone 15 Pro. It was not used.",
-    "Testing was completed on a physical iPhone 15 Pro. The device was not used.",
-    "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else, and it was not used for testing.",
-    "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else because it was not used at all.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was not used and became unavailable later.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without using it.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without ever using it.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without really using it.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing failed.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was skipped.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing had failed.",
-    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was not completed.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro after release.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro in the future.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro only after release.",
-    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro sometime after release.",
-    "Testing was absent, but completed the audit with a physical mobile device available.",
-    "Testing was unavailable, but completed the audit with a physical mobile device available.",
-    "Testing failed, but completed the audit with a physical mobile device available.",
-    "Tested on a physical iPhone 15 Pro but not actually on a physical mobile device.",
-    "Must be tested on a physical iPhone 15 Pro before release.",
-    "Can be tested on a physical iPhone 15 Pro.",
-    "Could be tested on a physical iPhone 15 Pro.",
-    "May be tested on a physical iPhone 15 Pro.",
-    "Might be tested on a physical iPhone 15 Pro.",
-    "Testing is expected to be performed on a physical iPhone 15 Pro.",
-    "Touch interaction is going to be tested on a physical iPhone 15 Pro.",
-    "Touch interaction should have been tested on a physical iPhone 15 Pro.",
-    "Touch interaction was supposed to be tested on a physical iPhone 15 Pro.",
-    "Touch interaction was intended to be tested on a physical iPhone 15 Pro.",
-    ...passiveReportingVerbs.map(
-      (verb) => `Touch interaction was ${verb} to be tested on a physical iPhone 15 Pro.`,
-    ),
-    "Touch interaction claimed to be tested on a physical iPhone 15 Pro.",
-    "Touch interaction is being claimed to be tested on a physical iPhone 15 Pro.",
-    "Touch interaction was reported as tested on a physical iPhone 15 Pro.",
-    "Touch interaction was reported as successfully tested on a physical iPhone 15 Pro.",
-    "Touch interaction was reported to have already been tested on a physical iPhone 15 Pro.",
-    "Touch interaction was alleged to have been tested on a physical iPhone 15 Pro.",
-    ...activeReportedClaims("touch interaction was tested on a physical iPhone 15 Pro"),
-    "QA claimed that they tested touch interaction on a physical iPhone 15 Pro.",
-    "QA claimed during the audit that they tested touch interaction on a physical iPhone 15 Pro.",
-    "QA claimed that engineers tested touch interaction on a physical iPhone 15 Pro.",
-    "QA claimed that on the physical iPhone 15 Pro touch interaction was tested.",
-    "Touch interaction was tested on a physical iPhone 15 Pro according to QA.",
-    "Touch interaction was tested on a physical iPhone 15 Pro per QA.",
-    "They tested touch interaction on a physical iPhone 15 Pro, QA claimed.",
-    "According to QA, they tested touch interaction on a physical iPhone 15 Pro.",
-    "“Touch interaction was tested on a physical iPhone 15 Pro,” QA claimed.",
-    "According to QA, “touch interaction was tested on a physical iPhone 15 Pro”.",
-    "Touch interaction was tested on a physical iPhone 15 Pro, according to QA.",
-    "QA claimed to have tested touch interaction on a physical iPhone 15 Pro.",
-    "Touch interaction was claimed to be tested on a physical iPhone 15 Pro, but was actually reported to be tested on a physical iPhone 15 Pro.",
-    "QA claimed that touch interaction was tested on a physical iPhone 15 Pro, but the lead reported that touch interaction was tested on a physical iPhone 15 Pro.",
-    "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
-    "Tested on a physical iPhone 15 Pro but no testing occurred.",
-    "Tested on a physical iPhone 15 Pro_simulator.",
+    "Touch checks completed on the locked candidate.",
+    "A physical mobile device was available.",
+    "No physical-device claim is restated here.",
+    "The simulator was used for unrelated setup.",
+    "The emulator was unavailable during the smoke.",
+    "Touch verification was reported as pending.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "mobile-touch").notes = notes;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, notes);
-      assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+      assert.equal(result.status, 0, `${notes}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("mobile-touch notes cannot substitute for invalid structured evidence", () => {
+  for (const { mutate, diagnostic } of [
+    {
+      mutate: (mobile) => {
+        mobile.result = "Fail";
+      },
+      diagnostic: /result must be Pass for a release-ready smoke/,
+    },
+    {
+      mutate: (mobile) => {
+        mobile.device = "iPhone 15 Pro Simulator";
+      },
+      diagnostic: /device must be a concrete physical model for its recorded mobile OS/,
+    },
+    {
+      mutate: (mobile) => {
+        mobile.operatingSystem = "Android 16";
+        mobile.browser = supportedFirefox;
+        mobile.device = "iPhone 15 Pro";
+      },
+      diagnostic: /device must be a concrete physical model for its recorded mobile OS/,
+    },
+  ]) {
+    const record = completedRecord();
+    const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+    mobile.notes = "Verified touch interaction on a physical iPhone 15 Pro.";
+    mutate(mobile);
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, diagnostic);
     });
   }
 });
@@ -1267,6 +984,15 @@ test("strict validation accepts a concrete named Apple model", () => {
 test("strict validation rejects placeholder and browser-only mobile device values", () => {
   for (const setup of [
     { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone test device" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 ProSimulator" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro_Simulator" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 ProEmulator" },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 ProVirtualDevice",
+    },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone Simulator15" },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: supportedFirefox },
     { operatingSystem: "Android 16", browser: supportedFirefox, device: "Physical mobile device" },
     {
@@ -1397,20 +1123,17 @@ test("strict validation rejects placeholder and browser-only mobile device value
   }
 });
 
-test("strict validation rejects negated contrast and physical-device claims", () => {
+test("strict validation rejects negated zoom and structured contrast evidence", () => {
   const record = completedRecord();
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.zoom = "200% and 400% were not tested";
   zoomContrast.increasedOrHighContrastEnabled = false;
   zoomContrast.notes = "Reflow passed, but Increase Contrast was not enabled.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Touch passed, but this was not a physical device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
 
@@ -1463,8 +1186,6 @@ test("strict validation accepts completed evidence after an unmet expectation", 
   zoomContrast.zoom = "200% and 400% should have been tested yesterday and were tested today";
   zoomContrast.notes =
     "High contrast should have been enabled earlier and was enabled during the test";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Touch interaction should have been completed yesterday and was completed today on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1478,8 +1199,6 @@ test("strict validation accepts completed evidence after a reported claim", () =
     const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
     zoomContrast.zoom = `200% and 400% were ${verb} to be tested, but were actually tested.`;
     zoomContrast.notes = `High contrast was ${verb} to be enabled, but was actually enabled during the test.`;
-    record.environments.find(({ id }) => id === "mobile-touch").notes =
-      `Touch interaction was ${verb} to be tested on a physical iPhone 15 Pro, but was actually tested on a physical iPhone 15 Pro.`;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
@@ -1498,9 +1217,6 @@ test("strict validation accepts factual evidence after an active reported claim"
     zoomContrast.notes =
       `QA ${verb} that high contrast was enabled, ` +
       "but the accessibility team actually enabled high contrast during the test.";
-    record.environments.find(({ id }) => id === "mobile-touch").notes =
-      `QA ${verb} that touch interaction was tested on a physical iPhone 15 Pro, ` +
-      "but the accessibility team actually tested touch interaction on a physical iPhone 15 Pro.";
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
@@ -1516,8 +1232,6 @@ test("strict validation accepts factual corrections with parenthetical review co
     "QA claimed that 200% and 400% were tested, but, after reviewing the logs, the accessibility team actually tested 200% and 400%.";
   zoomContrast.notes =
     "QA claimed that high contrast was enabled, but the accessibility team, after reviewing the logs, actually enabled high contrast during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "QA claimed that touch interaction was tested on a physical iPhone 15 Pro, but the accessibility team, after reviewing the logs, actually tested touch interaction on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1531,8 +1245,6 @@ test("strict validation keeps unrelated reports separate from factual evidence",
   zoomContrast.zoom = "QA reported a lab scheduling issue; 200% and 400% were actually tested.";
   zoomContrast.notes =
     "QA claimed ownership of the setup, but high contrast was actually enabled during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "QA reported a device booking issue. Touch interaction was actually tested on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1545,8 +1257,6 @@ test("strict validation accepts factual evidence after reporting nouns used as l
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.zoom = "Test reports: 200% and 400% were actually tested.";
   zoomContrast.notes = "Audit notes: high contrast was actually enabled during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Run reports: touch interaction was actually tested on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1560,8 +1270,6 @@ test("strict validation accepts factual evidence followed by unrelated observati
   zoomContrast.zoom = "We tested 200% and 400% and noted no defects.";
   zoomContrast.notes =
     "High contrast was enabled during the test and QA confirmed keyboard navigation.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "We tested touch interaction on a physical iPhone 15 Pro and noted no defects.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1574,8 +1282,6 @@ test("strict validation accepts per-requirement evidence without treating it as 
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.zoom = "200% and 400% were actually tested per viewport requirement.";
   zoomContrast.notes = "High contrast was enabled per the documented test plan.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Touch interaction was tested on a physical iPhone 15 Pro per the smoke checklist.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1589,8 +1295,6 @@ test("strict validation keeps while-separated reports apart from factual evidenc
   zoomContrast.zoom = "QA reported a scheduling issue, while 200% and 400% were actually tested.";
   zoomContrast.notes =
     "QA claimed ownership of the setup, while high contrast was actually enabled during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "QA reported a booking issue, while touch interaction was actually tested on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1604,8 +1308,6 @@ test("strict validation accepts QA requirements as requirements rather than attr
   zoomContrast.zoom = "Per QA testing requirements, 200% and 400% were actually tested.";
   zoomContrast.notes =
     "Per QA accessibility testing requirements, high contrast was actually enabled during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Per QA smoke testing requirements, touch interaction was actually tested on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1619,8 +1321,6 @@ test("strict validation keeps whereas-separated reports apart from factual evide
   zoomContrast.zoom = "QA reported a scheduling issue, whereas 200% and 400% were actually tested.";
   zoomContrast.notes =
     "QA claimed ownership of the setup, whereas high contrast was actually enabled during the test.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "QA reported a booking issue, whereas touch interaction was actually tested on a physical iPhone 15 Pro.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -1637,8 +1337,6 @@ test("strict validation rejects straight and curly contracted negations", () => 
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.increasedOrHighContrastEnabled = false;
   zoomContrast.notes = "Increase Contrast wasn’t enabled.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "This wasn’t a physical mobile device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
@@ -1648,7 +1346,6 @@ test("strict validation rejects straight and curly contracted negations", () => 
     );
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
 
@@ -1661,8 +1358,6 @@ test("strict validation rejects no, neither, and cannot evidence negations", () 
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.increasedOrHighContrastEnabled = false;
   zoomContrast.notes = "Increase Contrast cannot be enabled.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "No physical mobile device was used.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
@@ -1672,7 +1367,6 @@ test("strict validation rejects no, neither, and cannot evidence negations", () 
     );
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
 
@@ -1784,93 +1478,28 @@ test("strict validation accepts completed evidence bound to both zoom levels", (
   }
 });
 
-test("strict validation rejects failed or unavailable target evidence", () => {
+test("strict validation rejects failed zoom and unavailable contrast evidence", () => {
   const record = completedRecord();
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
   zoomContrast.zoom = "200% and 400% testing failed.";
   zoomContrast.increasedOrHighContrastEnabled = false;
   zoomContrast.notes = "High contrast was unavailable; keyboard navigation remained enabled.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Physical mobile device was unavailable; no simulator was used.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
 
-test("strict validation requires actual use of the physical device", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "A physical mobile device was available.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
-  });
-});
-
-test("strict validation accepts positive target evidence after no-issues observations", () => {
+test("structured contrast evidence remains authoritative after no-issues observations", () => {
   const record = completedRecord();
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
     "No high contrast issues were found; Increase Contrast remained enabled.";
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "No physical mobile device issues were found; tests ran on a physical mobile device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts explicitly negated simulator mentions", () => {
-  for (const notes of [
-    "Verified touch interaction on a physical mobile device, not a simulator.",
-    "Verified touch interaction on a physical mobile device; the simulator wasn't used.",
-    "Verified touch interaction on a physical mobile device; the simulator wasn’t used.",
-    "Verified touch interaction on a physical mobile device; the simulator couldn't be used.",
-    "Verified touch interaction on a physical mobile device with no issues.",
-    "Verified touch interaction on a physical mobile device; no simulator or emulator was used.",
-  ]) {
-    const record = completedRecord();
-    record.environments.find(({ id }) => id === "mobile-touch").notes = notes;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, result.stderr);
-      assert.match(result.stdout, /internally approved/);
-    });
-  }
-});
-
-test("strict validation rejects plural virtual-device evidence", () => {
-  for (const mutate of [
-    (mobile) => {
-      mobile.device = "iPhone 15 Pro Simulators";
-    },
-    (mobile) => {
-      mobile.notes = "Verified touch on a physical mobile device using simulators.";
-    },
-  ]) {
-    const record = completedRecord();
-    mutate(record.environments.find(({ id }) => id === "mobile-touch"));
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0);
-      assert.match(result.stderr, /must use a physical mobile touch device, not an emulator/);
-    });
-  }
-});
-
-test("strict validation rejects a used simulator despite an earlier physical-device negation", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Physical mobile device wasn't working, used simulator.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /must use a physical mobile touch device, not an emulator/);
   });
 });
 

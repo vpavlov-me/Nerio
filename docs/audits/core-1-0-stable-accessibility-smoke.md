@@ -41,6 +41,10 @@ consumer content, credentials, recordings with personal data, or invented result
 For `zoom-reflow-contrast`, set `increasedOrHighContrastEnabled` to `true` only after the setting
 was exercised on the locked candidate. Notes remain descriptive and are not parsed as a substitute
 for that structured result.
+For `mobile-touch`, `result: Pass` plus a concrete device model compatible with the recorded mobile
+OS is the authoritative structured evidence that the smoke ran on physical hardware. Simulator,
+emulator, and virtual values remain invalid in `device`; `notes` are descriptive and are not parsed
+as proof, contradiction, or a substitute for an invalid result or device.
 
 ## Decision rule
 
