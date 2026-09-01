@@ -410,27 +410,53 @@ const hasPhysicalTouchClaim = (value, device) => {
     "i",
   );
   const contextualActionBridge = `(?:\\s+${completionModifierTokenSource}){0,2}(?:\\s+(?:(?:the|this)\\s+)?(?:touch\\s+(?:interaction|controls?|testing)|tests?|testing|verification|checks?|smoke(?:\\s+(?:test(?:ing)?|checks?))?|audit))?(?:\\s+${completionModifierTokenSource}){0,2}`;
-  const contextualPositive = new RegExp(
-    `\\b(?:verified|performed|completed|ran|passed)\\b${contextualActionBridge}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
+  const contextualPositiveSource = `(?:verified|performed|completed|ran|passed)\\b${contextualActionBridge}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`;
+  const contextualPositive = new RegExp(`\\b${contextualPositiveSource}`, "i");
+  const leadingContextualPositive = new RegExp(
+    `^\\s*${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${contextualPositiveSource}`,
     "i",
   );
-  const directContextualCorrection = new RegExp(
-    `\\b(?:verified|performed|completed|ran|passed)\\b(?:\\s+${completionModifierTokenSource}){0,2}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
+  const directContextualCorrectionSource = `(?:verified|performed|completed|ran|passed)\\b(?:\\s+${completionModifierTokenSource}){0,2}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`;
+  const inheritedContextualCorrection = new RegExp(
+    `^\\s*${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${directContextualCorrectionSource}`,
     "i",
   );
   const actualTestContextSource =
     "(?:tested|testing|tests?|verification|touch\\s+(?:interaction|controls?|testing)|smoke(?:\\s+(?:test(?:ing)?|checks?))?)";
   const actualTestContext = new RegExp(`\\b${actualTestContextSource}\\b`, "i");
+  const actualTestSubjectSource =
+    "(?:testing|tests?|verification|touch\\s+(?:interaction|controls?|testing)|smoke(?:\\s+(?:test(?:ing)?|checks?))?)";
+  const actualTestSubject = new RegExp(
+    `^\\s*(?:(?:the|this)\\s+)?${actualTestSubjectSource}\\b`,
+    "i",
+  );
   const absentTestActionSource =
     "(?:available|completed|conducted|done|executed|performed|run|carried\\s+out)";
   const absentTestStateSource =
     "(?:aborted|absent|blocked|canceled|cancelled|deferred|failed|incomplete|pending|postponed|skipped|unavailable|unperformed|untested)";
+  const negatedTestActionModifierSource = `(?:(?:${completionModifierTokenSource}|yet)\\s+){0,2}`;
   const remoteQualifierBoundary = "(?!\\s+remotely\\b)";
   const absentTestContext = new RegExp(
-    `(?:\\b(?:no|without)\\s+(?:(?:actual|completed)\\s+)?${actualTestContextSource}\\b|\\b${actualTestContextSource}\\b[^;,\\n]{0,32}\\b(?:(?:did|does|do)\\s+(?:not|never)\\s+(?:complete|conduct|execute|happen|occur|perform|run|carry\\s+out)${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|can|could|would|will|should|may|might)\\s+(?:not|never)\\s+(?:(?:be|been)\\s+)?${absentTestActionSource}${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|remained|stayed|became)\\s+(?:been\\s+)?${absentTestStateSource}\\b|never\\s+(?:completed|happened|occurred|ran)${remoteQualifierBoundary})|\\b${actualTestContextSource}\\b\\s+(?:failed|skipped)\\b)`,
+    `(?:\\b(?:no|without)\\s+(?:(?:actual|completed)\\s+)?${actualTestContextSource}\\b|\\b(?:not|never)\\s+${negatedTestActionModifierSource}${actualTestContextSource}\\b|\\b${actualTestContextSource}\\b[^;,\\n]{0,32}\\b(?:(?:did|does|do)\\s+(?:not|never)\\s+${negatedTestActionModifierSource}(?:complete|conduct|execute|happen|occur|perform|run|carry\\s+out)${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|can|could|would|will|should|may|might)\\s+(?:not|never)\\s+${negatedTestActionModifierSource}(?:(?:be|been)\\s+)?${absentTestActionSource}${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|remained|stayed|became)\\s+(?:been\\s+)?${absentTestStateSource}\\b|never\\s+${negatedTestActionModifierSource}(?:completed|happened|occurred|ran)${remoteQualifierBoundary})|\\b${actualTestContextSource}\\b\\s+(?:failed|skipped)\\b)`,
+    "i",
+  );
+  const subjectBoundTerminalCorrection = new RegExp(
+    `^\\s*(?:(?:the|this)\\s+)?${actualTestSubjectSource}\\b\\s+(?:(?:was|were|is|are|has|have|had|remained|stayed|became)\\s+(?:been\\s+)?${absentTestStateSource}|(?:failed|skipped))\\b(?:\\s+remotely)?\\s*,?\\s+and\\s+${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${directContextualCorrectionSource}`,
     "i",
   );
   const unrelatedCompletionTarget = /\b(?:assignment|checklist)\b/i;
+  const futureTimingSource =
+    "(?:tomorrow|next\\s+(?:(?:business\\s+)?day|week|month|quarter|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|in\\s+(?:\\d+|an?|one|two|three|four|five|six|seven|eight|nine|ten)\\s+(?:business\\s+)?(?:days?|weeks?|months?|years?))";
+  const futureTimingBridge =
+    "(?:(?!\\b(?:and|but|although|though|yet|however|then)\\b)[^.;\\n]){0,96}";
+  const futureEvidenceTiming = new RegExp(
+    `(?:\\b${futureTimingSource}\\b${futureTimingBridge}${boundedTarget}|${boundedTarget}${futureTimingBridge}\\b${futureTimingSource}\\b)`,
+    "i",
+  );
+  const evidenceSegmentBoundary = new RegExp(
+    `\\b(?:but(?:\\s+also)?|(?:and\\s+)?then|although|though|yet|however|and(?=\\s+(?:(?:(?:the|this)\\s+)?${actualTestSubjectSource}\\b|(?:will|shall|should|would|can|could|may|might)\\b)))\\b`,
+    "i",
+  );
   const negativeAction =
     "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
   const modifierBridge =
@@ -467,30 +493,52 @@ const hasPhysicalTouchClaim = (value, device) => {
       "i",
     ),
   ];
-  return normalized.split(/(?<![A-Za-z0-9])\.|\.(?![A-Za-z0-9])|[;:\n]+/).some((clause) => {
+  let hasPhysicalEvidence = false;
+  for (const clause of normalized.split(/(?<![A-Za-z0-9])\.|\.(?![A-Za-z0-9])|[;:\n]+/)) {
     const semanticClause = clause.replace(
       /\bnot\s+(?:only|just|merely|simply)\b(?=[^;,:\n]{0,96}\bbut(?:\s+also)?\b)/gi,
       "",
     );
     const negativeClause = semanticClause.replace(/[,–—]/g, " ");
-    if (negativePatterns.some((pattern) => pattern.test(negativeClause))) return false;
+    if (negativePatterns.some((pattern) => pattern.test(negativeClause))) {
+      hasPhysicalEvidence = false;
+      continue;
+    }
     let inheritedTestContext = false;
     let inheritedTestSubject = false;
-    return semanticClause.split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i).some((segment) => {
+    for (const segment of semanticClause.split(evidenceSegmentBoundary)) {
       const hasSegmentTestContext = actualTestContext.test(segment);
+      const hasSegmentTestSubject = actualTestSubject.test(segment);
       const hasAffirmativeSegmentTestContext =
-        hasSegmentTestContext && !absentTestContext.test(segment);
-      const hasEvidence =
+        hasSegmentTestContext &&
+        !absentTestContext.test(segment) &&
+        (hasSegmentTestSubject || leadingContextualPositive.test(segment));
+      const hasCorrectedTerminalState = subjectBoundTerminalCorrection.test(segment);
+      const hasEvidenceCandidate =
         directPositive.test(segment) ||
-        (inheritedTestSubject && directContextualCorrection.test(segment)) ||
+        hasCorrectedTerminalState ||
+        (inheritedTestSubject && inheritedContextualCorrection.test(segment)) ||
         ((hasAffirmativeSegmentTestContext || inheritedTestContext) &&
           !unrelatedCompletionTarget.test(segment) &&
+          (hasAffirmativeSegmentTestContext || leadingContextualPositive.test(segment)) &&
           contextualPositive.test(segment));
-      inheritedTestSubject ||= hasSegmentTestContext;
+      const hasInvalidEvidenceTiming =
+        hasEvidenceCandidate &&
+        (hasNonEvidenceAction(segment, negativeAction) || futureEvidenceTiming.test(segment));
+      if (
+        hasInvalidEvidenceTiming ||
+        (absentTestContext.test(segment) && !hasCorrectedTerminalState)
+      ) {
+        hasPhysicalEvidence = false;
+        inheritedTestContext = false;
+      } else if (hasEvidenceCandidate) {
+        hasPhysicalEvidence = true;
+      }
+      inheritedTestSubject ||= hasSegmentTestSubject;
       inheritedTestContext ||= hasAffirmativeSegmentTestContext;
-      return hasEvidence && !hasNonEvidenceAction(segment, negativeAction);
-    });
-  });
+    }
+  }
+  return hasPhysicalEvidence;
 };
 const hasNonNegatedVirtualMention = (value) => {
   const normalized = normalizeContractedNegations(value);
