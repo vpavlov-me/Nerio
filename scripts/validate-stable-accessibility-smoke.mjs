@@ -409,8 +409,9 @@ const hasPhysicalTouchClaim = (value, device) => {
     `(?:\\b(?:tested|used|using)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|\\b(?:tested|used|using)\\b\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|${boundedTarget}[^;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
     "i",
   );
+  const contextualActionBridge = `(?:\\s+${completionModifierTokenSource}){0,2}(?:\\s+(?:(?:the|this)\\s+)?(?:touch\\s+(?:interaction|controls?|testing)|tests?|testing|verification|checks?|smoke(?:\\s+(?:test(?:ing)?|checks?))?|audit))?(?:\\s+${completionModifierTokenSource}){0,2}`;
   const contextualPositive = new RegExp(
-    `\\b(?:verified|performed|completed|ran|passed)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
+    `\\b(?:verified|performed|completed|ran|passed)\\b${contextualActionBridge}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
     "i",
   );
   const actualTestContext =
@@ -459,17 +460,17 @@ const hasPhysicalTouchClaim = (value, device) => {
     );
     const negativeClause = semanticClause.replace(/[,–—]/g, " ");
     if (negativePatterns.some((pattern) => pattern.test(negativeClause))) return false;
-    const hasActualTestContext = actualTestContext.test(semanticClause);
-    return semanticClause
-      .split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i)
-      .some(
-        (segment) =>
-          (directPositive.test(segment) ||
-            (hasActualTestContext &&
-              !unrelatedCompletionTarget.test(segment) &&
-              contextualPositive.test(segment))) &&
-          !hasNonEvidenceAction(segment, negativeAction),
-      );
+    let inheritedTestContext = false;
+    return semanticClause.split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i).some((segment) => {
+      const hasSegmentTestContext = actualTestContext.test(segment);
+      const hasEvidence =
+        directPositive.test(segment) ||
+        ((hasSegmentTestContext || inheritedTestContext) &&
+          !unrelatedCompletionTarget.test(segment) &&
+          contextualPositive.test(segment));
+      inheritedTestContext ||= hasSegmentTestContext;
+      return hasEvidence && !hasNonEvidenceAction(segment, negativeAction);
+    });
   });
 };
 const hasNonNegatedVirtualMention = (value) => {
