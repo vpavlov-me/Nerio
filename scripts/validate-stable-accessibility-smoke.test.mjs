@@ -558,6 +558,8 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Testing was anything but performed on a physical iPhone 15 Pro.",
     "Completed the checklist assignment with a physical mobile device available.",
     "Testing was planned, but completed the documentation with a physical mobile device available.",
+    "Testing did not occur, but completed the audit with a physical mobile device available.",
+    "Testing did not occur and completed the audit with a physical mobile device available.",
     "Tested on a physical iPhone 15 Pro but not actually on a physical mobile device.",
     "Must be tested on a physical iPhone 15 Pro before release.",
     "Can be tested on a physical iPhone 15 Pro.",

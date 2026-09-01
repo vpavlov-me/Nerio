@@ -414,8 +414,13 @@ const hasPhysicalTouchClaim = (value, device) => {
     `\\b(?:verified|performed|completed|ran|passed)\\b${contextualActionBridge}\\s+(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
     "i",
   );
-  const actualTestContext =
-    /\b(?:tested|testing|tests?|verification|touch\s+(?:interaction|controls?|testing)|smoke(?:\s+(?:test(?:ing)?|checks?))?)\b/i;
+  const actualTestContextSource =
+    "(?:tested|testing|tests?|verification|touch\\s+(?:interaction|controls?|testing)|smoke(?:\\s+(?:test(?:ing)?|checks?))?)";
+  const actualTestContext = new RegExp(`\\b${actualTestContextSource}\\b`, "i");
+  const absentTestContext = new RegExp(
+    `(?:\\b(?:no|without)\\s+(?:(?:actual|completed)\\s+)?${actualTestContextSource}\\b|\\b${actualTestContextSource}\\b[^;,\\n]{0,32}\\b(?:(?:did|does|do)\\s+(?:not|never)\\s+(?:occur|happen|take\\s+place|run|complete)|(?:was|were|is|are|has|have|had)\\s+(?:not|never)\\s+(?:performed(?!\\s+remotely\\b)|completed|run|done|conducted|executed|carried\\s+out|available)|never\\s+(?:occurred|happened|ran|completed)))`,
+    "i",
+  );
   const unrelatedCompletionTarget = /\b(?:assignment|checklist)\b/i;
   const negativeAction =
     "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
@@ -463,12 +468,14 @@ const hasPhysicalTouchClaim = (value, device) => {
     let inheritedTestContext = false;
     return semanticClause.split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i).some((segment) => {
       const hasSegmentTestContext = actualTestContext.test(segment);
+      const hasAffirmativeSegmentTestContext =
+        hasSegmentTestContext && !absentTestContext.test(segment);
       const hasEvidence =
         directPositive.test(segment) ||
-        ((hasSegmentTestContext || inheritedTestContext) &&
+        ((hasAffirmativeSegmentTestContext || inheritedTestContext) &&
           !unrelatedCompletionTarget.test(segment) &&
           contextualPositive.test(segment));
-      inheritedTestContext ||= hasSegmentTestContext;
+      inheritedTestContext ||= hasAffirmativeSegmentTestContext;
       return hasEvidence && !hasNonEvidenceAction(segment, negativeAction);
     });
   });
