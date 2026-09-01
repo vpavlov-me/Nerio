@@ -297,6 +297,8 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "office workstation" },
     { id: "zoom-reflow-contrast", device: "Home PC" },
     { id: "zoom-reflow-contrast", device: "The Machine" },
+    { id: "zoom-reflow-contrast", device: "This isn't a Dell XPS" },
+    { id: "zoom-reflow-contrast", device: "This isn’t a Dell XPS" },
   ]) {
     const record = completedRecord();
     record.environments.find(({ id: candidateId }) => candidateId === id).device = device;
@@ -558,15 +560,19 @@ test("strict validation rejects negated contrast and physical-device claims", ()
   });
 });
 
-test('strict validation rejects contrast evidence preceded by "without"', () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "Verified reflow without high contrast enabled.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /contrast was enabled/);
-  });
+test("strict validation rejects negated or future contrast evidence", () => {
+  for (const notes of [
+    "Verified reflow without high contrast enabled.",
+    "High contrast will be enabled during the test.",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, notes);
+      assert.match(result.stderr, /contrast was enabled/);
+    });
+  }
 });
 
 test("strict validation rejects straight and curly contracted negations", () => {
@@ -631,14 +637,18 @@ test("strict validation rejects no-testing zoom claims on either side of the val
 });
 
 test("strict validation requires affirmative zoom testing language", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
-    "200% and 400% are planned for later";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /both 200% and 400% without negation/);
-  });
+  for (const zoom of [
+    "200% and 400% are planned for later",
+    "200% and 400% are scheduled to be tested",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, zoom);
+      assert.match(result.stderr, /both 200% and 400% without negation/);
+    });
+  }
 });
 
 test("strict validation rejects failed or unavailable target evidence", () => {

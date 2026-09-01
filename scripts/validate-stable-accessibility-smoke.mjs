@@ -67,23 +67,27 @@ const genericDesktopWords = new Set([
   "ubuntu",
 ]);
 function isMacDeviceDescription(value) {
-  const identity = typeof value === "string" ? macDeviceFamilyPattern.exec(value) : null;
+  const normalized = normalizeContractedNegations(value);
+  const identity = typeof normalized === "string" ? macDeviceFamilyPattern.exec(normalized) : null;
   return (
     identity !== null &&
-    !explicitDesktopPlaceholderPattern.test(value) &&
-    !identityNegationPattern.test(value.slice(0, identity.index))
+    !explicitDesktopPlaceholderPattern.test(normalized) &&
+    !identityNegationPattern.test(normalized.slice(0, identity.index))
   );
 }
 function isConcreteDesktopDeviceDescription(value) {
-  if (typeof value !== "string" || explicitDesktopPlaceholderPattern.test(value)) return false;
-  if (macDeviceFamilyPattern.test(value)) return isMacDeviceDescription(value);
-  const words = [...value.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)];
+  const normalized = normalizeContractedNegations(value);
+  if (typeof normalized !== "string" || explicitDesktopPlaceholderPattern.test(normalized)) {
+    return false;
+  }
+  if (macDeviceFamilyPattern.test(normalized)) return isMacDeviceDescription(normalized);
+  const words = [...normalized.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)];
   const identityWords = words.filter(([word]) => !genericDesktopWords.has(word.toLowerCase()));
-  const numericIdentifier = /\d/.exec(value);
+  const numericIdentifier = /\d/.exec(normalized);
   const modelToken = identityWords.find(
     ([word]) => /^[A-Z]{2,}$/.test(word) || /^[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]*)+$/.test(word),
   );
-  const knownFamily = knownUnnumberedDesktopFamilyPattern.exec(value);
+  const knownFamily = knownUnnumberedDesktopFamilyPattern.exec(normalized);
   const identity = knownFamily ?? modelToken ?? numericIdentifier;
   const hasModelIdentity =
     knownFamily !== null ||
@@ -92,7 +96,7 @@ function isConcreteDesktopDeviceDescription(value) {
   return (
     hasModelIdentity &&
     identity !== null &&
-    !identityNegationPattern.test(value.slice(0, identity.index))
+    !identityNegationPattern.test(normalized.slice(0, identity.index))
   );
 }
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
@@ -163,6 +167,11 @@ const normalizeContractedNegations = (value) =>
   typeof value === "string"
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
+const hasNonEvidenceAction = (value, actionSource) =>
+  new RegExp(
+    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
+    "i",
+  ).test(value);
 const negatedSetupPattern =
   /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
 const negatedDeviceDescriptionPattern = /^\s*(?:no|not(?:\s+an?)?|without)\b/i;
@@ -202,6 +211,7 @@ const isConcreteAndroidMobileDevice = (value) => {
 };
 const hasRequiredZoom = (value) => {
   const normalized = normalizeContractedNegations(value);
+  const affirmativeZoomAction = "(?:tested|verified|checked|completed|passed)";
   return (
     typeof normalized === "string" &&
     /\b200%/.test(normalized) &&
@@ -212,7 +222,8 @@ const hasRequiredZoom = (value) => {
         (clause) =>
           /\b200%/.test(clause) &&
           /\b400%/.test(clause) &&
-          /\b(?:tested|verified|checked|completed|passed)\b/i.test(clause),
+          new RegExp(`\\b${affirmativeZoomAction}\\b`, "i").test(clause) &&
+          !hasNonEvidenceAction(clause, affirmativeZoomAction),
       ) &&
     !/\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b[^.;\n]{0,40}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,40}\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b/i.test(
       normalized,
@@ -239,7 +250,12 @@ const hasEnabledContrast = (value) => {
   );
   return normalized
     .split(/[.;,\n]+/)
-    .some((clause) => positive.test(clause) && !negative.test(clause));
+    .some(
+      (clause) =>
+        positive.test(clause) &&
+        !negative.test(clause) &&
+        !hasNonEvidenceAction(clause, "(?:enabled|active|activated|turned\\s+on)"),
+    );
 };
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const asFlexibleRegexPhrase = (value) => value.trim().split(/\s+/).map(escapeRegExp).join("\\s+");
@@ -260,10 +276,6 @@ const hasPhysicalTouchClaim = (value, device) => {
   );
   const negativeAction =
     "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
-  const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${negativeAction}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${negativeAction}|needs?\\s+to\\s+(?:be\\s+)?${negativeAction})\\b`,
-    "i",
-  );
   const modifierBridge =
     "(?:\\s+(?!(?:but|simulators?|emulators?|virtual|physical|device|phone|tablet)\\b)[A-Za-z-]+){0,6}";
   const negativePatterns = [
@@ -307,7 +319,7 @@ const hasPhysicalTouchClaim = (value, device) => {
     if (negativePatterns.some((pattern) => pattern.test(negativeClause))) return false;
     return semanticClause
       .split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i)
-      .some((segment) => positive.test(segment) && !nonEvidenceAction.test(segment));
+      .some((segment) => positive.test(segment) && !hasNonEvidenceAction(segment, negativeAction));
   });
 };
 const hasNonNegatedVirtualMention = (value) => {
