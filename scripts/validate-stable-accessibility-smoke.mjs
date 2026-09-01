@@ -268,18 +268,21 @@ const normalizeContractedNegations = (value) =>
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
 const nonCompletionModifierSource =
-  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|only|ostensibly|partially|partly|perhaps|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively)";
+  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|ostensibly|partially|partly|perhaps|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively)";
 const completionModifierTokenSource = `(?!(?:${nonCompletionModifierSource})\\b)(?:[A-Za-z]+ly|already|both|later|now|today|yesterday)`;
 const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
-const hasNonEvidenceAction = (value, actionSource) => {
+const hasNonEvidenceAction = (value, actionSource, completedCorrectionSource) => {
   const nonEvidenceAction = new RegExp(
     `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})\\b`,
     "i",
   );
   const match = nonEvidenceAction.exec(value);
   if (!match) return false;
+  const correctionSource =
+    completedCorrectionSource ??
+    `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`;
   const completedCorrection = new RegExp(
-    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`,
+    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${correctionSource}`,
     "i",
   );
   return !completedCorrection.test(value.slice(match.index + match[0].length));
@@ -374,13 +377,19 @@ const hasEnabledContrast = (value) => {
     `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|disabled|off|unavailable|absent|failed|impossible)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|remained)\\s+)?(?:enabled|active|available)\\b|\\b(?:not|never|without)\\s+(?:(?:using|having|enabling|activating)\\s+)?(?:the\\s+)?${target}\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
     "i",
   );
+  const anaphoricCompletionTail = `(?=(?:\\s+${completionModifierTokenSource}){0,2}\\s*(?:$|(?:during|throughout|for)\\s+(?:(?:the|this)\\s+)?(?:test|testing|smoke|audit|verification)\\b))`;
+  const targetBoundCorrection = `(?:${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${completionModifierSource}(?:enabled|active)\\b${anaphoricCompletionTail}|${completionModifierSource}(?:enabled|activated|turned\\s+on)\\b\\s+(?:(?:the|macOS)\\s+){0,2}${target}\\b|(?:the\\s+)?${target}\\b\\s+${completionModifierSource}(?:(?:is|was|remained|stayed|kept)\\s+)?${completionModifierSource}(?:enabled|active)\\b)`;
   return normalized
     .split(/[.;,\n]+/)
     .some(
       (clause) =>
         positive.test(clause) &&
         !negative.test(clause) &&
-        !hasNonEvidenceAction(clause, "(?:enabled|active|activated|turned\\s+on)"),
+        !hasNonEvidenceAction(
+          clause,
+          "(?:enabled|active|activated|turned\\s+on)",
+          targetBoundCorrection,
+        ),
     );
 };
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -396,10 +405,17 @@ const hasPhysicalTouchClaim = (value, device) => {
   const boundedTarget = `\\b${target}(?![A-Za-z0-9_])`;
   const actionToTargetBridge =
     "(?:(?!\\b(?:simulators?|emulators?|virtual|physical|device|phone|tablet)\\b)[^;,\\n]){0,56}";
-  const positive = new RegExp(
-    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|\\b(?:verified|tested|used|using)\\b\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|${boundedTarget}[^;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
+  const directPositive = new RegExp(
+    `(?:\\b(?:tested|used|using)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|\\b(?:tested|used|using)\\b\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|${boundedTarget}[^;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
     "i",
   );
+  const contextualPositive = new RegExp(
+    `\\b(?:verified|performed|completed|ran|passed)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
+    "i",
+  );
+  const actualTestContext =
+    /\b(?:tested|testing|tests?|verification|touch\s+(?:interaction|controls?|testing)|smoke(?:\s+(?:test(?:ing)?|checks?))?)\b/i;
+  const unrelatedCompletionTarget = /\b(?:assignment|checklist)\b/i;
   const negativeAction =
     "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
   const modifierBridge =
@@ -443,9 +459,17 @@ const hasPhysicalTouchClaim = (value, device) => {
     );
     const negativeClause = semanticClause.replace(/[,–—]/g, " ");
     if (negativePatterns.some((pattern) => pattern.test(negativeClause))) return false;
+    const hasActualTestContext = actualTestContext.test(semanticClause);
     return semanticClause
       .split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i)
-      .some((segment) => positive.test(segment) && !hasNonEvidenceAction(segment, negativeAction));
+      .some(
+        (segment) =>
+          (directPositive.test(segment) ||
+            (hasActualTestContext &&
+              !unrelatedCompletionTarget.test(segment) &&
+              contextualPositive.test(segment))) &&
+          !hasNonEvidenceAction(segment, negativeAction),
+      );
   });
 };
 const hasNonNegatedVirtualMention = (value) => {

@@ -556,6 +556,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Testing was not performed on a lab phone nor on a physical iPhone 15 Pro.",
     "Testing was not performed: only planned on a physical iPhone 15 Pro.",
     "Testing was anything but performed on a physical iPhone 15 Pro.",
+    "Completed the checklist assignment with a physical mobile device available.",
     "Tested on a physical iPhone 15 Pro but not actually on a physical mobile device.",
     "Must be tested on a physical iPhone 15 Pro before release.",
     "Can be tested on a physical iPhone 15 Pro.",
@@ -671,6 +672,9 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "High contrast should have been enabled during the test.",
     "High contrast was supposed to be enabled during the test.",
     "High contrast was intended to be enabled during the test.",
+    "High contrast was intended to be enabled but enabled dark mode instead.",
+    "High contrast was intended to be enabled but enabled dark mode instead of high contrast.",
+    "High contrast was intended to be enabled but high contrast was intended to be enabled.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -690,6 +694,17 @@ test("strict validation accepts completed evidence after an unmet expectation", 
     "High contrast should have been enabled earlier and was enabled during the test";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
     "Touch interaction should have been completed yesterday and was completed today on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts a target-bound contrast correction", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "High contrast was intended to be enabled but high contrast was enabled during the test";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
@@ -812,6 +827,7 @@ test("strict validation accepts completed evidence bound to both zoom levels", (
     "200% and 400% were both tested",
     "200% and 400% were successfully tested",
     "200% and 400% were thoroughly tested",
+    "200% and 400% were only tested today",
     "At 200% and 400%, testing passed",
   ]) {
     const record = completedRecord();
