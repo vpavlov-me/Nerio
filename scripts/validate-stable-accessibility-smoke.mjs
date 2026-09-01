@@ -230,17 +230,15 @@ const mobilePlaceholderPattern = new RegExp(
 const nonAndroidFamilyPattern =
   /(?:iPhones?|iPads?|\bApple\b|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|\b(?:Android|iOS|iPadOS|Windows|macOS|Linux)\b)/i;
 const browserOnlyDevicePattern =
-  /^(?:(?:Google|Mozilla|Apple|Mobile)\s+)?(?:Safari|Chrome|Chromium|Firefox|Edge|WebKit|Mozilla)(?:$|[\s/-].*)/i;
-const genericMobileWords = new Set([
-  "physical",
-  "mobile",
-  "touch",
-  "device",
-  "phone",
-  "tablet",
-  "hardware",
-  "handset",
-]);
+  /^(?:(?:Google|Microsoft|Mozilla|Apple|Mobile)\s+)?(?:Safari|Chrome|Chromium|Firefox|Edge|WebKit|Mozilla)(?:$|[\s/-].*)/i;
+const knownAndroidManufacturerPattern =
+  /^(?:Acer|ASUS|Fairphone|Google|Honor|HTC|Huawei|Lenovo|LG|Microsoft|Motorola|Nokia|Nothing|Nubia|OnePlus|OPPO|POCO|realme|Samsung|Sony|TCL|vivo|Xiaomi|ZTE)\b/i;
+const knownUnnumberedAndroidModelPattern =
+  /^(?:(?:Google\s+)?Pixel\s+(?:Fold|Tablet)|Samsung\s+Galaxy\s+Fold|OnePlus\s+Open|Microsoft\s+Surface\s+Duo|Motorola\s+Razr\+?)$/i;
+const nonMobileAndroidDescriptionPattern =
+  /\b(?:account|adapter|aspire|audit|book|browser|buds?|camera|case|charger|checklist|chromebook|cover|desktop|display|dock|documentation|ear(?:buds?)?|fit|gear|gram|headphones?|headset|hub|ideapad|keyboard|laptop|magicbook|matebook|monitor|mouse|nest|office|pen|pixelbook|printer|projector|redmibook|release|report|ring|router|scanner|sleeve|speaker|stand|strix|support|swift|tag|television|thinkbook|thinkcentre|thinkpad|travelmate|tuf|tv|ultrapc|vaio|vivobook|watch|wearable|workspace|zenbook|zephyrus)\d*[A-Za-z]*\b|\b[A-Za-z]+Book\d*[A-Za-z]*\b|\bSurface\s+(?:Laptop|Pro|Studio)\b|\bYoga\b(?!\s+Tab\b)|\bROG\b(?!\s+Phone\b)/i;
+const knownAndroidModelCodePattern =
+  /^(?:(?:Samsung\s+)?SM-[A-Z0-9]*\d[A-Z0-9]*(?:\/[A-Z0-9]+)?|(?:Sony\s+)?XQ-[A-Z0-9]*\d[A-Z0-9]*(?:\/[A-Z0-9]+)?|(?:(?:OPPO|OnePlus)\s+)?CPH\d+[A-Z0-9]*|(?:Motorola\s+)?XT\d+[A-Z0-9-]*|(?:Nokia\s+)?TA-\d+[A-Z0-9-]*)$/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -295,8 +293,9 @@ const normalizeContractedNegations = (value) =>
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
 const nonCompletionModifierSource =
-  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|ostensibly|partially|partly|perhaps|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively)";
-const completionModifierTokenSource = `(?!(?:${nonCompletionModifierSource})\\b)(?:[A-Za-z]+ly|already|both|later|now|today|yesterday)`;
+  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|inconclusively|incorrectly|inadequately|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|ostensibly|partially|partly|perhaps|poorly|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively|unsatisfactorily|unsuccessfully|wrongly)";
+const completionModifierTokenSource =
+  "(?:actually|already|both|carefully|completely|conclusively|correctly|directly|eventually|explicitly|finally|fully|independently|later|locally|manually|now|only|previously|properly|really|remotely|repeatedly|separately|simply|subsequently|successfully|thoroughly|today|ultimately|yesterday)";
 const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
 const hasNonEvidenceAction = (value, actionSource, completedCorrectionSource) => {
   const nonEvidenceAction = new RegExp(
@@ -339,17 +338,16 @@ const isConcreteAndroidMobileDevice = (value) => {
     !/^[A-Za-z0-9][A-Za-z0-9 .()+_/-]{2,79}$/.test(device) ||
     mobilePlaceholderPattern.test(device) ||
     nonAndroidFamilyPattern.test(device) ||
-    browserOnlyDevicePattern.test(device)
+    browserOnlyDevicePattern.test(device) ||
+    nonMobileAndroidDescriptionPattern.test(device)
   ) {
     return false;
   }
-  const tokens = device.match(/[A-Za-z0-9]+/g) ?? [];
-  const descriptiveWords = tokens.filter(
-    (token) => /[A-Za-z]/.test(token) && !genericMobileWords.has(token.toLowerCase()),
+  return (
+    knownAndroidModelCodePattern.test(device) ||
+    knownUnnumberedAndroidModelPattern.test(device) ||
+    (knownAndroidManufacturerPattern.test(device) && /\d/.test(device))
   );
-  if (descriptiveWords.length === 0) return false;
-  const hasModelIdentifier = /[A-Za-z]/.test(device) && /\d/.test(device);
-  return hasModelIdentifier || descriptiveWords.length >= 2;
 };
 const hasRequiredZoom = (value) => {
   const normalized = normalizeContractedNegations(value);

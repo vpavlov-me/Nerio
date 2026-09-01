@@ -168,13 +168,23 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(workspaceRoute);
 
+  await expect(page.getByRole("button", { name: "Open workspace navigation" })).toBeVisible();
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        ),
+      { message: "template shell should settle without horizontal overflow" },
+    )
+    .toBeLessThanOrEqual(1);
+
   const shell = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
     const rootStyle = getComputedStyle(element);
     return {
       bottom: rootStyle.getPropertyValue("--n-template-safe-area-block-end").trim(),
       inlineEnd: rootStyle.getPropertyValue("--n-template-safe-area-inline-end").trim(),
       inlineStart: rootStyle.getPropertyValue("--n-template-safe-area-inline-start").trim(),
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       top: rootStyle.getPropertyValue("--n-template-safe-area-block-start").trim(),
     };
   });
@@ -183,7 +193,6 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
   expect(shell.bottom).toBe("34px");
   expect(shell.inlineStart).toBe("12px");
   expect(shell.inlineEnd).toBe("4px");
-  expect(shell.overflow).toBeLessThanOrEqual(1);
 
   const previewSettings = await openMobilePreviewSettings(page);
   await previewSettings.getByRole("combobox", { name: "Direction" }).click();
@@ -200,17 +209,24 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
     "data-side",
     "right",
   );
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        ),
+      { message: "RTL template shell should settle without horizontal overflow" },
+    )
+    .toBeLessThanOrEqual(1);
   const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
     const rootStyle = getComputedStyle(element);
     return {
       inlineEnd: rootStyle.getPropertyValue("--n-template-safe-area-inline-end").trim(),
       inlineStart: rootStyle.getPropertyValue("--n-template-safe-area-inline-start").trim(),
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
   });
   expect(rtlInsets.inlineStart).toBe("4px");
   expect(rtlInsets.inlineEnd).toBe("12px");
-  expect(rtlInsets.overflow).toBeLessThanOrEqual(1);
   await expectHealthyPage(page, problems);
 });
 
