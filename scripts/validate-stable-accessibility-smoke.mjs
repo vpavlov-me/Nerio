@@ -46,10 +46,12 @@ const allowedPostCandidateEvidencePaths = new Set([
   "quality/stable-accessibility-smoke.json",
 ]);
 const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
-const concreteMacDevicePattern =
-  /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac (?:mini|Studio|Pro)\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
+const concreteMacDevicePattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
 const concreteDesktopDevicePattern =
-  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
+  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
+const explicitDesktopPlaceholderPattern =
+  /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
+const genericDesktopDescriptionPattern = /\b(?:desktop|laptop|computer|hardware|machine|PC)\b/i;
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
 const virtualDevicePattern = new RegExp(`\\b${virtualDeviceSource}\\b`, "i");
 const mobilePlaceholderPattern = new RegExp(
@@ -391,7 +393,12 @@ for (const [index, environment] of environments.entries()) {
       const negated =
         ["operatingSystem", "browser", "assistiveTechnology"].includes(field) &&
         negatedSetupPattern.test(normalizeContractedNegations(value));
-      if (nonEmpty(value) && (!pattern.test(value.trim()) || negated)) {
+      const normalizedValue = typeof value === "string" ? value.trim() : "";
+      const placeholderDevice =
+        field === "device" &&
+        (explicitDesktopPlaceholderPattern.test(normalizedValue) ||
+          (genericDesktopDescriptionPattern.test(normalizedValue) && !/\d/.test(normalizedValue)));
+      if (nonEmpty(value) && (!pattern.test(normalizedValue) || negated || placeholderDevice)) {
         errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
       }
     }

@@ -239,6 +239,59 @@ test("strict validation rejects evidence recorded against the wrong required env
   });
 });
 
+test("strict validation accepts ordinary Mac hardware descriptions without inventory details", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").device = "MacBook Pro";
+  record.environments.find(({ id }) => id === "macos-chromium-keyboard").device = "Mac Studio";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").device = "Mac mini";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts concrete desktop models containing generic hardware words", () => {
+  for (const device of [
+    "Framework Laptop 13",
+    "Microsoft Surface Laptop 7",
+    "HP EliteDesk 800 G9 Desktop Mini PC",
+  ]) {
+    const record = completedRecord();
+    const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    desktop.operatingSystem = "Windows 11";
+    desktop.device = device;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${device}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation still rejects placeholder desktop hardware descriptions", () => {
+  for (const device of [
+    "Test MacBook Pro",
+    "Generic Mac Studio",
+    "Example Mac mini",
+    "Unknown MacBook Pro",
+    "desktop Mac Studio",
+    "MacBook Pro hardware",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "macos-safari-voiceover").device = device;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, device);
+      assert.match(
+        result.stderr,
+        /device does not match the required macos-safari-voiceover setup/,
+        device,
+      );
+    });
+  }
+});
+
 test("strict validation accepts a maintained mobile browser and any concrete physical model", () => {
   const record = completedRecord();
   const mobile = record.environments.find(({ id }) => id === "mobile-touch");
