@@ -378,19 +378,49 @@ const paths = parsePathOptions(
   },
 );
 
-const [planSource, report] = await Promise.all([
-  readFile(paths["--plan"], "utf8"),
-  readFile(paths["--report"], "utf8"),
-]);
-
 const errors = [];
-let plan;
+let planSource;
+let report = "";
+
+function isJsonObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function jsonObjectRows(rows, label) {
+  if (!Array.isArray(rows)) return [];
+  return rows.filter((row, index) => {
+    if (isJsonObject(row)) return true;
+    errors.push(`${label}[${index}] must be a JSON object.`);
+    return false;
+  });
+}
 
 try {
-  plan = JSON.parse(planSource);
+  planSource = await readFile(paths["--plan"], "utf8");
 } catch (error) {
-  errors.push(`Manual audit plan is not valid JSON: ${error.message}`);
+  errors.push(`Manual audit plan must be readable: ${error.message}`);
 }
+
+try {
+  report = await readFile(paths["--report"], "utf8");
+} catch (error) {
+  errors.push(`Manual audit report must be readable: ${error.message}`);
+}
+
+let plan;
+
+if (planSource !== undefined) {
+  try {
+    plan = JSON.parse(planSource);
+  } catch (error) {
+    errors.push(`Manual audit plan is not valid JSON: ${error.message}`);
+  }
+}
+if (plan !== undefined && !isJsonObject(plan)) {
+  errors.push("Manual audit plan must be a JSON object.");
+  plan = undefined;
+}
+const planScenarios = jsonObjectRows(plan?.scenarios, "scenarios");
 
 if (expectComplete && plan?.status !== "complete") {
   errors.push(
@@ -549,7 +579,8 @@ function validateEvidenceLinks(label, evidence) {
 }
 
 function hasContextualEvidence(evidence) {
-  return (evidence ?? []).some((link) => {
+  if (!Array.isArray(evidence)) return false;
+  return evidence.some((link) => {
     try {
       const url = new URL(link);
       return (
@@ -642,7 +673,8 @@ function findingCell(value) {
 }
 
 function isDeviceConsistentMobileViewport(environment) {
-  const dimensions = environment?.viewport?.match(/^(\d{3,4})\s*[x×]\s*(\d{3,4})$/i);
+  if (typeof environment?.viewport !== "string") return false;
+  const dimensions = environment.viewport.match(/^(\d{3,4})\s*[x×]\s*(\d{3,4})$/i);
   if (!dimensions) return false;
   const shortEdge = Math.min(Number(dimensions[1]), Number(dimensions[2]));
   const longEdge = Math.max(Number(dimensions[1]), Number(dimensions[2]));
@@ -704,7 +736,7 @@ if (plan) {
     errors.push("Required evidence fields must be unique.");
   }
 
-  const scenarios = Array.isArray(plan.scenarios) ? plan.scenarios : [];
+  const scenarios = planScenarios;
   if (!scenarios.length) errors.push("Manual audit plan must include scenarios.");
 
   const scenarioIds = scenarios.map((scenario) => scenario?.id).filter(Boolean);
@@ -735,22 +767,25 @@ if (plan) {
       }
     }
 
-    coveredSurfaces.push(...(scenario?.surfaces ?? []));
-    coveredComponents.push(...(scenario?.components ?? []));
+    const scenarioSurfaces = Array.isArray(scenario.surfaces) ? scenario.surfaces : [];
+    const scenarioComponents = Array.isArray(scenario.components) ? scenario.components : [];
+    const scenarioEnvironments = Array.isArray(scenario.environments) ? scenario.environments : [];
 
-    for (const environmentId of scenario?.environments ?? []) {
+    coveredSurfaces.push(...scenarioSurfaces);
+    coveredComponents.push(...scenarioComponents);
+
+    for (const environmentId of scenarioEnvironments) {
       if (!requiredEnvironmentIds.includes(environmentId)) {
         errors.push(`${prefix} references unknown environment ${environmentId}.`);
       }
     }
-    if (new Set(scenario?.environments ?? []).size !== (scenario?.environments ?? []).length) {
+    if (new Set(scenarioEnvironments).size !== scenarioEnvironments.length) {
       errors.push(`${prefix} environment IDs must be unique.`);
     }
     const canonicalEnvironments = requiredScenarioEnvironments[scenario?.id];
     if (
       canonicalEnvironments &&
-      [...(scenario?.environments ?? [])].sort().join("\n") !==
-        [...canonicalEnvironments].sort().join("\n")
+      [...scenarioEnvironments].sort().join("\n") !== [...canonicalEnvironments].sort().join("\n")
     ) {
       errors.push(
         `${prefix} environments must exactly match: ${canonicalEnvironments.join(", ")}.`,
@@ -865,7 +900,10 @@ if (plan?.status === "complete") {
   }
 
   const completion = plan.completion;
-  const candidate = completion?.candidate;
+  if (completion !== undefined && !isJsonObject(completion)) {
+    errors.push("completion must be a JSON object.");
+  }
+  const candidate = isJsonObject(completion) ? completion.candidate : undefined;
   if (!candidate || typeof candidate !== "object") {
     errors.push("Completed audit plan must include completion.candidate evidence.");
   } else {
@@ -1016,9 +1054,10 @@ if (plan?.status === "complete") {
     }
   }
 
-  const completedEnvironments = Array.isArray(completion?.environments)
-    ? completion.environments
-    : [];
+  const completedEnvironments = jsonObjectRows(
+    isJsonObject(completion) ? completion.environments : undefined,
+    "completion.environments",
+  );
   const completedEnvironmentIds = completedEnvironments
     .map((environment) => environment?.id)
     .filter(Boolean);
@@ -1138,9 +1177,14 @@ if (plan?.status === "complete") {
     }
   }
 
-  const completedResults = Array.isArray(completion?.results) ? completion.results : [];
-  const expectedResultIds = (plan.scenarios ?? []).flatMap((scenario) =>
-    (scenario.environments ?? []).map((environmentId) => `${scenario.id}::${environmentId}`),
+  const completedResults = jsonObjectRows(
+    isJsonObject(completion) ? completion.results : undefined,
+    "completion.results",
+  );
+  const expectedResultIds = planScenarios.flatMap((scenario) =>
+    (Array.isArray(scenario.environments) ? scenario.environments : []).map(
+      (environmentId) => `${scenario.id}::${environmentId}`,
+    ),
   );
   const completedResultIds = completedResults.map(
     (result) => `${result?.scenarioId}::${result?.environmentId}`,
@@ -1376,8 +1420,11 @@ if (plan?.status === "complete") {
   }
   for (const environment of completedEnvironments) {
     const section = environmentNoteSection(environment.id);
-    const expectedScenarios = (plan.scenarios ?? [])
-      .filter((scenario) => scenario.environments.includes(environment.id))
+    const expectedScenarios = planScenarios
+      .filter(
+        (scenario) =>
+          Array.isArray(scenario.environments) && scenario.environments.includes(environment.id),
+      )
       .map((scenario) => `\`${scenario.id}\``)
       .join(", ");
     const expectedFindings =
@@ -1423,7 +1470,7 @@ if (plan?.status === "complete") {
       );
     }
   }
-  for (const scenario of plan.scenarios ?? []) {
+  for (const scenario of planScenarios) {
     const scenarioResults = completedResults.filter(({ scenarioId }) => scenarioId === scenario.id);
     const expectedStatus = aggregateResults(scenarioResults);
     const recordedStatus = reportStatus(scenario.id, "Scenario matrix");
@@ -1451,6 +1498,6 @@ if (errors.length) {
   const state =
     plan.status === "complete" ? "manual evidence complete" : "manual evidence still pending";
   console.log(
-    `Manual audit plan is ready: ${plan.scenarios.length} scenarios, ${plan.requiredEnvironments.length} required environments, ${state}.`,
+    `Manual audit plan is ready: ${planScenarios.length} scenarios, ${plan.requiredEnvironments.length} required environments, ${state}.`,
   );
 }

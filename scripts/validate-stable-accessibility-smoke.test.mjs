@@ -161,6 +161,34 @@ test("strict validation accepts a complete scoped smoke", () => {
   });
 });
 
+test("malformed smoke records fail with scoped diagnostics instead of stack traces", () => {
+  withRecord(null, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Stable accessibility smoke record must be a JSON object/);
+    assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+  });
+
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "mobile-touch").device = [];
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /device is required when complete/);
+    assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+  });
+});
+
+test("strict validation rejects non-object release metadata", () => {
+  withRecord(completedRecord(), (target, releaseMetadata, packagesRoot) => {
+    writeFileSync(releaseMetadata, "null");
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Release metadata must be a JSON object/);
+    assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+  });
+});
+
 test("strict validation rejects a stale ancestor after non-evidence changes", () => {
   const record = completedRecord();
   const latestValidatorChange = execFileSync(
@@ -224,6 +252,71 @@ test("strict validation accepts a maintained mobile browser and any concrete phy
   });
 });
 
+test("strict validation accepts concrete mobile names and model codes", () => {
+  for (const device of [
+    "Google Pixel Fold",
+    "Samsung SM-S921B/DS",
+    "Motorola Edge 50 Pro",
+    "Samsung Galaxy S25 Edge",
+    "SM-S921B/DS",
+    "XQ-EC54",
+  ]) {
+    const record = completedRecord();
+    const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+    mobile.operatingSystem = "Android 16";
+    mobile.browser = "Firefox 143.0";
+    mobile.device = device;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${device}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation accepts a concrete named Apple model", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "mobile-touch").device = "iPhone Air";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation rejects placeholder and browser-only mobile device values", () => {
+  for (const setup of [
+    { operatingSystem: "iOS 18.5", browser: "Safari 18.5", device: "iPhone test device" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Firefox 143.0" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Physical mobile device" },
+    {
+      operatingSystem: "Android 16",
+      browser: "Firefox 143.0",
+      device: "Physical mobile device 123",
+    },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Mobile phone" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Apple iPhone 15 Pro" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Google Chrome 143.0" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "Mozilla/5.0" },
+    { operatingSystem: "Android 16", browser: "Firefox 143.0", device: "WebKit 605.1" },
+    { operatingSystem: "iOS 18.5", browser: "Safari 18.5", device: "iPhone Safari 18.5" },
+  ]) {
+    const record = completedRecord();
+    Object.assign(
+      record.environments.find(({ id }) => id === "mobile-touch"),
+      setup,
+    );
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, setup.device);
+      assert.match(
+        result.stderr,
+        /device must be a concrete physical model for its recorded mobile OS/,
+      );
+    });
+  }
+});
+
 test("strict validation rejects negated contrast and physical-device claims", () => {
   const record = completedRecord();
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
@@ -241,14 +334,143 @@ test("strict validation rejects negated contrast and physical-device claims", ()
   });
 });
 
-test("strict validation accepts an explicitly negated simulator mention", () => {
+test("strict validation rejects straight and curly contracted negations", () => {
   const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").assistiveTechnology =
+    "VoiceOver wasn't enabled";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
+    "200% and 400% weren't tested";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "Increase Contrast wasn’t enabled.";
   record.environments.find(({ id }) => id === "mobile-touch").notes =
-    "Verified touch interaction on a physical mobile device, not a simulator.";
+    "This wasn’t a physical mobile device.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(
+      result.stderr,
+      /assistiveTechnology does not match the required macos-safari-voiceover setup/,
+    );
+    assert.match(result.stderr, /both 200% and 400% without negation/);
+    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation rejects no, neither, and cannot evidence negations", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").assistiveTechnology =
+    "No VoiceOver was used";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
+    "Neither 200% nor 400% was tested";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "Increase Contrast cannot be enabled.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "No physical mobile device was used.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(
+      result.stderr,
+      /assistiveTechnology does not match the required macos-safari-voiceover setup/,
+    );
+    assert.match(result.stderr, /both 200% and 400% without negation/);
+    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation rejects no-testing zoom claims on either side of the values", () => {
+  for (const zoom of [
+    "No testing was performed at 200% or 400%",
+    "200% and 400%: no testing was performed",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, zoom);
+      assert.match(result.stderr, /both 200% and 400% without negation/);
+    });
+  }
+});
+
+test("strict validation rejects failed or unavailable target evidence", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
+    "200% and 400% testing failed.";
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "High contrast was unavailable; keyboard navigation remained enabled.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Physical mobile device was unavailable; no simulator was used.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /both 200% and 400% without negation/);
+    assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation accepts positive target evidence after no-issues observations", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "No high contrast issues were found; Increase Contrast remained enabled.";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "No physical mobile device issues were found; tests ran on a physical mobile device.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts explicitly negated simulator mentions", () => {
+  for (const notes of [
+    "Verified touch interaction on a physical mobile device, not a simulator.",
+    "Verified touch interaction on a physical mobile device; the simulator wasn't used.",
+    "Verified touch interaction on a physical mobile device; the simulator wasn’t used.",
+    "Verified touch interaction on a physical mobile device; the simulator couldn't be used.",
+    "Verified touch interaction on a physical mobile device with no issues.",
+    "Verified touch interaction on a physical mobile device; no simulator or emulator was used.",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "mobile-touch").notes = notes;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation rejects plural virtual-device evidence", () => {
+  for (const mutate of [
+    (mobile) => {
+      mobile.device = "iPhone 15 Pro Simulators";
+    },
+    (mobile) => {
+      mobile.notes = "Verified touch on a physical mobile device using simulators.";
+    },
+  ]) {
+    const record = completedRecord();
+    mutate(record.environments.find(({ id }) => id === "mobile-touch"));
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must use a physical mobile touch device, not an emulator/);
+    });
+  }
+});
+
+test("strict validation rejects a used simulator despite an earlier physical-device negation", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Physical mobile device wasn't working, used simulator.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /must use a physical mobile touch device, not an emulator/);
   });
 });
 
@@ -265,6 +487,18 @@ test("strict validation rejects a mobile OS and device-family mismatch", () => {
       result.stderr,
       /device must be a concrete physical model for its recorded mobile OS/,
     );
+  });
+});
+
+test("strict validation rejects mixed mobile OS families", () => {
+  const record = completedRecord();
+  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+  mobile.operatingSystem = "iOS 26 / Android 16";
+  mobile.device = "iPhone 17 Pro";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /must name exactly one supported mobile OS family/);
   });
 });
 

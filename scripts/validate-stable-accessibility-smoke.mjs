@@ -50,10 +50,26 @@ const concreteMacDevicePattern =
   /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac (?:mini|Studio|Pro)\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
 const concreteDesktopDevicePattern =
   /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
-const concreteAppleMobileDevicePattern =
-  /^(?:iPhone|iPad)\s+(?!(?:emulator|simulator|virtual)\b)[A-Za-z0-9][A-Za-z0-9 .()+_-]{1,60}$/i;
-const concreteAndroidMobileDevicePattern =
-  /^(?!.*\b(?:iPhone|iPad|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|desktop|laptop|computer|hardware|machine|test device|sample device|generic device|emulator|simulator|virtual)\b)(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9 .()+_-]{2,79}$/i;
+const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
+const virtualDevicePattern = new RegExp(`\\b${virtualDeviceSource}\\b`, "i");
+const mobilePlaceholderPattern = new RegExp(
+  `\\b(?:test|sample|generic|unknown|placeholder|example|${virtualDeviceSource})\\b`,
+  "i",
+);
+const nonAndroidFamilyPattern =
+  /(?:iPhones?|iPads?|\bApple\b|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|\b(?:Android|iOS|iPadOS|Windows|macOS|Linux)\b)/i;
+const browserOnlyDevicePattern =
+  /^(?:(?:Google|Mozilla|Apple|Mobile)\s+)?(?:Safari|Chrome|Chromium|Firefox|Edge|WebKit|Mozilla)(?:$|[\s/-].*)/i;
+const genericMobileWords = new Set([
+  "physical",
+  "mobile",
+  "touch",
+  "device",
+  "phone",
+  "tablet",
+  "hardware",
+  "handset",
+]);
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -78,6 +94,8 @@ const environmentMetadataRequirements = {
   },
 };
 const errors = [];
+const isJsonObject = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
 
 let record;
 try {
@@ -86,48 +104,130 @@ try {
   errors.push(`Stable accessibility smoke record must be readable JSON: ${error.message}`);
   record = {};
 }
+if (!isJsonObject(record)) {
+  errors.push("Stable accessibility smoke record must be a JSON object.");
+  record = {};
+}
 
 const isIsoUtc = (value) =>
   typeof value === "string" &&
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(value) &&
   Number.isFinite(Date.parse(value));
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
-const negatedSetupPattern = /\b(?:not|never|without|disabled|off|untested|skipped)\b/i;
-const hasRequiredZoom = (value) =>
-  typeof value === "string" &&
-  /\b200%/.test(value) &&
-  /\b400%/.test(value) &&
-  !/\b(?:not|never|without|skipped|untested)\b[^.;\n]{0,32}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,32}\b(?:not|never|without|skipped|untested)\b/i.test(
-    value,
-  );
-const hasEnabledContrast = (value) =>
-  typeof value === "string" &&
-  /\b(?:high|increased|increase) contrast\b.*\b(?:enabled|active|on)\b|\b(?:enabled|active|on)\b.*\b(?:high|increased|increase) contrast\b/i.test(
-    value,
-  ) &&
-  !/\b(?:not|never|without)\b[^.;\n]{0,40}\b(?:high|increased|increase) contrast\b|\b(?:high|increased|increase) contrast\b[^.;\n]{0,40}(?:\b(?:not|never|without)\b[^.;\n]{0,24}\b(?:enabled|active|on)\b|\b(?:disabled|off)\b)/i.test(
-    value,
-  );
-const hasPhysicalTouchClaim = (value) =>
-  typeof value === "string" &&
-  /\bphysical(?:\s+mobile)?\s+(?:touch\s+)?device\b|\bphysical\s+(?:phone|tablet)\b|\bphysical\b[^.;\n]{0,32}\btouch\b/i.test(
-    value,
-  ) &&
-  !/\b(?:not|never|without)\b[^.;\n]{0,32}\bphysical\b|\bphysical(?:\s+mobile)?\s+(?:touch\s+)?device\b[^.;\n]{0,24}\b(?:was|is)?\s*(?:not|never)\s+(?:used|available|tested)\b/i.test(
-    value,
-  );
-const hasNonNegatedVirtualMention = (value) => {
+const normalizeContractedNegations = (value) =>
+  typeof value === "string"
+    ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
+    : value;
+const negatedSetupPattern =
+  /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
+const isConcreteAppleMobileDevice = (value) => {
   if (typeof value !== "string") return false;
-  const matches = value.matchAll(/\b(?:emulator|simulator|virtual(?:\s+device)?)\b/gi);
-  return [...matches].some((match) => {
-    const before = value.slice(Math.max(0, match.index - 32), match.index);
-    const after = value.slice(match.index + match[0].length, match.index + match[0].length + 32);
-    const negatedBefore = /\b(?:no|not|never|without)\b[^.;\n]{0,24}$/i.test(before);
-    const negatedAfter = /^\s*(?:was|is)?\s*(?:not|never)\s+(?:used|involved|present)\b/i.test(
-      after,
-    );
-    return !negatedBefore && !negatedAfter;
-  });
+  const device = value.trim();
+  if (
+    !/^(?:iPhone|iPad)\s+[A-Za-z0-9][A-Za-z0-9 .()+_/-]{0,60}$/i.test(device) ||
+    mobilePlaceholderPattern.test(device) ||
+    /\b(?:Safari|Chrome|Chromium|Firefox|Edge|Android|macOS|Windows|Linux|physical|mobile|touch|device|phone|tablet|hardware|handset)\b/i.test(
+      device,
+    )
+  ) {
+    return false;
+  }
+  const model = device.replace(/^(?:iPhone|iPad)\s+/i, "");
+  return /\d/.test(model) || /^(?:X|XR|XS|SE|Air)\b/i.test(model);
+};
+const isConcreteAndroidMobileDevice = (value) => {
+  if (typeof value !== "string") return false;
+  const device = value.trim();
+  if (
+    !/^[A-Za-z0-9][A-Za-z0-9 .()+_/-]{2,79}$/.test(device) ||
+    mobilePlaceholderPattern.test(device) ||
+    nonAndroidFamilyPattern.test(device) ||
+    browserOnlyDevicePattern.test(device)
+  ) {
+    return false;
+  }
+  const tokens = device.match(/[A-Za-z0-9]+/g) ?? [];
+  const descriptiveWords = tokens.filter(
+    (token) => /[A-Za-z]/.test(token) && !genericMobileWords.has(token.toLowerCase()),
+  );
+  if (descriptiveWords.length === 0) return false;
+  const hasModelIdentifier = /[A-Za-z]/.test(device) && /\d/.test(device);
+  return hasModelIdentifier || descriptiveWords.length >= 2;
+};
+const hasRequiredZoom = (value) => {
+  const normalized = normalizeContractedNegations(value);
+  return (
+    typeof normalized === "string" &&
+    /\b200%/.test(normalized) &&
+    /\b400%/.test(normalized) &&
+    !/\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b[^.;\n]{0,40}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,40}\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b/i.test(
+      normalized,
+    ) &&
+    !/\bno\s+(?:(?:testing|tests?|verification|evidence)\b[^.;\n]{0,40})?(?:at\s+)?(?:200%|400%)|\bneither\b[^.;\n]{0,40}(?:200%|400%)[^.;\n]{0,40}\bnor\b/i.test(
+      normalized,
+    ) &&
+    !/(?:200%|400%)[^.;\n]{0,40}\bno\s+(?:testing|tests?|verification|evidence)\b|\bneither\b[^.;\n]{0,40}\b(?:tested|verified|checked)\b[^.;\n]{0,40}(?:200%|400%)/i.test(
+      normalized,
+    )
+  );
+};
+const hasEnabledContrast = (value) => {
+  const normalized = normalizeContractedNegations(value);
+  if (typeof normalized !== "string") return false;
+  const target = "(?:high|increased|increase) contrast";
+  const positive = new RegExp(
+    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|remained|stayed|kept)\\s+)?(?:enabled|active)\\b|\\b(?:enabled|activated|turned\\s+on)\\b[^.;,\\n]{0,40}\\b${target}\\b)`,
+    "i",
+  );
+  const negative = new RegExp(
+    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|disabled|off|unavailable|absent|failed|impossible)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|remained)\\s+)?(?:enabled|active|available)\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
+    "i",
+  );
+  return normalized
+    .split(/[.;,\n]+/)
+    .some((clause) => positive.test(clause) && !negative.test(clause));
+};
+const hasPhysicalTouchClaim = (value) => {
+  const normalized = normalizeContractedNegations(value);
+  if (typeof normalized !== "string") return false;
+  const target = "physical(?:\\s+mobile)?\\s+(?:touch\\s+)?(?:device|phone|tablet)";
+  const positive = new RegExp(
+    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b[^.;,\\n]{0,64}\\b${target}\\b|\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested|available|working)\\b)`,
+    "i",
+  );
+  const negative = new RegExp(
+    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|unavailable|absent|failed|impossible|disabled|off)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|were|are)\\s+)?(?:used|tested|available|working)\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
+    "i",
+  );
+  return normalized
+    .split(/[.;,\n]+/)
+    .some((clause) => positive.test(clause) && !negative.test(clause));
+};
+const hasNonNegatedVirtualMention = (value) => {
+  const normalized = normalizeContractedNegations(value);
+  if (typeof normalized !== "string") return false;
+  const groupedVirtualDevices = `${virtualDeviceSource}(?:\\s+(?:or|nor)\\s+(?:an?\\s+)?${virtualDeviceSource})*`;
+  const negatedPatterns = [
+    new RegExp(`\\b(?:no|without)\\s+(?:using\\s+)?(?:an?\\s+)?${groupedVirtualDevices}\\b`, "gi"),
+    new RegExp(
+      `\\bneither\\s+(?:an?\\s+)?${virtualDeviceSource}\\s+nor\\s+(?:an?\\s+)?${virtualDeviceSource}\\b`,
+      "gi",
+    ),
+    new RegExp(
+      `\\b${groupedVirtualDevices}\\s+(?:(?:was|is|were|are|can|could|would|should|will|has|have|had)\\s+)?(?:not|never)\\s+(?:be\\s+)?(?:used|involved|present|available|enabled|working)\\b`,
+      "gi",
+    ),
+    new RegExp(
+      `\\b(?:did|do|does|can|could|would|should|will)\\s+(?:not|never)\\s+(?:use|involve)\\s+(?:an?\\s+)?${groupedVirtualDevices}\\b`,
+      "gi",
+    ),
+    new RegExp(`\\bnot\\s+(?:an?\\s+)?${groupedVirtualDevices}\\b`, "gi"),
+  ];
+  const affirmativeRemainder = negatedPatterns.reduce(
+    (remainder, pattern) => remainder.replace(pattern, " "),
+    normalized,
+  );
+  return virtualDevicePattern.test(affirmativeRemainder);
 };
 const isEvidenceUrl = (value) => {
   try {
@@ -229,6 +329,10 @@ if (complete) {
   } catch (error) {
     errors.push(`Release metadata must be readable JSON: ${error.message}`);
   }
+  if (releaseMetadata !== undefined && !isJsonObject(releaseMetadata)) {
+    errors.push("Release metadata must be a JSON object.");
+    releaseMetadata = undefined;
+  }
 
   if (releaseMetadata) {
     if (releaseMetadata.channel !== "stable") {
@@ -278,7 +382,7 @@ for (const [index, environment] of environments.entries()) {
       const value = environment?.[field];
       const negated =
         ["operatingSystem", "browser", "assistiveTechnology"].includes(field) &&
-        negatedSetupPattern.test(value);
+        negatedSetupPattern.test(normalizeContractedNegations(value));
       if (nonEmpty(value) && (!pattern.test(value.trim()) || negated)) {
         errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
       }
@@ -291,7 +395,7 @@ for (const [index, environment] of environments.entries()) {
     }
     if (
       environment?.id === "mobile-touch" &&
-      (/\b(?:emulator|simulator|virtual(?:\s+device)?)\b/i.test(environment.device ?? "") ||
+      (virtualDevicePattern.test(environment?.device ?? "") ||
         hasNonNegatedVirtualMention(environment.notes))
     ) {
       errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
@@ -301,12 +405,19 @@ for (const [index, environment] of environments.entries()) {
     }
     if (environment?.id === "mobile-touch") {
       const operatingSystem = environment.operatingSystem ?? "";
-      const device = environment.device?.trim() ?? "";
-      const deviceMatchesOperatingSystem = /\b(?:iOS|iPadOS)\b/i.test(operatingSystem)
-        ? concreteAppleMobileDevicePattern.test(device)
-        : /\bAndroid\b/i.test(operatingSystem)
-          ? concreteAndroidMobileDevicePattern.test(device)
-          : false;
+      const device = typeof environment.device === "string" ? environment.device.trim() : "";
+      const hasAppleOperatingSystem = /\b(?:iOS|iPadOS)\b/i.test(operatingSystem);
+      const hasAndroidOperatingSystem = /\bAndroid\b/i.test(operatingSystem);
+      const hasExactlyOneOperatingSystemFamily =
+        Number(hasAppleOperatingSystem) + Number(hasAndroidOperatingSystem) === 1;
+      if (!hasExactlyOneOperatingSystemFamily) {
+        errors.push(`${prefix}.operatingSystem must name exactly one supported mobile OS family.`);
+      }
+      const deviceMatchesOperatingSystem = hasExactlyOneOperatingSystemFamily
+        ? hasAppleOperatingSystem
+          ? isConcreteAppleMobileDevice(device)
+          : isConcreteAndroidMobileDevice(device)
+        : false;
       if (!deviceMatchesOperatingSystem) {
         errors.push(
           `${prefix}.device must be a concrete physical model for its recorded mobile OS.`,
