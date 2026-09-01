@@ -427,7 +427,7 @@ const hasPhysicalTouchClaim = (value, device) => {
     "(?:aborted|absent|blocked|canceled|cancelled|deferred|failed|incomplete|pending|postponed|skipped|unavailable|unperformed|untested)";
   const remoteQualifierBoundary = "(?!\\s+remotely\\b)";
   const absentTestContext = new RegExp(
-    `(?:\\b(?:no|without)\\s+(?:(?:actual|completed)\\s+)?${actualTestContextSource}\\b|\\b${actualTestContextSource}\\b[^;,\\n]{0,32}\\b(?:(?:did|does|do)\\s+(?:not|never)\\s+(?:complete|conduct|execute|happen|occur|perform|run|carry\\s+out)${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|can|could|would|will|should|may|might)\\s+(?:not|never)\\s+(?:(?:be|been)\\s+)?${absentTestActionSource}${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|remained|stayed|became)\\s+(?:been\\s+)?${absentTestStateSource}${remoteQualifierBoundary}|never\\s+(?:completed|happened|occurred|ran)${remoteQualifierBoundary})|\\b${actualTestContextSource}\\b\\s+(?:failed|skipped)${remoteQualifierBoundary})`,
+    `(?:\\b(?:no|without)\\s+(?:(?:actual|completed)\\s+)?${actualTestContextSource}\\b|\\b${actualTestContextSource}\\b[^;,\\n]{0,32}\\b(?:(?:did|does|do)\\s+(?:not|never)\\s+(?:complete|conduct|execute|happen|occur|perform|run|carry\\s+out)${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|can|could|would|will|should|may|might)\\s+(?:not|never)\\s+(?:(?:be|been)\\s+)?${absentTestActionSource}${remoteQualifierBoundary}|(?:was|were|is|are|has|have|had|remained|stayed|became)\\s+(?:been\\s+)?${absentTestStateSource}\\b|never\\s+(?:completed|happened|occurred|ran)${remoteQualifierBoundary})|\\b${actualTestContextSource}\\b\\s+(?:failed|skipped)\\b)`,
     "i",
   );
   const unrelatedCompletionTarget = /\b(?:assignment|checklist)\b/i;

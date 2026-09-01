@@ -591,6 +591,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Testing did not occur, but completed the audit with a physical mobile device available.",
     "Testing did not occur and completed the audit with a physical mobile device available.",
     "Testing was skipped, but completed the audit with a physical mobile device available.",
+    "Testing was skipped remotely, but completed the audit with a physical mobile device available.",
     "Testing was absent, but completed the audit with a physical mobile device available.",
     "Testing was unavailable, but completed the audit with a physical mobile device available.",
     "Testing failed, but completed the audit with a physical mobile device available.",
