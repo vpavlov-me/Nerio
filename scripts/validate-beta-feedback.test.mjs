@@ -188,13 +188,18 @@ test("completed evidence rejects timestamps that have not occurred", () => {
   });
 });
 
-test("stable readiness rejects a completed blocking recommendation", () => {
+test("optional proceed validation rejects a completed blocking recommendation", () => {
   const record = completedRecord();
   record.decision.recommendation = "blocked-before-stable";
   withRecord(record, (target) => {
-    const result = run(["--expect-complete", "--expect-proceed", "--record", target]);
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /requires decision\.recommendation "proceed-to-stable-docs"/);
+    const truthfulResult = run(["--expect-complete", "--record", target]);
+    assert.equal(truthfulResult.status, 0, truthfulResult.stderr);
+    const proceedResult = run(["--expect-complete", "--expect-proceed", "--record", target]);
+    assert.notEqual(proceedResult.status, 0);
+    assert.match(
+      proceedResult.stderr,
+      /requires decision\.recommendation "proceed-to-stable-docs"/,
+    );
   });
 });
 

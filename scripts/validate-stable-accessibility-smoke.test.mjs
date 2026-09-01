@@ -276,6 +276,50 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
   }
 });
 
+test("strict validation accepts a concrete ChromeOS desktop environment", () => {
+  for (const operatingSystem of [
+    "ChromeOS 140",
+    "Chrome OS 140",
+    "Google Chrome OS 140",
+    "Chromium OS 140",
+  ]) {
+    const record = completedRecord();
+    const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    desktop.operatingSystem = operatingSystem;
+    desktop.browser = "Chrome 140.0";
+    desktop.device = "Acer Chromebook 516 GE";
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${operatingSystem}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation rejects placeholder, mobile, and browser-only desktop OS metadata", () => {
+  for (const operatingSystem of [
+    "ChromeOS",
+    "Generic OS 140",
+    "Desktop OS 140",
+    "Android 16",
+    "Chrome 140.0",
+    "Desktop Chrome 140.0",
+    "OS Firefox 143.0",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").operatingSystem =
+      operatingSystem;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, operatingSystem);
+      assert.match(
+        result.stderr,
+        /operatingSystem does not match the required zoom-reflow-contrast setup/,
+      );
+    });
+  }
+});
+
 test("strict validation rejects placeholder, generic-only, and negated desktop descriptions", () => {
   for (const { id, device } of [
     { id: "macos-safari-voiceover", device: "Test MacBook Pro" },
@@ -297,6 +341,9 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "office workstation" },
     { id: "zoom-reflow-contrast", device: "Home PC" },
     { id: "zoom-reflow-contrast", device: "The Machine" },
+    { id: "zoom-reflow-contrast", device: "Chromebook 140" },
+    { id: "zoom-reflow-contrast", device: "ChromeOS device 140" },
+    { id: "zoom-reflow-contrast", device: "Generic Chromebook 714" },
     { id: "zoom-reflow-contrast", device: "This isn't a Dell XPS" },
     { id: "zoom-reflow-contrast", device: "This isn’t a Dell XPS" },
   ]) {
@@ -466,6 +513,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Testing is expected to be performed on a physical iPhone 15 Pro.",
     "Touch interaction is going to be tested on a physical iPhone 15 Pro.",
     "Touch interaction should have been tested on a physical iPhone 15 Pro.",
+    "Touch interaction was supposed to be tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -568,6 +616,7 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "High contrast will be enabled during the test.",
     "High contrast is going to be enabled during the test.",
     "High contrast should have been enabled during the test.",
+    "High contrast was supposed to be enabled during the test.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -661,6 +710,7 @@ test("strict validation requires affirmative zoom testing language", () => {
     "200% and 400% are scheduled to be tested",
     "200% and 400% are going to be tested",
     "200% and 400% should have been tested",
+    "200% and 400% were supposed to be tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;

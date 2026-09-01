@@ -55,6 +55,8 @@ const genericDesktopWords = new Set([
   "desktop",
   "laptop",
   "computer",
+  "chromebook",
+  "chromeos",
   "hardware",
   "machine",
   "pc",
@@ -66,6 +68,46 @@ const genericDesktopWords = new Set([
   "linux",
   "ubuntu",
 ]);
+const genericDesktopOperatingSystemWords = new Set([
+  "build",
+  "computer",
+  "current",
+  "desktop",
+  "environment",
+  "kernel",
+  "operating",
+  "os",
+  "platform",
+  "release",
+  "stable",
+  "system",
+  "version",
+]);
+const genericDesktopOperatingSystemSource = [...genericDesktopOperatingSystemWords].join("|");
+const mobileOperatingSystemPattern = /\b(?:Android|iOS|iPadOS)\b/i;
+const browserOnlyOperatingSystemPattern = new RegExp(
+  `^(?:(?:${genericDesktopOperatingSystemSource})\\s+)*(?:(?:Apple|Google|Microsoft|Mozilla)\\s+)?(?:Safari|Chrome(?!\\s+OS\\b)|Chromium(?!\\s+OS\\b)|Firefox|Edge|WebKit)(?:$|[\\s/-].*)`,
+  "i",
+);
+function isConcreteDesktopOperatingSystem(value) {
+  const normalized = normalizeContractedNegations(value);
+  if (
+    typeof normalized !== "string" ||
+    !/^[A-Za-z][A-Za-z0-9 .()+_/-]{1,79}$/.test(normalized) ||
+    !/\d/.test(normalized) ||
+    explicitDesktopPlaceholderPattern.test(normalized) ||
+    mobileOperatingSystemPattern.test(normalized) ||
+    browserOnlyOperatingSystemPattern.test(normalized)
+  ) {
+    return false;
+  }
+  const identity = [...normalized.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)].find(
+    ([word]) => !genericDesktopOperatingSystemWords.has(word.toLowerCase()),
+  );
+  return (
+    identity !== undefined && !identityNegationPattern.test(normalized.slice(0, identity.index))
+  );
+}
 function isMacDeviceDescription(value) {
   const normalized = normalizeContractedNegations(value);
   const identity = typeof normalized === "string" ? macDeviceFamilyPattern.exec(normalized) : null;
@@ -133,7 +175,7 @@ const environmentMetadataRequirements = {
     device: isMacDeviceDescription,
   },
   "zoom-reflow-contrast": {
-    operatingSystem: /\b(?:macOS|Windows|Linux)\b.*\d/i,
+    operatingSystem: isConcreteDesktopOperatingSystem,
     browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
     device: isConcreteDesktopDeviceDescription,
   },
@@ -169,7 +211,7 @@ const normalizeContractedNegations = (value) =>
     : value;
 const hasNonEvidenceAction = (value, actionSource) => {
   const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
+    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
     "i",
   );
   const match = nonEvidenceAction.exec(value);
