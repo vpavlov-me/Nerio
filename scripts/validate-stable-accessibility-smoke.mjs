@@ -446,22 +446,50 @@ const hasPhysicalTouchClaim = (value, device) => {
   );
   const unrelatedCompletionTarget = /\b(?:assignment|checklist)\b/i;
   const futureTimingSource =
-    "(?:tomorrow|next\\s+(?:(?:business\\s+)?day|week|month|quarter|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|in\\s+(?:\\d+|an?|one|two|three|four|five|six|seven|eight|nine|ten)\\s+(?:business\\s+)?(?:days?|weeks?|months?|years?))";
-  const futureTimingBridge =
-    "(?:(?!\\b(?:and|but|although|though|yet|however|then)\\b)[^.;\\n]){0,96}";
+    "(?:tomorrow|next\\s+(?:(?:business\\s+)?day|week|month|quarter|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|in\\s+(?:\\d+|an?|one|two|three|four|five|six|seven|eight|nine|ten)\\s+(?:business\\s+)?(?:days?|weeks?|months?|years?)|in\\s+the\\s+future|after\\s+(?:the\\s+)?(?:release|launch)(?!\\s+(?:candidate|branch|build)\\b))";
+  const futureEvidenceActionSource =
+    "(?:tested|used|using|verified|performed|completed|ran|passed)";
+  const futureTimingModifierSource = "(?:(?:only|sometime)\\s+)?";
   const futureEvidenceTiming = new RegExp(
-    `(?:\\b${futureTimingSource}\\b${futureTimingBridge}${boundedTarget}|${boundedTarget}${futureTimingBridge}\\b${futureTimingSource}\\b)`,
+    `(?:\\b${futureTimingSource}\\b(?:(?!\\b(?:and|but|although|though|yet|however|then)\\b)[^.;\\n]){0,64}\\b${futureEvidenceActionSource}\\b(?:(?!\\b(?:and|but|although|though|yet|however|then)\\b)[^.;\\n]){0,64}${boundedTarget}|${boundedTarget}\\s*,?\\s*${futureTimingModifierSource}\\b${futureTimingSource}\\b)`,
     "i",
   );
   const evidenceSegmentBoundary = new RegExp(
     `\\b(?:but(?:\\s+also)?|(?:and\\s+)?then|although|though|yet|however|and(?=\\s+(?:(?:(?:the|this)\\s+)?${actualTestSubjectSource}\\b|(?:will|shall|should|would|can|could|may|might)\\b)))\\b`,
     "i",
   );
+  const laterDeviceStatusTimingSource =
+    "(?:after|afterward|afterwards|later|subsequently|the\\s+next\\s+(?:day|week|month|year))";
+  const laterDeviceStatus = new RegExp(
+    `${boundedTarget}[^;:\n]{0,24}\\b(?:(?:is|was|were|are|remained|stayed|became)\\s+)?(?:unavailable|absent|failed|disabled|off)\\b[^;:\n]{0,32}\\b${laterDeviceStatusTimingSource}\\b`,
+    "i",
+  );
+  const deviceNegationSubjectSource =
+    "(?:(?:which|that)\\s+|(?:and|but|although|though|yet|however)\\s+it\\s+)?";
+  const preNegationModifierSource = "(?:(?:actually|in\\s+fact|really)\\s+){0,2}";
+  const negatedDeviceUseModifierSource = `(?:(?:${completionModifierTokenSource}|ever|yet)\\s+){0,2}`;
+  const negatedDeviceUse = new RegExp(
+    `${boundedTarget}\\s*(?:,\\s*)?${deviceNegationSubjectSource}(?:is|was|were|are|has|have|had)\\s+${preNegationModifierSource}(?:(?:not|never)\\s+${negatedDeviceUseModifierSource}(?:(?:being|been)\\s+)?(?:in\\s+)?(?:use|used|using|test|tested|testing)|(?:unused|untested))\\b`,
+    "i",
+  );
+  const inheritedNegatedDeviceUse = new RegExp(
+    `^\\s*(?:(?:but|however|yet)\\s+)?(?:it|(?:the|that|this)\\s+(?:device|phone|tablet))\\s+(?:is|was|were|are|has|have|had)\\s+${preNegationModifierSource}(?:(?:not|never)\\s+${negatedDeviceUseModifierSource}(?:(?:being|been)\\s+)?(?:in\\s+)?(?:use|used|using|test|tested|testing)|(?:unused|untested))\\b(?!\\s+for\\s+(?:anything|something)\\s+else\\b\\s*$)`,
+    "i",
+  );
+  const laterStatusWithoutDeviceUse = new RegExp(
+    "\\bwithout\\s+(?:(?:actually|ever|previously|really)\\s+){0,2}(?:(?:being\\s+)?(?:used|tested)|(?:using|testing)\\s+(?:it|the\\s+(?:device|phone|tablet)))\\b",
+    "i",
+  );
+  const completedTestTimingReference = new RegExp(
+    `\\bafter\\s+(?:(?:all(?:\\s+the)?|the|this)\\s+)?${actualTestSubjectSource}\\b(?:\\s+${completionModifierSource}(?:(?:was|were|is|are)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}(?:completed|conducted|done|executed|performed|run|carried\\s+out|passed)\\b)?(?=\\s*$)`,
+    "gi",
+  );
   const negativeAction =
     "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
   const modifierBridge =
     "(?:\\s+(?!(?:but|simulators?|emulators?|virtual|physical|device|phone|tablet)\\b)[A-Za-z-]+){0,6}";
   const negativePatterns = [
+    negatedDeviceUse,
     new RegExp(
       `${boundedTarget}\\s+(?:(?:(?:is|was|were|are|remained|stayed)\\s+)(?:not\\s+)?(?:used|tested|available|working|unavailable|absent|failed|disabled|off)|(?:not|never)\\s+(?:used|tested|available|working))\\b`,
       "i",
@@ -500,8 +528,20 @@ const hasPhysicalTouchClaim = (value, device) => {
       "",
     );
     const negativeClause = semanticClause.replace(/[,–—]/g, " ");
-    if (negativePatterns.some((pattern) => pattern.test(negativeClause))) {
-      hasPhysicalEvidence = false;
+    const hasInheritedDeviceUseContradiction =
+      hasPhysicalEvidence && inheritedNegatedDeviceUse.test(negativeClause);
+    const hasNegativeEvidence =
+      hasInheritedDeviceUseContradiction ||
+      negativePatterns.some((pattern) => pattern.test(negativeClause));
+    if (hasNegativeEvidence) {
+      const preservesCompletedEvidence =
+        hasPhysicalEvidence &&
+        laterDeviceStatus.test(negativeClause) &&
+        !actualTestContext.test(negativeClause.replace(completedTestTimingReference, " ")) &&
+        !negatedDeviceUse.test(negativeClause) &&
+        !inheritedNegatedDeviceUse.test(negativeClause) &&
+        !laterStatusWithoutDeviceUse.test(negativeClause);
+      if (!preservesCompletedEvidence) hasPhysicalEvidence = false;
       continue;
     }
     let inheritedTestContext = false;

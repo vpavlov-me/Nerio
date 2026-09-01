@@ -561,6 +561,75 @@ test("strict validation accepts physical-device claims naming the concrete mobil
       operatingSystem: "iOS 18.5",
       browser: supportedSafari,
       device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable the next day.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was completed.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing had been completed.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after all testing was completed.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes: "Tested touch interaction on a physical iPhone 15 Pro, and a simulator was not used.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Testing was completed on a physical iPhone 15 Pro to reduce regressions in the future.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Testing was completed on a physical iPhone 15 Pro after the release candidate was cut.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      notes:
+        "Testing was completed on a physical iPhone 15 Pro only after the release candidate was cut.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
       notes: "Testing was required by policy and completed on a physical iPhone 15 Pro.",
     },
   ]) {
@@ -618,6 +687,28 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, but testing was not actually completed.",
     "Testing was unavailable remotely and completed on a physical iPhone 15 Pro next Monday.",
     "Testing was unavailable remotely and completed on a physical iPhone 15 Pro in two business days.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was not used.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was not really used.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was never fully tested.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which had not yet been used.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, but it was not used.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro, which was in fact not used.",
+    "Tested touch interaction on a physical iPhone 15 Pro. It was not used.",
+    "Testing was completed on a physical iPhone 15 Pro. The device was not used.",
+    "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else, and it was not used for testing.",
+    "Tested touch interaction on a physical iPhone 15 Pro. It was not used for anything else because it was not used at all.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was not used and became unavailable later.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without using it.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without ever using it.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable later without really using it.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing failed.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was skipped.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing had failed.",
+    "Tested touch interaction on a physical iPhone 15 Pro. The physical iPhone 15 Pro was unavailable after testing was not completed.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro after release.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro in the future.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro only after release.",
+    "Testing was unavailable remotely and completed on a physical iPhone 15 Pro sometime after release.",
     "Testing was absent, but completed the audit with a physical mobile device available.",
     "Testing was unavailable, but completed the audit with a physical mobile device available.",
     "Testing failed, but completed the audit with a physical mobile device available.",
