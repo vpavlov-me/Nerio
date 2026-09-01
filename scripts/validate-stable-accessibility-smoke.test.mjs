@@ -17,6 +17,15 @@ const supportedChrome = `Chrome ${browserFloor("chromium")}`;
 const supportedChromium = `Chromium ${browserFloor("chromium")}`;
 const supportedEdge = `Edge ${browserFloor("chromium")}`;
 const supportedFirefox = `Firefox ${browserFloor("firefox")}`;
+const passiveReportingVerbs = [
+  "alleged",
+  "claimed",
+  "hoped",
+  "meant",
+  "purported",
+  "reported",
+  "said",
+];
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -836,6 +845,16 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Touch interaction should have been tested on a physical iPhone 15 Pro.",
     "Touch interaction was supposed to be tested on a physical iPhone 15 Pro.",
     "Touch interaction was intended to be tested on a physical iPhone 15 Pro.",
+    ...passiveReportingVerbs.map(
+      (verb) => `Touch interaction was ${verb} to be tested on a physical iPhone 15 Pro.`,
+    ),
+    "Touch interaction claimed to be tested on a physical iPhone 15 Pro.",
+    "Touch interaction is being claimed to be tested on a physical iPhone 15 Pro.",
+    "Touch interaction was reported as tested on a physical iPhone 15 Pro.",
+    "Touch interaction was reported as successfully tested on a physical iPhone 15 Pro.",
+    "Touch interaction was reported to have already been tested on a physical iPhone 15 Pro.",
+    "Touch interaction was alleged to have been tested on a physical iPhone 15 Pro.",
+    "Touch interaction was claimed to be tested on a physical iPhone 15 Pro, but was actually reported to be tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -1022,6 +1041,17 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "High contrast was intended to be enabled but enabled dark mode instead.",
     "High contrast was intended to be enabled but enabled dark mode instead of high contrast.",
     "High contrast was intended to be enabled but high contrast was intended to be enabled.",
+    ...passiveReportingVerbs.map(
+      (verb) => `High contrast was ${verb} to be enabled during the test.`,
+    ),
+    "High contrast claimed to be enabled during the test.",
+    "High contrast is being claimed to be enabled during the test.",
+    "High contrast was claimed to already be enabled during the test.",
+    "High contrast was reported as enabled during the test.",
+    "High contrast was reported as successfully enabled during the test.",
+    "High contrast was alleged to have been enabled during the test.",
+    "High contrast was claimed to be enabled but was actually reported to be enabled during the test.",
+    "High contrast was claimed to be enabled, keyboard navigation was actually verified during the test.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -1057,6 +1087,22 @@ test("strict validation accepts a target-bound contrast correction", () => {
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
   });
+});
+
+test("strict validation accepts completed evidence after a reported claim", () => {
+  for (const verb of passiveReportingVerbs) {
+    const record = completedRecord();
+    const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    zoomContrast.zoom = `200% and 400% were ${verb} to be tested, but were actually tested.`;
+    zoomContrast.notes = `High contrast was ${verb} to be enabled, but was actually enabled during the test.`;
+    record.environments.find(({ id }) => id === "mobile-touch").notes =
+      `Touch interaction was ${verb} to be tested on a physical iPhone 15 Pro, but was actually tested on a physical iPhone 15 Pro.`;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
 });
 
 test("strict validation rejects straight and curly contracted negations", () => {
@@ -1128,6 +1174,9 @@ test("strict validation requires affirmative zoom testing language", () => {
     "200% and 400% should have been tested",
     "200% and 400% were supposed to be tested",
     "200% and 400% were intended to be tested",
+    ...passiveReportingVerbs.map((verb) => `200% and 400% were ${verb} to be tested`),
+    "200% and 400% were reported as tested",
+    "200% and 400% were alleged to have been tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;

@@ -297,9 +297,13 @@ const nonCompletionModifierSource =
 const completionModifierTokenSource =
   "(?:actually|already|both|carefully|completely|conclusively|correctly|directly|eventually|explicitly|finally|fully|independently|later|locally|manually|now|only|previously|properly|really|remotely|repeatedly|separately|simply|subsequently|successfully|thoroughly|today|ultimately|yesterday)";
 const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
+const passiveReportingVerbSource = "(?:alleged|claimed|hoped|meant|purported|reported|said)";
+const passiveReportingActionBridgeSource =
+  `(?:to\\s+${completionModifierSource}(?:be\\s+${completionModifierSource}|have\\s+${completionModifierSource}been\\s+${completionModifierSource})|` +
+  `as\\s+${completionModifierSource})`;
 const hasNonEvidenceAction = (value, actionSource, completedCorrectionSource) => {
   const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})\\b`,
+    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|${passiveReportingVerbSource}\\s+${passiveReportingActionBridgeSource}${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})\\b`,
     "i",
   );
   const match = nonEvidenceAction.exec(value);
@@ -405,7 +409,7 @@ const hasEnabledContrast = (value) => {
   const anaphoricCompletionTail = `(?=(?:\\s+${completionModifierTokenSource}){0,2}\\s*(?:$|(?:during|throughout|for)\\s+(?:(?:the|this)\\s+)?(?:test|testing|smoke|audit|verification)\\b))`;
   const targetBoundCorrection = `(?:${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${completionModifierSource}(?:enabled|active)\\b${anaphoricCompletionTail}|${completionModifierSource}(?:enabled|activated|turned\\s+on)\\b\\s+(?:(?:the|macOS)\\s+){0,2}${target}\\b|(?:the\\s+)?${target}\\b\\s+${completionModifierSource}(?:(?:is|was|remained|stayed|kept)\\s+)?${completionModifierSource}(?:enabled|active)\\b)`;
   return normalized
-    .split(/[.;,\n]+/)
+    .split(/[.;\n]+|,(?!\s*(?:but|and\s+then|then)\b)/i)
     .some(
       (clause) =>
         positive.test(clause) &&
