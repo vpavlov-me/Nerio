@@ -261,6 +261,8 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
     "Microsoft Surface Laptop 7",
     "HP EliteDesk 800 G9 Desktop Mini PC",
     "HP EliteDesk 800 G9 asset No. 42",
+    "Intel NUC 13 Pro",
+    "TUXEDO InfinityBook",
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
@@ -553,6 +555,17 @@ test("strict validation rejects negated contrast and physical-device claims", ()
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /contrast was enabled/);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test('strict validation rejects contrast evidence preceded by "without"', () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
+    "Verified reflow without high contrast enabled.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /contrast was enabled/);
   });
 });
 

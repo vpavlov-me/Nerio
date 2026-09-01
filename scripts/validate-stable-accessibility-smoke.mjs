@@ -49,9 +49,7 @@ const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp
 const macDeviceFamilyPattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
-const knownSingleIdentityDesktopPattern = /\bFramework\s+Laptop\b/i;
-const desktopManufacturerPattern =
-  /\b(?:Acer|Alienware|ASUS|Dell|Framework|Gigabyte|HP|Huawei|Lenovo|LG|Microsoft|MSI|Razer|Samsung|System76)\b/i;
+const knownUnnumberedDesktopFamilyPattern = /\bFramework\s+Laptop\b/i;
 const identityNegationPattern = /\b(?:not|never|without|no(?!\.))\b/i;
 const genericDesktopWords = new Set([
   "desktop",
@@ -79,13 +77,23 @@ function isMacDeviceDescription(value) {
 function isConcreteDesktopDeviceDescription(value) {
   if (typeof value !== "string" || explicitDesktopPlaceholderPattern.test(value)) return false;
   if (macDeviceFamilyPattern.test(value)) return isMacDeviceDescription(value);
-  const manufacturer = desktopManufacturerPattern.exec(value);
-  const frameworkFamily = knownSingleIdentityDesktopPattern.exec(value);
-  const identity = manufacturer ?? frameworkFamily;
-  if (identity && identityNegationPattern.test(value.slice(0, identity.index))) return false;
-  const words = value.match(/[A-Za-z][A-Za-z0-9-]*/g) ?? [];
-  const identityWords = words.filter((word) => !genericDesktopWords.has(word.toLowerCase()));
-  return (manufacturer !== null && identityWords.length >= 2) || frameworkFamily !== null;
+  const words = [...value.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)];
+  const identityWords = words.filter(([word]) => !genericDesktopWords.has(word.toLowerCase()));
+  const numericIdentifier = /\d/.exec(value);
+  const modelToken = identityWords.find(
+    ([word]) => /^[A-Z]{2,}$/.test(word) || /^[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]*)+$/.test(word),
+  );
+  const knownFamily = knownUnnumberedDesktopFamilyPattern.exec(value);
+  const identity = knownFamily ?? modelToken ?? numericIdentifier;
+  const hasModelIdentity =
+    knownFamily !== null ||
+    (modelToken !== undefined && identityWords.length >= 2) ||
+    (numericIdentifier !== null && identityWords.length >= 1);
+  return (
+    hasModelIdentity &&
+    identity !== null &&
+    !identityNegationPattern.test(value.slice(0, identity.index))
+  );
 }
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
 const virtualDevicePattern = new RegExp(`\\b${virtualDeviceSource}\\b`, "i");
@@ -226,7 +234,7 @@ const hasEnabledContrast = (value) => {
     "i",
   );
   const negative = new RegExp(
-    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|disabled|off|unavailable|absent|failed|impossible)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|remained)\\s+)?(?:enabled|active|available)\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
+    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|disabled|off|unavailable|absent|failed|impossible)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|remained)\\s+)?(?:enabled|active|available)\\b|\\b(?:not|never|without)\\s+(?:(?:using|having|enabling|activating)\\s+)?(?:the\\s+)?${target}\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
     "i",
   );
   return normalized
