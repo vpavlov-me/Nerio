@@ -38,9 +38,11 @@ publication blocker unless this scoped smoke exposes a release-impacting defect.
 
 Record concise evidence links and notes for every environment and scenario. Do not include private
 consumer content, credentials, recordings with personal data, or invented results.
-For `zoom-reflow-contrast`, set `increasedOrHighContrastEnabled` to `true` only after the setting
-was exercised on the locked candidate. Notes remain descriptive and are not parsed as a substitute
-for that structured result.
+For `zoom-reflow-contrast`, keep `zoomLevelsTested` at `null` while evidence is pending. After both
+required levels run on the locked candidate, record the exact set `["200%", "400%"]` and set
+`increasedOrHighContrastEnabled` to `true` only after that setting was exercised. The `zoom` and
+`notes` strings remain descriptive; they are not parsed as proof, contradiction, or a substitute
+for either structured result.
 For `mobile-touch`, `result: Pass` plus a concrete device model compatible with the recorded mobile
 OS is the authoritative structured evidence that the smoke ran on physical hardware. Simulator,
 emulator, and virtual values remain invalid in `device`; `notes` are descriptive and are not parsed

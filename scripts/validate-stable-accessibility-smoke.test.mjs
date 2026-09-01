@@ -17,59 +17,6 @@ const supportedChrome = `Chrome ${browserFloor("chromium")}`;
 const supportedChromium = `Chromium ${browserFloor("chromium")}`;
 const supportedEdge = `Edge ${browserFloor("chromium")}`;
 const supportedFirefox = `Firefox ${browserFloor("firefox")}`;
-const passiveReportingVerbs = [
-  "alleged",
-  "asserted",
-  "claimed",
-  "confirmed",
-  "hoped",
-  "indicated",
-  "meant",
-  "noted",
-  "purported",
-  "reported",
-  "said",
-  "stated",
-];
-const activeReportedClaims = (claim) => [
-  ...passiveReportingVerbs.map((verb) => `QA ${verb} that ${claim}`),
-  `QA claims that ${claim}`,
-  `QA did claim that ${claim}`,
-  `QA has claimed that ${claim}`,
-  `QA is claiming that ${claim}`,
-  `QA announced that ${claim}`,
-  `QA believed that ${claim}`,
-  `QA documented that ${claim}`,
-  `QA insisted that ${claim}`,
-  `QA maintained that ${claim}`,
-  `QA wrote that ${claim}`,
-  `QA assumed that ${claim}`,
-  `QA concluded that ${claim}`,
-  `QA declared that ${claim}`,
-  `Alice claimed that ${claim}`,
-  `The vendor reported that ${claim}`,
-  `QA and engineering report that ${claim}`,
-  `QA claimed and maintained that ${claim}`,
-  `QA claimed and later stated that ${claim}`,
-  `QA claimed, then maintained that ${claim}`,
-  `Reviewers claim that ${claim}`,
-  `We state that ${claim}`,
-  `QA claimed: "${claim}"`,
-  `QA said, "${claim}"`,
-  `QA claimed — "${claim}"`,
-  `"${claim}" — QA claimed`,
-  `"${claim}" (QA claimed)`,
-  `QA claimed, after reviewing the run, that ${claim}`,
-  `QA claimed (after reviewing the run) that ${claim}`,
-  `QA claimed—after reviewing the run—that ${claim}`,
-  `According to QA, ${claim}`,
-  `According to QA: ${claim}`,
-  `Per QA, ${claim}`,
-  `It was asserted that ${claim}`,
-  `${claim}, QA claimed`,
-  `${claim} as QA reported`,
-  `${claim} as reported by QA`,
-];
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -153,6 +100,7 @@ function completedRecord() {
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
       zoom: "Verified reflow at 200% and 400%",
+      zoomLevelsTested: ["200%", "400%"],
       increasedOrHighContrastEnabled: true,
       notes: "Verified reflow with macOS Increase Contrast enabled.",
     },
@@ -210,19 +158,22 @@ test("pending repository smoke record is valid without claiming completion", () 
   assert.match(result.stdout, /evidence remains pending/);
 });
 
-test("pending evidence cannot pre-claim a structured contrast result", () => {
-  for (const value of [true, false, "true", undefined]) {
-    const record = JSON.parse(
-      readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
-    );
-    record.environments.find(
-      ({ id }) => id === "zoom-reflow-contrast",
-    ).increasedOrHighContrastEnabled = value;
-    withRecord(record, (target) => {
-      const result = run(["--record", target]);
-      assert.notEqual(result.status, 0, String(value));
-      assert.match(result.stderr, /must remain null while evidence is pending/);
-    });
+test("pending evidence cannot pre-claim structured zoom or contrast results", () => {
+  for (const [field, values] of [
+    ["zoomLevelsTested", [[], ["200%", "400%"], "200%, 400%", undefined]],
+    ["increasedOrHighContrastEnabled", [true, false, "true", undefined]],
+  ]) {
+    for (const value of values) {
+      const record = JSON.parse(
+        readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
+      );
+      record.environments.find(({ id }) => id === "zoom-reflow-contrast")[field] = value;
+      withRecord(record, (target) => {
+        const result = run(["--record", target]);
+        assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
+        assert.match(result.stderr, /must remain null while evidence is pending/);
+      });
+    }
   }
 });
 
@@ -1123,384 +1074,116 @@ test("strict validation rejects placeholder and browser-only mobile device value
   }
 });
 
-test("strict validation rejects negated zoom and structured contrast evidence", () => {
+test("strict validation requires authoritative structured zoom and contrast evidence", () => {
+  for (const { field, values, diagnostic } of [
+    {
+      field: "zoomLevelsTested",
+      values: [
+        undefined,
+        null,
+        [],
+        ["200%"],
+        ["400%"],
+        ["200%", "200%"],
+        ["400%", "400%"],
+        ["200%", "400%", "500%"],
+        ["200", "400"],
+        "200%, 400%",
+        true,
+      ],
+      diagnostic: /zoomLevelsTested must contain exactly "200%" and "400%"/,
+    },
+    {
+      field: "increasedOrHighContrastEnabled",
+      values: [undefined, null, false, "true", 1],
+      diagnostic: /increasedOrHighContrastEnabled must equal true/,
+    },
+  ]) {
+    for (const value of values) {
+      const record = completedRecord();
+      record.environments.find(({ id }) => id === "zoom-reflow-contrast")[field] = value;
+      withRecord(record, (target, releaseMetadata, packagesRoot) => {
+        const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+        assert.notEqual(result.status, 0, `${field}: ${JSON.stringify(value)}`);
+        assert.match(result.stderr, diagnostic);
+      });
+    }
+  }
+});
+
+test("strict validation accepts the exact structured zoom set in either order", () => {
+  for (const zoomLevelsTested of [
+    ["200%", "400%"],
+    ["400%", "200%"],
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoomLevelsTested =
+      zoomLevelsTested;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("free-form zoom prose and notes cannot substitute for structured results", () => {
   const record = completedRecord();
   const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "200% and 400% were not tested";
+  zoomContrast.zoomLevelsTested = null;
   zoomContrast.increasedOrHighContrastEnabled = false;
-  zoomContrast.notes = "Reflow passed, but Increase Contrast was not enabled.";
+  zoomContrast.zoom = "Verified reflow at 200% and 400%.";
+  zoomContrast.notes =
+    "The report says both zoom levels and increased contrast passed on the locked candidate.";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /both 200% and 400% without negation/);
+    assert.match(result.stderr, /zoomLevelsTested must contain exactly "200%" and "400%"/);
     assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
   });
 });
 
-test("strict validation does not let notes substitute for a structured contrast result", () => {
-  for (const notes of [
-    "High contrast was enabled during the test.",
-    "QA reported that high contrast was enabled.",
-    "Was high contrast enabled?",
-    "If high contrast was enabled, the audit could pass.",
+test("structured zoom and contrast results do not depend on free-form phrasing", () => {
+  for (const { zoom, notes } of [
+    {
+      zoom: "200% and 400% were tested. Later review established that no zoom testing actually occurred.",
+      notes: "Increase Contrast was not enabled according to an obsolete report.",
+    },
+    {
+      zoom: "Zoom testing was not performed again because the first run passed.",
+      notes: "No high contrast issues were found.",
+    },
+    {
+      zoom: "No zoom testing issues occurred.",
+      notes: "Was high contrast enabled? See the linked evidence for the structured result.",
+    },
   ]) {
     const record = completedRecord();
     const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-    zoomContrast.increasedOrHighContrastEnabled = false;
+    zoomContrast.zoom = zoom;
     zoomContrast.notes = notes;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, notes);
-      assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    });
-  }
-});
-test("strict validation requires an explicit structured contrast result", () => {
-  for (const value of [undefined, null, false, "true", 1]) {
-    const record = completedRecord();
-    record.environments.find(
-      ({ id }) => id === "zoom-reflow-contrast",
-    ).increasedOrHighContrastEnabled = value;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, String(value));
-      assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-    });
-  }
-});
-
-test("structured contrast evidence does not depend on free-form note phrasing", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "Was high contrast enabled? See the linked evidence for the recorded result.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts completed evidence after an unmet expectation", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "200% and 400% should have been tested yesterday and were tested today";
-  zoomContrast.notes =
-    "High contrast should have been enabled earlier and was enabled during the test";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts completed evidence after a reported claim", () => {
-  for (const verb of passiveReportingVerbs) {
-    const record = completedRecord();
-    const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-    zoomContrast.zoom = `200% and 400% were ${verb} to be tested, but were actually tested.`;
-    zoomContrast.notes = `High contrast was ${verb} to be enabled, but was actually enabled during the test.`;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
+      assert.equal(result.status, 0, result.stderr);
       assert.match(result.stdout, /internally approved/);
     });
   }
 });
 
-test("strict validation accepts factual evidence after an active reported claim", () => {
-  for (const verb of passiveReportingVerbs) {
+test("strict validation still rejects negated assistive-technology metadata", () => {
+  for (const assistiveTechnology of ["VoiceOver wasn't enabled", "No VoiceOver was used"]) {
     const record = completedRecord();
-    const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-    zoomContrast.zoom =
-      `QA ${verb} that 200% and 400% were tested, ` +
-      "but the accessibility team actually tested 200% and 400%.";
-    zoomContrast.notes =
-      `QA ${verb} that high contrast was enabled, ` +
-      "but the accessibility team actually enabled high contrast during the test.";
+    record.environments.find(({ id }) => id === "macos-safari-voiceover").assistiveTechnology =
+      assistiveTechnology;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${verb}: ${result.stderr}`);
-      assert.match(result.stdout, /internally approved/);
+      assert.notEqual(result.status, 0, assistiveTechnology);
+      assert.match(
+        result.stderr,
+        /assistiveTechnology does not match the required macos-safari-voiceover setup/,
+      );
     });
   }
-});
-
-test("strict validation accepts factual corrections with parenthetical review context", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom =
-    "QA claimed that 200% and 400% were tested, but, after reviewing the logs, the accessibility team actually tested 200% and 400%.";
-  zoomContrast.notes =
-    "QA claimed that high contrast was enabled, but the accessibility team, after reviewing the logs, actually enabled high contrast during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation keeps unrelated reports separate from factual evidence", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "QA reported a lab scheduling issue; 200% and 400% were actually tested.";
-  zoomContrast.notes =
-    "QA claimed ownership of the setup, but high contrast was actually enabled during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts factual evidence after reporting nouns used as labels", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "Test reports: 200% and 400% were actually tested.";
-  zoomContrast.notes = "Audit notes: high contrast was actually enabled during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts factual evidence followed by unrelated observations", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "We tested 200% and 400% and noted no defects.";
-  zoomContrast.notes =
-    "High contrast was enabled during the test and QA confirmed keyboard navigation.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts per-requirement evidence without treating it as attribution", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "200% and 400% were actually tested per viewport requirement.";
-  zoomContrast.notes = "High contrast was enabled per the documented test plan.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation keeps while-separated reports apart from factual evidence", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "QA reported a scheduling issue, while 200% and 400% were actually tested.";
-  zoomContrast.notes =
-    "QA claimed ownership of the setup, while high contrast was actually enabled during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation accepts QA requirements as requirements rather than attribution", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "Per QA testing requirements, 200% and 400% were actually tested.";
-  zoomContrast.notes =
-    "Per QA accessibility testing requirements, high contrast was actually enabled during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation keeps whereas-separated reports apart from factual evidence", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "QA reported a scheduling issue, whereas 200% and 400% were actually tested.";
-  zoomContrast.notes =
-    "QA claimed ownership of the setup, whereas high contrast was actually enabled during the test.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation rejects straight and curly contracted negations", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "macos-safari-voiceover").assistiveTechnology =
-    "VoiceOver wasn't enabled";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
-    "200% and 400% weren't tested";
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.increasedOrHighContrastEnabled = false;
-  zoomContrast.notes = "Increase Contrast wasn’t enabled.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(
-      result.stderr,
-      /assistiveTechnology does not match the required macos-safari-voiceover setup/,
-    );
-    assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-  });
-});
-
-test("strict validation rejects no, neither, and cannot evidence negations", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "macos-safari-voiceover").assistiveTechnology =
-    "No VoiceOver was used";
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
-    "Neither 200% nor 400% was tested";
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.increasedOrHighContrastEnabled = false;
-  zoomContrast.notes = "Increase Contrast cannot be enabled.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(
-      result.stderr,
-      /assistiveTechnology does not match the required macos-safari-voiceover setup/,
-    );
-    assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-  });
-});
-
-test("strict validation rejects no-testing zoom claims on either side of the values", () => {
-  for (const zoom of [
-    "No testing was performed at 200% or 400%",
-    "200% and 400%: no testing was performed",
-  ]) {
-    const record = completedRecord();
-    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, zoom);
-      assert.match(result.stderr, /both 200% and 400% without negation/);
-    });
-  }
-});
-
-test("strict validation requires affirmative zoom testing language", () => {
-  for (const zoom of [
-    "200% and 400% are planned for later",
-    "200% and 400% are scheduled to be tested",
-    "200% and 400% are going to be tested",
-    "200% and 400% should have been tested",
-    "200% and 400% were supposed to be tested",
-    "200% and 400% were intended to be tested",
-    ...passiveReportingVerbs.map((verb) => `200% and 400% were ${verb} to be tested`),
-    "200% and 400% were reported as tested",
-    "200% and 400% were alleged to have been tested",
-    ...activeReportedClaims("200% and 400% were tested"),
-    "QA claimed that testing passed at 200% and 400%",
-    "QA claimed yesterday that 200% and 400% were tested",
-    "QA claimed that engineers tested at 200% and 400%",
-    "QA claimed that 200% and 400% testing was completed",
-    "200% and 400% were tested per QA",
-    "QA claimed that 200% and 400% were tested, but the accessibility team actually tested 200% and actually tested 400%, according to the lead",
-    "Testing passed at 200% and 400%, QA claimed",
-    "According to QA, testing passed at 200% and 400%",
-    "QA claimed that the 200% and 400% were tested",
-    "QA claimed that both 200% and 400% were tested",
-    "“200% and 400% were tested,” QA claimed",
-    "According to QA, “200% and 400% were tested”",
-    "200% and 400% were tested, according to QA",
-    "QA claimed that 200% and 400% were unsuccessfully tested and then verified",
-    "QA claimed to have tested 200% and 400%",
-    "QA claimed that 200% and 400% were tested, but the lead reported that 200% and 400% were tested",
-  ]) {
-    const record = completedRecord();
-    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, zoom);
-      assert.match(result.stderr, /both 200% and 400% without negation/);
-    });
-  }
-});
-
-test("strict validation binds affirmative evidence to both required zoom levels", () => {
-  for (const zoom of [
-    "200% was planned, but 400% was tested",
-    "200% remained pending, while 400% was verified",
-    "200% remained pending and the unrelated keyboard check passed; 400% was tested",
-    "200% was planned, but tested at 400%",
-    "400% was planned, but verified at 200%",
-    "200% remained pending, but passed the unrelated keyboard check; 400% was verified",
-    "200% and 400% were planned, but ultimately tested at 400%",
-    "200% passed the unrelated keyboard check; 400% was verified",
-    "200% and 400% were possibly tested",
-    "200% and 400% were only partially tested",
-    "200% and 400% were barely tested",
-    "200% and 400% were hardly tested",
-    "200% and 400% were incompletely tested",
-    "200% and 400% were tested unsuccessfully",
-    "200% and 400% were unsuccessfully tested",
-    "200% and 400% were tested incorrectly",
-    "200% and 400% were tested inconclusively",
-    "Tested at 200%, and 400% was planned",
-    "Verified at 400%, and 200% remained pending",
-  ]) {
-    const record = completedRecord();
-    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, zoom);
-      assert.match(result.stderr, /both 200% and 400% without negation/);
-    });
-  }
-});
-
-test("strict validation accepts completed evidence bound to both zoom levels", () => {
-  for (const zoom of [
-    "200% was tested and 400% was verified",
-    "200% was planned, but ultimately tested; 400% was verified",
-    "200% and 400% were both tested",
-    "200% and 400% were successfully tested",
-    "200% and 400% were thoroughly tested",
-    "200% and 400% were carefully tested",
-    "200% and 400% were tested independently",
-    "200% and 400% were only tested today",
-    "At 200% and 400%, testing passed",
-  ]) {
-    const record = completedRecord();
-    record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${zoom}: ${result.stderr}`);
-      assert.match(result.stdout, /internally approved/);
-    });
-  }
-});
-
-test("strict validation rejects failed zoom and unavailable contrast evidence", () => {
-  const record = completedRecord();
-  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  zoomContrast.zoom = "200% and 400% testing failed.";
-  zoomContrast.increasedOrHighContrastEnabled = false;
-  zoomContrast.notes = "High contrast was unavailable; keyboard navigation remained enabled.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /both 200% and 400% without negation/);
-    assert.match(result.stderr, /increasedOrHighContrastEnabled must equal true/);
-  });
-});
-
-test("structured contrast evidence remains authoritative after no-issues observations", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes =
-    "No high contrast issues were found; Increase Contrast remained enabled.";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
 });
 
 test("strict validation rejects a mobile OS and device-family mismatch", () => {

@@ -42,6 +42,7 @@
       "device": null,
       "viewport": null,
       "zoom": null,
+      "zoomLevelsTested": null,
       "increasedOrHighContrastEnabled": null,
       "evidence": [],
       "notes": null

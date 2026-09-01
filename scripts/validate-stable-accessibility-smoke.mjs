@@ -418,102 +418,6 @@ const normalizeContractedNegations = (value) =>
   typeof value === "string"
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
-const nonCompletionModifierSource =
-  "(?:allegedly|apparently|barely|conditionally|hardly|incompletely|inconclusively|incorrectly|inadequately|insufficiently|lightly|maybe|merely|minimally|mostly|nearly|nominally|ostensibly|partially|partly|perhaps|poorly|possibly|potentially|presumably|probably|provisionally|reportedly|roughly|scarcely|seemingly|selectively|superficially|supposedly|tentatively|unsatisfactorily|unsuccessfully|wrongly)";
-const completionModifierTokenSource =
-  "(?:actually|already|both|carefully|completely|conclusively|correctly|directly|eventually|explicitly|finally|fully|independently|later|locally|manually|now|only|previously|properly|really|remotely|repeatedly|separately|simply|subsequently|successfully|thoroughly|today|ultimately|yesterday)";
-const completionModifierSource = `(?:${completionModifierTokenSource}\\s+){0,2}`;
-const reportingBaseVerbSource =
-  "(?:allege|announce|assert|assume|believe|claim|conclude|confirm|declare|document|hope|indicate|insist|maintain|mean|note|purport|report|say|state|write)";
-const reportingVerbSource =
-  "(?:alleg(?:ed|es|ing)|announc(?:ed|es|ing)|assert(?:ed|s|ing)|assum(?:ed|es|ing)|believ(?:ed|es|ing)|claim(?:ed|s|ing)|conclud(?:ed|es|ing)|confirm(?:ed|s|ing)|declar(?:ed|es|ing)|document(?:ed|s|ing)|hop(?:ed|es|ing)|indicat(?:ed|es|ing)|insist(?:ed|s|ing)|maintain(?:ed|s|ing)|mean(?:s|ing)|meant|not(?:ed|es|ing)|purport(?:ed|s|ing)|report(?:ed|s|ing)|say(?:s|ing)|said|stat(?:ed|es|ing)|writ(?:es|ing|ten)|wrote)";
-const reportingContinuationVerbSource =
-  "(?:alleged|announced|asserted|assumed|believed|claimed|concluded|confirmed|declared|documented|hoped|indicated|insisted|maintained|meant|noted|purported|reported|said|stated|wrote)";
-const reportingKnownSubjectSource =
-  "(?:(?:I|we|they|he|she|it|QA|engineering|management|reviewers?|engineers?|testers?|auditors?|maintainers?|authors?|vendors?)|" +
-  "(?:(?:the|a|this)\\s+)?(?:lead|team|group|reviewer|engineer|tester|auditor|maintainer|author|vendor)|" +
-  "(?:QA|engineering)\\s+and\\s+(?:QA|engineering))";
-const reportingGenericSubjectSource =
-  "(?:(?:the|a|this)\\s+)?(?!(?:audit|evidence|note|plan|release|report|result|run|smoke|test)s?\\b)[A-Za-z][A-Za-z0-9_-]*";
-const reportingSubjectSource = `(?:${reportingKnownSubjectSource}|${reportingGenericSubjectSource})`;
-const reportingPerActorSource =
-  `(?:${reportingKnownSubjectSource})` +
-  `(?!\\s+(?:(?:accessibility|smoke|testing)\\s+){0,2}requirements?\\b)`;
-const reportingActorSource =
-  "(?!(?:and|but)\\b)(?:(?:the|a)\\s+)?(?:[A-Za-z][A-Za-z0-9_-]*\\s+){0,4}[A-Za-z][A-Za-z0-9_-]*";
-const reportingPredicateSource =
-  `(?:(?:can|could|did|do|does|has|have|had|is|are|was|were|may|might|should|will|would)\\s+(?:been\\s+)?)?` +
-  `(?:(?:${completionModifierTokenSource}|${nonCompletionModifierSource})\\s+){0,2}` +
-  `(?:${reportingVerbSource}|${reportingBaseVerbSource})` +
-  `(?:\\s+and(?:\\s+later)?\\s+(?:(?:${completionModifierTokenSource}|${nonCompletionModifierSource})\\s+){0,2}(?:${reportingVerbSource}|${reportingBaseVerbSource}))?`;
-const reportingAttributionSource =
-  `(?:${reportingSubjectSource}\\s+${reportingPredicateSource}|` +
-  `according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource})`;
-const reportingAgentBridgeSource =
-  "(?:by\\s+(?:(?:the|a)\\s+)?(?:[A-Za-z][A-Za-z0-9_-]*\\s+){1,4})?";
-const passiveReportingActionBridgeSource =
-  `${reportingAgentBridgeSource}(?:to\\s+${completionModifierSource}(?:be\\s+${completionModifierSource}|have\\s+${completionModifierSource}(?:been\\s+${completionModifierSource})?)|` +
-  `as\\s+${completionModifierSource})`;
-const hasNonEvidenceAction = (
-  value,
-  actionSource,
-  completedCorrectionSource,
-  reportedTargetSource,
-) => {
-  const correctionSource =
-    completedCorrectionSource ??
-    `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${actionSource}\\b`;
-  if (reportedTargetSource) {
-    const reportedAttributionBridgeSource =
-      "(?:(?!\\b(?:and|but|however|then|whereas|while|yet)\\b|[.;\\n])[\\s\\S]){0,180}";
-    const postposedAttributionSource =
-      `(?:${reportingActorSource}\\s+${reportingVerbSource}|` +
-      `according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource})`;
-    const inlinePostposedAttributionSource =
-      `(?:according\\s+to\\s+${reportingActorSource}|per\\s+${reportingPerActorSource}|` +
-      `as\\s+(?:${reportingActorSource}\\s+${reportingVerbSource}|` +
-      `${reportingVerbSource}(?:\\s+by\\s+${reportingActorSource})?))`;
-    const preposedReportedAttributionSource =
-      `(?:\\b${reportingAttributionSource}\\b|` +
-      `(?:^|\\bthen\\b|,)\\s*${reportingContinuationVerbSource}\\b)` +
-      `${reportedAttributionBridgeSource}${reportedTargetSource}`;
-    const postposedReportedAttributionSource =
-      `${reportedTargetSource}${reportedAttributionBridgeSource}` +
-      `(?:(?:,\\s*["'“”]?|[–—]|\\()\\s*(?:as\\s+)?${postposedAttributionSource}|` +
-      `\\s+${inlinePostposedAttributionSource})`;
-    const attribution = new RegExp(
-      `(?:${preposedReportedAttributionSource}|${postposedReportedAttributionSource})`,
-      "i",
-    ).exec(value);
-    if (attribution) {
-      const factualCorrectionBridgeSource = `(?:(?!\\b(?:${reportingVerbSource}|${reportingBaseVerbSource}|according\\s+to|per|no|not|never|without)\\b|[.;\\n])[\\s\\S]){0,120}?`;
-      const factualCorrection = new RegExp(
-        `\\bbut(?:\\s+also)?\\b${factualCorrectionBridgeSource}${correctionSource}`,
-        "i",
-      );
-      const attributionTail = value.slice(attribution.index + attribution[0].length);
-      const correction = factualCorrection.exec(attributionTail);
-      if (!correction) return true;
-      const postposedCorrectionAttribution = new RegExp(
-        `(?:${postposedReportedAttributionSource}|` +
-          `(?:,\\s*["'“”]?|[–—]|\\()\\s*(?:as\\s+)?${postposedAttributionSource})`,
-        "i",
-      );
-      return postposedCorrectionAttribution.test(attributionTail.slice(correction.index));
-    }
-  }
-  const nonEvidenceAction = new RegExp(
-    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due|supposed)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|${reportingVerbSource}\\s+${passiveReportingActionBridgeSource}${actionSource}|(?:planned|scheduled|expected|required|intended)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource}|${nonCompletionModifierSource}\\s+(?:(?:am|is|are|was|were|has|have|had)\\s+(?:been\\s+)?)?${actionSource})(?![A-Za-z0-9_])`,
-    "i",
-  );
-  const match = nonEvidenceAction.exec(value);
-  if (!match) return false;
-  const completedCorrection = new RegExp(
-    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${correctionSource}`,
-    "i",
-  );
-  return !completedCorrection.test(value.slice(match.index + match[0].length));
-};
 const negatedSetupPattern =
   /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
 const negatedDeviceDescriptionPattern = /^\s*(?:no|not(?:\s+an?)?|without)\b/i;
@@ -550,57 +454,12 @@ const isConcreteAndroidMobileDevice = (value) => {
     knownNumberedAndroidModelPattern.test(device)
   );
 };
-const hasRequiredZoom = (value) => {
-  const normalized = normalizeContractedNegations(value);
-  const affirmativeZoomAction = "(?:tested|verified|checked|completed|passed)";
-  const levelSource = (level) => `\\b${level}%`;
-  const coordinatedLevelsSource = `(?:${levelSource(200)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(400)}|${levelSource(400)}\\s*(?:,?\\s*(?:and|&)|/)\\s*${levelSource(200)})`;
-  const factualObservationTailSource =
-    "(?:and\\s+(?:(?:we|QA|the\\s+team)\\s+)?(?:noted|confirmed)\\b|per\\b)";
-  const followingLevelBoundarySource = `(?=\\s*(?:$|(?:,\\s*(?:and\\s+)?|(?:and|&)\\s+)(?:${levelSource(200)}|${levelSource(400)})|${factualObservationTailSource}))`;
-  const completionTailSource = `(?:\\s+${completionModifierTokenSource}){0,2}${followingLevelBoundarySource}`;
-  const actionBeforeTargetSource = `\\b${affirmativeZoomAction}\\b(?:\\s+(?:reflow|zoom|layout|content|testing|verification|checks?))?(?:\\s+(?:at|with|on|under))?\\s+`;
-  const actionAfterTargetSource = `(?:\\s+|\\s*,\\s*)(?:(?:reflow|zoom|layout|content|testing|verification|checks?)\\s+)?(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${affirmativeZoomAction}\\b${completionTailSource}`;
-  const correctedActionAfterTargetSource = `[^.;\\n]{0,56}\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}\\b${affirmativeZoomAction}\\b${completionTailSource}`;
-  const evidenceClauses = typeof normalized === "string" ? normalized.split(/[.;\n]+/) : [];
-  const hasTargetEvidence = (targetSource, requireTargetBoundary = false) => {
-    const directEvidence = new RegExp(
-      `(?:${actionBeforeTargetSource}${targetSource}${requireTargetBoundary ? followingLevelBoundarySource : ""}|${targetSource}${actionAfterTargetSource})`,
-      "i",
-    );
-    const correctedEvidence = new RegExp(`${targetSource}${correctedActionAfterTargetSource}`, "i");
-    const targetBoundCorrection =
-      `(?:${targetSource}${actionAfterTargetSource}|` +
-      `${completionModifierSource}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)?${completionModifierSource}${affirmativeZoomAction}\\b)`;
-    return evidenceClauses.some(
-      (clause) =>
-        (directEvidence.test(clause) || correctedEvidence.test(clause)) &&
-        !hasNonEvidenceAction(
-          clause,
-          affirmativeZoomAction,
-          targetBoundCorrection,
-          `(?:(?:the|both)\\s+)?(?:${targetSource}|${coordinatedLevelsSource})`,
-        ),
-    );
-  };
-  const hasSharedLevelEvidence = hasTargetEvidence(coordinatedLevelsSource, true);
-  return (
-    typeof normalized === "string" &&
-    /\b200%/.test(normalized) &&
-    /\b400%/.test(normalized) &&
-    (hasSharedLevelEvidence ||
-      (hasTargetEvidence(levelSource(200)) && hasTargetEvidence(levelSource(400)))) &&
-    !/\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b[^.;\n]{0,40}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,40}\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b/i.test(
-      normalized,
-    ) &&
-    !/\bno\s+(?:(?:testing|tests?|verification|evidence)\b[^.;\n]{0,40})?(?:at\s+)?(?:200%|400%)|\bneither\b[^.;\n]{0,40}(?:200%|400%)[^.;\n]{0,40}\bnor\b/i.test(
-      normalized,
-    ) &&
-    !/(?:200%|400%)[^.;\n]{0,40}\bno\s+(?:testing|tests?|verification|evidence)\b|\bneither\b[^.;\n]{0,40}\b(?:tested|verified|checked)\b[^.;\n]{0,40}(?:200%|400%)/i.test(
-      normalized,
-    )
-  );
-};
+const requiredZoomLevels = ["200%", "400%"];
+const hasRequiredZoomLevels = (value) =>
+  Array.isArray(value) &&
+  value.length === requiredZoomLevels.length &&
+  new Set(value).size === requiredZoomLevels.length &&
+  requiredZoomLevels.every((level) => value.includes(level));
 const isEvidenceUrl = (value) => {
   try {
     return new URL(value).protocol === "https:";
@@ -751,6 +610,13 @@ for (const [index, environment] of environments.entries()) {
   if (
     !complete &&
     environment?.id === "zoom-reflow-contrast" &&
+    environment?.zoomLevelsTested !== null
+  ) {
+    errors.push(`${prefix}.zoomLevelsTested must remain null while evidence is pending.`);
+  }
+  if (
+    !complete &&
+    environment?.id === "zoom-reflow-contrast" &&
     environment?.increasedOrHighContrastEnabled !== null
   ) {
     errors.push(
@@ -774,8 +640,11 @@ for (const [index, environment] of environments.entries()) {
         errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
       }
     }
-    if (environment?.id === "zoom-reflow-contrast" && !hasRequiredZoom(environment.zoom)) {
-      errors.push(`${prefix}.zoom must affirm testing both 200% and 400% without negation.`);
+    if (
+      environment?.id === "zoom-reflow-contrast" &&
+      !hasRequiredZoomLevels(environment.zoomLevelsTested)
+    ) {
+      errors.push(`${prefix}.zoomLevelsTested must contain exactly "200%" and "400%".`);
     }
     if (
       environment?.id === "zoom-reflow-contrast" &&
