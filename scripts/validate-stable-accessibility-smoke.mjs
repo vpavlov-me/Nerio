@@ -46,12 +46,47 @@ const allowedPostCandidateEvidencePaths = new Set([
   "quality/stable-accessibility-smoke.json",
 ]);
 const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
-const concreteMacDevicePattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
-const concreteDesktopDevicePattern =
-  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b|(?!(?:desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))\b/i;
+const macDeviceFamilyPattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
-const genericDesktopDescriptionPattern = /\b(?:desktop|laptop|computer|hardware|machine|PC)\b/i;
+const knownSingleIdentityDesktopPattern = /\bFramework\s+Laptop\b/i;
+const desktopManufacturerPattern =
+  /\b(?:Acer|Alienware|ASUS|Dell|Framework|Gigabyte|HP|Huawei|Lenovo|LG|Microsoft|MSI|Razer|Samsung|System76)\b/i;
+const identityNegationPattern = /\b(?:not|never|without|no(?!\.))\b/i;
+const genericDesktopWords = new Set([
+  "desktop",
+  "laptop",
+  "computer",
+  "hardware",
+  "machine",
+  "pc",
+  "device",
+  "model",
+  "workstation",
+  "windows",
+  "macos",
+  "linux",
+  "ubuntu",
+]);
+function isMacDeviceDescription(value) {
+  const identity = typeof value === "string" ? macDeviceFamilyPattern.exec(value) : null;
+  return (
+    identity !== null &&
+    !explicitDesktopPlaceholderPattern.test(value) &&
+    !identityNegationPattern.test(value.slice(0, identity.index))
+  );
+}
+function isConcreteDesktopDeviceDescription(value) {
+  if (typeof value !== "string" || explicitDesktopPlaceholderPattern.test(value)) return false;
+  if (macDeviceFamilyPattern.test(value)) return isMacDeviceDescription(value);
+  const manufacturer = desktopManufacturerPattern.exec(value);
+  const frameworkFamily = knownSingleIdentityDesktopPattern.exec(value);
+  const identity = manufacturer ?? frameworkFamily;
+  if (identity && identityNegationPattern.test(value.slice(0, identity.index))) return false;
+  const words = value.match(/[A-Za-z][A-Za-z0-9-]*/g) ?? [];
+  const identityWords = words.filter((word) => !genericDesktopWords.has(word.toLowerCase()));
+  return (manufacturer !== null && identityWords.length >= 2) || frameworkFamily !== null;
+}
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
 const virtualDevicePattern = new RegExp(`\\b${virtualDeviceSource}\\b`, "i");
 const mobilePlaceholderPattern = new RegExp(
@@ -77,18 +112,18 @@ const environmentMetadataRequirements = {
     operatingSystem: /\bmacOS\b.*\d/i,
     browser: /\bSafari\b.*\d/i,
     assistiveTechnology: /\bVoiceOver\b/i,
-    device: concreteMacDevicePattern,
+    device: isMacDeviceDescription,
   },
   "macos-chromium-keyboard": {
     operatingSystem: /\bmacOS\b.*\d/i,
     browser: /\b(?:Chrome|Chromium|Edge)\b.*\d/i,
     assistiveTechnology: /keyboard[- ]only/i,
-    device: concreteMacDevicePattern,
+    device: isMacDeviceDescription,
   },
   "zoom-reflow-contrast": {
     operatingSystem: /\b(?:macOS|Windows|Linux)\b.*\d/i,
     browser: /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i,
-    device: concreteDesktopDevicePattern,
+    device: isConcreteDesktopDeviceDescription,
   },
   "mobile-touch": {
     operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
@@ -122,6 +157,7 @@ const normalizeContractedNegations = (value) =>
     : value;
 const negatedSetupPattern =
   /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
+const negatedDeviceDescriptionPattern = /^\s*(?:no|not(?:\s+an?)?|without)\b/i;
 const isConcreteAppleMobileDevice = (value) => {
   if (typeof value !== "string") return false;
   const device = value.trim();
@@ -197,21 +233,74 @@ const hasEnabledContrast = (value) => {
     .split(/[.;,\n]+/)
     .some((clause) => positive.test(clause) && !negative.test(clause));
 };
-const hasPhysicalTouchClaim = (value) => {
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const asFlexibleRegexPhrase = (value) => value.trim().split(/\s+/).map(escapeRegExp).join("\\s+");
+const hasPhysicalTouchClaim = (value, device) => {
   const normalized = normalizeContractedNegations(value);
   if (typeof normalized !== "string") return false;
-  const target = "physical(?:\\s+mobile)?\\s+(?:touch\\s+)?(?:device|phone|tablet)";
+  const concreteModel =
+    typeof device === "string" && device.trim().length > 0
+      ? `|physical\\s+${asFlexibleRegexPhrase(device)}`
+      : "";
+  const target = `(?:physical(?:\\s+mobile)?\\s+(?:touch\\s+)?(?:device|phone|tablet)${concreteModel})`;
+  const boundedTarget = `\\b${target}(?![A-Za-z0-9_])`;
+  const actionToTargetBridge =
+    "(?:(?!\\b(?:simulators?|emulators?|virtual|physical|device|phone|tablet)\\b)[^;,\\n]){0,56}";
   const positive = new RegExp(
-    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b[^.;,\\n]{0,64}\\b${target}\\b|\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
+    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b${actionToTargetBridge}\\b(?:on|with|using)\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|\\b(?:verified|tested|used|using)\\b\\s+(?:(?:an?|the)\\s+)?${boundedTarget}|${boundedTarget}[^;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
     "i",
   );
-  const negative = new RegExp(
-    `(?:\\b${target}\\b[^.;,\\n]{0,40}\\b(?:not|never|unavailable|absent|failed|impossible|disabled|off)\\b|\\bno\\s+${target}\\b\\s*(?:(?:is|was|were|are)\\s+)?(?:used|tested|available|working)\\b|\\bneither\\b(?=[^.;,\\n]{0,64}\\bnor\\b)(?=[^.;,\\n]{0,64}\\b${target}\\b))`,
+  const negativeAction =
+    "(?:tested|used|verified|performed|completed|ran|passed|testing|using|test|use|verify|perform|complete|run|pass)";
+  const nonEvidenceAction = new RegExp(
+    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${negativeAction}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${negativeAction}|needs?\\s+to\\s+(?:be\\s+)?${negativeAction})\\b`,
     "i",
   );
-  return normalized
-    .split(/[.;,\n]+/)
-    .some((clause) => positive.test(clause) && !negative.test(clause));
+  const modifierBridge =
+    "(?:\\s+(?!(?:but|simulators?|emulators?|virtual|physical|device|phone|tablet)\\b)[A-Za-z-]+){0,6}";
+  const negativePatterns = [
+    new RegExp(
+      `${boundedTarget}\\s+(?:(?:(?:is|was|were|are|remained|stayed)\\s+)(?:not\\s+)?(?:used|tested|available|working|unavailable|absent|failed|disabled|off)|(?:not|never)\\s+(?:used|tested|available|working))\\b`,
+      "i",
+    ),
+    new RegExp(
+      `\\bno\\s+${target}(?![A-Za-z0-9_])\\s*(?:(?:is|was|were|are)\\s+)?(?:used|tested|available|working)\\b`,
+      "i",
+    ),
+    new RegExp(
+      `\\b(?:not|never|without)${modifierBridge}\\s+${negativeAction}${modifierBridge}(?:\\s+(?:on|with|using))?\\s+(?:(?:an?|the)\\s+)?${boundedTarget}`,
+      "i",
+    ),
+    new RegExp(
+      `\\b(?:not|never)${modifierBridge}\\s+(?:(?:on|with|using)\\s+)?(?:(?:an?|the)\\s+)?${boundedTarget}`,
+      "i",
+    ),
+    new RegExp(
+      `\\bwithout${modifierBridge}\\s+(?:(?:using|with)\\s+)?(?:(?:an?|the)\\s+)?${boundedTarget}`,
+      "i",
+    ),
+    new RegExp(
+      `\\bno\\s+(?:(?!(?:issues?|problems?|defects?)\\b)[A-Za-z-]+\\s+){0,3}(?:testing|tests?|verification|evidence)\\b[^;,:\\n]{0,64}${boundedTarget}`,
+      "i",
+    ),
+    new RegExp(`\\bneither\\b(?=[^;,\\n]{0,64}\\bnor\\b)(?=[^;,\\n]{0,64}${boundedTarget})`, "i"),
+    new RegExp(`\\banything\\s+but\\s+${negativeAction}[^;,:\\n]{0,64}${boundedTarget}`, "i"),
+    new RegExp(
+      `${boundedTarget}[^;:\n]{0,64}\\b(?:but\\s+)?no\\s+(?:(?!(?:issues?|problems?|defects?)\\b)[A-Za-z-]+\\s+){0,3}(?:testing|tests?|verification|evidence)\\b`,
+      "i",
+    ),
+  ];
+  return normalized.split(/(?<![A-Za-z0-9])\.|\.(?![A-Za-z0-9])|[;:\n]+/).some((clause) => {
+    const semanticClause = clause.replace(
+      /\bnot\s+(?:only|just|merely|simply)\b(?=[^;,:\n]{0,96}\bbut(?:\s+also)?\b)/gi,
+      "",
+    );
+    const negativeClause = semanticClause.replace(/[,–—]/g, " ");
+    if (negativePatterns.some((pattern) => pattern.test(negativeClause))) return false;
+    return semanticClause
+      .split(/\b(?:but(?:\s+also)?|(?:and\s+)?then)\b/i)
+      .some((segment) => positive.test(segment) && !nonEvidenceAction.test(segment));
+  });
 };
 const hasNonNegatedVirtualMention = (value) => {
   const normalized = normalizeContractedNegations(value);
@@ -388,17 +477,18 @@ for (const [index, environment] of environments.entries()) {
   }
   if (complete) {
     const requirements = environmentMetadataRequirements[environment?.id] ?? {};
-    for (const [field, pattern] of Object.entries(requirements)) {
+    for (const [field, requirement] of Object.entries(requirements)) {
       const value = environment?.[field];
-      const negated =
-        ["operatingSystem", "browser", "assistiveTechnology"].includes(field) &&
-        negatedSetupPattern.test(normalizeContractedNegations(value));
       const normalizedValue = typeof value === "string" ? value.trim() : "";
-      const placeholderDevice =
-        field === "device" &&
-        (explicitDesktopPlaceholderPattern.test(normalizedValue) ||
-          (genericDesktopDescriptionPattern.test(normalizedValue) && !/\d/.test(normalizedValue)));
-      if (nonEmpty(value) && (!pattern.test(normalizedValue) || negated || placeholderDevice)) {
+      const matchesRequirement =
+        typeof requirement === "function"
+          ? requirement(normalizedValue)
+          : requirement.test(normalizedValue);
+      const negated =
+        (field === "device" && negatedDeviceDescriptionPattern.test(normalizedValue)) ||
+        (["operatingSystem", "browser", "assistiveTechnology"].includes(field) &&
+          negatedSetupPattern.test(normalizeContractedNegations(value)));
+      if (nonEmpty(value) && (!matchesRequirement || negated)) {
         errors.push(`${prefix}.${field} does not match the required ${environment.id} setup.`);
       }
     }
@@ -415,7 +505,10 @@ for (const [index, environment] of environments.entries()) {
     ) {
       errors.push(`${prefix} must use a physical mobile touch device, not an emulator.`);
     }
-    if (environment?.id === "mobile-touch" && !hasPhysicalTouchClaim(environment.notes)) {
+    if (
+      environment?.id === "mobile-touch" &&
+      !hasPhysicalTouchClaim(environment.notes, environment.device)
+    ) {
       errors.push(`${prefix}.notes must affirm use of a physical mobile touch device.`);
     }
     if (environment?.id === "mobile-touch") {

@@ -21,11 +21,7 @@ export function commandsForChannel(channel, deferredStatuses = {}) {
           "scoped internal stable accessibility evidence",
           ["--expect-pass"],
         ],
-        [
-          "validate:manual-audit-plan",
-          "deferred exhaustive accessibility audit record",
-          deferredStatuses.manualAudit === "complete" ? ["--expect-pass"] : undefined,
-        ],
+        ["validate:manual-audit-plan", "deferred exhaustive accessibility audit record"],
         [
           "validate:beta-feedback",
           "deferred external validation record",

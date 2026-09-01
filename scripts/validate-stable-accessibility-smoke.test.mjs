@@ -241,7 +241,8 @@ test("strict validation rejects evidence recorded against the wrong required env
 
 test("strict validation accepts ordinary Mac hardware descriptions without inventory details", () => {
   const record = completedRecord();
-  record.environments.find(({ id }) => id === "macos-safari-voiceover").device = "MacBook Pro";
+  record.environments.find(({ id }) => id === "macos-safari-voiceover").device =
+    "MacBook Pro without Touch Bar";
   record.environments.find(({ id }) => id === "macos-chromium-keyboard").device = "Mac Studio";
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").device = "Mac mini";
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
@@ -251,11 +252,15 @@ test("strict validation accepts ordinary Mac hardware descriptions without inven
   });
 });
 
-test("strict validation accepts concrete desktop models containing generic hardware words", () => {
+test("strict validation accepts ordinary concrete desktop descriptions without inventory details", () => {
   for (const device of [
+    "Dell XPS",
+    "Lenovo ThinkPad",
+    "Framework Laptop",
     "Framework Laptop 13",
     "Microsoft Surface Laptop 7",
     "HP EliteDesk 800 G9 Desktop Mini PC",
+    "HP EliteDesk 800 G9 asset No. 42",
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
@@ -269,25 +274,34 @@ test("strict validation accepts concrete desktop models containing generic hardw
   }
 });
 
-test("strict validation still rejects placeholder desktop hardware descriptions", () => {
-  for (const device of [
-    "Test MacBook Pro",
-    "Generic Mac Studio",
-    "Example Mac mini",
-    "Unknown MacBook Pro",
-    "desktop Mac Studio",
-    "MacBook Pro hardware",
+test("strict validation rejects placeholder, generic-only, and negated desktop descriptions", () => {
+  for (const { id, device } of [
+    { id: "macos-safari-voiceover", device: "Test MacBook Pro" },
+    { id: "macos-safari-voiceover", device: "Generic Mac Studio" },
+    { id: "macos-safari-voiceover", device: "Example Mac mini" },
+    { id: "macos-safari-voiceover", device: "Unknown MacBook Pro" },
+    { id: "macos-safari-voiceover", device: "Not a MacBook Pro" },
+    { id: "macos-safari-voiceover", device: "No Mac Studio" },
+    { id: "macos-safari-voiceover", device: "This is not a MacBook Pro" },
+    { id: "macos-safari-voiceover", device: "Definitely not a MacBook Pro" },
+    { id: "zoom-reflow-contrast", device: "desktop device 123" },
+    { id: "zoom-reflow-contrast", device: "Windows desktop" },
+    { id: "zoom-reflow-contrast", device: "PC 123" },
+    { id: "zoom-reflow-contrast", device: "hardware machine 42" },
+    { id: "zoom-reflow-contrast", device: "Office laptop" },
+    { id: "zoom-reflow-contrast", device: "My computer" },
+    { id: "zoom-reflow-contrast", device: "Available device" },
+    { id: "zoom-reflow-contrast", device: "Kitchen Chair" },
+    { id: "zoom-reflow-contrast", device: "office workstation" },
+    { id: "zoom-reflow-contrast", device: "Home PC" },
+    { id: "zoom-reflow-contrast", device: "The Machine" },
   ]) {
     const record = completedRecord();
-    record.environments.find(({ id }) => id === "macos-safari-voiceover").device = device;
+    record.environments.find(({ id: candidateId }) => candidateId === id).device = device;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.notEqual(result.status, 0, device);
-      assert.match(
-        result.stderr,
-        /device does not match the required macos-safari-voiceover setup/,
-        device,
-      );
+      assert.match(result.stderr, new RegExp(`device does not match the required ${id} setup`));
     });
   }
 });
@@ -303,6 +317,161 @@ test("strict validation accepts a maintained mobile browser and any concrete phy
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /internally approved/);
   });
+});
+
+test("strict validation accepts physical-device claims naming the concrete mobile model", () => {
+  for (const setup of [
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Tested touch interaction on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: "Firefox 143.0",
+      device: "Fairphone 5",
+      notes: "Verified touch interaction using a physical Fairphone 5.",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: "Firefox 143.0",
+      device: "Nothing Phone (2)",
+      notes: "Tested touch interaction on a physical Nothing Phone (2).",
+    },
+    {
+      operatingSystem: "iPadOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPad Pro (M4)",
+      notes: "Tested touch interaction on a physical iPad Pro (M4).",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: "Firefox 143.0",
+      device: "Nokia 7.2",
+      notes: "Tested in Android 16.0 on a physical Nokia 7.2.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Not only tested on a physical iPhone 15 Pro but also verified.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was not only performed on a physical iPhone 15 Pro but also passed.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was not merely performed but completed on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was not simply performed but completed on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Used touch interaction on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Using touch controls with a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was not performed remotely but was verified on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Tested touch interaction on a physical iPhone 15 Pro — not a simulator.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Tested touch interaction on a physical iPhone 15 Pro with VoiceOver off.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was planned, then completed on a physical iPhone 15 Pro.",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: "Safari 18.5",
+      device: "iPhone 15 Pro",
+      notes: "Testing was required by policy and completed on a physical iPhone 15 Pro.",
+    },
+  ]) {
+    const record = completedRecord();
+    Object.assign(
+      record.environments.find(({ id }) => id === "mobile-touch"),
+      setup,
+    );
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${setup.device}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation rejects negated testing claims naming the concrete mobile model", () => {
+  for (const notes of [
+    "Not tested on a physical iPhone 15 Pro.",
+    "No testing was performed on a physical iPhone 15 Pro.",
+    "No touch testing was performed on a physical iPhone 15 Pro.",
+    "Testing was not performed on a physical iPhone 15 Pro.",
+    "Testing was never completed on a physical iPhone 15 Pro.",
+    "Testing was not actually performed on a physical iPhone 15 Pro.",
+    "Testing was never fully completed on a physical iPhone 15 Pro.",
+    "Testing hasn't been performed on a physical iPhone 15 Pro.",
+    "Testing couldn't be performed on a physical iPhone 15 Pro.",
+    "Testing has not yet been performed on a physical iPhone 15 Pro.",
+    "Testing was not previously performed on a physical iPhone 15 Pro.",
+    "Testing was never before completed on a physical iPhone 15 Pro.",
+    "Testing passed but not on a physical iPhone 15 Pro.",
+    "Testing passed but not on the physical iPhone 15 Pro.",
+    "Testing passed without a physical iPhone 15 Pro.",
+    "Testing was not performed on another device because a physical iPhone 15 Pro was merely available.",
+    "Testing was not performed on another device or on a physical iPhone 15 Pro.",
+    "Testing was not performed on a lab phone nor on a physical iPhone 15 Pro.",
+    "Testing was not performed: only planned on a physical iPhone 15 Pro.",
+    "Testing was anything but performed on a physical iPhone 15 Pro.",
+    "Tested on a physical iPhone 15 Pro but not actually on a physical mobile device.",
+    "Must be tested on a physical iPhone 15 Pro before release.",
+    "Can be tested on a physical iPhone 15 Pro.",
+    "Could be tested on a physical iPhone 15 Pro.",
+    "May be tested on a physical iPhone 15 Pro.",
+    "Might be tested on a physical iPhone 15 Pro.",
+    "Testing is expected to be performed on a physical iPhone 15 Pro.",
+    "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
+    "Tested on a physical iPhone 15 Pro but no testing occurred.",
+    "Tested on a physical iPhone 15 Pro_simulator.",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "mobile-touch").notes = notes;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, notes);
+      assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+    });
+  }
 });
 
 test("strict validation accepts concrete mobile names and model codes", () => {
