@@ -160,6 +160,14 @@ const hasRequiredZoom = (value) => {
     typeof normalized === "string" &&
     /\b200%/.test(normalized) &&
     /\b400%/.test(normalized) &&
+    normalized
+      .split(/[.;\n]+/)
+      .some(
+        (clause) =>
+          /\b200%/.test(clause) &&
+          /\b400%/.test(clause) &&
+          /\b(?:tested|verified|checked|completed|passed)\b/i.test(clause),
+      ) &&
     !/\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b[^.;\n]{0,40}(?:200%|400%)|(?:200%|400%)[^.;\n]{0,40}\b(?:not|never|without|skipped|untested|unavailable|absent|failed|impossible)\b/i.test(
       normalized,
     ) &&
@@ -192,7 +200,7 @@ const hasPhysicalTouchClaim = (value) => {
   if (typeof normalized !== "string") return false;
   const target = "physical(?:\\s+mobile)?\\s+(?:touch\\s+)?(?:device|phone|tablet)";
   const positive = new RegExp(
-    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b[^.;,\\n]{0,64}\\b${target}\\b|\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested|available|working)\\b)`,
+    `(?:\\b(?:verified|tested|used|using|performed|completed|ran|passed)\\b[^.;,\\n]{0,64}\\b${target}\\b|\\b${target}\\b[^.;,\\n]{0,40}\\b(?:(?:is|was|were|are|remained)\\s+)?(?:used|tested)\\b)`,
     "i",
   );
   const negative = new RegExp(
@@ -388,7 +396,7 @@ for (const [index, environment] of environments.entries()) {
       }
     }
     if (environment?.id === "zoom-reflow-contrast" && !hasRequiredZoom(environment.zoom)) {
-      errors.push(`${prefix}.zoom must confirm both 200% and 400% without negation.`);
+      errors.push(`${prefix}.zoom must affirm testing both 200% and 400% without negation.`);
     }
     if (environment?.id === "zoom-reflow-contrast" && !hasEnabledContrast(environment.notes)) {
       errors.push(`${prefix}.notes must confirm increased or high contrast was enabled.`);

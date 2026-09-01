@@ -90,7 +90,7 @@ function completedRecord() {
       assistiveTechnology: "Not applicable",
       device: "Mac Studio M2 Max (2023)",
       viewport: "1280x800",
-      zoom: "200% and 400%",
+      zoom: "Verified reflow at 200% and 400%",
       notes: "Verified reflow with macOS Increase Contrast enabled.",
     },
     "mobile-touch": {
@@ -395,6 +395,17 @@ test("strict validation rejects no-testing zoom claims on either side of the val
   }
 });
 
+test("strict validation requires affirmative zoom testing language", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
+    "200% and 400% are planned for later";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /both 200% and 400% without negation/);
+  });
+});
+
 test("strict validation rejects failed or unavailable target evidence", () => {
   const record = completedRecord();
   record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom =
@@ -408,6 +419,17 @@ test("strict validation rejects failed or unavailable target evidence", () => {
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /both 200% and 400% without negation/);
     assert.match(result.stderr, /contrast was enabled/);
+    assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
+  });
+});
+
+test("strict validation requires actual use of the physical device", () => {
+  const record = completedRecord();
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "A physical mobile device was available.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
     assert.match(result.stderr, /must affirm use of a physical mobile touch device/);
   });
 });
