@@ -279,6 +279,7 @@ test("strict validation rejects browsers below the maintained policy floor", () 
     { id: "zoom-reflow-contrast", browser: "Edge 150" },
     { id: "zoom-reflow-contrast", browser: "Firefox 1" },
     { id: "zoom-reflow-contrast", browser: "Firefox 152" },
+    { id: "mobile-touch", browser: "Safari 1" },
     { id: "mobile-touch", browser: "Firefox 1" },
   ]) {
     const record = completedRecord();
@@ -311,6 +312,18 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
     "Framework Laptop",
     "Framework Laptop 13",
     "Microsoft Surface Laptop 7",
+    "Microsoft Surface Pro",
+    "Dell Latitude",
+    "Acer Swift",
+    "Acer Swift Go",
+    "Acer Swift Edge",
+    "Acer Swift Edge 16",
+    "Samsung Galaxy Book",
+    "Samsung Galaxy Book Pro",
+    "Samsung Galaxy Book Edge",
+    "Samsung Galaxy Book4 Edge",
+    "Samsung Galaxy Book6 Edge",
+    "Purism Librem Mini",
     "HP EliteDesk 800 G9 Desktop Mini PC",
     "HP EliteDesk 800 G9 asset No. 42",
     "Intel NUC 13 Pro",
@@ -396,6 +409,54 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "Chromebook 140" },
     { id: "zoom-reflow-contrast", device: "ChromeOS device 140" },
     { id: "zoom-reflow-contrast", device: "Generic Chromebook 714" },
+    { id: "zoom-reflow-contrast", device: "Generic Microsoft Surface Pro" },
+    { id: "zoom-reflow-contrast", device: "This is not a Microsoft Surface Pro" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Office" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Edge 140" },
+    { id: "zoom-reflow-contrast", device: "Google Chrome OS 140" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Windows 11" },
+    { id: "zoom-reflow-contrast", device: "Dell Desktop" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Account" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Account 365" },
+    { id: "zoom-reflow-contrast", device: "Apple Music" },
+    { id: "zoom-reflow-contrast", device: "Google Workspace" },
+    { id: "zoom-reflow-contrast", device: "Dell Support" },
+    { id: "zoom-reflow-contrast", device: "Samsung Browser" },
+    { id: "zoom-reflow-contrast", device: "Dell Chrome 140" },
+    { id: "zoom-reflow-contrast", device: "Samsung Windows 11" },
+    { id: "zoom-reflow-contrast", device: "HP Printer" },
+    { id: "zoom-reflow-contrast", device: "HP Printer 123" },
+    { id: "zoom-reflow-contrast", device: "Dell Monitor" },
+    { id: "zoom-reflow-contrast", device: "Lenovo Support" },
+    { id: "zoom-reflow-contrast", device: "HP LaserJet Printer 123" },
+    { id: "zoom-reflow-contrast", device: "Dell UltraSharp Monitor U2723QE" },
+    { id: "zoom-reflow-contrast", device: "Lenovo ThinkVision Monitor P27h-30" },
+    { id: "zoom-reflow-contrast", device: "Microsoft 365 Account" },
+    { id: "zoom-reflow-contrast", device: "Dell SupportAssist" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude Dock" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Surface Pro Keyboard" },
+    { id: "zoom-reflow-contrast", device: "Razer Blade Mouse" },
+    { id: "zoom-reflow-contrast", device: "Samsung Galaxy Book Adapter" },
+    { id: "zoom-reflow-contrast", device: "Dell WD19 Dock" },
+    { id: "zoom-reflow-contrast", device: "HP USB-C Dock G5" },
+    { id: "zoom-reflow-contrast", device: "Dell KM7321W Keyboard" },
+    { id: "zoom-reflow-contrast", device: "Dell Laptop Windows 11" },
+    { id: "zoom-reflow-contrast", device: "HP Computer Windows 11" },
+    { id: "zoom-reflow-contrast", device: "Lenovo PC Ubuntu 24.04" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Surface Windows 11" },
+    { id: "zoom-reflow-contrast", device: "Dell Laptop Android 16" },
+    { id: "zoom-reflow-contrast", device: "HP Computer iOS 18" },
+    { id: "zoom-reflow-contrast", device: "Lenovo PC iPadOS 18" },
+    { id: "zoom-reflow-contrast", device: "Dell Laptop Mac OS 15" },
+    { id: "zoom-reflow-contrast", device: "Desktop Edge 140" },
+    { id: "zoom-reflow-contrast", device: "OS Edge 140" },
+    { id: "zoom-reflow-contrast", device: "MS Edge 140" },
+    { id: "zoom-reflow-contrast", device: "MicrosoftEdge 140" },
+    { id: "zoom-reflow-contrast", device: "EdgeHTML 18" },
+    { id: "zoom-reflow-contrast", device: "Google Edge 140" },
+    { id: "zoom-reflow-contrast", device: "Microsoft Surface Pro Case" },
+    { id: "zoom-reflow-contrast", device: "Samsung Galaxy Book Cover" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude Sleeve" },
     { id: "zoom-reflow-contrast", device: "This isn't a Dell XPS" },
     { id: "zoom-reflow-contrast", device: "This isn’t a Dell XPS" },
   ]) {
@@ -409,17 +470,69 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
   }
 });
 
-test("strict validation accepts a maintained mobile browser and any concrete physical model", () => {
+test("strict validation accepts maintained mobile browsers compatible with the recorded OS", () => {
+  for (const setup of [
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro" },
+    { operatingSystem: "iOS 18.5", browser: supportedChrome, device: "iPhone 15 Pro" },
+    { operatingSystem: "iOS 18.5", browser: supportedEdge, device: "iPhone 15 Pro" },
+    { operatingSystem: "iOS 18.5", browser: supportedFirefox, device: "iPhone 15 Pro" },
+    { operatingSystem: "iPadOS 18.5", browser: supportedSafari, device: "iPad Pro (M4)" },
+    { operatingSystem: "Android 16", browser: supportedChrome, device: "Google Pixel 9" },
+    { operatingSystem: "Android 16", browser: supportedChromium, device: "Google Pixel 9" },
+    { operatingSystem: "Android 16", browser: supportedEdge, device: "Google Pixel 9" },
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Fairphone 5" },
+  ]) {
+    const record = completedRecord();
+    Object.assign(
+      record.environments.find(({ id }) => id === "mobile-touch"),
+      setup,
+    );
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(
+        result.status,
+        0,
+        `${setup.operatingSystem} / ${setup.browser}: ${result.stderr}`,
+      );
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation rejects Safari for Android mobile evidence", () => {
   const record = completedRecord();
-  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
-  mobile.operatingSystem = "Android 16";
-  mobile.browser = supportedFirefox;
-  mobile.device = "Fairphone 5";
+  Object.assign(
+    record.environments.find(({ id }) => id === "mobile-touch"),
+    {
+      operatingSystem: "Android 16",
+      browser: supportedSafari,
+      device: "Google Pixel 9",
+      notes: "Verified touch interaction using a physical Google Pixel 9.",
+    },
+  );
   withRecord(record, (target, releaseMetadata, packagesRoot) => {
     const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /browser does not match the required mobile-touch setup/);
   });
+});
+
+test("strict validation rejects mobile browser products unavailable on the recorded OS", () => {
+  for (const setup of [
+    { operatingSystem: "iOS 18.5", browser: supportedChromium, device: "iPhone 15 Pro" },
+    { operatingSystem: "iPadOS 18.5", browser: supportedChromium, device: "iPad Pro (M4)" },
+  ]) {
+    const record = completedRecord();
+    Object.assign(
+      record.environments.find(({ id }) => id === "mobile-touch"),
+      setup,
+    );
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /browser does not match the required mobile-touch setup/);
+    });
+  }
 });
 
 test("strict validation accepts physical-device claims naming the concrete mobile model", () => {
@@ -1086,31 +1199,39 @@ test("strict validation rejects a used simulator despite an earlier physical-dev
 });
 
 test("strict validation rejects a mobile OS and device-family mismatch", () => {
-  const record = completedRecord();
-  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
-  mobile.operatingSystem = "Android 16";
-  mobile.browser = supportedFirefox;
-  mobile.device = "iPhone 15 Pro";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(
-      result.stderr,
-      /device must be a concrete physical model for its recorded mobile OS/,
+  for (const setup of [
+    { operatingSystem: "Android 16", browser: supportedFirefox, device: "iPhone 15 Pro" },
+    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPad Pro (M4)" },
+    { operatingSystem: "iPadOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro" },
+  ]) {
+    const record = completedRecord();
+    Object.assign(
+      record.environments.find(({ id }) => id === "mobile-touch"),
+      setup,
     );
-  });
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /device must be a concrete physical model for its recorded mobile OS/,
+      );
+    });
+  }
 });
 
 test("strict validation rejects mixed mobile OS families", () => {
-  const record = completedRecord();
-  const mobile = record.environments.find(({ id }) => id === "mobile-touch");
-  mobile.operatingSystem = "iOS 26 / Android 16";
-  mobile.device = "iPhone 17 Pro";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /must name exactly one supported mobile OS family/);
-  });
+  for (const operatingSystem of ["iOS 26 / Android 16", "iOS 18.5 / iPadOS 18.5"]) {
+    const record = completedRecord();
+    const mobile = record.environments.find(({ id }) => id === "mobile-touch");
+    mobile.operatingSystem = operatingSystem;
+    mobile.device = "iPhone 17 Pro";
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must name exactly one supported mobile OS family/);
+    });
+  }
 });
 
 test("strict validation rejects missing coverage and accepted blockers", () => {

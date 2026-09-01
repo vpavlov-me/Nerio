@@ -65,7 +65,18 @@ const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp
 const macDeviceFamilyPattern = /\b(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b/i;
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
-const knownUnnumberedDesktopFamilyPattern = /\bFramework\s+Laptop\b/i;
+const knownUnnumberedDesktopFamilyPattern =
+  /^(?:Acer\s+Swift(?:\s+(?:Edge|Go))?|ASUS\s+(?:Zenbook|Vivobook)|Dell\s+Latitude|Framework\s+Laptop|HP\s+(?:EliteBook|ProBook)|Lenovo\s+Yoga|LG\s+Gram|Microsoft\s+Surface\s+(?:Laptop|Pro)|Purism\s+Librem\s+Mini|Razer\s+Blade|Samsung\s+Galaxy\s+Book(?:\s+(?:Edge|Pro))?)$/i;
+const knownDesktopEdgeHardwarePattern =
+  /^(?:Acer\s+Swift\s+Edge(?:\s+\d+(?:\.\d+)?)?|Samsung\s+Galaxy\s+Book\s*\d*\s+Edge(?:\s+\d+(?:\.\d+)?)?)$/i;
+const desktopSoftwareProductSource =
+  "(?:account|android|browser|chrome(?:\\s*os)?|chromium(?:\\s*os)?|edge(?:html)?|firefox|ios|ipados|linux|mac\\s*os|(?:microsoft|ms)\\s*edge|music|office|safari|support(?:assist)?|teams|ubuntu|webkit|windows|workspace)";
+const desktopPeripheralSource =
+  "(?:adapter|camera|case|charger|cover|display|dock|headset|hub|keyboard|monitor|mouse|phone|printer|router|scanner|sleeve|speaker|stand|tablet|television|watch)";
+const nonDesktopProductDescriptionPattern = new RegExp(
+  `\\b(?:${desktopSoftwareProductSource}|${desktopPeripheralSource})\\b`,
+  "i",
+);
 const identityNegationPattern = /\b(?:not|never|without|no(?!\.))\b/i;
 const genericDesktopWords = new Set([
   "desktop",
@@ -150,6 +161,8 @@ function isMaintainedBrowserDescription(value, allowedProducts) {
 const safariProducts = new Set(["safari"]);
 const chromiumProducts = new Set(["chrome", "chromium", "edge"]);
 const maintainedBrowserProducts = new Set(browserPolicyEngine.keys());
+const androidMobileBrowserProducts = new Set(["chrome", "chromium", "edge", "firefox"]);
+const appleMobileBrowserProducts = new Set(["safari", "chrome", "edge", "firefox"]);
 function isConcreteDesktopOperatingSystem(value) {
   const normalized = normalizeContractedNegations(value);
   if (
@@ -180,7 +193,13 @@ function isMacDeviceDescription(value) {
 }
 function isConcreteDesktopDeviceDescription(value) {
   const normalized = normalizeContractedNegations(value);
-  if (typeof normalized !== "string" || explicitDesktopPlaceholderPattern.test(normalized)) {
+  const isKnownEdgeHardware =
+    typeof normalized === "string" && knownDesktopEdgeHardwarePattern.test(normalized);
+  if (
+    typeof normalized !== "string" ||
+    explicitDesktopPlaceholderPattern.test(normalized) ||
+    (!isKnownEdgeHardware && nonDesktopProductDescriptionPattern.test(normalized))
+  ) {
     return false;
   }
   if (macDeviceFamilyPattern.test(normalized)) return isMacDeviceDescription(normalized);
@@ -242,7 +261,15 @@ const environmentMetadataRequirements = {
   },
   "mobile-touch": {
     operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
-    browser: (value) => isMaintainedBrowserDescription(value, maintainedBrowserProducts),
+    browser: (value, environment) =>
+      isMaintainedBrowserDescription(
+        value,
+        /\bAndroid\b/i.test(environment?.operatingSystem ?? "")
+          ? androidMobileBrowserProducts
+          : /\b(?:iOS|iPadOS)\b/i.test(environment?.operatingSystem ?? "")
+            ? appleMobileBrowserProducts
+            : maintainedBrowserProducts,
+      ),
   },
 };
 
@@ -760,7 +787,7 @@ for (const [index, environment] of environments.entries()) {
       const normalizedValue = typeof value === "string" ? value.trim() : "";
       const matchesRequirement =
         typeof requirement === "function"
-          ? requirement(normalizedValue)
+          ? requirement(normalizedValue, environment)
           : requirement.test(normalizedValue);
       const negated =
         (field === "device" && negatedDeviceDescriptionPattern.test(normalizedValue)) ||
@@ -792,17 +819,23 @@ for (const [index, environment] of environments.entries()) {
     if (environment?.id === "mobile-touch") {
       const operatingSystem = environment.operatingSystem ?? "";
       const device = typeof environment.device === "string" ? environment.device.trim() : "";
-      const hasAppleOperatingSystem = /\b(?:iOS|iPadOS)\b/i.test(operatingSystem);
+      const hasIosOperatingSystem = /\biOS\b/i.test(operatingSystem);
+      const hasIpadOperatingSystem = /\biPadOS\b/i.test(operatingSystem);
       const hasAndroidOperatingSystem = /\bAndroid\b/i.test(operatingSystem);
       const hasExactlyOneOperatingSystemFamily =
-        Number(hasAppleOperatingSystem) + Number(hasAndroidOperatingSystem) === 1;
+        Number(hasIosOperatingSystem) +
+          Number(hasIpadOperatingSystem) +
+          Number(hasAndroidOperatingSystem) ===
+        1;
       if (!hasExactlyOneOperatingSystemFamily) {
         errors.push(`${prefix}.operatingSystem must name exactly one supported mobile OS family.`);
       }
       const deviceMatchesOperatingSystem = hasExactlyOneOperatingSystemFamily
-        ? hasAppleOperatingSystem
-          ? isConcreteAppleMobileDevice(device)
-          : isConcreteAndroidMobileDevice(device)
+        ? hasIosOperatingSystem
+          ? /^iPhone\b/i.test(device) && isConcreteAppleMobileDevice(device)
+          : hasIpadOperatingSystem
+            ? /^iPad\b/i.test(device) && isConcreteAppleMobileDevice(device)
+            : isConcreteAndroidMobileDevice(device)
         : false;
       if (!deviceMatchesOperatingSystem) {
         errors.push(
