@@ -169,7 +169,7 @@ const normalizeContractedNegations = (value) =>
     : value;
 const hasNonEvidenceAction = (value, actionSource) =>
   new RegExp(
-    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
+    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
     "i",
   ).test(value);
 const negatedSetupPattern =

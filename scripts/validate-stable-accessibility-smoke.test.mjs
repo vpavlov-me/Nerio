@@ -464,6 +464,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "May be tested on a physical iPhone 15 Pro.",
     "Might be tested on a physical iPhone 15 Pro.",
     "Testing is expected to be performed on a physical iPhone 15 Pro.",
+    "Touch interaction is going to be tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -564,6 +565,7 @@ test("strict validation rejects negated or future contrast evidence", () => {
   for (const notes of [
     "Verified reflow without high contrast enabled.",
     "High contrast will be enabled during the test.",
+    "High contrast is going to be enabled during the test.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -640,6 +642,7 @@ test("strict validation requires affirmative zoom testing language", () => {
   for (const zoom of [
     "200% and 400% are planned for later",
     "200% and 400% are scheduled to be tested",
+    "200% and 400% are going to be tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
