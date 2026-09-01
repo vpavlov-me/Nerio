@@ -167,11 +167,19 @@ const normalizeContractedNegations = (value) =>
   typeof value === "string"
     ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
     : value;
-const hasNonEvidenceAction = (value, actionSource) =>
-  new RegExp(
-    `\\b(?:(?:must|should|will|can|could|may|might|would)\\s+(?:(?:actually|eventually|later|soon|still)\\s+){0,2}(?:be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
+const hasNonEvidenceAction = (value, actionSource) => {
+  const nonEvidenceAction = new RegExp(
+    `\\b(?:(?:must|should|will|shall|can|could|may|might|would)\\s+(?:(?:actually|already|eventually|later|possibly|probably|soon|still)\\s+){0,2}(?:(?:have\\s+)?been\\s+|have\\s+|be\\s+)?${actionSource}|(?:am|is|are|was|were)\\s+(?:(?:going|about|set|due)\\s+to|to)\\s+(?:be\\s+)?${actionSource}|(?:planned|scheduled|expected|required)\\s+(?:to\\s+)?(?:be\\s+)?${actionSource}|needs?\\s+to\\s+(?:be\\s+)?${actionSource})\\b`,
     "i",
-  ).test(value);
+  );
+  const match = nonEvidenceAction.exec(value);
+  if (!match) return false;
+  const completedCorrection = new RegExp(
+    `\\b(?:but(?:\\s+also)?|and(?:\\s+then)?|then)\\s+(?:(?:actually|already|finally|later|subsequently|today)\\s+){0,2}(?:(?:am|is|are|was|were)\\s+|(?:has|have|had)\\s+been\\s+)${actionSource}\\b`,
+    "i",
+  );
+  return !completedCorrection.test(value.slice(match.index + match[0].length));
+};
 const negatedSetupPattern =
   /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
 const negatedDeviceDescriptionPattern = /^\s*(?:no|not(?:\s+an?)?|without)\b/i;

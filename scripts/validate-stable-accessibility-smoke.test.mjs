@@ -465,6 +465,7 @@ test("strict validation rejects negated testing claims naming the concrete mobil
     "Might be tested on a physical iPhone 15 Pro.",
     "Testing is expected to be performed on a physical iPhone 15 Pro.",
     "Touch interaction is going to be tested on a physical iPhone 15 Pro.",
+    "Touch interaction should have been tested on a physical iPhone 15 Pro.",
     "Testing was not, due to lab access, performed on a physical iPhone 15 Pro.",
     "Tested on a physical iPhone 15 Pro but no testing occurred.",
     "Tested on a physical iPhone 15 Pro_simulator.",
@@ -566,6 +567,7 @@ test("strict validation rejects negated or future contrast evidence", () => {
     "Verified reflow without high contrast enabled.",
     "High contrast will be enabled during the test.",
     "High contrast is going to be enabled during the test.",
+    "High contrast should have been enabled during the test.",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").notes = notes;
@@ -575,6 +577,21 @@ test("strict validation rejects negated or future contrast evidence", () => {
       assert.match(result.stderr, /contrast was enabled/);
     });
   }
+});
+
+test("strict validation accepts completed evidence after an unmet expectation", () => {
+  const record = completedRecord();
+  const zoomContrast = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  zoomContrast.zoom = "200% and 400% should have been tested yesterday and were tested today";
+  zoomContrast.notes =
+    "High contrast should have been enabled earlier and was enabled during the test";
+  record.environments.find(({ id }) => id === "mobile-touch").notes =
+    "Touch interaction should have been completed yesterday and was completed today on a physical iPhone 15 Pro.";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
 });
 
 test("strict validation rejects straight and curly contracted negations", () => {
@@ -643,6 +660,7 @@ test("strict validation requires affirmative zoom testing language", () => {
     "200% and 400% are planned for later",
     "200% and 400% are scheduled to be tested",
     "200% and 400% are going to be tested",
+    "200% and 400% should have been tested",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").zoom = zoom;
