@@ -316,6 +316,43 @@ test("strict validation accepts browser families at the maintained policy floor"
   }
 });
 
+test("strict validation binds optional browser vendors to canonical products", () => {
+  const versionByProduct = new Map([
+    ["Safari", browserFloor("webkit")],
+    ["Chrome", browserFloor("chromium")],
+    ["Chromium", browserFloor("chromium")],
+    ["Edge", browserFloor("chromium")],
+    ["Firefox", browserFloor("firefox")],
+  ]);
+  const canonicalProductByVendor = new Map([
+    ["Apple", "Safari"],
+    ["Google", "Chrome"],
+    ["Microsoft", "Edge"],
+    ["Mozilla", "Firefox"],
+  ]);
+
+  for (const [vendor, canonicalProduct] of canonicalProductByVendor) {
+    for (const [product, version] of versionByProduct) {
+      const browser = `${vendor} ${product} ${version}`;
+      const record = completedRecord();
+      record.environments.find(({ id }) => id === "zoom-reflow-contrast").browser = browser;
+      withRecord(record, (target, releaseMetadata, packagesRoot) => {
+        const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+        if (product === canonicalProduct) {
+          assert.equal(result.status, 0, `${browser}: ${result.stderr}`);
+          assert.match(result.stdout, /internally approved/);
+        } else {
+          assert.notEqual(result.status, 0, browser);
+          assert.match(
+            result.stderr,
+            /browser does not match the required zoom-reflow-contrast setup/,
+          );
+        }
+      });
+    }
+  }
+});
+
 test("strict validation rejects browsers below the maintained policy floor", () => {
   for (const { id, browser } of [
     { id: "macos-safari-voiceover", browser: "Safari 1" },

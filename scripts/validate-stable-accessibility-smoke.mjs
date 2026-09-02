@@ -190,6 +190,12 @@ const browserPolicyEngine = new Map([
   ["edge", "chromium"],
   ["firefox", "firefox"],
 ]);
+const browserProductByVendor = new Map([
+  ["apple", "safari"],
+  ["google", "chrome"],
+  ["microsoft", "edge"],
+  ["mozilla", "firefox"],
+]);
 const parsePolicyMinimum = (value) => {
   const match = typeof value === "string" ? /^(\d+(?:\.\d+)*)\+$/.exec(value) : null;
   return match ? match[1].split(".").map(Number) : null;
@@ -216,14 +222,16 @@ const compareVersionParts = (left, right) => {
 function isMaintainedBrowserDescription(value, allowedProducts) {
   if (typeof value !== "string") return false;
   const match =
-    /^(?:(?:Apple|Google|Microsoft|Mozilla)\s+)?(Safari|Chrome|Chromium|Firefox|Edge)\s+(\d+(?:\.\d+){0,3})$/i.exec(
+    /^(?:(Apple|Google|Microsoft|Mozilla)\s+)?(Safari|Chrome|Chromium|Firefox|Edge)\s+(\d+(?:\.\d+){0,3})$/i.exec(
       value.trim(),
     );
   if (!match) return false;
-  const product = match[1].toLowerCase();
+  const vendor = match[1]?.toLowerCase();
+  const product = match[2].toLowerCase();
+  if (vendor && browserProductByVendor.get(vendor) !== product) return false;
   if (!allowedProducts.has(product)) return false;
   const minimum = browserPolicyMinimums[browserPolicyEngine.get(product)];
-  return minimum !== null && compareVersionParts(match[2].split(".").map(Number), minimum) >= 0;
+  return minimum !== null && compareVersionParts(match[3].split(".").map(Number), minimum) >= 0;
 }
 const safariProducts = new Set(["safari"]);
 const chromiumProducts = new Set(["chrome", "chromium", "edge"]);

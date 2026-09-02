@@ -22,6 +22,8 @@ Recorded product versions must meet the canonical minimum engine lines in
 [`quality/platform-support.json`](../../quality/platform-support.json): Safari maps to WebKit,
 Chrome/Chromium/Edge map to Chromium, and Firefox maps to Firefox. This is a maintained-release
 floor for the evidence, not a claim that every mobile product uses that engine at runtime.
+If a vendor prefix is recorded, use only Apple Safari, Google Chrome, Microsoft Edge, or Mozilla
+Firefox; record Chromium without a vendor prefix.
 For `zoom-reflow-contrast`, desktop OS evidence is fully structured: keep the legacy
 `operatingSystem` field at `null`, set `operatingSystemFamily` to `windows`, `macos`, `linux`,
 `chromeos`, `bsd`, `unix`, or `other`, and record a numeric dotted release in
