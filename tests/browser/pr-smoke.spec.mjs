@@ -393,6 +393,12 @@ test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded",
 
   const preview = page.getByRole("region", { name: "combobox preview" });
   const input = preview.getByRole("combobox", { name: "City" });
+  const toggle = preview.getByRole("button", { name: "Toggle options" });
+  const listbox = page.getByRole("listbox");
+  await toggle.click();
+  await expect(listbox).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(listbox).toHaveCount(0);
   await input.fill("tbi");
   const option = page.getByRole("option", { name: "Tbilisi" });
   await expect(option).toBeVisible();
@@ -406,8 +412,8 @@ test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded",
   await page.locator("html").evaluate((root) => {
     root.dir = "rtl";
   });
-  await preview.getByRole("button", { name: "Toggle options" }).click();
-  await expect(page.getByRole("listbox")).toBeVisible();
+  await toggle.click();
+  await expect(listbox).toBeVisible();
   await expect(page.locator('[data-slot="content"]')).toHaveAttribute("data-align", "start");
   await expectHealthyPage(page, problems);
 });

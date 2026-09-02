@@ -15,11 +15,17 @@ const { "--record": recordPath } = parsePathOptions(args, {
 });
 
 const errors = [];
+const isJsonObject = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
 let record;
 try {
   record = JSON.parse(await readFile(recordPath, "utf8"));
 } catch (error) {
   errors.push(`Beta feedback record must be readable JSON: ${error.message}`);
+  record = {};
+}
+if (!isJsonObject(record)) {
+  errors.push("Beta feedback record must be a JSON object.");
   record = {};
 }
 
@@ -114,6 +120,10 @@ if (record.status === "complete") {
   let registryCovered = false;
   for (const [index, consumer] of consumers.entries()) {
     const prefix = `consumers[${index}]`;
+    if (!isJsonObject(consumer)) {
+      errors.push(`${prefix} must be a JSON object.`);
+      continue;
+    }
     if (!/^External-\d{2,}$/.test(consumer.id ?? "")) {
       errors.push(`${prefix}.id must be an anonymized External-NN identifier.`);
     } else if (ids.has(consumer.id)) {
@@ -172,6 +182,10 @@ if (record.status === "complete") {
   const findingIds = new Set();
   for (const [index, finding] of findings.entries()) {
     const prefix = `findings[${index}]`;
+    if (!isJsonObject(finding)) {
+      errors.push(`${prefix} must be a JSON object.`);
+      continue;
+    }
     if (!/^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/\d+$/.test(finding.issue ?? "")) {
       errors.push(`${prefix}.issue must be an exact GitHub issue URL.`);
     } else if (findingIds.has(finding.issue)) {
@@ -213,6 +227,7 @@ if (record.status === "complete") {
   }
   const unresolvedBlocker = findings.some(
     (finding) =>
+      isJsonObject(finding) &&
       finding.disposition === "accepted" &&
       (["P0", "P1"].includes(finding.severity) ||
         ["current-beta", "stable"].includes(finding.releaseImpact)),

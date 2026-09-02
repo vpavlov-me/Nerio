@@ -300,6 +300,85 @@ test("strict manual completion rejects pending evidence", () => {
   assert.match(result.stderr, /Strict manual audit completion requires status complete/);
 });
 
+test("invalid manual audit plans fail with scoped diagnostics instead of stack traces", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-manual-audit-missing-"));
+  const missing = resolve(directory, "missing.json");
+  try {
+    const missingResult = run(["--plan", missing]);
+    assert.notEqual(missingResult.status, 0);
+    assert.match(missingResult.stderr, /Manual audit plan must be readable: ENOENT/);
+    assert.doesNotMatch(missingResult.stderr, /TypeError|\n\s+at |Node\.js v/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+
+  for (const source of ["null", "not json"]) {
+    withFixture(
+      "quality/manual-audit-plan.json",
+      () => source,
+      (planTarget) => {
+        const result = run(["--plan", planTarget]);
+        assert.notEqual(result.status, 0);
+        assert.match(
+          result.stderr,
+          source === "null"
+            ? /Manual audit plan must be a JSON object/
+            : /Manual audit plan is not valid JSON/,
+        );
+        assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+      },
+    );
+  }
+});
+
+test("nested non-object manual audit rows fail with scoped diagnostics instead of stack traces", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.scenarios[0] = null;
+      plan.completion.environments[0] = "not an object";
+      plan.completion.results[0] = [];
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /scenarios\[0\] must be a JSON object/);
+      assert.match(result.stderr, /completion\.environments\[0\] must be a JSON object/);
+      assert.match(result.stderr, /completion\.results\[0\] must be a JSON object/);
+      assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+    },
+  );
+});
+
+test("malformed nested manual evidence fields fail with scoped diagnostics instead of stack traces", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      const scenario = plan.scenarios[0];
+      for (const field of ["surfaces", "components", "environments", "steps", "expected"]) {
+        scenario[field] = {};
+      }
+      plan.completion.results[0].evidence = {};
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").viewport = 123;
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      for (const field of ["surfaces", "components", "environments", "steps", "expected"]) {
+        assert.match(result.stderr, new RegExp(`must include a non-empty ${field} array`));
+      }
+      assert.match(result.stderr, /must include at least one evidence link/);
+      assert.match(result.stderr, /must include substantive viewport evidence/);
+      assert.match(result.stderr, /viewport must match the recorded physical mobile device/);
+      assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+    },
+  );
+});
+
 test("manual audit validator parses pending metadata only from canonical locations", () => {
   withFixture(
     "docs/audits/core-1-0-accessibility-device-audit.md",

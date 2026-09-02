@@ -16,15 +16,19 @@ function run(args = []) {
   });
 }
 
-function withRecord(record, callback) {
+function withRecordSource(source, callback) {
   const directory = mkdtempSync(resolve(tmpdir(), "nerio-beta-feedback-"));
   const target = resolve(directory, "record.json");
-  writeFileSync(target, JSON.stringify(record, null, 2));
+  writeFileSync(target, source);
   try {
     callback(target);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+}
+
+function withRecord(record, callback) {
+  withRecordSource(JSON.stringify(record, null, 2), callback);
 }
 
 function completedRecord() {
@@ -96,6 +100,59 @@ test("strict validation rejects the pending repository record", () => {
   assert.match(result.stderr, /requires status "complete"/);
 });
 
+test("invalid beta records fail with scoped diagnostics instead of stack traces", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-beta-feedback-missing-"));
+  const missing = resolve(directory, "missing.json");
+  try {
+    const missingResult = run(["--record", missing]);
+    assert.notEqual(missingResult.status, 0);
+    assert.match(missingResult.stderr, /Beta feedback record must be readable JSON: ENOENT/);
+    assert.doesNotMatch(missingResult.stderr, /TypeError|\n\s+at |Node\.js v/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+
+  for (const source of ["null", "not json"]) {
+    withRecordSource(source, (target) => {
+      const result = run(["--record", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        source === "null"
+          ? /Beta feedback record must be a JSON object/
+          : /Beta feedback record must be readable JSON/,
+      );
+      assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+    });
+  }
+});
+
+test("nested non-object beta rows fail with scoped diagnostics instead of stack traces", () => {
+  for (const { mutate, diagnostic } of [
+    {
+      mutate: (record) => {
+        record.consumers[0] = null;
+      },
+      diagnostic: /consumers\[0\] must be a JSON object/,
+    },
+    {
+      mutate: (record) => {
+        record.findings.push([]);
+      },
+      diagnostic: /findings\[0\] must be a JSON object/,
+    },
+  ]) {
+    const record = completedRecord();
+    mutate(record);
+    withRecord(record, (target) => {
+      const result = run(["--expect-complete", "--record", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, diagnostic);
+      assert.doesNotMatch(result.stderr, /TypeError|\n\s+at |Node\.js v/);
+    });
+  }
+});
+
 test("strict validation accepts a complete evidence fixture", () => {
   withRecord(completedRecord(), (target) => {
     const result = run(["--expect-complete", "--record", target]);
@@ -131,13 +188,18 @@ test("completed evidence rejects timestamps that have not occurred", () => {
   });
 });
 
-test("stable readiness rejects a completed blocking recommendation", () => {
+test("optional proceed validation rejects a completed blocking recommendation", () => {
   const record = completedRecord();
   record.decision.recommendation = "blocked-before-stable";
   withRecord(record, (target) => {
-    const result = run(["--expect-complete", "--expect-proceed", "--record", target]);
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /requires decision\.recommendation "proceed-to-stable-docs"/);
+    const truthfulResult = run(["--expect-complete", "--record", target]);
+    assert.equal(truthfulResult.status, 0, truthfulResult.stderr);
+    const proceedResult = run(["--expect-complete", "--expect-proceed", "--record", target]);
+    assert.notEqual(proceedResult.status, 0);
+    assert.match(
+      proceedResult.stderr,
+      /requires decision\.recommendation "proceed-to-stable-docs"/,
+    );
   });
 });
 
