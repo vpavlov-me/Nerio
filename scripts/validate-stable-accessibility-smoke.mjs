@@ -72,8 +72,10 @@ const macDeviceFamilyPattern = new RegExp(
 );
 const explicitDesktopPlaceholderPattern =
   /\b(?:test|sample|generic|unknown|placeholder|example)\b/i;
-const desktopEvidenceDocumentPattern =
+const evidenceDocumentPattern =
   /\b(?:accessibility|audit|checklist|compliance|documentation|evidence|guide|manual|matrix|release|report|roadmap|worksheet)\b/i;
+const evidenceDocumentCompoundPattern =
+  /(?:accessibility|audit|compliance|evidence|release|roadmap|user)(?:checklist|documentation|evidence|guide|item|manual|matrix|notes?|record|report|roadmap|worksheet)/i;
 const desktopSoftwareProductSource =
   "(?:account|android|browser|calendar|chrome(?:\\s*os)?|chromium(?:\\s*os)?|edgehtml|firefox|ios|ipados|linux|mac\\s*os|(?:microsoft|ms)\\s*edge|music|office|safari|support(?:assist)?|teams|ubuntu|webkit|windows|workspace)";
 const desktopPeripheralSource =
@@ -292,8 +294,8 @@ function isConcreteDesktopDeviceDescription(value) {
   if (
     explicitDesktopPlaceholderPattern.test(vocabulary) ||
     explicitDesktopPlaceholderPattern.test(normalized) ||
-    desktopEvidenceDocumentPattern.test(vocabulary) ||
-    desktopEvidenceDocumentPattern.test(normalized) ||
+    evidenceDocumentPattern.test(vocabulary) ||
+    evidenceDocumentPattern.test(normalized) ||
     desktopNonIdentityPattern.test(vocabulary) ||
     desktopNonIdentityPattern.test(normalized) ||
     nonDesktopProductDescriptionPattern.test(vocabulary) ||
@@ -488,6 +490,8 @@ const isConcreteMobileDeviceLabel = (value) => {
     !/^[A-Za-z0-9][A-Za-z0-9 ,.()+_/-]{2,79}$/.test(device) ||
     mobilePlaceholderPattern.test(device) ||
     mobilePlaceholderPattern.test(vocabulary) ||
+    evidenceDocumentPattern.test(vocabulary) ||
+    evidenceDocumentCompoundPattern.test(compactVocabulary) ||
     mobileForbiddenSubstringPattern.test(compactVocabulary) ||
     mobileNonIdentityPattern.test(vocabulary) ||
     mobileMissingValuePattern.test(vocabulary) ||

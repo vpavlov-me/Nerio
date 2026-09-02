@@ -49,10 +49,10 @@ After the smoke runs on real hardware, set `deviceClass` to `phone` or `tablet` 
 class for Android. Record `operatingSystem` as exactly one supported family plus its numeric version,
 for example `iOS 18.5`, `iPadOS 18.5`, or `Android 16`. These fields, together with `result: Pass`, are
 the authoritative structured hardware evidence. `device` remains a concise self-attested model
-label: the validator rejects placeholder, simulator, emulator, virtual, unambiguous browser-only,
-and generic-only values, but intentionally does not maintain a product catalog or infer hardware
-class from a model name. The `device` and `notes` strings are descriptive; they are not parsed as
-proof, contradiction, or a substitute for the structured result.
+label: the validator rejects placeholder, simulator, emulator, virtual, evidence-document,
+unambiguous browser-only, and generic-only values, but intentionally does not maintain a product
+catalog or infer hardware class from a model name. The `device` and `notes` strings are descriptive;
+they are not parsed as proof, contradiction, or a substitute for the structured result.
 
 ## Decision rule
 
