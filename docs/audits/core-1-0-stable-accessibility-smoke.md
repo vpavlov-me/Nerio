@@ -29,6 +29,10 @@ For `zoom-reflow-contrast`, desktop OS evidence is fully structured: keep the le
 in `notes`. The family and version fields are the authoritative OS evidence; the `other` family and
 descriptive notes cover current and future systems without a product-name catalog or free-text
 identity inference.
+The recorded browser product must be available for the structured family: Safari is macOS-only;
+Windows and Linux allow Chrome, Chromium, Edge, or Firefox; ChromeOS allows Chrome, Chromium, or
+Firefox; and BSD, Unix, and `other` use Chromium or Firefox. The two dedicated macOS rows record
+`operatingSystem` strictly as `macOS <numeric dotted version>`.
 
 The broader Windows/NVDA, Android/TalkBack, iOS/VoiceOver, native-picker, reduced-motion, and
 complete physical-device matrix remains valuable post-release evidence. It is not a `1.0.0`

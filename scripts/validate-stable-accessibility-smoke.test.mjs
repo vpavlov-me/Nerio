@@ -341,6 +341,57 @@ test("strict validation rejects browsers below the maintained policy floor", () 
   }
 });
 
+test("strict validation binds desktop browser products to the structured OS family", () => {
+  for (const { family, browser } of [
+    { family: "windows", browser: supportedSafari },
+    { family: "linux", browser: supportedSafari },
+    { family: "chromeos", browser: supportedSafari },
+    { family: "chromeos", browser: supportedEdge },
+    { family: "bsd", browser: supportedSafari },
+    { family: "bsd", browser: supportedChrome },
+    { family: "unix", browser: supportedSafari },
+    { family: "unix", browser: supportedEdge },
+    { family: "other", browser: supportedSafari },
+    { family: "other", browser: supportedChrome },
+  ]) {
+    const record = completedRecord();
+    const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    desktop.operatingSystemFamily = family;
+    desktop.browser = browser;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, `${family}: ${browser}`);
+      assert.match(result.stderr, /browser does not match the required zoom-reflow-contrast setup/);
+    });
+  }
+});
+
+test("strict validation rejects mixed or malformed macOS metadata", () => {
+  for (const operatingSystem of [
+    "macOS 15.5 / Windows 11",
+    "Windows 11 / macOS 15.5",
+    "macOS 15.5 Windows 11",
+    "macOS15.5",
+    "Apple macOS 15.5",
+    "macOS 15.5 report",
+    "macOS 15.5.1.2.3",
+  ]) {
+    for (const id of ["macos-safari-voiceover", "macos-chromium-keyboard"]) {
+      const record = completedRecord();
+      record.environments.find(({ id: candidateId }) => candidateId === id).operatingSystem =
+        operatingSystem;
+      withRecord(record, (target, releaseMetadata, packagesRoot) => {
+        const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+        assert.notEqual(result.status, 0, `${id}: ${operatingSystem}`);
+        assert.match(
+          result.stderr,
+          new RegExp(`operatingSystem does not match the required ${id} setup`),
+        );
+      });
+    }
+  }
+});
+
 test("strict validation accepts ordinary Mac hardware descriptions without inventory details", () => {
   const record = completedRecord();
   record.environments.find(({ id }) => id === "macos-safari-voiceover").device =
@@ -487,17 +538,19 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
 });
 
 test("strict validation accepts a structured ChromeOS desktop environment", () => {
-  const record = completedRecord();
-  const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-  desktop.operatingSystemFamily = "chromeos";
-  desktop.operatingSystemVersion = "140";
-  desktop.browser = supportedChrome;
-  desktop.device = "Acer Chromebook 516 GE";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
+  for (const browser of [supportedChrome, supportedChromium, supportedFirefox]) {
+    const record = completedRecord();
+    const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+    desktop.operatingSystemFamily = "chromeos";
+    desktop.operatingSystemVersion = "140";
+    desktop.browser = browser;
+    desktop.device = "Acer Chromebook 516 GE";
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.equal(result.status, 0, `${browser}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
 });
 
 test("strict validation accepts every structured desktop OS family", () => {
@@ -514,7 +567,9 @@ test("strict validation accepts every structured desktop OS family", () => {
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
     desktop.operatingSystemFamily = family;
     desktop.operatingSystemVersion = version;
-    desktop.browser = supportedChrome;
+    desktop.browser = ["bsd", "unix", "other"].includes(family)
+      ? supportedChromium
+      : supportedChrome;
     desktop.device = "Framework Laptop 13";
     desktop.notes = `Verified the scoped scenarios on ${example}.`;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {

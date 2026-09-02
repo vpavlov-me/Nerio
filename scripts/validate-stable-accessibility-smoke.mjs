@@ -228,6 +228,18 @@ function isMaintainedBrowserDescription(value, allowedProducts) {
 const safariProducts = new Set(["safari"]);
 const chromiumProducts = new Set(["chrome", "chromium", "edge"]);
 const maintainedBrowserProducts = new Set(browserPolicyEngine.keys());
+const nonSafariDesktopBrowserProducts = new Set(["chrome", "chromium", "edge", "firefox"]);
+const portableDesktopBrowserProducts = new Set(["chromium", "firefox"]);
+const chromeOsBrowserProducts = new Set(["chrome", "chromium", "firefox"]);
+const desktopBrowserProductsByOperatingSystemFamily = new Map([
+  ["windows", nonSafariDesktopBrowserProducts],
+  ["macos", maintainedBrowserProducts],
+  ["linux", nonSafariDesktopBrowserProducts],
+  ["chromeos", chromeOsBrowserProducts],
+  ["bsd", portableDesktopBrowserProducts],
+  ["unix", portableDesktopBrowserProducts],
+  ["other", portableDesktopBrowserProducts],
+]);
 const androidMobileBrowserProducts = new Set(["chrome", "chromium", "edge", "firefox"]);
 const appleMobileBrowserProducts = new Set(["safari", "chrome", "edge", "firefox"]);
 function isMacDeviceDescription(value) {
@@ -373,21 +385,27 @@ const genericMobileLabelTokens = new Set([
 ]);
 const mobileOperatingSystemDescriptionPattern =
   /^(?:(iOS|iPadOS)\s+\d+(?:\.\d+){0,3}|(Android)\s+(?:\d+L?|\d+(?:\.\d+){1,3}))$/i;
+const macOperatingSystemDescriptionPattern = /^macOS\s+\d+(?:\.\d+){0,3}$/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
-    operatingSystem: /\bmacOS\b.*\d/i,
+    operatingSystem: macOperatingSystemDescriptionPattern,
     browser: (value) => isMaintainedBrowserDescription(value, safariProducts),
     assistiveTechnology: /\bVoiceOver\b/i,
     device: isMacDeviceDescription,
   },
   "macos-chromium-keyboard": {
-    operatingSystem: /\bmacOS\b.*\d/i,
+    operatingSystem: macOperatingSystemDescriptionPattern,
     browser: (value) => isMaintainedBrowserDescription(value, chromiumProducts),
     assistiveTechnology: /keyboard[- ]only/i,
     device: isMacDeviceDescription,
   },
   "zoom-reflow-contrast": {
-    browser: (value) => isMaintainedBrowserDescription(value, maintainedBrowserProducts),
+    browser: (value, environment) =>
+      isMaintainedBrowserDescription(
+        value,
+        desktopBrowserProductsByOperatingSystemFamily.get(environment?.operatingSystemFamily) ??
+          portableDesktopBrowserProducts,
+      ),
     device: isConcreteDesktopDeviceDescription,
   },
   "mobile-touch": {
