@@ -37,6 +37,8 @@
       "id": "zoom-reflow-contrast",
       "result": "Pending",
       "operatingSystem": null,
+      "operatingSystemFamily": null,
+      "operatingSystemVersion": null,
       "browser": null,
       "assistiveTechnology": null,
       "device": null,

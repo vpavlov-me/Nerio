@@ -173,27 +173,16 @@ const normalizeDesktopDeviceVocabulary = (value) =>
         .replace(/\s+/g, " ")
         .trim()
     : value;
-const genericDesktopOperatingSystemWords = new Set([
-  "build",
-  "computer",
-  "current",
-  "desktop",
-  "environment",
-  "kernel",
-  "operating",
-  "os",
-  "platform",
-  "release",
-  "stable",
-  "system",
-  "version",
+const desktopOperatingSystemFamilies = new Set([
+  "windows",
+  "macos",
+  "linux",
+  "chromeos",
+  "bsd",
+  "unix",
+  "other",
 ]);
-const genericDesktopOperatingSystemSource = [...genericDesktopOperatingSystemWords].join("|");
-const mobileOperatingSystemPattern = /\b(?:Android|iOS|iPadOS)\b/i;
-const browserOnlyOperatingSystemPattern = new RegExp(
-  `^(?:(?:${genericDesktopOperatingSystemSource})\\s+)*(?:(?:Apple|Google|Microsoft|Mozilla)\\s+)?(?:Safari|Chrome(?!\\s+OS\\b)|Chromium(?!\\s+OS\\b)|Firefox|Edge|WebKit)(?:$|[\\s/-].*)`,
-  "i",
-);
+const desktopOperatingSystemVersionPattern = /^(?=.{1,32}$)\d+(?:\.\d+){0,3}$/;
 const browserPolicyEngine = new Map([
   ["safari", "webkit"],
   ["chrome", "chromium"],
@@ -241,25 +230,6 @@ const chromiumProducts = new Set(["chrome", "chromium", "edge"]);
 const maintainedBrowserProducts = new Set(browserPolicyEngine.keys());
 const androidMobileBrowserProducts = new Set(["chrome", "chromium", "edge", "firefox"]);
 const appleMobileBrowserProducts = new Set(["safari", "chrome", "edge", "firefox"]);
-function isConcreteDesktopOperatingSystem(value) {
-  const normalized = normalizeContractedNegations(value);
-  if (
-    typeof normalized !== "string" ||
-    !/^[A-Za-z][A-Za-z0-9 .()+_/-]{1,79}$/.test(normalized) ||
-    !/\d/.test(normalized) ||
-    explicitDesktopPlaceholderPattern.test(normalized) ||
-    mobileOperatingSystemPattern.test(normalized) ||
-    browserOnlyOperatingSystemPattern.test(normalized)
-  ) {
-    return false;
-  }
-  const identity = [...normalized.matchAll(/[A-Za-z][A-Za-z0-9-]*/g)].find(
-    ([word]) => !genericDesktopOperatingSystemWords.has(word.toLowerCase()),
-  );
-  return (
-    identity !== undefined && !identityNegationPattern.test(normalized.slice(0, identity.index))
-  );
-}
 function isMacDeviceDescription(value) {
   const normalized = normalizeContractedNegations(value);
   const identity = typeof normalized === "string" ? macDeviceFamilyPattern.exec(normalized) : null;
@@ -417,7 +387,6 @@ const environmentMetadataRequirements = {
     device: isMacDeviceDescription,
   },
   "zoom-reflow-contrast": {
-    operatingSystem: isConcreteDesktopOperatingSystem,
     browser: (value) => isMaintainedBrowserDescription(value, maintainedBrowserProducts),
     device: isConcreteDesktopDeviceDescription,
   },
@@ -662,9 +631,16 @@ for (const [index, environment] of environments.entries()) {
   const prefix = `environments[${index}]`;
   validateEvidence(environment, prefix, complete);
   for (const field of evidenceFields) {
-    if (complete && !nonEmpty(environment?.[field])) {
+    const usesStructuredDesktopOperatingSystem =
+      environment?.id === "zoom-reflow-contrast" && field === "operatingSystem";
+    if (complete && !usesStructuredDesktopOperatingSystem && !nonEmpty(environment?.[field])) {
       errors.push(`${prefix}.${field} is required when complete.`);
     }
+  }
+  if (environment?.id === "zoom-reflow-contrast" && environment?.operatingSystem !== null) {
+    errors.push(
+      `${prefix}.operatingSystem must remain null; use operatingSystemFamily and operatingSystemVersion.`,
+    );
   }
   if (
     !complete &&
@@ -681,6 +657,13 @@ for (const [index, environment] of environments.entries()) {
     errors.push(
       `${prefix}.increasedOrHighContrastEnabled must remain null while evidence is pending.`,
     );
+  }
+  if (!complete && environment?.id === "zoom-reflow-contrast") {
+    for (const field of ["operatingSystemFamily", "operatingSystemVersion"]) {
+      if (environment?.[field] !== null) {
+        errors.push(`${prefix}.${field} must remain null while evidence is pending.`);
+      }
+    }
   }
   if (!complete && environment?.id === "mobile-touch") {
     if (environment?.deviceClass !== null) {
@@ -720,6 +703,21 @@ for (const [index, environment] of environments.entries()) {
       errors.push(
         `${prefix}.increasedOrHighContrastEnabled must equal true after the setting was tested.`,
       );
+    }
+    if (environment?.id === "zoom-reflow-contrast") {
+      if (!desktopOperatingSystemFamilies.has(environment.operatingSystemFamily)) {
+        errors.push(
+          `${prefix}.operatingSystemFamily must be one of: ${[...desktopOperatingSystemFamilies].join(", ")}.`,
+        );
+      }
+      if (
+        typeof environment.operatingSystemVersion !== "string" ||
+        !desktopOperatingSystemVersionPattern.test(environment.operatingSystemVersion)
+      ) {
+        errors.push(
+          `${prefix}.operatingSystemVersion must be a standalone numeric OS version when complete.`,
+        );
+      }
     }
     if (environment?.id === "mobile-touch") {
       const operatingSystem = environment.operatingSystem ?? "";

@@ -22,6 +22,13 @@ Recorded product versions must meet the canonical minimum engine lines in
 [`quality/platform-support.json`](../../quality/platform-support.json): Safari maps to WebKit,
 Chrome/Chromium/Edge map to Chromium, and Firefox maps to Firefox. This is a maintained-release
 floor for the evidence, not a claim that every mobile product uses that engine at runtime.
+For `zoom-reflow-contrast`, desktop OS evidence is fully structured: keep the legacy
+`operatingSystem` field at `null`, set `operatingSystemFamily` to `windows`, `macos`, `linux`,
+`chromeos`, `bsd`, `unix`, or `other`, and record a numeric dotted release in
+`operatingSystemVersion`. Put the distribution name, edition, architecture, build, and other prose
+in `notes`. The family and version fields are the authoritative OS evidence; the `other` family and
+descriptive notes cover current and future systems without a product-name catalog or free-text
+identity inference.
 
 The broader Windows/NVDA, Android/TalkBack, iOS/VoiceOver, native-picker, reduced-motion, and
 complete physical-device matrix remains valuable post-release evidence. It is not a `1.0.0`
@@ -38,11 +45,12 @@ publication blocker unless this scoped smoke exposes a release-impacting defect.
 
 Record concise evidence links and notes for every environment and scenario. Do not include private
 consumer content, credentials, recordings with personal data, or invented results.
-For `zoom-reflow-contrast`, keep `zoomLevelsTested` at `null` while evidence is pending. After both
+For `zoom-reflow-contrast`, keep `operatingSystem`, `operatingSystemFamily`,
+`operatingSystemVersion`, and `zoomLevelsTested` at `null` while evidence is pending. After both
 required levels run on the locked candidate, record the exact set `["200%", "400%"]` and set
 `increasedOrHighContrastEnabled` to `true` only after that setting was exercised. The `zoom` and
 `notes` strings remain descriptive; they are not parsed as proof, contradiction, or a substitute
-for either structured result.
+for the structured results.
 For `mobile-touch`, keep `deviceClass` and `physicalDeviceUsed` at `null` while evidence is pending.
 After the smoke runs on real hardware, set `deviceClass` to `phone` or `tablet` and set
 `physicalDeviceUsed` to `true`. The class must be `phone` for iOS, `tablet` for iPadOS, and either

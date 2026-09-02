@@ -94,7 +94,9 @@ function completedRecord() {
       notes: "Verified the scoped scenarios with keyboard-only navigation.",
     },
     "zoom-reflow-contrast": {
-      operatingSystem: "macOS 15.5",
+      operatingSystem: null,
+      operatingSystemFamily: "macos",
+      operatingSystemVersion: "15.5",
       browser: supportedChrome,
       assistiveTechnology: "Not applicable",
       device: "Mac Studio M2 Max (2023)",
@@ -160,8 +162,11 @@ test("pending repository smoke record is valid without claiming completion", () 
   assert.match(result.stdout, /evidence remains pending/);
 });
 
-test("pending evidence cannot pre-claim structured zoom or contrast results", () => {
+test("pending evidence cannot pre-claim structured desktop, zoom, or contrast results", () => {
   for (const [field, values] of [
+    ["operatingSystem", ["macOS", "Ubuntu 24.04", false, undefined]],
+    ["operatingSystemFamily", ["macos", "linux", false, undefined]],
+    ["operatingSystemVersion", ["15.5", "24H2", 15.5, undefined]],
     ["zoomLevelsTested", [[], ["200%", "400%"], "200%, 400%", undefined]],
     ["increasedOrHighContrastEnabled", [true, false, "true", undefined]],
   ]) {
@@ -173,7 +178,7 @@ test("pending evidence cannot pre-claim structured zoom or contrast results", ()
       withRecord(record, (target) => {
         const result = run(["--record", target]);
         assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
-        assert.match(result.stderr, /must remain null while evidence is pending/);
+        assert.match(result.stderr, /must remain null/);
       });
     }
   }
@@ -470,7 +475,8 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-    desktop.operatingSystem = "Windows 11";
+    desktop.operatingSystemFamily = "windows";
+    desktop.operatingSystemVersion = "11";
     desktop.device = device;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
@@ -480,27 +486,46 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
   }
 });
 
-test("strict validation accepts a concrete ChromeOS desktop environment", () => {
-  for (const operatingSystem of [
-    "ChromeOS 140",
-    "Chrome OS 140",
-    "Google Chrome OS 140",
-    "Chromium OS 140",
+test("strict validation accepts a structured ChromeOS desktop environment", () => {
+  const record = completedRecord();
+  const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
+  desktop.operatingSystemFamily = "chromeos";
+  desktop.operatingSystemVersion = "140";
+  desktop.browser = supportedChrome;
+  desktop.device = "Acer Chromebook 516 GE";
+  withRecord(record, (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /internally approved/);
+  });
+});
+
+test("strict validation accepts every structured desktop OS family", () => {
+  for (const { example, family, version } of [
+    { example: "Windows 11", family: "windows", version: "11" },
+    { example: "macOS 15.5", family: "macos", version: "15.5" },
+    { example: "Ubuntu 24.04.2 LTS", family: "linux", version: "24.04.2" },
+    { example: "ChromeOS build 140.0.7339.207", family: "chromeos", version: "140.0.7339.207" },
+    { example: "FreeBSD 14.3", family: "bsd", version: "14.3" },
+    { example: "Solaris 11.4", family: "unix", version: "11.4" },
+    { example: "Haiku release 1", family: "other", version: "1" },
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
-    desktop.operatingSystem = operatingSystem;
+    desktop.operatingSystemFamily = family;
+    desktop.operatingSystemVersion = version;
     desktop.browser = supportedChrome;
-    desktop.device = "Acer Chromebook 516 GE";
+    desktop.device = "Framework Laptop 13";
+    desktop.notes = `Verified the scoped scenarios on ${example}.`;
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${operatingSystem}: ${result.stderr}`);
+      assert.equal(result.status, 0, `${example}: ${result.stderr}`);
       assert.match(result.stdout, /internally approved/);
     });
   }
 });
 
-test("strict validation rejects placeholder, mobile, and browser-only desktop OS metadata", () => {
+test("strict validation rejects legacy free-form desktop OS metadata", () => {
   for (const operatingSystem of [
     "ChromeOS",
     "Generic OS 140",
@@ -509,6 +534,21 @@ test("strict validation rejects placeholder, mobile, and browser-only desktop OS
     supportedChrome,
     "Desktop Chrome 140.0",
     "OS Firefox 143.0",
+    "Audit Checklist 2026",
+    "auditchecklist2026",
+    "Kitchen Chair 2026",
+    "Future Product 2026",
+    "Windows Release Report 2026",
+    "Windows 11 / Ubuntu 24.04",
+    "Windows 11 and Ubuntu 24.04",
+    "Windows Ubuntu 24.04",
+    "Ubuntu on Framework 13",
+    "Ubuntu Framework 13",
+    "Dell XPS",
+    "Apple MacBook Pro",
+    "Mac Studio",
+    "Fedora Linux Mint",
+    "Ubuntu Linux Mint",
   ]) {
     const record = completedRecord();
     record.environments.find(({ id }) => id === "zoom-reflow-contrast").operatingSystem =
@@ -518,9 +558,47 @@ test("strict validation rejects placeholder, mobile, and browser-only desktop OS
       assert.notEqual(result.status, 0, operatingSystem);
       assert.match(
         result.stderr,
-        /operatingSystem does not match the required zoom-reflow-contrast setup/,
+        /operatingSystem must remain null; use operatingSystemFamily and operatingSystemVersion/,
       );
     });
+  }
+});
+
+test("strict validation requires authoritative structured desktop OS evidence", () => {
+  for (const { field, values, diagnostic } of [
+    {
+      field: "operatingSystemFamily",
+      values: [undefined, null, "", "ubuntu", "windows/linux", false],
+      diagnostic: /operatingSystemFamily must be one of/,
+    },
+    {
+      field: "operatingSystemVersion",
+      values: [
+        undefined,
+        null,
+        "",
+        "v11",
+        "Ubuntu 24.04",
+        "11 Ubuntu",
+        "Framework 13",
+        "11/24H2",
+        "11Ubuntu",
+        "24H2",
+        "14.3-RELEASE-p1",
+        11,
+      ],
+      diagnostic: /operatingSystemVersion must be a standalone numeric OS version/,
+    },
+  ]) {
+    for (const value of values) {
+      const record = completedRecord();
+      record.environments.find(({ id }) => id === "zoom-reflow-contrast")[field] = value;
+      withRecord(record, (target, releaseMetadata, packagesRoot) => {
+        const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+        assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
+        assert.match(result.stderr, diagnostic);
+      });
+    }
   }
 });
 
