@@ -55,7 +55,9 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   const dialog = page.getByRole("dialog", { name: "Long review notes" });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Tab");
-  expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await expect
+    .poll(() => dialog.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
   await expectInsideViewport(dialog, viewport);
   await page.keyboard.press("Escape");
   await expect(dialogTrigger).toBeFocused();
