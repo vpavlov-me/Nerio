@@ -109,6 +109,8 @@ function completedRecord() {
       browser: supportedSafari,
       assistiveTechnology: "Touch-only navigation",
       device: "iPhone 15 Pro",
+      deviceClass: "phone",
+      physicalDeviceUsed: true,
       viewport: "393x852",
       zoom: "100%",
       notes: "Verified touch interaction on a physical mobile device.",
@@ -168,6 +170,25 @@ test("pending evidence cannot pre-claim structured zoom or contrast results", ()
         readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
       );
       record.environments.find(({ id }) => id === "zoom-reflow-contrast")[field] = value;
+      withRecord(record, (target) => {
+        const result = run(["--record", target]);
+        assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
+        assert.match(result.stderr, /must remain null while evidence is pending/);
+      });
+    }
+  }
+});
+
+test("pending evidence cannot pre-claim structured physical mobile results", () => {
+  for (const [field, values] of [
+    ["deviceClass", ["phone", "tablet", false, undefined]],
+    ["physicalDeviceUsed", [true, false, "true", undefined]],
+  ]) {
+    for (const value of values) {
+      const record = JSON.parse(
+        readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
+      );
+      record.environments.find(({ id }) => id === "mobile-touch")[field] = value;
       withRecord(record, (target) => {
         const result = run(["--record", target]);
         assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
@@ -266,7 +287,7 @@ test("strict validation rejects evidence recorded against the wrong required env
     assert.match(result.stderr, /browser does not match the required macos-safari-voiceover setup/);
     assert.match(
       result.stderr,
-      /device must be a concrete physical model for its recorded mobile OS/,
+      /device must be a concrete non-placeholder mobile model label when complete/,
     );
   });
 });
@@ -440,6 +461,12 @@ test("strict validation accepts ordinary concrete desktop descriptions without i
     "Dell XPS Copilot+ PC",
     "HP OmniBook X Copilot+ PC",
     "Microsoft Surface Pro Copilot+ PC",
+    "Dell Latitude 7440 (non-touch)",
+    "Lenovo ThinkPad T14 without touchscreen",
+    "HP EliteBook 840 G10 (no touch)",
+    "Dell Precision 5680 without discrete GPU",
+    "Dell Latitude 7440 touch-free",
+    "Dell Latitude 7440 without hardware acceleration",
   ]) {
     const record = completedRecord();
     const desktop = record.environments.find(({ id }) => id === "zoom-reflow-contrast");
@@ -609,7 +636,11 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
     { id: "zoom-reflow-contrast", device: "Neither Dell nor HP" },
     { id: "zoom-reflow-contrast", device: "Neither a Dell XPS nor an HP ZBook" },
     { id: "zoom-reflow-contrast", device: "Dell XPS lacks availability" },
-    { id: "zoom-reflow-contrast", device: "Dell-XPS-free" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude 7440 was not available" },
+    { id: "zoom-reflow-contrast", device: "Lenovo ThinkPad T14 never used" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude 7440 without a device" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude 7440 was unavailable for the smoke" },
+    { id: "zoom-reflow-contrast", device: "Dell Latitude 7440 is no longer available" },
     { id: "zoom-reflow-contrast", device: "Null" },
     { id: "zoom-reflow-contrast", device: "TBD" },
     { id: "zoom-reflow-contrast", device: "TBA" },
@@ -725,15 +756,60 @@ test("strict validation rejects placeholder, generic-only, and negated desktop d
 
 test("strict validation accepts maintained mobile browsers compatible with the recorded OS", () => {
   for (const setup of [
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro" },
-    { operatingSystem: "iOS 18.5", browser: supportedChrome, device: "iPhone 15 Pro" },
-    { operatingSystem: "iOS 18.5", browser: supportedEdge, device: "iPhone 15 Pro" },
-    { operatingSystem: "iOS 18.5", browser: supportedFirefox, device: "iPhone 15 Pro" },
-    { operatingSystem: "iPadOS 18.5", browser: supportedSafari, device: "iPad Pro (M4)" },
-    { operatingSystem: "Android 16", browser: supportedChrome, device: "Google Pixel 9" },
-    { operatingSystem: "Android 16", browser: supportedChromium, device: "Google Pixel 9" },
-    { operatingSystem: "Android 16", browser: supportedEdge, device: "Google Pixel 9" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Fairphone 5" },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedSafari,
+      device: "iPhone 15 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedChrome,
+      device: "iPhone 15 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedEdge,
+      device: "iPhone 15 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedFirefox,
+      device: "iPhone 15 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "iPadOS 18.5",
+      browser: supportedSafari,
+      device: "iPad Pro (M4)",
+      deviceClass: "tablet",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChrome,
+      device: "Google Pixel 9",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChromium,
+      device: "Google Pixel 9",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedEdge,
+      device: "Pixel Tablet",
+      deviceClass: "tablet",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedFirefox,
+      device: "FutureBrand Nova",
+      deviceClass: "phone",
+    },
   ]) {
     const record = completedRecord();
     Object.assign(
@@ -772,8 +848,18 @@ test("strict validation rejects Safari for Android mobile evidence", () => {
 
 test("strict validation rejects mobile browser products unavailable on the recorded OS", () => {
   for (const setup of [
-    { operatingSystem: "iOS 18.5", browser: supportedChromium, device: "iPhone 15 Pro" },
-    { operatingSystem: "iPadOS 18.5", browser: supportedChromium, device: "iPad Pro (M4)" },
+    {
+      operatingSystem: "iOS 18.5",
+      browser: supportedChromium,
+      device: "iPhone 15 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "iPadOS 18.5",
+      browser: supportedChromium,
+      device: "iPad Pro (M4)",
+      deviceClass: "tablet",
+    },
   ]) {
     const record = completedRecord();
     Object.assign(
@@ -817,17 +903,21 @@ test("mobile-touch notes cannot substitute for invalid structured evidence", () 
     },
     {
       mutate: (mobile) => {
-        mobile.device = "iPhone 15 Pro Simulator";
+        mobile.physicalDeviceUsed = false;
       },
-      diagnostic: /device must be a concrete physical model for its recorded mobile OS/,
+      diagnostic: /physicalDeviceUsed must equal true when complete/,
     },
     {
       mutate: (mobile) => {
-        mobile.operatingSystem = "Android 16";
-        mobile.browser = supportedFirefox;
-        mobile.device = "iPhone 15 Pro";
+        mobile.deviceClass = "watch";
       },
-      diagnostic: /device must be a concrete physical model for its recorded mobile OS/,
+      diagnostic: /deviceClass must equal "phone" or "tablet" when complete/,
+    },
+    {
+      mutate: (mobile) => {
+        mobile.device = "iPhone 15 Pro Simulator";
+      },
+      diagnostic: /device must be a concrete non-placeholder mobile model label when complete/,
     },
   ]) {
     const record = completedRecord();
@@ -842,221 +932,92 @@ test("mobile-touch notes cannot substitute for invalid structured evidence", () 
   }
 });
 
-test("strict validation accepts concrete mobile names and model codes", () => {
-  for (const device of [
-    "Google Pixel Fold",
-    "Google Pixel Tablet",
-    "Samsung SM-S921B/DS",
-    "Motorola Edge 50 Pro",
-    "Motorola Razr 50 Ultra",
-    "Samsung Galaxy S25 Edge",
-    "Samsung Galaxy Z Fold5",
-    "Samsung Galaxy S24+",
-    "Sony Xperia 1 VI",
-    "Xiaomi 14 Ultra",
-    "OPPO Find X8 Pro",
-    "OnePlus 12",
-    "Microsoft Surface Duo 2",
-    "Lenovo Tab P12",
-    "Lenovo Yoga Tab 13",
-    "Xiaomi Pad 7",
-    "OnePlus Pad 2",
-    "ASUS ROG Phone 8",
-    "ASUS ROG Phone 9",
-    "Xiaomi Redmi Note 14 Pro",
-    "OnePlus Nord 4",
-    "ASUS Zenfone 11 Ultra",
-    "Honor Magic7 Pro",
-    "Huawei P60 Pro",
-    "POCO X7 Pro",
-    "realme GT 7 Pro",
-    "vivo X200 Pro",
-    "ZTE Axon 60 Ultra",
-    "Nubia RedMagic 10 Pro",
-    "TCL 50 Pro",
-    "OPPO Reno12 Pro",
-    "Motorola Moto G Power 2025",
-    "Nothing Phone (3a) Pro",
-    "OnePlus Nord CE 4",
-    "Honor Magic V3",
-    "Huawei Mate 70 Pro",
-    "realme 14 Pro",
-    "Honor 400 Pro",
-    "Honor X9c",
-    "OnePlus Nord N30 5G",
-    "Motorola Razr+ 2024",
-    "Motorola Moto G Stylus 5G 2025",
-    "Huawei Mate X6",
-    "Huawei Nova 13i",
-    "POCO C75",
-    "realme C75",
-    "LG V60 ThinQ 5G",
-    "Samsung Galaxy Tab S10 FE+",
-    "OnePlus Nord CE4 Lite 5G",
-    "realme Note 60",
-    "Redmi Note 14 Pro 5G",
-    "ZTE Blade A75 5G",
-    "Nubia Flip 5G",
-    "Lenovo Legion Y700",
-    "TCL 50 XL NXTPAPER 5G",
-    "SM-S921B/DS",
-    "Samsung SM-S938U1",
-    "Samsung SM-A546E/DSN",
-    "Sony XQ-EC54",
-    "CPH2581",
-    "OPPO CPH2581",
-    "XQ-EC54",
-    "Motorola XT2453-3",
-    "Nokia TA-1688",
-  ]) {
-    const record = completedRecord();
-    const mobile = record.environments.find(({ id }) => id === "mobile-touch");
-    mobile.operatingSystem = "Android 16";
-    mobile.browser = supportedFirefox;
-    mobile.device = device;
-    withRecord(record, (target, releaseMetadata, packagesRoot) => {
-      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.equal(result.status, 0, `${device}: ${result.stderr}`);
-      assert.match(result.stdout, /internally approved/);
-    });
-  }
-});
-
-test("strict validation accepts a concrete named Apple model", () => {
-  const record = completedRecord();
-  record.environments.find(({ id }) => id === "mobile-touch").device = "iPhone Air";
-  withRecord(record, (target, releaseMetadata, packagesRoot) => {
-    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /internally approved/);
-  });
-});
-
-test("strict validation rejects placeholder and browser-only mobile device values", () => {
+test("strict validation accepts open mobile labels with structured physical evidence", () => {
   for (const setup of [
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone test device" },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 ProSimulator" },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro_Simulator" },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone 15 ProEmulator" },
     {
       operatingSystem: "iOS 18.5",
       browser: supportedSafari,
-      device: "iPhone 15 ProVirtualDevice",
+      device: "iPhone Air",
+      deviceClass: "phone",
     },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone Simulator15" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: supportedFirefox },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Physical mobile device" },
     {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Physical mobile device 123",
-    },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mobile phone" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Widget 1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung WID1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung ABC1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Huawei ABC1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "OPPO QA1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "SM-WIDGET1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "XQ-WIDGET1" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "CPH123WIDGET" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "XT123-WIDGET" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "TA-123-WIDGET" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Widget 2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Lenovo Widget P12" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "ASUS Widget 8" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Nokia Widget 7.2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Fairphone Widget 5" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Nothing Widget (2)" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "LG Widget 16" },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Samsung Galaxy Widget 24",
+      operatingSystem: "iPadOS 18.5",
+      browser: supportedSafari,
+      device: "iPad Pro (M4)",
+      deviceClass: "tablet",
     },
     {
       operatingSystem: "Android 16",
       browser: supportedFirefox,
-      device: "Google Pixel Widget 9",
+      device: "TECNO CAMON 40 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChrome,
+      device: "Pixel Tablet",
+      deviceClass: "tablet",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedEdge,
+      device: "SM-S921B/DS",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChromium,
+      device: "FutureBrand Nova",
+      deviceClass: "tablet",
     },
     {
       operatingSystem: "Android 16",
       browser: supportedFirefox,
-      device: "Samsung Widget SM-S921B/DS",
+      device: "LatestPhone 1",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChrome,
+      device: "Motorola Edge 60 Pro",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedChrome,
+      device: "Edge 20",
+      deviceClass: "phone",
+    },
+    {
+      operatingSystem: "Android 16",
+      browser: supportedEdge,
+      device: "Nothing Phone 3",
+      deviceClass: "phone",
     },
     {
       operatingSystem: "Android 16",
       browser: supportedFirefox,
-      device: "Samsung SM-S921B/DS Manual",
+      device: "SHIFTphone 8",
+      deviceClass: "phone",
     },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Apple iPhone 15 Pro" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Chrome 143.0" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Mozilla/5.0" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "WebKit 605.1" },
     {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Audit Checklist",
-      notes: "Tested touch interaction on a physical Audit Checklist.",
+      operatingSystem: "Android 12L",
+      browser: supportedChrome,
+      device: "A15",
+      deviceClass: "phone",
     },
     {
       operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Audit Checklist 2026",
-      notes: "Tested touch interaction on a physical Audit Checklist 2026.",
+      browser: supportedEdge,
+      device: "N100",
+      deviceClass: "phone",
     },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "AUDIT-2026" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Audit Checklist V2026" },
     {
       operatingSystem: "Android 16",
       browser: supportedFirefox,
-      device: "Audit Checklist XQ-EC54",
+      device: "NOA N10",
+      deviceClass: "phone",
     },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixel Watch 3" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixel Watch2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixel Case 3" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Galaxy Book 5" },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Samsung Galaxy Book4 Edge",
-    },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Galaxy Watch7" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixel Buds Pro 2" },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Samsung Galaxy Buds3 Pro",
-    },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Nothing Ear2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixel Stand 2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Galaxy Ring 2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Samsung Galaxy Fit3" },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "Pixel Release Checklist 2026",
-    },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Acer Swift 5" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Acer Aspire 5" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Acer TravelMate P2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "ASUS Vivobook 15" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "ASUS TUF A15" },
-    {
-      operatingSystem: "Android 16",
-      browser: supportedFirefox,
-      device: "ASUS ROG Zephyrus G14",
-    },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "ASUS ROG Strix G16" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Lenovo Yoga 7" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Lenovo ThinkBook 14" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Honor MagicBook 14" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Xiaomi RedmiBook 15" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Google Pixelbook Go 2" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "LG Gram 16" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "LG UltraPC 16" },
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "Sony VAIO 5" },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPhone Safari 18.5" },
   ]) {
     const record = completedRecord();
     Object.assign(
@@ -1065,10 +1026,106 @@ test("strict validation rejects placeholder and browser-only mobile device value
     );
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
-      assert.notEqual(result.status, 0, setup.device);
+      assert.equal(result.status, 0, `${setup.device}: ${result.stderr}`);
+      assert.match(result.stdout, /internally approved/);
+    });
+  }
+});
+
+test("strict validation requires authoritative structured physical mobile evidence", () => {
+  for (const { field, values, diagnostic } of [
+    {
+      field: "physicalDeviceUsed",
+      values: [null, false, "true", 1, undefined],
+      diagnostic: /physicalDeviceUsed must equal true when complete/,
+    },
+    {
+      field: "deviceClass",
+      values: [null, "desktop", "Phone", [], undefined],
+      diagnostic: /deviceClass must equal "phone" or "tablet" when complete/,
+    },
+  ]) {
+    for (const value of values) {
+      const record = completedRecord();
+      record.environments.find(({ id }) => id === "mobile-touch")[field] = value;
+      withRecord(record, (target, releaseMetadata, packagesRoot) => {
+        const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+        assert.notEqual(result.status, 0, `${field}: ${String(value)}`);
+        assert.match(result.stderr, diagnostic);
+      });
+    }
+  }
+});
+
+test("strict validation rejects placeholder and browser-only mobile model labels", () => {
+  for (const device of [
+    "iPhone test device",
+    "iPhone 15 ProSimulator",
+    "iPad Pro (M4) VirtualDevice",
+    "TECNO CAMON 40 Pro Emulator",
+    "testdevice 40",
+    "genericphone 40",
+    "placeholdermodel 40",
+    "iphone15proplaceholder",
+    "deviceplaceholder40",
+    "modelunknown40",
+    "firefoxphone42",
+    "chromemobile42",
+    "Chrome143",
+    "Safari18",
+    "AndroidChrome143",
+    "iOSSafari18",
+    "mobiledevice42",
+    "androidphone42",
+    "MOBILEHARDWARE42",
+    "No device",
+    "Pending model 1",
+    "TBD 123",
+    "testunit40",
+    "unknownunit42",
+    "deviceplaceholderpro40",
+    "Unit 123",
+    "Dummy phone 1",
+    "None phone 1",
+    "N/A model 1",
+    "abcphone42",
+    "widphone42",
+    "iphone15proplaceholder40",
+    "iphone15proplaceholdermodel40",
+    "safariios18",
+    "firefoxandroid42",
+    "mobilefirefox42",
+    "Android browser 143",
+    "Browser Chrome 143",
+    "chromebrowser143",
+    "Web Browser 143",
+    "The Safari 18",
+    "Mobile Web Browser 143",
+    "Edge 143 Browser",
+    "Edge143Browser",
+    "Edge143Safari",
+    "A phone 1",
+    "An Android phone 1",
+    "The mobile device 1",
+    "Demo phone 1",
+    "Temporary phone 1",
+    "Prototype device 1",
+    "Default model 1",
+    "iPhone 15 pending model 1",
+    "iphone15testphone",
+    "Physical mobile device",
+    "Google Chrome 143.0",
+    "Mozilla/5.0",
+    "N/A",
+  ]) {
+    const record = completedRecord();
+    record.environments.find(({ id }) => id === "mobile-touch").device = device;
+    withRecord(record, (target, releaseMetadata, packagesRoot) => {
+      const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+      assert.notEqual(result.status, 0, device);
       assert.match(
         result.stderr,
-        /device must be a concrete physical model for its recorded mobile OS/,
+        /device must be a concrete non-placeholder mobile model label when complete/,
       );
     });
   }
@@ -1186,11 +1243,10 @@ test("strict validation still rejects negated assistive-technology metadata", ()
   }
 });
 
-test("strict validation rejects a mobile OS and device-family mismatch", () => {
+test("strict validation rejects a mobile OS and structured device-class mismatch", () => {
   for (const setup of [
-    { operatingSystem: "Android 16", browser: supportedFirefox, device: "iPhone 15 Pro" },
-    { operatingSystem: "iOS 18.5", browser: supportedSafari, device: "iPad Pro (M4)" },
-    { operatingSystem: "iPadOS 18.5", browser: supportedSafari, device: "iPhone 15 Pro" },
+    { operatingSystem: "iOS 18.5", deviceClass: "tablet" },
+    { operatingSystem: "iPadOS 18.5", deviceClass: "phone" },
   ]) {
     const record = completedRecord();
     Object.assign(
@@ -1200,16 +1256,27 @@ test("strict validation rejects a mobile OS and device-family mismatch", () => {
     withRecord(record, (target, releaseMetadata, packagesRoot) => {
       const result = run(strictArgs(target, releaseMetadata, packagesRoot));
       assert.notEqual(result.status, 0);
-      assert.match(
-        result.stderr,
-        /device must be a concrete physical model for its recorded mobile OS/,
-      );
+      assert.match(result.stderr, /deviceClass does not match the recorded mobile OS family/);
     });
   }
 });
 
-test("strict validation rejects mixed mobile OS families", () => {
-  for (const operatingSystem of ["iOS 26 / Android 16", "iOS 18.5 / iPadOS 18.5"]) {
+test("strict validation rejects mixed mobile or desktop OS families", () => {
+  for (const operatingSystem of [
+    "iOS 26 / Android 16",
+    "iOS 18.5 / iPadOS 18.5",
+    "iOS 18.5 / Windows 11",
+    "Android 16 / macOS 15",
+    "iOS 18.5 / Ubuntu 24.04",
+    "Android 16 / watchOS 11",
+    "Android 16 / HarmonyOS 5",
+    "iOS 18.5 (Android 16)",
+    "iOS 18.5 Android16",
+    "Android 16 (iPadOS 18.5)",
+    "Android 16 Windows11",
+    "iPadOS 18.5 macOS15",
+    "Android 16 (Ubuntu 24.04)",
+  ]) {
     const record = completedRecord();
     const mobile = record.environments.find(({ id }) => id === "mobile-touch");
     mobile.operatingSystem = operatingSystem;

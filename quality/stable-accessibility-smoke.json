@@ -54,6 +54,8 @@
       "browser": null,
       "assistiveTechnology": null,
       "device": null,
+      "deviceClass": null,
+      "physicalDeviceUsed": null,
       "viewport": null,
       "zoom": null,
       "evidence": [],

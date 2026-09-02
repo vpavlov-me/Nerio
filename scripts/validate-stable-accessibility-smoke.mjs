@@ -86,8 +86,8 @@ const browserOnlyDesktopDevicePattern =
   /^(?:(?:desktop|google|os)\s+)?(?:edge|edgehtml)(?:\s+\d+(?:\.\d+)*)?$/i;
 const desktopNonIdentityPattern =
   /\b(?:abc\d*|chair|conference|fake|fixture|kitchen|mock|qa\d*|room|widget)\b/i;
-const desktopDeviceNegationPattern =
-  /\b(?:absent|former|free|lacks?|missing|neither|never|nil|no|non|none|nor|not|unavailable|without)\b/i;
+const desktopDeviceAbsencePattern =
+  /^(?:(?:this|that)\s+(?:is|was)\s+|definitely\s+)?(?:former|missing|neither|no|non|not|unavailable|without)\b|\b(?:can|could|did|does|is|may|might|must|should|was|were|will|would)\s+(?:not|never)\s+(?:be\s+)?(?:available|present|tested|used)\b|\b(?:has|have|had)\s+(?:not|never)\s+been\s+(?:available|present|tested|used)\b|\b(?:not|never)\s+(?:available|present|tested|used)\b|\b(?:became|is|remains?|was|were)\s+(?:absent|missing|unavailable|untested|unused)\b|\bno\s+longer\s+(?:available|present|tested|used)\b|\b(?:absent|missing|unavailable|untested|unused)\s*$|\blacks?\s+availability\b|\b(?:is|was|were)\s+not\s+(?:an?\s+)?(?:physical\s+)?(?:computer|desktop|device|handset|hardware|laptop|machine|pc|phone|tablet|workstation)\s*$|\b(?:no|without)\s+(?:an?\s+)?(?:computer|desktop|device|handset|hardware|laptop|machine|pc|phone|tablet|workstation)\s*$/i;
 const desktopMissingValuePattern = /^(?:n\s*a|none|nil|null|pending|tba|tbd|unset)$/i;
 const desktopForbiddenCompoundPattern =
   /(?:test|sample|generic|unknown|placeholder|example|qa|widget|mock|fake)(?:device|laptop|pc|machine|notebook|book|computer|desktop|workstation)|(?:accessibility|audit|compliance|evidence|release|roadmap|user)(?:checklist|guide|item|matrix|notes?|record|report)|(?:(?:microsoftoffice|googleworkspace|applemusic|googlecalendar|chrome(?:os)?browser|chromiumbrowser|firefoxbrowser|edgebrowser|safaribrowser|windows(?:pc|laptop)|androidlaptop|desktopbrowser|edgehtml|webkit)(?=\d|$)\d*)|(?:(?:dell|gaming|desktop)monitor(?:[a-z]?\d[a-z0-9]*)?|hpprinter\d[a-z0-9]*|usbkeyboard[a-z]?\d[a-z0-9]*|printermodel\d[a-z0-9]*)/i;
@@ -300,7 +300,7 @@ function isConcreteDesktopDeviceDescription(value) {
     nonDesktopProductDescriptionPattern.test(normalized) ||
     browserOnlyDesktopDevicePattern.test(normalized) ||
     browserOnlyDesktopDevicePattern.test(vocabulary) ||
-    desktopDeviceNegationPattern.test(vocabulary) ||
+    desktopDeviceAbsencePattern.test(vocabulary) ||
     desktopMissingValuePattern.test(vocabulary) ||
     desktopForbiddenCompoundPattern.test(compactVocabulary) ||
     (copilot !== null && !isCopilotPcHardware) ||
@@ -322,49 +322,85 @@ function isConcreteDesktopDeviceDescription(value) {
 }
 const virtualDeviceSource = "(?:emulators?|simulators?|virtual(?:\\s+devices?)?)";
 const mobilePlaceholderPattern = new RegExp(
-  `(?:\\b(?:test|sample|generic|unknown|placeholder|example)\\b|${virtualDeviceSource})`,
+  `(?:\\b(?:default|demo|example|generic|placeholder|prototype|sample|temporary|test|unknown)\\b|${virtualDeviceSource})`,
   "i",
 );
-const nonAndroidFamilyPattern =
-  /(?:iPhones?|iPads?|\bApple\b|MacBook|Mac mini|Mac Studio|Mac Pro|iMac|\b(?:Android|iOS|iPadOS|Windows|macOS|Linux)\b)/i;
 const browserOnlyDevicePattern =
   /^(?:(?:Google|Microsoft|Mozilla|Apple|Mobile)\s+)?(?:Safari|Chrome|Chromium|Firefox|Edge|WebKit|Mozilla)(?:$|[\s/-].*)/i;
-const knownUnnumberedAndroidModelPattern =
-  /^(?:(?:Google\s+)?Pixel\s+(?:Fold|Tablet)|Samsung\s+Galaxy\s+Fold|OnePlus\s+Open|Microsoft\s+Surface\s+Duo|Motorola\s+Razr\+?)$/i;
-const nonMobileAndroidDescriptionPattern =
-  /\b(?:account|adapter|aspire|audit|book|browser|buds?|camera|case|charger|checklist|chromebook|cover|desktop|display|dock|documentation|ear(?:buds?)?|fit|gear|gram|headphones?|headset|hub|ideapad|keyboard|laptop|magicbook|matebook|monitor|mouse|nest|office|pen|pixelbook|printer|projector|redmibook|release|report|ring|router|scanner|sleeve|speaker|stand|strix|support|swift|tag|television|thinkbook|thinkcentre|thinkpad|travelmate|tuf|tv|ultrapc|vaio|vivobook|watch|wearable|workspace|zenbook|zephyrus)\d*[A-Za-z]*\b|\b[A-Za-z]+Book\d*[A-Za-z]*\b|\bSurface\s+(?:Laptop|Pro|Studio)\b|\bYoga\b(?!\s+Tab\b)|\bROG\b(?!\s+Phone\b)/i;
-const knownAndroidModelCodePattern =
-  /^(?:(?:Samsung\s+)?SM-[A-Z]\d{3}[A-Z0-9]{0,2}(?:\/[A-Z]{2,3})?|(?:Sony\s+)?XQ-[A-Z]{2}\d{2}(?:\/[A-Z]{2})?|(?:(?:OPPO|OnePlus)\s+)?CPH\d{4}|(?:Motorola\s+)?XT\d{4}(?:-\d{1,2})?|(?:Nokia\s+)?TA-\d{4})$/i;
-const numberedAndroidQualifierSource =
-  "(?:\\s+(?:5G|Edge|FE\\+?|Fold|Lite|Max|Neo|Plus|Pro|Pro\\+|Pro XL|Ultra)){0,2}";
-const knownNumberedAndroidModelPattern = new RegExp(
-  `^(?:(?:Google\\s+)?Pixel\\s+\\d{1,2}[A-Za-z]?${numberedAndroidQualifierSource}|` +
-    `Fairphone\\s+\\d+(?:\\.\\d+)?|Nothing\\s+Phone\\s*(?:\\d+[A-Za-z]?|\\(\\d+[A-Za-z]?\\))${numberedAndroidQualifierSource}|` +
-    `Nokia\\s+\\d+(?:\\.\\d+)?${numberedAndroidQualifierSource}|` +
-    `Samsung\\s+Galaxy\\s+(?:S\\d{1,3}\\+?|[AMF]\\d{1,3}|Note\\s*\\d{1,3}|XCover\\s*\\d{1,3}|Z\\s+(?:Fold|Flip)\\s*\\d{1,2}|Tab\\s+[A-Z]\\d{1,2}\\+?)${numberedAndroidQualifierSource}|` +
-    `Motorola\\s+(?:(?:Edge|Razr\\+?)\\s+\\d+${numberedAndroidQualifierSource}|Moto\\s+(?:[A-Z]\\s*\\d+|G(?:\\s+(?:Power|Stylus)(?:\\s+5G)?)?\\s+\\d+)${numberedAndroidQualifierSource})|` +
-    `Sony\\s+Xperia\\s+(?:\\d{1,2}(?:\\s+[IVX]+)?|[A-Z]\\d+[A-Za-z0-9-]*)${numberedAndroidQualifierSource}|` +
-    `(?:Xiaomi\\s+)?Redmi\\s+Note\\s+\\d{1,3}[A-Za-z]?${numberedAndroidQualifierSource}|` +
-    `Xiaomi\\s+(?:(?:Redmi\\s+)?\\d{1,3}[A-Za-z]?|Pad\\s+\\d{1,2})${numberedAndroidQualifierSource}|` +
-    `OPPO\\s+(?:A\\d+|Find\\s+[A-Z]?\\d+|Reno\\s*\\d+)${numberedAndroidQualifierSource}|` +
-    `OnePlus\\s+(?:\\d{1,2}[A-Za-z]?|Nord\\s+(?:CE\\s*)?[A-Z]?\\d{1,2}|Pad\\s+\\d{1,2})${numberedAndroidQualifierSource}|` +
-    `Microsoft\\s+Surface\\s+Duo\\s+\\d+${numberedAndroidQualifierSource}|` +
-    `Lenovo\\s+(?:(?:Yoga\\s+)?Tab\\s+[A-Z]?\\d+|Legion\\s+[A-Z]\\d+)${numberedAndroidQualifierSource}|` +
-    `ASUS\\s+(?:ROG\\s+Phone|Zenfone)\\s+\\d+${numberedAndroidQualifierSource}|` +
-    `Honor\\s+(?:Magic\\s*V?\\d+|X\\s*\\d+[A-Za-z]?|\\d+)${numberedAndroidQualifierSource}|` +
-    `Huawei\\s+(?:Mate\\s+(?:X\\s*)?\\d+[A-Za-z]?|Nova\\s+\\d+[A-Za-z]?|P\\s*\\d+[A-Za-z]?)${numberedAndroidQualifierSource}|` +
-    `realme\\s+(?:(?:GT\\s+)?\\d+|(?:C|P)\\s*\\d+|Note\\s+\\d+)${numberedAndroidQualifierSource}|` +
-    `Nubia\\s+(?:Flip|RedMagic\\s+\\d+|Z\\s*\\d+)${numberedAndroidQualifierSource}|` +
-    `POCO\\s+[CFMX]\\s*\\d+${numberedAndroidQualifierSource}|` +
-    `vivo\\s+[XVY]\\s*\\d+${numberedAndroidQualifierSource}|` +
-    `ZTE\\s+(?:A\\s*\\d+|Axon\\s+\\d+|Blade\\s+[A-Z]\\d+)${numberedAndroidQualifierSource}|` +
-    `TCL\\s+\\d+(?:\\s+XL)?(?:\\s+NXTPAPER)?${numberedAndroidQualifierSource}|` +
-    `HTC\\s+U\\s*\\d+${numberedAndroidQualifierSource}|` +
-    `LG\\s+[GV]\\s*\\d+(?:\\s+ThinQ)?${numberedAndroidQualifierSource}|` +
-    `Motorola\\s+[GE]\\s*\\d+${numberedAndroidQualifierSource}|` +
-    `Samsung\\s+[AMFS]\\s*\\d+${numberedAndroidQualifierSource})$`,
-  "i",
-);
+const ambiguousEdgeModelPattern =
+  /^(?!.*(?:browser|chrome|chromium|firefox|mozilla|safari|webkit))Edge\s*\d[A-Za-z0-9 .()+_/-]*$/i;
+const mobileNonIdentityPattern =
+  /\b(?:abc|fake|fixture|mock|qa|wid|widget)\d*\b|(?:abc|fake|fixture|mock|qa|wid|widget)\d*$/i;
+const mobileMissingValuePattern = /^(?:n\s*\/?\s*a|none|nil|null|pending|tba|tbd|unset)$/i;
+const mobileMissingMarkerPattern =
+  /\b(?:none|nil|null|pending|tba|tbd|unset)\b|\bn\s+a(?:\s+(?:device|handset|hardware|mobile|model|phone|tablet|unit))?\b/i;
+const mobilePlaceholderCompoundPattern =
+  /\btest(?:\s+)?(?:device|handset|hardware|mobile|model|phone|tablet|unit)\b/i;
+const mobileForbiddenSubstringPattern =
+  /(?:sample|generic|unknown|placeholder|example|widget|mock|fake|fixture|dummy)|(?:none|nil|null|pending|tba|tbd|unset)(?:device|handset|hardware|mobile|model|phone|tablet|unit)|(?:qa|abc|wid)(?:device|handset|hardware|mobile|model|phone|tablet|unit)/i;
+const genericMobileDeviceWords = new Set([
+  "actual",
+  "android",
+  "available",
+  "browser",
+  "device",
+  "handset",
+  "hardware",
+  "ios",
+  "ipados",
+  "linux",
+  "macos",
+  "mobile",
+  "model",
+  "operating",
+  "os",
+  "phone",
+  "physical",
+  "system",
+  "tablet",
+  "touch",
+  "windows",
+]);
+const mobileDeviceClasses = new Set(["phone", "tablet"]);
+const genericMobileLabelTokens = new Set([
+  ...genericMobileDeviceWords,
+  "abc",
+  "apple",
+  "chrome",
+  "chromium",
+  "dummy",
+  "example",
+  "fake",
+  "firefox",
+  "fixture",
+  "generic",
+  "google",
+  "microsoft",
+  "mock",
+  "mozilla",
+  "na",
+  "nil",
+  "no",
+  "none",
+  "null",
+  "pending",
+  "placeholder",
+  "qa",
+  "safari",
+  "sample",
+  "tba",
+  "tbd",
+  "test",
+  "unit",
+  "unknown",
+  "unset",
+  "web",
+  "webkit",
+  "wid",
+  "widget",
+]);
+const mobileOperatingSystemDescriptionPattern =
+  /^(?:(iOS|iPadOS)\s+\d+(?:\.\d+){0,3}|(Android)\s+(?:\d+L?|\d+(?:\.\d+){1,3}))$/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b.*\d/i,
@@ -384,7 +420,7 @@ const environmentMetadataRequirements = {
     device: isConcreteDesktopDeviceDescription,
   },
   "mobile-touch": {
-    operatingSystem: /\b(?:iOS|iPadOS|Android)\b.*\d/i,
+    operatingSystem: (value) => mobileOperatingSystemDescriptionPattern.test(value),
     browser: (value, environment) =>
       isMaintainedBrowserDescription(
         value,
@@ -416,43 +452,62 @@ const isIsoUtc = (value) =>
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const normalizeContractedNegations = (value) =>
   typeof value === "string"
-    ? value.replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not").replace(/\bcannot\b/gi, "can not")
+    ? value
+        .replace(/\bcan['’]t\b/gi, "can not")
+        .replace(/\bwon['’]t\b/gi, "will not")
+        .replace(/\b([A-Za-z]+)n['’]t\b/gi, "$1 not")
+        .replace(/\bcannot\b/gi, "can not")
     : value;
 const negatedSetupPattern =
   /\b(?:no|not|never|neither|nor|without|disabled|off|untested|skipped|unavailable|absent|failed|impossible)\b/i;
 const negatedDeviceDescriptionPattern = /^\s*(?:no|not(?:\s+an?)?|without)\b/i;
-const isConcreteAppleMobileDevice = (value) => {
+function isComposedOnlyOfGenericMobileLabelTokens(value) {
+  const letters = value.toLowerCase().replace(/\d+/g, "");
+  if (letters.length === 0) return true;
+  const reachable = Array.from({ length: letters.length + 1 }, () => false);
+  reachable[0] = true;
+  for (let index = 0; index < letters.length; index += 1) {
+    if (!reachable[index]) continue;
+    for (const token of genericMobileLabelTokens) {
+      if (letters.startsWith(token, index)) reachable[index + token.length] = true;
+    }
+  }
+  return reachable[letters.length];
+}
+function isGenericMobileLabelPhrase(value) {
+  const words = value.toLowerCase().match(/[a-z]+/g) ?? [];
+  if (["a", "an", "the"].includes(words[0])) words.shift();
+  return words.length > 0 && words.every((word) => genericMobileLabelTokens.has(word));
+}
+const isConcreteMobileDeviceLabel = (value) => {
   if (typeof value !== "string") return false;
   const device = value.trim();
+  const vocabulary = normalizeDesktopDeviceVocabulary(device);
+  const compactVocabulary = vocabulary.replace(/\s+/g, "");
   if (
-    !/^(?:iPhone|iPad)\s+[A-Za-z0-9][A-Za-z0-9 .()+_/-]{0,60}$/i.test(device) ||
+    !/^[A-Za-z0-9][A-Za-z0-9 ,.()+_/-]{2,79}$/.test(device) ||
     mobilePlaceholderPattern.test(device) ||
-    /\b(?:Safari|Chrome|Chromium|Firefox|Edge|Android|macOS|Windows|Linux|physical|mobile|touch|device|phone|tablet|hardware|handset)\b/i.test(
-      device,
-    )
+    mobilePlaceholderPattern.test(vocabulary) ||
+    mobileForbiddenSubstringPattern.test(compactVocabulary) ||
+    mobileNonIdentityPattern.test(vocabulary) ||
+    mobileMissingValuePattern.test(vocabulary) ||
+    mobileMissingMarkerPattern.test(vocabulary) ||
+    mobilePlaceholderCompoundPattern.test(vocabulary) ||
+    negatedDeviceDescriptionPattern.test(vocabulary) ||
+    isComposedOnlyOfGenericMobileLabelTokens(compactVocabulary) ||
+    isGenericMobileLabelPhrase(vocabulary) ||
+    ((browserOnlyDevicePattern.test(device) || browserOnlyDevicePattern.test(vocabulary)) &&
+      !ambiguousEdgeModelPattern.test(device) &&
+      !ambiguousEdgeModelPattern.test(vocabulary))
   ) {
     return false;
   }
-  const model = device.replace(/^(?:iPhone|iPad)\s+/i, "");
-  return /\d/.test(model) || /^(?:X|XR|XS|SE|Air)\b/i.test(model);
-};
-const isConcreteAndroidMobileDevice = (value) => {
-  if (typeof value !== "string") return false;
-  const device = value.trim();
-  if (
-    !/^[A-Za-z0-9][A-Za-z0-9 .()+_/-]{2,79}$/.test(device) ||
-    mobilePlaceholderPattern.test(device) ||
-    nonAndroidFamilyPattern.test(device) ||
-    browserOnlyDevicePattern.test(device) ||
-    nonMobileAndroidDescriptionPattern.test(device)
-  ) {
-    return false;
-  }
-  return (
-    knownAndroidModelCodePattern.test(device) ||
-    knownUnnumberedAndroidModelPattern.test(device) ||
-    knownNumberedAndroidModelPattern.test(device)
+  const identityWords = vocabulary.match(/[A-Za-z][A-Za-z0-9+]*/g) ?? [];
+  const meaningfulWords = identityWords.filter(
+    (word) => !genericMobileDeviceWords.has(word.toLowerCase()),
   );
+  // The model label is self-attested metadata, not a source for class or physical-use claims.
+  return meaningfulWords.length > 0 && (/\d/.test(device) || identityWords.length >= 2);
 };
 const requiredZoomLevels = ["200%", "400%"];
 const hasRequiredZoomLevels = (value) =>
@@ -623,6 +678,14 @@ for (const [index, environment] of environments.entries()) {
       `${prefix}.increasedOrHighContrastEnabled must remain null while evidence is pending.`,
     );
   }
+  if (!complete && environment?.id === "mobile-touch") {
+    if (environment?.deviceClass !== null) {
+      errors.push(`${prefix}.deviceClass must remain null while evidence is pending.`);
+    }
+    if (environment?.physicalDeviceUsed !== null) {
+      errors.push(`${prefix}.physicalDeviceUsed must remain null while evidence is pending.`);
+    }
+  }
   if (complete) {
     const requirements = environmentMetadataRequirements[environment?.id] ?? {};
     for (const [field, requirement] of Object.entries(requirements)) {
@@ -657,27 +720,30 @@ for (const [index, environment] of environments.entries()) {
     if (environment?.id === "mobile-touch") {
       const operatingSystem = environment.operatingSystem ?? "";
       const device = typeof environment.device === "string" ? environment.device.trim() : "";
-      const hasIosOperatingSystem = /\biOS\b/i.test(operatingSystem);
-      const hasIpadOperatingSystem = /\biPadOS\b/i.test(operatingSystem);
-      const hasAndroidOperatingSystem = /\bAndroid\b/i.test(operatingSystem);
-      const hasExactlyOneOperatingSystemFamily =
-        Number(hasIosOperatingSystem) +
-          Number(hasIpadOperatingSystem) +
-          Number(hasAndroidOperatingSystem) ===
-        1;
-      if (!hasExactlyOneOperatingSystemFamily) {
+      const deviceClass = environment.deviceClass;
+      const operatingSystemMatch = mobileOperatingSystemDescriptionPattern.exec(
+        operatingSystem.trim(),
+      );
+      const operatingSystemFamily = (
+        operatingSystemMatch?.[1] ?? operatingSystemMatch?.[2]
+      )?.toLowerCase();
+      if (operatingSystemMatch === null) {
         errors.push(`${prefix}.operatingSystem must name exactly one supported mobile OS family.`);
       }
-      const deviceMatchesOperatingSystem = hasExactlyOneOperatingSystemFamily
-        ? hasIosOperatingSystem
-          ? /^iPhone\b/i.test(device) && isConcreteAppleMobileDevice(device)
-          : hasIpadOperatingSystem
-            ? /^iPad\b/i.test(device) && isConcreteAppleMobileDevice(device)
-            : isConcreteAndroidMobileDevice(device)
-        : false;
-      if (!deviceMatchesOperatingSystem) {
+      if (!mobileDeviceClasses.has(deviceClass)) {
+        errors.push(`${prefix}.deviceClass must equal "phone" or "tablet" when complete.`);
+      } else if (
+        (operatingSystemFamily === "ios" && deviceClass !== "phone") ||
+        (operatingSystemFamily === "ipados" && deviceClass !== "tablet")
+      ) {
+        errors.push(`${prefix}.deviceClass does not match the recorded mobile OS family.`);
+      }
+      if (environment.physicalDeviceUsed !== true) {
+        errors.push(`${prefix}.physicalDeviceUsed must equal true when complete.`);
+      }
+      if (!isConcreteMobileDeviceLabel(device)) {
         errors.push(
-          `${prefix}.device must be a concrete physical model for its recorded mobile OS.`,
+          `${prefix}.device must be a concrete non-placeholder mobile model label when complete.`,
         );
       }
     }
