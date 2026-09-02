@@ -146,7 +146,7 @@ export function detectCiScopes(inputPaths) {
       /^apps\/docs\//,
       /^docs\//,
       /^.*\.md$/,
-      /^scripts\/(?:validate-(?:catalog|docs|onboarding|typography)|docs-route-bundle-report)\.mjs$/,
+      /^scripts\/(?:validate-(?:catalog|docs|onboarding|typography)|docs-route-bundle-report(?:-options)?(?:\.test)?)\.mjs$/,
       /^quality\/docs-route-/,
     ]);
     scopes.ui ||= matchesAny(path, [

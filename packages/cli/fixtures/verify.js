@@ -27,7 +27,6 @@ const expectedFiles = [
   "styles/tailwind.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
-const expectedAlertDialogFiles = [...expectedDialogFiles, "components/alert-dialog.tsx"];
 const expectedSheetFiles = [
   ...expectedFiles,
   "components/button.tsx",
@@ -99,40 +98,6 @@ const expectedSelectFiles = [
   "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/select.css",
-  "styles/tailwind.css",
-];
-const expectedComboboxFiles = [
-  "components/combobox.tsx",
-  "components/form-message.tsx",
-  "components/icon.tsx",
-  "components/spinner.tsx",
-  "lib/cn.ts",
-  "lib/component-props.ts",
-  "lib/compose-refs.ts",
-  "lib/motion.ts",
-  "lib/resolve-class-name.ts",
-  "lib/tailwind-cn.ts",
-  "styles/select.css",
-  "styles/spinner.css",
-  "styles/tailwind.css",
-];
-const expectedSearchFieldFiles = [
-  "components/button.tsx",
-  "components/field.tsx",
-  "components/form-message.tsx",
-  "components/icon.tsx",
-  "components/input.tsx",
-  "components/input-group.tsx",
-  "components/label.tsx",
-  "components/search-field.tsx",
-  "components/spinner.tsx",
-  "lib/cn.ts",
-  "lib/component-props.ts",
-  "lib/compose-refs.ts",
-  "lib/motion.ts",
-  "lib/tailwind-cn.ts",
-  "styles/motion.css",
-  "styles/spinner.css",
   "styles/tailwind.css",
 ];
 const expectedPhase2BFiles = [
@@ -262,15 +227,6 @@ const expectedOverlayAndTabsFiles = [
   "styles/motion.css",
   "styles/overlays.css",
   "styles/tailwind.css",
-];
-const expectedDisclosureFiles = [
-  "components/accordion.tsx",
-  "components/collapsible.tsx",
-  "lib/cn.ts",
-  "lib/component-props.ts",
-  "lib/tailwind-cn.ts",
-  "styles/tailwind.css",
-  "styles/tokens.css",
 ];
 
 function execute(cwd, args, env = {}) {
@@ -1793,7 +1749,6 @@ async function verify() {
     await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
-    await run(localTarget, "add", "alert-dialog");
     await run(localTarget, "add", "sheet");
     await run(localTarget, "add", "sidebar-primitive");
     await run(localTarget, "add", "command-primitive");
@@ -1804,8 +1759,6 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "select");
-    await run(localTarget, "add", "combobox");
-    await run(localTarget, "add", "search-field");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -1824,8 +1777,6 @@ async function verify() {
     await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
     await run(localTarget, "add", "tabs");
-    await run(localTarget, "add", "collapsible");
-    await run(localTarget, "add", "accordion");
     await run(localTarget, "add", "breadcrumbs");
     await run(localTarget, "add", "pagination");
     await run(localTarget, "add", "popover");
@@ -1883,25 +1834,9 @@ async function verify() {
     );
     if (
       !dialogSource.includes('closeLabel = "Close dialog"') ||
-      !dialogSource.includes('data-slot="close"') ||
-      !dialogSource.includes("export function DialogRoot") ||
-      !dialogSource.includes("export const DialogContent")
+      !dialogSource.includes('data-slot="close"')
     ) {
-      throw new Error("Installed Dialog source is missing its convenience or compound contract.");
-    }
-    assertInstall(localTarget, expectedAlertDialogFiles);
-    const alertDialogSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/alert-dialog.tsx"),
-      "utf8",
-    );
-    if (
-      !alertDialogSource.includes("BaseAlertDialog.Root") ||
-      !alertDialogSource.includes('createAlertDialogAction("cancel")') ||
-      !alertDialogSource.includes('createAlertDialogAction("action")')
-    ) {
-      throw new Error(
-        "Installed AlertDialog source is missing its conservative response contract.",
-      );
+      throw new Error("Installed Dialog source is missing its localizable close anatomy contract.");
     }
     assertFiles(localTarget, expectedSheetFiles);
     const sheetSource = fs.readFileSync(
@@ -2066,39 +2001,6 @@ async function verify() {
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
     }
-    assertFiles(localTarget, expectedComboboxFiles);
-    const comboboxSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/combobox.tsx"),
-      "utf8",
-    );
-    if (
-      !comboboxSource.includes("@base-ui/react/combobox") ||
-      !comboboxSource.includes("setUncontrolledQuery") ||
-      !comboboxSource.includes("setUncontrolledOpen(false)") ||
-      !comboboxSource.includes("isItemEqualToValue") ||
-      !comboboxSource.includes('data-slot="loading"') ||
-      !comboboxSource.includes("loadingMessage")
-    ) {
-      throw new Error(
-        "Installed Combobox source did not preserve generic identity, state, or presentation contracts.",
-      );
-    }
-    assertFiles(localTarget, expectedSearchFieldFiles);
-    const searchFieldSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/search-field.tsx"),
-      "utf8",
-    );
-    if (
-      !searchFieldSource.includes('type="search"') ||
-      !searchFieldSource.includes("setUncontrolledValue") ||
-      !searchFieldSource.includes('reason: "enter"') ||
-      !searchFieldSource.includes('data-slot="clear"') ||
-      !searchFieldSource.includes("nativeInputRef.current?.focus()")
-    ) {
-      throw new Error(
-        "Installed SearchField source did not preserve native search, state, clear, or focus contracts.",
-      );
-    }
     assertFiles(localTarget, expectedSliderFiles);
     const sliderSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/slider.tsx"),
@@ -2167,28 +2069,6 @@ async function verify() {
     assertFiles(localTarget, expectedFeedbackFiles);
     assertFiles(localTarget, expectedProgressFiles);
     assertFiles(localTarget, expectedOverlayAndTabsFiles);
-    assertFiles(localTarget, expectedDisclosureFiles);
-    const collapsibleSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/collapsible.tsx"),
-      "utf8",
-    );
-    const accordionSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/accordion.tsx"),
-      "utf8",
-    );
-    if (
-      !collapsibleSource.includes("@base-ui/react/collapsible") ||
-      !collapsibleSource.includes('data-slot="panel"') ||
-      !collapsibleSource.includes("--collapsible-panel-height") ||
-      !accordionSource.includes("@base-ui/react/accordion") ||
-      !accordionSource.includes("value: AccordionValue") ||
-      !accordionSource.includes('data-slot="header"') ||
-      !accordionSource.includes("--accordion-panel-height")
-    ) {
-      throw new Error(
-        "Installed disclosure source did not preserve Base UI state, stable values, anatomy, or height motion.",
-      );
-    }
 
     const tableSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/table.tsx"),

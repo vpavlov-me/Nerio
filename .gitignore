@@ -12,6 +12,9 @@ storybook-static/
 .turbo/
 playwright-report/
 test-results/
+/artifacts/
+/design-qa-artifacts/
+/design-qa.md
 
 # Environment files
 .env

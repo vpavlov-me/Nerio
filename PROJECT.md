@@ -13,11 +13,11 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-Nerio Core `1.0.0-beta.1` is the published public beta for the frozen Core 1.0 API under npm
-`beta` and `latest`. The protected `alpha` tag remains on `0.1.0-alpha.2`. An unqualified install
-therefore resolves to the newest coordinated public release, including a prerelease while Nerio is
-pre-stable. Stable `1.0.0` is prepared from the isolated `release/1.0` line. Its human release gate
-is a narrow maintainer-run accessibility smoke against the exact candidate; the broader real-device
+Nerio Core `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API on the isolated
+`release/1.0` line. It is not published and does not change the public npm channels. Until the
+separately approved release, `1.0.0-beta.1` remains available under npm `beta` and `latest`, and the
+protected `alpha` tag remains on `0.1.0-alpha.2`. The candidate's human release gate is a bounded
+maintainer-run accessibility smoke against its exact SHA and deployment; the broader real-device
 matrix and external-consumer cycle continue after stable publication. Every publication remains
 manual and is governed by the roadmap and `RELEASE.md`.
 
@@ -122,7 +122,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Collapsible, Accordion, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -164,13 +164,7 @@ remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 
-Core 1.1 adds Collapsible for one independent controlled or uncontrolled disclosure and Accordion
-for a grouped collection with single or multiple expansion. Plain native `details` and `summary`
-remain the preferred path when controlled state, grouped behavior, maintained motion, or shared
-anatomy adds no durable value.
-
-The accepted Core 1.1 primitive sequence starts with direction/localization foundations on `dev`,
-then adds
+After stable 1.0, the accepted Core 1.1 primitive sequence adds direction/localization foundations,
 Accordion and Collapsible, additive compound Dialog anatomy and AlertDialog, a bounded
 single-select Combobox, SearchField, NumberField, OTPField, separate ToggleGroup and CheckboxGroup
 contracts, and complete bounded DropdownMenu anatomy. MultiSelect remains a later decision spike,

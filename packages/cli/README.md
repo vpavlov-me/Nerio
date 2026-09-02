@@ -4,7 +4,8 @@
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fcli)](https://www.npmjs.com/package/@nerio-ui/cli)
 
 Command-line tools for installing, inspecting, diffing, and safely updating editable Nerio source.
-The current coordinated release is `1.0.0-beta.1`.
+The prepared coordinated stable candidate is `1.0.0`; npm `latest` remains on `1.0.0-beta.1` until
+approved publication.
 
 ## Install
 

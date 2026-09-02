@@ -26,10 +26,6 @@ export const foundationPages = [
     label: "Accessibility",
   },
   {
-    path: "/docs/foundations/localization",
-    label: "Localization",
-  },
-  {
     path: "/docs/foundations/radius",
     label: "Radius",
   },

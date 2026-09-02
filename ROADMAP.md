@@ -79,10 +79,12 @@ Scope:
 The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 1.0 uses the
 isolated `release/1.0` line and the following bounded sequence:
 
-1. complete the maintainer-run accessibility smoke in #143 against the exact candidate;
-2. finish stable documentation, governance, security, support, and migration work in #148;
-3. run the complete automated exact-candidate release gate in #150;
-4. publish and verify stable artifacts manually through #151 after explicit approval.
+1. finish stable documentation, governance, security, support, and migration work in #148;
+2. form the exact candidate in #150, run its complete automated gate, and lock its SHA and reviewed
+   deployment;
+3. complete the bounded maintainer-run accessibility smoke in #143 against that exact candidate;
+4. rerun the gate on the evidence-only commit and finalize the #150 release-readiness decision;
+5. publish and verify stable artifacts manually through #151 after explicit approval.
 
 The broader real-device and assistive-technology matrix from #143 and the external-consumer cycle
 in #146 continue after stable publication. They may produce patch or 1.1 follow-up work, but missing
@@ -104,23 +106,23 @@ roadmap method.
 
 ### Core 1.1 shared contract
 
-<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341 -->
+<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341,#151 -->
 
-- #342 establishes the minimum inherited direction, RTL, locale, and localization contract on
-  `dev`; it stays outside the isolated stable 1.0 candidate.
+- #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
+  stable 1.0.
 - The full #342 audit continues as a parallel shared track. A direction-sensitive component API
   waits only for the relevant accepted contract, not for the complete cross-repository audit.
 
 ### Core 1.1 primitive parity
 
-<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#341,#342 -->
+<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#151,#341,#342 -->
 
 After the relevant #342 foundation, these may proceed in parallel:
 
-- #343 — Accordion and Collapsible (complete on `dev`);
-- #344 — additive compound Dialog anatomy and AlertDialog (complete on `dev`);
-- #345 — bounded single-select Combobox (complete on `dev`);
-- #346 — SearchField (complete on `dev`);
+- #343 — Accordion and Collapsible;
+- #344 — additive compound Dialog anatomy and AlertDialog;
+- #345 — bounded single-select Combobox;
+- #346 — SearchField;
 - #347 — OTPField;
 - #370 — NumberField, split from #346.
 

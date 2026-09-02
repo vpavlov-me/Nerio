@@ -50,14 +50,6 @@ export const foundationPageMetadata = [
     aliases: [],
   },
   {
-    path: "/docs/foundations/localization",
-    label: "Localization",
-    title: "Direction and localization",
-    description:
-      "Configure LTR and RTL behavior, deterministic locale-sensitive output, and overridable Core labels in Nerio.",
-    aliases: [],
-  },
-  {
     path: "/docs/foundations/radius",
     label: "Radius",
     title: "Radius",

@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/cli",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Nerio source registry command-line tools.",
   "keywords": [
     "nerio",

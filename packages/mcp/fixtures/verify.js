@@ -281,43 +281,6 @@ async function verify() {
       );
     }
 
-    const comboboxUsageResult = await client.callTool({
-      name: "get_component_usage",
-      arguments: { name: "combobox" },
-    });
-    const comboboxUsage = JSON.parse(comboboxUsageResult.content[0].text);
-    if (
-      !comboboxUsage.baseUiPrimitives.includes("combobox") ||
-      !comboboxUsage.registryDependencies.includes("spinner") ||
-      !comboboxUsage.slots.includes("loading") ||
-      !comboboxUsage.states.includes("read-only") ||
-      !comboboxUsage.accessibility.some((item) => item.includes("independent controlled")) ||
-      !comboboxUsage.accessibility.some((item) => item.includes("Fetching"))
-    ) {
-      throw new Error(
-        "MCP Combobox usage is missing state ownership, presentation, or consumer boundaries.",
-      );
-    }
-
-    const searchFieldUsageResult = await client.callTool({
-      name: "get_component_usage",
-      arguments: { name: "search-field" },
-    });
-    const searchFieldUsage = JSON.parse(searchFieldUsageResult.content[0].text);
-    if (
-      searchFieldUsage.baseUiPrimitives.length !== 0 ||
-      !searchFieldUsage.registryDependencies.includes("input-group") ||
-      !searchFieldUsage.slots.includes("clear") ||
-      !searchFieldUsage.slots.includes("loading") ||
-      !searchFieldUsage.states.includes("read-only") ||
-      !searchFieldUsage.accessibility.some((item) => item.includes("restores focus")) ||
-      !searchFieldUsage.accessibility.some((item) => item.includes("Results"))
-    ) {
-      throw new Error(
-        "MCP SearchField usage is missing native state, focus, presentation, or consumer boundaries.",
-      );
-    }
-
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },
@@ -724,56 +687,6 @@ async function verify() {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
     }
 
-    const collapsibleUsageResult = await client.callTool({
-      name: "get_component_usage",
-      arguments: { name: "collapsible" },
-    });
-    const collapsibleUsage = JSON.parse(collapsibleUsageResult.content[0].text);
-    assertRegistryParity("collapsible", collapsibleUsage, [
-      "components/collapsible.tsx",
-      "lib/cn.ts",
-      "lib/component-props.ts",
-      "lib/tailwind-cn.ts",
-      "styles/tailwind.css",
-      "styles/tokens.css",
-    ]);
-    if (
-      !collapsibleUsage.baseUiPrimitives.includes("collapsible") ||
-      !collapsibleUsage.slots.includes("panel") ||
-      !collapsibleUsage.states.includes("open") ||
-      !collapsibleUsage.requiredTokens.includes("--n-disclosure-trigger-min-height") ||
-      !collapsibleUsage.accessibility.some((item) => item.includes("native details"))
-    ) {
-      throw new Error(
-        "MCP Collapsible usage is missing Base UI, anatomy, token, or native guidance.",
-      );
-    }
-
-    const accordionUsageResult = await client.callTool({
-      name: "get_component_usage",
-      arguments: { name: "accordion" },
-    });
-    const accordionUsage = JSON.parse(accordionUsageResult.content[0].text);
-    assertRegistryParity("accordion", accordionUsage, [
-      "components/accordion.tsx",
-      "lib/cn.ts",
-      "lib/component-props.ts",
-      "lib/tailwind-cn.ts",
-      "styles/tailwind.css",
-      "styles/tokens.css",
-    ]);
-    if (
-      !accordionUsage.baseUiPrimitives.includes("accordion") ||
-      !accordionUsage.slots.includes("header") ||
-      !accordionUsage.variants.includes("multiple expansion") ||
-      !accordionUsage.requiredTokens.includes("--n-disclosure-divider") ||
-      !accordionUsage.accessibility.some((item) => item.includes("stable string value"))
-    ) {
-      throw new Error(
-        "MCP Accordion usage is missing grouped state, anatomy, token, or value metadata.",
-      );
-    }
-
     const breadcrumbsUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "breadcrumbs" },
@@ -816,21 +729,6 @@ async function verify() {
       )
     ) {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
-    }
-
-    const alertDialogUsageResult = await client.callTool({
-      name: "get_component_usage",
-      arguments: { name: "alert-dialog" },
-    });
-    const alertDialogUsage = JSON.parse(alertDialogUsageResult.content[0].text);
-    if (
-      !alertDialogUsage.registryDependencies.includes("dialog") ||
-      !alertDialogUsage.baseUiPrimitives.includes("alert-dialog") ||
-      !alertDialogUsage.slots.includes("cancel") ||
-      !alertDialogUsage.slots.includes("action") ||
-      !alertDialogUsage.accessibility.some((item) => item.includes("pointer dismissal disabled"))
-    ) {
-      throw new Error("MCP AlertDialog usage is missing its response or dismissal contract.");
     }
 
     const sheetUsageResult = await client.callTool({
@@ -973,10 +871,8 @@ async function verify() {
       "motion-adapter",
       "button-group",
       "dialog",
-      "alert-dialog",
       "sheet",
       "select",
-      "search-field",
       "tabs",
       "toast",
       "input",

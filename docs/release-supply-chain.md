@@ -44,7 +44,7 @@ intentionally have neither credentials nor publish authority.
 ## SBOM
 
 `pnpm generate:sbom --candidate <sha>` creates a deterministic CycloneDX 1.5 record for
-`@nerio-ui/tokens`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/ui`, `@nerio-ui/cli`,
+`@nerio-ui/tokens`, `@nerio-ui/adapters`, `@nerio-ui/ui`, `@nerio-ui/registry`, `@nerio-ui/cli`,
 and `@nerio-ui/mcp`, plus their declared runtime and peer relationships. The candidate SHA is
 recorded at metadata and package-component level.
 

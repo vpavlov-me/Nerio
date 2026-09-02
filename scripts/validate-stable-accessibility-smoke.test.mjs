@@ -22,7 +22,7 @@ function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
 }
 
-const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+const coordinatedPackages = ["tokens", "adapters", "ui", "registry", "cli", "mcp"];
 
 function withRecord(record, callback, release = {}) {
   const directory = mkdtempSync(resolve(tmpdir(), "nerio-stable-smoke-"));

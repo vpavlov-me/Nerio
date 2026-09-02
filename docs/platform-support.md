@@ -33,7 +33,7 @@ minimums and at the exact current versions recorded in `quality/dependency-suppo
 ## Browser baseline
 
 The pinned Playwright 1.62.1 gate verifies Chromium `151+`, Firefox `153+`, and WebKit `26.5+`. These are the
-minimum engine lines with automated release evidence for this beta. Patch releases within those
+minimum engine lines with automated release evidence for the prepared candidate. Patch releases within those
 lines and newer evergreen releases are supported; legacy engines and Internet Explorer are not.
 
 The compact cross-engine suite covers documentation and docs-local Template routes, keyboard focus, modal focus
@@ -44,8 +44,9 @@ component-family matrix remains on Chromium to avoid multiplying equivalent cove
 Working-branch pull requests into `dev` use `pnpm test:browser:pr` only for runtime or interactive
 documentation changes. That focused Chromium smoke covers page health, an overlay, a representative
 form, a responsive product composition, mobile navigation, RTL with reduced motion, and DatePicker.
-It is fast feedback, not cross-engine release evidence. Every `dev -> main` release candidate runs
-the complete Chromium suite plus the focused Firefox and WebKit projects in separate jobs.
+It is fast feedback, not cross-engine release evidence. Every approved release-line pull request
+into `main` runs the complete Chromium suite plus the focused Firefox and WebKit projects in
+separate jobs.
 
 ## Known platform limitations
 
@@ -69,8 +70,10 @@ the complete Chromium suite plus the focused Firefox and WebKit projects in sepa
 
 ## Operating-system and assistive-technology scope
 
-The `dev -> main` release gate runs Linux browser engines and the release workflow is also exercised
+The approved release-line gate runs Linux browser engines and the release workflow is also exercised
 locally on macOS. Development pull requests do not claim cross-engine release evidence. Windows and
 mobile operating systems are supported through evergreen browser behavior but do not yet have a
-dedicated native CI runner. VoiceOver, NVDA, JAWS, TalkBack, real iOS safe areas, and platform zoom
-remain manual evidence; any confirmed blocker is release-blocking even when automated tests pass.
+dedicated native CI runner. Stable publication requires the bounded maintainer smoke across
+Safari/VoiceOver, Chromium keyboard navigation, zoom/reflow/contrast, and physical mobile touch.
+The broader VoiceOver, NVDA, JAWS, TalkBack, native safe-area, and platform zoom matrix continues
+after release; any confirmed blocker found before publication still stops the release.

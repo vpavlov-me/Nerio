@@ -1,19 +1,19 @@
 {
-  "coreVersion": "1.0.0-beta.1",
-  "channel": "beta",
-  "registryVersion": "1.0.0-beta.1",
-  "registrySourceRevision": "v1.0.0-beta.1",
+  "coreVersion": "1.0.0",
+  "channel": "stable",
+  "registryVersion": "1.0.0",
+  "registrySourceRevision": "v1.0.0",
   "packages": [
     "@nerio-ui/tokens",
     "@nerio-ui/adapters",
-    "@nerio-ui/registry",
     "@nerio-ui/ui",
+    "@nerio-ui/registry",
     "@nerio-ui/cli",
     "@nerio-ui/mcp"
   ],
   "defaultDistTag": "latest",
-  "protectedDistTags": ["alpha"],
-  "docsStatusLabel": "Published beta.1",
-  "publicInstallationVersion": "1.0.0-beta.1",
-  "migrationTarget": "1.0.0-beta.1"
+  "protectedDistTags": ["alpha", "beta"],
+  "docsStatusLabel": "Prepared stable 1.0 candidate",
+  "publicInstallationVersion": "1.0.0",
+  "migrationTarget": "1.0.0"
 }

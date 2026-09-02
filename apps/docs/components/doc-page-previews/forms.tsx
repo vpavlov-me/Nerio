@@ -2,7 +2,6 @@
 
 import {
   Checkbox,
-  Combobox,
   Field,
   FileInput,
   FormGroup,
@@ -15,7 +14,6 @@ import {
   LabelRow,
   RadioGroup,
   RadioGroupItem,
-  SearchField,
   Select,
   Switch,
   Textarea,
@@ -148,37 +146,6 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
               { label: "Archived", value: "archived", disabled: true },
             ]}
           />
-        </div>
-      ) : null}
-      {kind === "combobox" ? (
-        <div className="form-preview-stack">
-          <Combobox
-            label="City"
-            name="city"
-            description="Filter the supported destinations and choose one value."
-            options={[
-              { value: "paris", label: "Paris", textValue: "Paris" },
-              { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
-              { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
-              {
-                value: "unavailable",
-                label: "Unavailable",
-                textValue: "Unavailable",
-                disabled: true,
-              },
-            ]}
-          />
-        </div>
-      ) : null}
-      {kind === "search-field" ? (
-        <div className="form-preview-stack">
-          <SearchField
-            label="Search projects"
-            name="query"
-            defaultValue="Roadmap"
-            description="Submit one query; results and requests stay in the product."
-          />
-          <SearchField label="Search activity" loading loadingLabel="Searching activity" />
         </div>
       ) : null}
     </PreviewFrame>

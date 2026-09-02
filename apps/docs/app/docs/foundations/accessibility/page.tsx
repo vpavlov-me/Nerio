@@ -82,7 +82,7 @@ const resilienceRows = [
   ],
   [
     "Direction and locale",
-    "Set document direction and the matching Base UI DirectionProvider intentionally. Test direction-sensitive layout and keyboard behavior in RTL; keep language, locale, direction, and product formatting as separate decisions.",
+    "Set or inherit the document direction intentionally. Test direction-sensitive layout and keyboard behavior in RTL; keep language, locale, direction, and product formatting as separate decisions.",
   ],
   [
     "Viewport edges",
@@ -268,8 +268,9 @@ export default function Page() {
           </Table>
         </TableContainer>
         <p>
-          See the <a href="/docs/foundations/localization">Localization foundation</a> for the
-          direction provider, locale-sensitive output, and Core label boundary.
+          Consumer applications own translation catalogs, routing, product copy, currencies, time
+          zones, and domain formatting. Component pages document the stable localizable labels and
+          direction-sensitive behavior that Core owns.
         </p>
       </section>
 

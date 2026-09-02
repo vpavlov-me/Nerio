@@ -13,9 +13,6 @@ const FormsPreview = dynamic(() =>
 const OverlaysPreview = dynamic(() =>
   import("./doc-page-previews/overlays").then((module) => module.OverlaysPreview),
 );
-const AlertDialogPreview = dynamic(() =>
-  import("./doc-page-previews/alert-dialog").then((module) => module.AlertDialogPreview),
-);
 
 const previewRegistry = {
   button: DisplayPreview,
@@ -48,11 +45,7 @@ const previewRegistry = {
   "radio-group": FormsPreview,
   switch: FormsPreview,
   select: FormsPreview,
-  combobox: FormsPreview,
-  "search-field": FormsPreview,
   dialog: OverlaysPreview,
-  "alert-dialog": AlertDialogPreview,
-  "alert-dialog-confirmation": AlertDialogPreview,
   sheet: OverlaysPreview,
   toast: OverlaysPreview,
   tabs: OverlaysPreview,

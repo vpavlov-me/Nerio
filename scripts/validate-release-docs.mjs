@@ -34,6 +34,8 @@ const requiredReleaseCommands = [
   "pnpm typecheck",
   "pnpm test:branch-policy",
   "pnpm test:ci-scopes",
+  "pnpm test:repo-artifacts",
+  "pnpm validate:repo-artifacts",
   "pnpm test:ui",
   "pnpm test:a11y",
   "pnpm test:catalog",

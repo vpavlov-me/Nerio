@@ -45,6 +45,28 @@ test("requires the production dependency audit in the release gate", () => {
   );
 });
 
+test("requires the repository artifact guard in the development gate", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate.replace("      - run: pnpm validate:repo-artifacts\n", "");
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: missing pnpm validate:repo-artifacts`,
+    ),
+  );
+});
+
+test("retains the route bundle diagnostic from the existing docs build", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate.replace(
+    "docs-route-bundle-report-${{ github.event.pull_request.head.sha }}",
+    "missing-route-report-artifact",
+  );
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: missing docs-route-bundle-report-\${{ github.event.pull_request.head.sha }}`,
+    ),
+  );
+});
 test("keeps each workflow on its intended pull-request base", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate = sources.prGate.replace("      - dev", "      - main");

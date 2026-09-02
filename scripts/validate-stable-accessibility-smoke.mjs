@@ -61,7 +61,7 @@ const allowedPostCandidateEvidencePaths = new Set([
   "docs/audits/core-1-0-stable-accessibility-smoke.md",
   "quality/stable-accessibility-smoke.json",
 ]);
-const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+const coordinatedPackages = ["tokens", "adapters", "ui", "registry", "cli", "mcp"];
 const macHardwareQualifierSource =
   "(?:M\\d+(?:\\s+(?:Max|Pro|Ultra))?|Retina\\s+\\dK|\\d{2,4}(?:-inch)?|Late\\s+\\d{4}|Pro|with(?:out)?\\s+Touch\\s+Bar)";
 const macDeviceFamilyPattern = new RegExp(

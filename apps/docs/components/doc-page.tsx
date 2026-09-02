@@ -153,10 +153,11 @@ export function StandardDocPage({
           component-specific contract. Use the{" "}
           <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> for shared
           density, wrapping, overflow, reflow, and component-versus-product ownership guidance. The{" "}
-          <a href="/docs/foundations/color">Color foundation</a>,{" "}
-          <a href="/docs/foundations/typography">Typography foundation</a>, and{" "}
-          <a href="/docs/foundations/localization">Localization foundation</a> define the shared
-          visual-role, text-resilience, direction, and locale boundaries used by component examples.
+          <a href="/docs/foundations/color">Color foundation</a> and{" "}
+          <a href="/docs/foundations/typography">Typography foundation</a> define the shared
+          visual-role and text-resilience boundaries used by component examples. Component pages
+          document any direction-sensitive or localizable behavior that belongs to their stable
+          contract.
         </p>
       </section>
       <section className="doc-section">
@@ -374,7 +375,6 @@ const relatedFoundationRoutes: Record<string, string> = {
   Effects: "/docs/foundations/effects",
   Heading: "/docs/foundations/typography",
   "Icon Adapter": "/docs/foundations/icons",
-  Localization: "/docs/foundations/localization",
   Motion: "/docs/foundations/motion",
   Radius: "/docs/foundations/radius",
   "Spacing & layout": "/docs/foundations/spacing-layout",
