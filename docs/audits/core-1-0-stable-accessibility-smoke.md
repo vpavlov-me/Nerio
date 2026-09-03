@@ -17,13 +17,17 @@ against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployme
 `0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
 
 The observations carry forward to final source candidate
-`c47a3e72ad58543a7030124a89086ca0f83b7b3c` and deployment
-<https://nerio-usevcn7bs-dquality.vercel.app>. The explicit
-[carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277)
-confirms that the intervening diff changes no package, component, Registry payload, CLI/MCP runtime,
-CSS, public API metadata, browser fixture, audited interaction, or shared documentation behavior.
-The one deployable docs route changes only static migration wording and issue links. This record does
-not claim that the maintainer repeated the manual smoke.
+`9aec2b3200a3b3d95f96bd728dd96ae5e5a17bdb` and deployment
+<https://nerio-298vziq8o-dquality.vercel.app>. The explicit
+[final carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241),
+building on the
+[previous review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277), confirms
+that the intervening changes include only the prior evidence relock plus static documentation and
+docs-validator corrections that assign the broader post-release audit to #585. They change no
+package, component, Registry payload, CLI/MCP runtime, token, CSS, public API metadata, browser
+fixture, or audited interaction. The only deployable TSX change is static Accessibility Foundation
+copy and issue links; it adds no import, state, interaction, or style change. This record does not
+claim that the maintainer repeated the manual smoke.
 
 ## Required environments
 
