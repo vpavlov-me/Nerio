@@ -9,6 +9,22 @@ The canonical machine-readable record is
 [#143](https://github.com/vpavlov-me/Nerio/issues/143) owns the exact candidate, evidence, findings,
 and final release decision.
 
+## Recorded result
+
+The maintainer completed all four environment groups and all six scenario groups with no finding
+against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployment
+<https://nerio-mbwxunoxu-dquality.vercel.app>. Those observations were recorded in evidence commit
+`0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
+
+The observations carry forward to final source candidate
+`c47a3e72ad58543a7030124a89086ca0f83b7b3c` and deployment
+<https://nerio-usevcn7bs-dquality.vercel.app>. The explicit
+[carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277)
+confirms that the intervening diff changes no package, component, Registry payload, CLI/MCP runtime,
+CSS, public API metadata, browser fixture, audited interaction, or shared documentation behavior.
+The one deployable docs route changes only static migration wording and issue links. This record does
+not claim that the maintainer repeated the manual smoke.
+
 ## Required environments
 
 Run the smoke against one locked candidate and deployment:
@@ -87,4 +103,4 @@ pnpm validate:stable-accessibility-smoke
 pnpm validate:stable-accessibility-smoke --expect-pass
 ```
 
-The last command is intentionally expected to fail while evidence remains pending.
+The final command must pass for a stable release decision; the current completed record passes it.
