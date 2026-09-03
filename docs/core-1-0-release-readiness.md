@@ -1,94 +1,354 @@
 # Core 1.0 release readiness
 
-This candidate-bound record is finalized only after the stable source candidate is locked. It
-prepares the evidence and manual publication plan for issue
-[#150](https://github.com/vpavlov-me/Nerio/issues/150); it never publishes packages, moves npm
-dist-tags, merges the release pull request, creates `v1.0.0`, or creates a GitHub Release.
+This record documents the final candidate-bound preparation tracked by
+[#150](https://github.com/vpavlov-me/Nerio/issues/150). It does not publish packages, move npm
+dist-tags, merge the release pull request, create `v1.0.0`, or create a GitHub Release. Those actions
+remain separately approved work in [#151](https://github.com/vpavlov-me/Nerio/issues/151).
 
 ## Decision
 
-**Pending exact candidate evidence.**
+**Ready for separately approved manual `1.0.0` release.**
 
-Replace this decision only after the exact source candidate, reviewed deployment, bounded human
-smoke, complete release gate, and evidence-only head are recorded and independently verified.
+The decision applies to source candidate
+`b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169` plus the allowlisted evidence commits described below.
+It authorizes no merge or public release mutation.
 
 ## Candidate identity
 
-- Candidate source commit: pending final lock.
-- Evidence-only head: pending final evidence commit.
-- Approved base: `origin/main` at release-line creation.
-- Release line: `release/1.0`.
-- Release pull request: [#584](https://github.com/vpavlov-me/Nerio/pull/584).
-- Reviewed deployment: pending final lock.
+| Field                            | Exact identity                                                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Release line                     | `release/1.0`                                                                                                      |
+| Release pull request             | [#584](https://github.com/vpavlov-me/Nerio/pull/584)                                                               |
+| Approved base                    | `031fecd546b2122faf8a5ec92e17bc743dca9729` (`origin/main`)                                                         |
+| Original manual-smoke candidate  | `da3923f38f91f38b77f890ad28e043ab16f45fe1`                                                                         |
+| Original manual-smoke deployment | <https://nerio-mbwxunoxu-dquality.vercel.app>                                                                      |
+| Source candidate                 | `b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169`                                                                         |
+| Source ancestry                  | The approved base is an ancestor; the source candidate is 13 commits ahead and 0 behind                            |
+| Source-candidate deployment      | <https://nerio-nzbqpmdwb-dquality.vercel.app>                                                                      |
+| Pre-report evidence commit       | `1f69c76ea105625714f3cae538ec2a07a7a2e3a9`                                                                         |
+| Pre-report evidence deployment   | <https://nerio-n7c7nxqyc-dquality.vercel.app>                                                                      |
+| Pre-report release workflow      | [run 33796344434](https://github.com/vpavlov-me/Nerio/actions/runs/33796344434)                                    |
+| Pre-report branch policy         | [run 33796344405](https://github.com/vpavlov-me/Nerio/actions/runs/33796344405)                                    |
+| Pre-report Vercel record         | [deployment DX3wU3MNjuo2FT2twcqAxq1tXxVr](https://vercel.com/dquality/nerio/DX3wU3MNjuo2FT2twcqAxq1tXxVr)          |
+| Terminal release head            | The commit containing this report; its exact SHA and final CI evidence are recorded externally in #150 and PR #584 |
 
-The release commit may add only the three allowlisted evidence artifacts after the source candidate.
-Any other changed path invalidates the lock and requires a new candidate plus an explicit evidence
-refresh or documented non-runtime carry-forward.
+The pre-report evidence workflow completed all 13 jobs successfully, including exact-candidate
+ownership, quality, package and tool contracts, three consumer profiles, Chromium, Firefox, WebKit,
+visual regression, strict human evidence, and the aggregate Release gate. Vercel reported `READY`
+for the same evidence SHA. GitHub verifies the SSH signature on every pull-request commit through
+the pre-report evidence commit, every commit carries DCO sign-off, the pull request is mergeable,
+and it has zero unresolved review threads.
+
+An earlier evidence attempt on `347fc14d9306226cf22f7184e98114366c7afcda` exposed a real
+time-of-check/time-of-use race in CLI stale Registry lock cleanup. A successful failed-job rerun was
+not accepted as sufficient evidence. The race was reproduced, fixed in source candidate
+`b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169`, and covered by a deterministic fixture that forces a
+candidate to disappear after `lstat`. Only post-`lstat` `ENOENT` is treated as a concurrent cleanup;
+other filesystem errors still fail. Repeated local CLI fixtures and the source-candidate and
+pre-report tool-contract jobs all passed after the fix.
+
+The candidate-bound pre-report evidence artifacts are:
+
+- [exact candidate identity](https://github.com/vpavlov-me/Nerio/actions/runs/33796344434/artifacts/9909302213);
+- [CycloneDX SBOM](https://github.com/vpavlov-me/Nerio/actions/runs/33796344434/artifacts/9909323749),
+  covering all six public packages and 19 components;
+- [documentation route-bundle report](https://github.com/vpavlov-me/Nerio/actions/runs/33796344434/artifacts/9909405897).
+
+The reproduced SBOM payload SHA-256 is
+`3cb55b8fbf61a986ab2ff1d6e5815e747de54328131b206b046348ea91dfc5d9`.
+
+Within the source-candidate release workflow
+[33795370746](https://github.com/vpavlov-me/Nerio/actions/runs/33795370746), all 11
+non-human-evidence, non-aggregate jobs completed successfully. Its strict human-evidence job and
+aggregate failed only because the checked-in record still identified the prior candidate; the
+pre-report evidence commit relocked that record after an explicit scoped carry-forward. This report
+relies on the exact job results rather than presenting that workflow as an overall pass.
+
+After the source candidate, the release line permits changes only to:
+
+- `quality/stable-accessibility-smoke.json`;
+- `docs/audits/core-1-0-stable-accessibility-smoke.md`;
+- `docs/core-1-0-release-readiness.md`.
+
+The pre-report evidence commit changes the first two paths. The commit containing this report is the
+terminal third evidence change. A Git commit cannot embed its own future SHA or workflow result;
+therefore #150 and PR #584 record that terminal SHA, signature, deployment, and green workflow after
+this file is committed and CI completes. Publication must use that exact terminal release head. Any
+other changed path invalidates the candidate lock.
 
 ## Scope and contract
 
-- Version: coordinated Nerio Core `1.0.0`.
-- Frozen public API baseline: `core-1.0`, protected by the approved snapshot and hash.
-- Stable Registry inventory: 46 source-first foundation and component items.
-- Post-1.0 components, recipes, Pro, templates, ecosystem, and adoption work on `dev` remain outside
-  this release.
-- The exhaustive device/assistive-technology audit and external-consumer cohort continue after
-  stable publication in #585 and #146.
+The coordinated release identity is:
+
+- Core version and public installation target: `1.0.0`;
+- channel: `stable`;
+- frozen public API baseline: `core-1.0`;
+- Registry version: `1.0.0`;
+- immutable Registry source revision: `v1.0.0`;
+- Registry schema: `1.1.0`;
+- style contract: `tailwind-v1`;
+- documentation state: `Prepared stable 1.0 candidate`.
+
+The approved API snapshot SHA-256 is
+`909cb70fa47e23596e158974f82915165820d5c481599d289ab65893f633b58f`. The stable Registry contains
+46 foundation and component items; its raw manifest SHA-256 is
+`f9f1575cc6d444e13cb79de8150af9bb9147c5417a4adcc64a38ceac7b9582b0`, and every distributed source
+file has its own SHA-256 integrity entry.
+
+The six coordinated public artifacts, all prepared at `1.0.0`, are:
+
+1. `@nerio-ui/tokens`;
+2. `@nerio-ui/adapters`;
+3. `@nerio-ui/ui`;
+4. `@nerio-ui/registry`;
+5. `@nerio-ui/cli`;
+6. `@nerio-ui/mcp`.
+
+Core 1.1 components, recipes, Pro, templates, ecosystem work, and unrelated development changes stay
+on `dev` and outside this release.
 
 ## Package, Registry, and supply-chain evidence
 
-The coordinated public artifacts are `@nerio-ui/tokens`, `@nerio-ui/adapters`, `@nerio-ui/ui`,
-`@nerio-ui/registry`, `@nerio-ui/cli`, and `@nerio-ui/mcp`, all prepared at `1.0.0`. The Registry is
-version `1.0.0`, immutable source revision `v1.0.0`, schema `1.1.0`, and style contract
-`tailwind-v1`; every source file carries SHA-256 integrity metadata.
+The pre-report evidence workflow measured and passed these package and CSS budgets:
 
-The final report records the exact candidate-bound SBOM, production audit, package-budget, packed
-manifest, public-manifest, DCO, signature, pinned-Action, and branch-policy results. Publication
-remains credential-free and absent from repository CI.
+| Artifact                      |  Measured |     Limit |
+| ----------------------------- | --------: | --------: |
+| `@nerio-ui/tokens` tarball    |  13,483 B |  15,000 B |
+| `@nerio-ui/tokens` unpacked   |  86,389 B | 100,000 B |
+| `@nerio-ui/adapters` tarball  |   4,444 B |   5,000 B |
+| `@nerio-ui/adapters` unpacked |  10,774 B |  30,000 B |
+| `@nerio-ui/ui` tarball        |  65,881 B |  67,000 B |
+| `@nerio-ui/ui` unpacked       | 328,607 B | 500,000 B |
+| `@nerio-ui/registry` tarball  |  30,621 B |  31,000 B |
+| `@nerio-ui/registry` unpacked | 179,335 B | 250,000 B |
+| `@nerio-ui/cli` tarball       |  19,403 B |  20,000 B |
+| `@nerio-ui/cli` unpacked      |  81,027 B |  82,000 B |
+| `@nerio-ui/mcp` tarball       |   3,671 B |   4,000 B |
+| `@nerio-ui/mcp` unpacked      |   9,944 B |  30,000 B |
+| Token CSS, raw                |  79,688 B |  83,000 B |
+| Token CSS, gzip               |  10,744 B |  11,500 B |
+| UI residual CSS, raw          |   4,039 B |   5,000 B |
+| UI residual CSS, gzip         |     818 B |   3,000 B |
+
+Named-import budgets also passed: server Card 3,880/20,000 B, client Button 13,386/50,000 B,
+Search icon 2,292/10,000 B, and every adapter entry remained below its assigned 1,000 B or 8,000 B
+ceiling.
+
+The release workflow passed packed-manifest and contents inspection for all six packages, public
+manifest validation without workspace protocols, export and dependency boundaries, Registry
+identity and transaction contracts, CLI and MCP schemas and startup, optional-peer isolation,
+production audit, pinned Actions, minimum workflow permissions, DCO, and candidate-bound SBOM
+validation. Repository automation contains no npm publication credential and performs no package,
+dist-tag, Git tag, or GitHub Release mutation.
 
 ## Consumer and migration evidence
 
-The final report records minimum and current Node 22 consumers, the current Node 24 consumer, the
-maintained Vite fixture, package and source installation, CLI lifecycle, MCP structured output, and
-the `1.0.0-beta.1` to `1.0.0` migration. Package-qualified `pnpm dlx` checks remain post-publication
-because the stable packages do not yet exist on npm.
+The release workflow passed isolated consumers for Node 22 minimum, Node 22 current, and Node 24
+current profiles. Coverage includes package and editable-source modes, both supported Preflight
+setups, the maintained Vite fixture, server/client entrypoints, tokens, styles, components,
+adapters, Registry, CLI, and MCP.
+
+A separate disposable consumer reproduced a real public `1.0.0-beta.1` to locally packed `1.0.0`
+migration against the source candidate. It used Node 24.18.0, pnpm 11.19.0, React 19.2.8, Next.js
+16.2.12, TypeScript 5.9.3, and Tailwind CSS 4.3.3.
+
+All six stable tarballs were packed while repository HEAD was exactly
+`b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169`. The packed CLI `src/index.js` SHA-256,
+`b2f7595b9ed36d532bf091d0ffb3cb38734453236336bffa306d86a98a2e63e4`, matched that source commit.
+
+The beta phase installed all six public beta packages, exercised CLI init/list/info/add/doctor/diff
+and update dry-run, source-installed 22 requested and 27 resolved items, passed the published-beta
+MCP fixture and typecheck, and produced a clean Next.js production build. The initial `doctor` run
+failed because the source consumer did not yet declare its required direct dependencies. After
+installing `@base-ui/react@1.6.0`, `clsx@2.1.1`, and `tailwind-merge@3.6.0`, `doctor` passed.
+
+The stable phase replaced all six packages in one operation with local `1.0.0` tarballs, upgraded
+`@base-ui/react` from 1.6.0 to 1.7.0, and retained no workspace protocol. Before update, CLI diff
+reported the seven expected upstream changes in Item, Label, Select, Textarea, Toast, Tooltip, and
+`styles/tokens.css`. Update applied cleanly; the final diff and doctor were clean. The final lock uses
+top-level schema `1.0.0` and Nerio version `1.0.0`, with embedded Registry schema `1.1.0`, Registry
+version `1.0.0`, source revision `v1.0.0`, and style contract `tailwind-v1`. The full MCP fixture,
+typecheck, clean production build, and complete CLI fixture including the multi-contender cleanup
+race passed, with no temporary Registry lock or transaction artifact left behind.
+
+Package-qualified stable `pnpm dlx` and public provenance remain #151 checks because `1.0.0` is not
+yet published.
 
 ## Browser, visual, performance, and human evidence
 
-The final report records Chromium, Firefox, WebKit, visual regression, route budgets, package
-budgets, and the bounded maintainer smoke. Automated checks do not substitute for the human smoke.
-The larger real-device and external-consumer programs remain truthful post-release follow-ups.
+The browser, visual, performance, and route-budget jobs passed on both the source-candidate and
+pre-report evidence SHAs over identical product runtime content:
+
+| Gate                               | Source candidate | Evidence commit |
+| ---------------------------------- | ---------------: | --------------: |
+| Chromium                           |          110/110 |         110/110 |
+| Firefox                            |            17/17 |           17/17 |
+| WebKit                             |            17/17 |           17/17 |
+| Visual regression                  |            22/22 |           22/22 |
+| Documentation route budgets        |              9/9 |             9/9 |
+| Performance subset inside Chromium |            10/10 |           10/10 |
+
+The two Linux workflows are independent single-pass browser matrices, not one
+`--repeat-each=2` invocation. Together they record 288 successful cross-engine executions over
+identical runtime content, including 34 Firefox executions. The relaxed stable gate accepts those two
+independent candidate-bound passes as sufficient cross-engine confirmation.
+
+The local `pnpm test:browser:repeat` command did not pass as a complete gate. It produced 254
+successful Chromium and WebKit repeat executions, while Firefox was initially unavailable. After
+Firefox installation, its processes still could not reach a Nerio page or assertion on macOS 27
+because of the upstream Playwright 1.62.1 sandbox failure documented in
+[microsoft/playwright#42082](https://github.com/microsoft/playwright/issues/42082). That local run is
+diagnostic evidence only and is not counted as a successful release gate.
+
+The bounded human smoke records four passing environment groups and six passing scenario groups
+with no findings:
+
+- MacBook Air M4, macOS 27.0, Safari 27.0, and VoiceOver;
+- MacBook Air M4, macOS 27.0, Chrome 152.0.7977.65, keyboard-only navigation;
+- 200% and 400% zoom/reflow plus macOS Increase Contrast, checked in Safari and Chrome;
+- physical iPhone 15 with touch navigation in Safari, plus a physical Safari check on an iPad Air
+  5th generation from 2022.
+
+The six scenario groups cover documentation navigation, forms and native controls, overlays and
+focus restoration, Calendar and DatePicker, feedback and status behavior, and responsive touch,
+zoom, reflow, and contrast.
+
+The manual observations were originally performed on
+`da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployment
+<https://nerio-mbwxunoxu-dquality.vercel.app>. The explicit
+[final carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264),
+building on the
+[documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241) and
+[previous review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277), shows that
+changes through source candidate `b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169` include release
+evidence, static documentation ownership corrections, and the narrowly scoped CLI stale-lock race
+fix described above. The CLI transaction path is outside the human scenarios. No UI component,
+Registry payload, token, CSS, public API snapshot, docs layout, browser fixture, or audited
+interaction changed. This is a documented carry-forward, not a claim of a second manual run.
+
+Issue [#143](https://github.com/vpavlov-me/Nerio/issues/143) is closed; its bounded smoke decision is
+`release-ready`. The broader accessibility and device audit continues after stable in
+[#585](https://github.com/vpavlov-me/Nerio/issues/585), and the external-consumer program continues
+in [#146](https://github.com/vpavlov-me/Nerio/issues/146).
 
 ## Documentation and governance evidence
 
-The final report records stable installation, component, foundation, platform, migration, support,
-security, contribution, release, rollback, Registry, CLI, MCP, API, and AI-readable documentation.
-It also confirms that the docs, catalog, packages, Registry, commands, release metadata, and
-`llms.txt` agree.
+The candidate synchronizes installation, source-first setup, foundations, components, platform
+support, API stability, Registry, CLI, MCP, AI-readable metadata, migration, security, contribution,
+support, rollback, catalog, sitemap, search, and release policy. The complete gate validates docs
+examples, production build, route budgets, catalog/API/token contracts, package/source/MCP paths,
+and agreement between metadata, manifests, Registry, commands, and `llms.txt`.
+
+The stable public-foundation children #486, #487, #488, #489, and #492 are closed; #484 is merged.
+#490, #491, and #357 remain independent post-1.0 work. The mixed parent #485 can therefore close as
+the completed stable tranche without closing those forward issues. No known P0/P1 or accepted
+stable-blocking P2 remains.
+
+The prepared dated `1.0.0` changelog entry is candidate release content, not proof of publication.
+The authoritative public checks remain npm versions and dist-tags, the signed Git tag, and the
+GitHub Release, all of which are still absent.
 
 ## Known non-blocking limitations
 
 - Packages are source-first TypeScript; consumers must follow the documented transpilation,
-  Tailwind CSS v4 `@source`, token, style, and server/client entrypoint setup.
-- Maintained compatibility claims remain bounded to Node 22/24, React 19, TypeScript 5.9, Tailwind
-  CSS 4.1 within 4.x, the tested Next.js profiles, the maintained Vite fixture, and the documented
+  Tailwind CSS v4 `@source`, token, style, and server/client setup.
+- Maintained compatibility is bounded to Node 22/24, React 19, Next.js 16.2 within 16.x,
+  TypeScript 5.9, Tailwind CSS 4.1 within 4.x, the maintained Vite fixture, and the documented
   Chromium, Firefox, and WebKit floors.
-- The broader accessibility/device matrix and independent external-consumer cycle remain
-  post-release evidence. Findings will ship through focused patches or 1.1 work instead of mutating
-  the immutable `1.0.0` artifacts.
+- The disposable beta.1 migration covers one current Node 24 synthetic consumer. It does not cover
+  every consumer configuration, a locally conflicting source tree, or public stable resolution.
+- The local Firefox repeat is blocked by an upstream macOS 27 runner incompatibility. Two green
+  single-pass Linux candidate workflows provide the accepted independent Firefox coverage.
+- The broader device and assistive-technology matrix in #585 and the independent external-consumer
+  cycle in #146 are post-release programs.
+- Stable npm resolution, provenance, package-qualified `pnpm dlx`, dist-tags, signed release tag,
+  GitHub Release, and public stable documentation remain verification work for #151.
+- Post-release findings will ship through a focused patch or 1.1 work; published `1.0.0` artifacts
+  will not be mutated.
 
 ## Publication plan
 
-After separate maintainer approval, stage packages under the non-default `stable` tag in dependency
-order: tokens, adapters, UI, Registry, CLI, then MCP. Verify every package and the coordinated public
-consumer before moving only `latest`. Preserve protected `alpha` and `beta` tags. Create the signed
-`v1.0.0` tag and non-prerelease GitHub Release only after the six public artifacts are coherent.
+As checked on 2026-09-03, all six npm packages resolve `latest` and `beta` to `1.0.0-beta.1` and
+`alpha` to `0.1.0-alpha.2`. No public `1.0.0`, `stable` dist-tag, `v1.0.0` tag, or stable GitHub
+Release exists.
+
+After separate maintainer approval in #151:
+
+1. Confirm the exact terminal release head, its signature, clean checkout, and npm ownership without
+   printing credentials.
+2. Publish under the non-default `stable` tag in dependency order: tokens, adapters, UI, Registry,
+   CLI, then MCP. Verify version, contents, ownership, provenance, dependencies, and Registry
+   identity after every package; stop on the first mismatch.
+3. Run the exact-version public consumer, CLI, MCP, source, and migration smoke while `latest`
+   remains unchanged.
+4. Move only `latest` after all six coordinated artifacts pass. Confirm `stable` and `latest` both
+   resolve `1.0.0`, and preserve `alpha` and `beta`.
+5. Create the signed `v1.0.0` tag and non-prerelease GitHub Release only after the public package
+   graph is coherent.
+
+### GitHub Release draft
+
+- Title: `Nerio Core 1.0.0`
+- Tag: `v1.0.0`
+- Prerelease: no
+
+```markdown
+# Nerio Core 1.0.0
+
+Nerio Core 1.0.0 is the first stable release of Nerio's frozen, source-first Core contract.
+
+## Highlights
+
+- Six coordinated public packages: tokens, adapters, UI, Registry, CLI, and MCP.
+- A 46-item immutable source Registry with per-file SHA-256 integrity.
+- Tailwind CSS v4 source and package workflows with documented server/client boundaries.
+- Stable component, token, Registry, CLI, MCP, accessibility, and platform contracts.
+- Tested Next.js minimum/current consumers, the maintained Vite fixture, Chromium, Firefox,
+  WebKit, visual baselines, route budgets, and package budgets.
+
+## Install
+
+    pnpm add @nerio-ui/tokens@1.0.0 @nerio-ui/adapters@1.0.0 @nerio-ui/ui@1.0.0 tailwindcss
+    pnpm add -D @tailwindcss/postcss postcss
+    pnpm dlx @nerio-ui/cli@1.0.0 init
+
+Upgrade every Nerio package already used by a consumer together. For beta.1 migrations, run
+`nerio doctor`, inspect `nerio diff`, and use `nerio update --dry-run` before applying source
+updates.
+
+The wider assistive-technology/device audit and external-consumer cohort continue after release and
+may produce focused patch or 1.1 follow-ups.
+```
 
 ## Verification and rollback
 
-Issue [#151](https://github.com/vpavlov-me/Nerio/issues/151) owns credentialed publication and public
-verification. It must confirm npm metadata, provenance, dist-tags, immutable Registry identity,
-signed Git/GitHub release identity, stable docs, clean Next.js and Vite consumers, source lifecycle,
-CLI, MCP, migrations, and public commands from real artifacts. On partial or incorrect publication,
-stop, preserve the public state, restore safe tags when necessary, and publish a coordinated patch;
-never mutate the Registry, rewrite the stable tag, or reuse a bad version.
+Before publication, #151 must verify the exact terminal SHA and run:
+
+```bash
+pnpm install --frozen-lockfile
+NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release
+pnpm pack:check
+```
+
+After all six packages exist under `stable`, but before moving `latest`:
+
+```bash
+NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
+```
+
+Public verification must confirm every package version, dist-tag, provenance record, public tarball,
+dependency edge, Registry identity, CLI and MCP bin, stable docs route, signed tag, and GitHub Release
+target. It must also rerun clean Next.js and Vite consumers plus the documented source and migration
+lifecycle from real public artifacts.
+
+If publication becomes partial or incorrect:
+
+1. Stop immediately and record the exact public state.
+2. Do not reuse the affected version, mutate the Registry revision, or make a partial package graph
+   the default installation target.
+3. Keep or restore `latest` to the previous safe coordinated version when possible; preserve
+   protected `alpha` and `beta`.
+4. Prepare the next coordinated patch, stage and verify all six packages under `stable`, and move
+   `latest` only after the replacement graph passes.
+5. Deprecate a faulty version when appropriate; do not unpublish except for a critical security,
+   legal, or explicit maintainer decision.
