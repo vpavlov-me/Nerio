@@ -156,10 +156,59 @@ function completedRecord() {
   };
 }
 
-test("pending repository smoke record is valid without claiming completion", () => {
-  const result = run();
-  assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /evidence remains pending/);
+function pendingRecord() {
+  const record = completedRecord();
+  record.status = "evidence-pending";
+  Object.assign(record.candidate, {
+    commit: null,
+    deployment: null,
+    recordedAt: null,
+  });
+  for (const environment of record.environments) {
+    environment.result = "Pending";
+    environment.evidence = [];
+    for (const field of [
+      "operatingSystem",
+      "browser",
+      "assistiveTechnology",
+      "device",
+      "viewport",
+      "zoom",
+      "notes",
+    ]) {
+      environment[field] = null;
+    }
+    if (environment.id === "zoom-reflow-contrast") {
+      environment.operatingSystemFamily = null;
+      environment.operatingSystemVersion = null;
+      environment.zoomLevelsTested = null;
+      environment.increasedOrHighContrastEnabled = null;
+    }
+    if (environment.id === "mobile-touch") {
+      environment.deviceClass = null;
+      environment.physicalDeviceUsed = null;
+    }
+  }
+  for (const scenario of record.scenarios) {
+    scenario.result = "Pending";
+    scenario.evidence = [];
+    scenario.notes = null;
+  }
+  record.findings = [];
+  record.decision = {
+    recommendation: "pending",
+    recordedAt: null,
+    summary: "The scoped internal stable accessibility smoke has not yet run.",
+  };
+  return record;
+}
+
+test("pending smoke fixture is valid without claiming completion", () => {
+  withRecord(pendingRecord(), (target) => {
+    const result = run(["--record", target]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /evidence remains pending/);
+  });
 });
 
 test("pending evidence cannot pre-claim structured desktop, zoom, or contrast results", () => {
@@ -171,9 +220,7 @@ test("pending evidence cannot pre-claim structured desktop, zoom, or contrast re
     ["increasedOrHighContrastEnabled", [true, false, "true", undefined]],
   ]) {
     for (const value of values) {
-      const record = JSON.parse(
-        readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
-      );
+      const record = pendingRecord();
       record.environments.find(({ id }) => id === "zoom-reflow-contrast")[field] = value;
       withRecord(record, (target) => {
         const result = run(["--record", target]);
@@ -190,9 +237,7 @@ test("pending evidence cannot pre-claim structured physical mobile results", () 
     ["physicalDeviceUsed", [true, false, "true", undefined]],
   ]) {
     for (const value of values) {
-      const record = JSON.parse(
-        readFileSync(resolve(root, "quality/stable-accessibility-smoke.json"), "utf8"),
-      );
+      const record = pendingRecord();
       record.environments.find(({ id }) => id === "mobile-touch")[field] = value;
       withRecord(record, (target) => {
         const result = run(["--record", target]);
@@ -204,9 +249,11 @@ test("pending evidence cannot pre-claim structured physical mobile results", () 
 });
 
 test("strict validation rejects pending evidence", () => {
-  const result = run(["--expect-pass"]);
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /requires status "complete"/);
+  withRecord(pendingRecord(), (target, releaseMetadata, packagesRoot) => {
+    const result = run(strictArgs(target, releaseMetadata, packagesRoot));
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /requires status "complete"/);
+  });
 });
 
 test("strict validation accepts a complete scoped smoke", () => {
