@@ -11,10 +11,12 @@ The current public release remains `1.0.0-beta.1` from exact published `main` co
 The signed `v1.0.0-beta.1` tag and GitHub prerelease point to the exact publish candidate. Public
 metadata and a clean package/source, CLI, MCP, and Next.js consumer smoke passed after publication.
 
-The stable candidate still requires its bounded maintainer-run accessibility smoke, exact-candidate
-release gate, tarball inspection, and an explicit release-readiness decision. Every public release
-action remains manual and requires separate explicit maintainer approval. This document does not
-authorize publication, a dist-tag change, a tag, or a GitHub Release.
+The candidate-bound readiness record is maintained in
+[`docs/core-1-0-release-readiness.md`](./docs/core-1-0-release-readiness.md). It must record the
+bounded maintainer-run accessibility smoke, exact-candidate release gate, tarball inspection,
+known limitations, and exactly one explicit readiness decision. Every public release action remains
+manual and requires separate explicit maintainer approval. Neither that decision nor this document
+authorizes publication, a dist-tag change, a tag, or a GitHub Release.
 
 ## Release-candidate checks
 

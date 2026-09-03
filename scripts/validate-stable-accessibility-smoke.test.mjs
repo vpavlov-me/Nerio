@@ -5,6 +5,10 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import {
+  isPostCandidateEvidencePath,
+  postCandidateEvidencePaths,
+} from "./stable-accessibility-evidence-paths.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-stable-accessibility-smoke.mjs");
@@ -202,6 +206,17 @@ function pendingRecord() {
   };
   return record;
 }
+
+test("post-candidate changes stay limited to the three release evidence artifacts", () => {
+  assert.deepEqual(postCandidateEvidencePaths, [
+    "docs/audits/core-1-0-stable-accessibility-smoke.md",
+    "docs/core-1-0-release-readiness.md",
+    "quality/stable-accessibility-smoke.json",
+  ]);
+  assert.equal(isPostCandidateEvidencePath("docs/core-1-0-release-readiness.md"), true);
+  assert.equal(isPostCandidateEvidencePath("RELEASE.md"), false);
+  assert.equal(isPostCandidateEvidencePath("packages/ui/src/client.ts"), false);
+});
 
 test("pending smoke fixture is valid without claiming completion", () => {
   withRecord(pendingRecord(), (target) => {

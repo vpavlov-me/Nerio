@@ -7,9 +7,10 @@ credential, create a tag or GitHub Release, or move an npm dist-tag.
 
 Manual release-gate dispatch requires `candidate_sha`, an exact lowercase 40-character commit SHA.
 The candidate job fetches that object, proves it belongs to the repository and is contained by the
-`dev` release branch, and publishes a SHA-named identity artifact. Every downstream release job
-checks out the same SHA explicitly. A branch name, default checkout, abbreviated SHA, or mutable tag
-is not an acceptable candidate identity.
+explicitly approved release line (`release/1.0` for stable 1.0, or `dev` only for a later approved
+train), and publishes a SHA-named identity artifact. Every downstream release job checks out the
+same SHA explicitly. A branch name, default checkout, abbreviated SHA, or mutable tag is not an
+acceptable candidate identity.
 
 ## GitHub Actions
 

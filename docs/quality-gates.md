@@ -151,6 +151,12 @@ validate the broader manual-audit and external-feedback records in their truthfu
 consumers complete the post-release cycle. The optional strict completion validators remain
 available for closing those follow-up programs; they are not stable 1.0 publication prerequisites.
 
+After the source candidate is locked, only the stable-smoke record, its human-readable audit, and
+[`core-1-0-release-readiness.md`](./core-1-0-release-readiness.md) may change before final approval.
+The candidate-lock validator rejects every other post-candidate path, including release policy,
+application, package, Registry, component, and test changes. Those changes require a new candidate
+and an explicit evidence refresh or documented non-runtime carry-forward.
+
 ## Local gate
 
 Focused development reproduction:
