@@ -50,10 +50,7 @@
       "device": "MacBook Air M4",
       "viewport": "1470x956 logical display",
       "zoom": "200% and 400% in Safari 27.0; cross-checked in Chrome 152.0.7977.65",
-      "zoomLevelsTested": [
-        "200%",
-        "400%"
-      ],
+      "zoomLevelsTested": ["200%", "400%"],
       "increasedOrHighContrastEnabled": true,
       "evidence": [
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
