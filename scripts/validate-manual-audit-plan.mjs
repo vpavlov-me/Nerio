@@ -693,7 +693,7 @@ function aggregateResults(results) {
 }
 
 if (plan) {
-  if (plan.issue !== 143) errors.push("Manual audit plan must target issue #143.");
+  if (plan.issue !== 585) errors.push("Manual audit plan must target issue #585.");
   if (!allowedStatuses.includes(plan.status)) {
     errors.push(`Manual audit plan status must be one of: ${allowedStatuses.join(", ")}.`);
   }

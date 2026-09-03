@@ -134,7 +134,8 @@ channel requires `pnpm validate:stable-accessibility-smoke --expect-pass` agains
 candidate and deployment, with evidence for every result and no unresolved accepted blocker.
 
 [`quality/manual-audit-plan.json`](../quality/manual-audit-plan.json) defines the required
-environments, evidence fields, stable routes, steps, and expected outcomes for issue #143.
+environments, evidence fields, stable routes, steps, and expected outcomes for post-release issue
+[#585](https://github.com/vpavlov-me/Nerio/issues/585).
 [`docs/audits/core-1-0-accessibility-device-audit.md`](./audits/core-1-0-accessibility-device-audit.md)
 is the human evidence record. `pnpm test:manual-audit-plan` and
 `pnpm validate:manual-audit-plan` prevent the plan and report from drifting or claiming a manual

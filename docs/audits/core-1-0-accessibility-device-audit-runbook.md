@@ -1,6 +1,6 @@
 # Core 1.0 accessibility and device audit runbook
 
-This runbook reduces the broad post-release portion of issue #143 to the human observations that
+This runbook reduces post-release issue #585 to the human observations that
 automation cannot supply. It does not replace the bounded stable smoke, the canonical broader scope
 in `quality/manual-audit-plan.json`, or the evidence record in
 `docs/audits/core-1-0-accessibility-device-audit.md`.
@@ -34,7 +34,7 @@ Complete eight environment records. The work can be organized into four sessions
 4. **Android session:** a physical Android device running Chrome with TalkBack.
 
 Do not combine observations from different candidates. Record the exact candidate SHA and Vercel
-deployment supplied in issue #143 before starting.
+deployment supplied in issue #585 before starting.
 
 ## Generate one checklist per environment
 
@@ -58,7 +58,7 @@ high-contrast
 ```
 
 The command prints only the scenarios required for that environment, with the canonical route,
-steps, expectations, and result fields. Copy the output into one comment on issue #143 and complete
+steps, expectations, and result fields. Copy the output into one comment on issue #585 and complete
 it during the session. The URL of that comment may be used as the evidence link for every result in
 the same environment; separate screenshots or recordings are needed only when they clarify a
 finding.
@@ -106,6 +106,6 @@ After all eight environments are complete, run:
 pnpm validate:manual-audit-complete
 ```
 
-Issue #143 may close only when this strict command passes and the report records exactly **Pass for
+Issue #585 may close only when this strict command passes and the report records exactly **Pass for
 real consumer pilots**. A blocked result keeps the issue open until its finding is resolved and
 retested.

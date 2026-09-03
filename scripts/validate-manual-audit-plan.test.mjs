@@ -160,7 +160,7 @@ function completedPlan(source) {
             result: "Pass",
             notes: `Verified ${scenario.title} in ${environmentId}.`,
             evidence: [
-              `https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-${
+              `https://github.com/vpavlov-me/Nerio/issues/585#issuecomment-${
                 100000 + scenarioIndex * 10 + environmentIndex
               }`,
             ],
@@ -292,6 +292,18 @@ test("manual audit validator accepts the prepared pending plan", () => {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /22 scenarios, 8 required environments/);
   assert.match(result.stdout, /manual evidence still pending/);
+});
+
+test("manual audit plan remains owned by post-release issue #585", () => {
+  withFixture(
+    "quality/manual-audit-plan.json",
+    (source) => source.replace('"issue": 585', '"issue": 143'),
+    (target) => {
+      const result = run(["--plan", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must target issue #585/);
+    },
+  );
 });
 
 test("strict manual completion rejects pending evidence", () => {
