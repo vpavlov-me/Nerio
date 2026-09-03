@@ -37,8 +37,9 @@ tokens. The browser continues to own picker chrome and filename presentation.
   forwarded ref, FileList, native form data, and native reset are covered.
 - Deterministic browser payloads cover long and non-Latin filenames without automating operating-
   system picker UI.
-- Narrow layout and RTL reflow are checked across Chromium, Firefox, and WebKit. Real mobile picker
-  and assistive-technology evidence remains part of the manual issue #143 audit.
+- Narrow layout and RTL reflow are checked across Chromium, Firefox, and WebKit. Wider real mobile
+  picker and assistive-technology evidence remains part of the post-release audit in
+  [#585](https://github.com/vpavlov-me/Nerio/issues/585).
 
 ## Distribution evidence
 

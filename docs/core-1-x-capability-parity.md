@@ -9,9 +9,9 @@ contract, and measured product value. Component-count parity with Base UI, shadc
 other library is not a product criterion.
 
 The current Core 1.0 surface is complete for its frozen boundary. The beta.1 technical closure in
-#330–#336 is baseline, not an active competitive gap. Stable 1.0 remains governed by the bounded
-#143 Phase A maintainer smoke and the existing #148 → #150 → #151 sequence. The broader #143
-Phase B matrix and #146 external-consumer cohort continue after stable publication.
+#330–#336 is baseline, not an active competitive gap. Stable 1.0 remains governed by the completed
+bounded #143 maintainer smoke and the existing #148 → #150 → #151 sequence. The broader #585 matrix
+and #146 external-consumer cohort continue after stable publication.
 
 No Core 1.0 runtime, package, Registry, token, export, or API snapshot changed in this decision.
 Until #151 is complete, #342–#370 remain planning only unless roadmap #152 explicitly accepts a
@@ -195,8 +195,8 @@ oversized issue or duplicate their instructions.
 
 ## Parallel implementation order
 
-1. Finish #143 Phase A and #148 → #150 → #151. Continue #143 Phase B and #146 after stable
-   publication; this decision does not alter Core 1.0.
+1. Finish #148 → #150 → #151. Continue #585 and #146 after stable publication; this decision does
+   not alter Core 1.0.
 2. Land the minimum #342 direction/localization contract.
 3. Run these Core 1.1 tracks in parallel:
    - disclosure and overlay: #343, #344;

@@ -64,7 +64,7 @@ separate jobs.
   failures, console errors, and page errors still fail.
 - Automated browser checks complement, but do not replace, the
   [manual assistive-technology and real-device audit](./audits/core-1-0-accessibility-device-audit.md)
-  tracked in #143.
+  tracked after stable in [#585](https://github.com/vpavlov-me/Nerio/issues/585).
 - Native form chrome and font rasterization may differ by operating system. The contract is semantic
   behavior, focus visibility, usable geometry, and tokenized authored styling—not pixel identity.
 

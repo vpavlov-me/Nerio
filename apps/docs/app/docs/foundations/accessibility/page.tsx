@@ -136,9 +136,14 @@ const evidenceRows = [
     "Route discovery, documented public contracts, examples, and source-backed documentation alignment.",
   ],
   [
-    "Manual evidence",
+    "Bounded stable smoke",
     "Issue #143",
-    "VoiceOver, NVDA, TalkBack, physical iOS and Android devices, keyboard-only use, 200%/400% zoom and reflow, reduced motion, and increased or high contrast. This evidence is pending until recorded against one locked candidate.",
+    "Safari with VoiceOver, Chromium keyboard-only use, 200%/400% zoom and reflow, increased contrast, and physical mobile touch completed against one locked candidate before publication.",
+  ],
+  [
+    "Broader manual evidence",
+    "Issue #585",
+    "The wider NVDA, TalkBack, VoiceOver, native-picker, reduced-motion, high-contrast, and physical iOS and Android matrix continues after stable publication.",
   ],
 ] as const;
 
@@ -337,10 +342,12 @@ export default function Page() {
           </Table>
         </TableContainer>
         <p>
-          The manual audit is tracked in{" "}
-          <a href="https://github.com/vpavlov-me/Nerio/issues/143">GitHub issue #143</a>. Do not
+          The bounded stable smoke is recorded in{" "}
+          <a href="https://github.com/vpavlov-me/Nerio/issues/143">GitHub issue #143</a>; the
+          broader post-release matrix continues in{" "}
+          <a href="https://github.com/vpavlov-me/Nerio/issues/585">GitHub issue #585</a>. Do not
           combine observations from different commits or treat an automated pass as a substitute for
-          VoiceOver, NVDA, TalkBack, physical-device, zoom, or high-contrast evidence.
+          assistive-technology, physical-device, zoom, or high-contrast evidence.
         </p>
       </section>
 
@@ -361,8 +368,8 @@ export default function Page() {
             nor this documentation certifies a consuming product's conformance.
           </li>
           <li>
-            The Core 1.0 assistive-technology and real-device evidence remains pending until issue
-            #143 records results against one locked candidate.
+            The bounded Core 1.0 smoke is complete in issue #143. The wider assistive-technology and
+            real-device matrix remains post-release work in issue #585.
           </li>
           <li>
             Development PR browser smoke is Chromium-focused. The release gate adds Firefox and

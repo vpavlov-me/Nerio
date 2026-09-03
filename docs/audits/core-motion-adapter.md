@@ -51,7 +51,8 @@ snapshot, and the config renders and hydrates without drift. Browser evidence co
 completion, rapid reversal, layout reordering, keyboard and pointer activation, live preference
 changes, unmount cleanup, dark mode, mobile width, overflow, and console/hydration health.
 
-Automated evidence does not replace the real assistive-technology and device audit in issue #143.
+Automated evidence does not replace the broader post-release assistive-technology and device audit
+in [#585](https://github.com/vpavlov-me/Nerio/issues/585).
 
 ## Alpha migration
 

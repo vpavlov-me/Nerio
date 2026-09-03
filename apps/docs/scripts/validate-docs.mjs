@@ -460,7 +460,8 @@ function accessibilityFoundationFailures() {
     ["pnpm test:a11y", "Accessibility Foundation must document automated a11y evidence"],
     ["pnpm typecheck", "Accessibility Foundation must document typecheck evidence separately"],
     ["pnpm test:browser:pr", "Accessibility Foundation must document browser evidence"],
-    ["GitHub issue #143", "Accessibility Foundation must link the manual evidence gate"],
+    ["GitHub issue #143", "Accessibility Foundation must link the bounded manual evidence gate"],
+    ["GitHub issue #585", "Accessibility Foundation must link the broader post-release audit"],
     ["Known limitations", "Accessibility Foundation must expose known limitations"],
   ];
 
