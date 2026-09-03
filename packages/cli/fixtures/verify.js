@@ -969,15 +969,47 @@ async function verifyConcurrentTransactions(tempRoot) {
   );
   fs.writeFileSync(abandonedCandidate, "abandoned\n");
   fs.utimesSync(abandonedCandidate, staleTime, staleTime);
+  const cleanupRaceHook = path.join(tempRoot, "lock-artifact-cleanup-race.cjs");
+  const cleanupRaceMarker = path.join(tempRoot, "lock-artifact-cleanup-race.marker");
+  fs.writeFileSync(
+    cleanupRaceHook,
+    `const fs = require("node:fs");
+const path = require("node:path");
+const originalRmSync = fs.rmSync;
+const raceTarget = path.resolve(process.env.NERIO_FIXTURE_LOCK_ARTIFACT_RACE_TARGET);
+let injected = false;
+fs.rmSync = function rmSync(target, options) {
+  if (!injected && path.resolve(target) === raceTarget) {
+    injected = true;
+    originalRmSync.call(fs, target, { force: true });
+    fs.writeFileSync(process.env.NERIO_FIXTURE_LOCK_ARTIFACT_RACE_MARKER, "injected\\n", {
+      flag: "a",
+    });
+    const error = new Error(\`ENOENT: no such file or directory, lstat '\${target}'\`);
+    error.code = "ENOENT";
+    throw error;
+  }
+  return originalRmSync.call(fs, target, options);
+};
+`,
+  );
   const abandonedRenewal = path.join(
     invalidOwnerTarget,
     `.nerio-registry-lock.renew-${crypto.randomUUID()}`,
   );
   fs.linkSync(invalidLockPath, abandonedRenewal);
+  const cleanupRaceEnv = {
+    NERIO_FIXTURE_LOCK_ARTIFACT_RACE_MARKER: cleanupRaceMarker,
+    NERIO_FIXTURE_LOCK_ARTIFACT_RACE_TARGET: fs.realpathSync(abandonedCandidate),
+    NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ""} --require=${cleanupRaceHook}`.trim(),
+  };
   await Promise.all([
-    run(invalidOwnerTarget, "add", "alpha"),
-    run(invalidOwnerTarget, "add", "beta"),
+    runWithEnv(invalidOwnerTarget, cleanupRaceEnv, "add", "alpha"),
+    runWithEnv(invalidOwnerTarget, cleanupRaceEnv, "add", "beta"),
   ]);
+  if (!fs.existsSync(cleanupRaceMarker)) {
+    throw new Error("Registry lock artifact cleanup race was not exercised.");
+  }
   const reclaimedLock = JSON.parse(
     fs.readFileSync(path.join(invalidOwnerTarget, "nerio.lock.json"), "utf8"),
   );

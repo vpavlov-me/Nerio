@@ -670,10 +670,15 @@ function activeLockArtifact(target) {
   }
   const now = Date.now();
   if (now - stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return true;
-  if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
-  else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
-    fs.rmSync(target);
-    return false;
+  try {
+    if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
+    else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+      fs.rmSync(target);
+      return false;
+    }
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
   }
   return true;
 }
