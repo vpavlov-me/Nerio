@@ -4,9 +4,9 @@
   "trackingIssue": 143,
   "candidate": {
     "version": "1.0.0",
-    "commit": "9aec2b3200a3b3d95f96bd728dd96ae5e5a17bdb",
-    "deployment": "https://nerio-298vziq8o-dquality.vercel.app",
-    "recordedAt": "2026-09-03T18:53:55Z"
+    "commit": "b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169",
+    "deployment": "https://nerio-nzbqpmdwb-dquality.vercel.app",
+    "recordedAt": "2026-09-03T19:17:37Z"
   },
   "environments": [
     {
@@ -22,7 +22,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "The maintainer verified the six scoped scenario groups with Safari and VoiceOver; no release-blocking finding was reported."
     },
@@ -39,7 +40,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "The maintainer verified the six scoped scenario groups with keyboard-only navigation in Chrome; no release-blocking finding was reported."
     },
@@ -60,7 +62,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "The maintainer verified reflow at both required zoom levels and checked macOS Increase Contrast in Safari and Chrome."
     },
@@ -80,6 +83,7 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
         "https://support.apple.com/en-asia/100100"
       ],
       "notes": "The maintainer verified the physical-touch smoke on iPhone 15 and additionally checked Safari on a physical iPad Air (5th generation, 2022)."
@@ -93,7 +97,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Documentation navigation and visible focus passed the maintainer smoke."
     },
@@ -104,7 +109,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Forms and representative native controls passed the maintainer smoke."
     },
@@ -115,7 +121,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Overlay interaction, focus movement, and focus restoration passed the maintainer smoke."
     },
@@ -126,7 +133,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Calendar and DatePicker interaction passed the maintainer smoke."
     },
@@ -137,7 +145,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Feedback and status behavior passed the maintainer smoke."
     },
@@ -148,7 +157,8 @@
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
         "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
-        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241"
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264"
       ],
       "notes": "Responsive touch, zoom, reflow, and increased-contrast behavior passed the maintainer smoke."
     }
@@ -156,7 +166,7 @@
   "findings": [],
   "decision": {
     "recommendation": "release-ready",
-    "recordedAt": "2026-09-03T18:53:55Z",
-    "summary": "The maintainer completed the bounded smoke on da3923f38f91f38b77f890ad28e043ab16f45fe1 with no release-blocking finding. The observations carry forward first to c47a3e72ad58543a7030124a89086ca0f83b7b3c and then to 9aec2b3200a3b3d95f96bd728dd96ae5e5a17bdb after explicit reviews found only non-runtime release evidence plus static documentation and validator ownership corrections; this does not claim a second manual run."
+    "recordedAt": "2026-09-03T19:17:37Z",
+    "summary": "The maintainer completed the bounded smoke on da3923f38f91f38b77f890ad28e043ab16f45fe1 with no release-blocking finding. The observations carry forward through c47a3e72ad58543a7030124a89086ca0f83b7b3c and 9aec2b3200a3b3d95f96bd728dd96ae5e5a17bdb to b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169 after explicit reviews. The last range contains only the prior evidence relock plus a narrowly scoped CLI stale-lock cleanup race correction and its deterministic fixture; that CLI transaction path is outside the audited human interaction scenarios, and this does not claim a second manual run."
   }
 }

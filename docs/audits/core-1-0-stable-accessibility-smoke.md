@@ -17,17 +17,18 @@ against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployme
 `0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
 
 The observations carry forward to final source candidate
-`9aec2b3200a3b3d95f96bd728dd96ae5e5a17bdb` and deployment
-<https://nerio-298vziq8o-dquality.vercel.app>. The explicit
-[final carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241),
+`b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169` and deployment
+<https://nerio-nzbqpmdwb-dquality.vercel.app>. The explicit
+[final carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264),
 building on the
+[documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241) and
 [previous review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277), confirms
-that the intervening changes include only the prior evidence relock plus static documentation and
-docs-validator corrections that assign the broader post-release audit to #585. They change no
-package, component, Registry payload, CLI/MCP runtime, token, CSS, public API metadata, browser
-fixture, or audited interaction. The only deployable TSX change is static Accessibility Foundation
-copy and issue links; it adds no import, state, interaction, or style change. This record does not
-claim that the maintainer repeated the manual smoke.
+that the last range contains only the prior evidence relock plus a narrowly scoped CLI stale-lock
+cleanup race correction and its deterministic fixture. That CLI transaction path is outside the
+audited documentation, browser, component, focus, form, overlay, calendar, feedback, responsive,
+touch, zoom, reflow, and contrast scenarios. The range changes no UI component, Registry payload,
+token, CSS, public API snapshot, docs component or layout, browser fixture, or audited interaction.
+This record does not claim that the maintainer repeated the manual smoke.
 
 ## Required environments
 
