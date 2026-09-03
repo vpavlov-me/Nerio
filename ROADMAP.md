@@ -86,8 +86,8 @@ isolated `release/1.0` line and the following bounded sequence:
 4. rerun the gate on the evidence-only commit and finalize the #150 release-readiness decision;
 5. publish and verify stable artifacts manually through #151 after explicit approval.
 
-The broader real-device and assistive-technology matrix from #143 and the external-consumer cycle
-in #146 continue after stable publication. They may produce patch or 1.1 follow-up work, but missing
+The broader real-device and assistive-technology matrix in #585 and the external-consumer cycle in
+#146 continue after stable publication. They may produce patch or 1.1 follow-up work, but missing
 cohort or device coverage alone does not block `1.0.0`. Any discovered P0, P1, or accepted
 stable-blocking defect still stops the release.
 

@@ -217,14 +217,14 @@ export default function Page() {
         <h2>Human evidence boundary</h2>
         <p>
           The bounded maintainer-run smoke in{" "}
-          <a href="https://github.com/vpavlov-me/Nerio/issues/143">issue #143 Phase A</a> remains a
-          prerequisite for publishing the exact stable candidate. Any P0/P1 or accepted
+          <a href="https://github.com/vpavlov-me/Nerio/issues/143">issue #143</a> records the
+          bounded smoke as release-ready for the exact stable candidate. Any P0/P1 or accepted
           stable-blocking defect found before publication still stops the release.
         </p>
         <p>
           The broad 22-scenario, eight-environment accessibility and real-device matrix in{" "}
-          <a href="https://github.com/vpavlov-me/Nerio/issues/143">#143 Phase B</a> and the
-          independent external-consumer cohort in{" "}
+          <a href="https://github.com/vpavlov-me/Nerio/issues/585">#585 post-release audit</a> and
+          the independent external-consumer cohort in{" "}
           <a href="https://github.com/vpavlov-me/Nerio/issues/146">#146</a> continue after stable
           publication. Missing completion of either broad program is not a stable 1.0 publication
           blocker; findings feed a patch or Core 1.1 as appropriate.

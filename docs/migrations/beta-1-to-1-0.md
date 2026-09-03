@@ -84,15 +84,14 @@ output against the declared schema.
 ## Human evidence boundary
 
 The bounded maintainer-run smoke in issue
-[#143 Phase A](https://github.com/vpavlov-me/Nerio/issues/143) remains a prerequisite for publishing
-the exact stable candidate. It covers four environment groups and six release-critical scenario
-groups. Any P0/P1 or accepted stable-blocking defect found before publication still stops the
-release.
+[#143](https://github.com/vpavlov-me/Nerio/issues/143) records `release-ready` for the exact stable
+candidate. It covers four environment groups and six release-critical scenario groups. Any P0/P1
+or accepted stable-blocking defect found before publication still stops the release.
 
 The following programs explicitly continue after stable publication and are not completion steps
 for this migration:
 
-- [#143 Phase B](https://github.com/vpavlov-me/Nerio/issues/143): the complete 22-scenario
+- [#585](https://github.com/vpavlov-me/Nerio/issues/585): the complete 22-scenario
   accessibility and real-device matrix across eight environment categories;
 - [#146](https://github.com/vpavlov-me/Nerio/issues/146): the independent external-consumer cohort
   covering package mode, editable source, Calendar/DatePicker, Registry updates, and MCP.
