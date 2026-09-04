@@ -373,6 +373,9 @@ function SheetExample({
 }
 
 export function ComponentPlayground() {
+  const [signInDialogOpen, setSignInDialogOpen] = React.useState(false);
+  const [privacyDialogOpen, setPrivacyDialogOpen] = React.useState(false);
+
   return (
     <>
       <SpecimenSection id="kbd" title="Kbd" api="Keyboard hint · single key · shortcut sequence">
@@ -968,6 +971,8 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-inline">
           <Dialog
+            open={signInDialogOpen}
+            onOpenChange={setSignInDialogOpen}
             trigger={<Button>Open dialog</Button>}
             title="Sign in"
             description="Use your workspace credentials to continue."
@@ -985,11 +990,15 @@ export function ComponentPlayground() {
               />
             </div>
             <DialogFooter>
-              <Button variant="secondary">Cancel</Button>
-              <Button>Sign in</Button>
+              <Button variant="secondary" onClick={() => setSignInDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => setSignInDialogOpen(false)}>Sign in</Button>
             </DialogFooter>
           </Dialog>
           <Dialog
+            open={privacyDialogOpen}
+            onOpenChange={setPrivacyDialogOpen}
             trigger={<Button variant="secondary">Long content</Button>}
             title="Privacy policy"
             description="Last updated August 7, 2026."
@@ -1060,7 +1069,7 @@ export function ComponentPlayground() {
               </Text>
             </div>
             <DialogFooter>
-              <Button>I understand</Button>
+              <Button onClick={() => setPrivacyDialogOpen(false)}>I understand</Button>
             </DialogFooter>
           </Dialog>
         </div>

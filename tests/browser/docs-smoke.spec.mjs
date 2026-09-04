@@ -1104,7 +1104,8 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     "data-nerio-theme-scope",
     "",
   );
-  await page.keyboard.press("Escape");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog).toBeHidden();
 
   await page.getByRole("button", { name: "Show success toast" }).click();
   const toast = page.locator(".n-toast").filter({ hasText: "Changes saved" });

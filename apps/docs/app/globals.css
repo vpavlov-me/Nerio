@@ -2578,10 +2578,6 @@ pre {
   inline-size: 7rem;
 }
 
-.composition-security-settings__danger-title {
-  color: var(--n-color-status-danger);
-}
-
 .composition-profile-settings .composition-save-bar {
   background: transparent;
 }
