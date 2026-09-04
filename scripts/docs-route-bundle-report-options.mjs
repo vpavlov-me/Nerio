@@ -30,7 +30,8 @@ export function resolveDocsRouteReportOutput(args, root) {
   }
 
   const writeReport = args.includes("--write") || configuredPath !== undefined;
-  const outputPath = resolve(root, configuredPath ?? defaultDocsRouteReportPath);
+  const normalizedConfiguredPath = configuredPath?.replaceAll("\\", "/");
+  const outputPath = resolve(root, normalizedConfiguredPath ?? defaultDocsRouteReportPath);
   const repositoryRelativePath = relative(root, outputPath);
   const isRepositoryPath =
     repositoryRelativePath === "" ||

@@ -35,6 +35,13 @@ test("supports an explicit ephemeral output path", () => {
     writeReport: true,
     outputPath: resolve("/tmp/nerio-routes.json"),
   });
+  assert.deepEqual(
+    resolveDocsRouteReportOutput(["--output=artifacts\\reports\\routes.json"], root),
+    {
+      writeReport: true,
+      outputPath: resolve(root, "artifacts/reports/routes.json"),
+    },
+  );
 });
 
 test("accepts the repository artifact directory with platform path separators", () => {
@@ -44,7 +51,11 @@ test("accepts the repository artifact directory with platform path separators", 
 });
 
 test("rejects report output over tracked repository paths", () => {
-  for (const path of ["quality/docs-route-bundle-baseline.json", "package.json"]) {
+  for (const path of [
+    "quality/docs-route-bundle-baseline.json",
+    "package.json",
+    "artifacts\\..\\package.json",
+  ]) {
     assert.throws(
       () => resolveDocsRouteReportOutput([`--output=${path}`], root),
       /inside the repository must stay under artifacts/,
