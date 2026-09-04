@@ -2,9 +2,9 @@
 
 ## Decision
 
-Nerio exposes one ordered Foundations group for designers, engineers, and coding agents. The order
-moves from system architecture through visual roles and composition, then runtime and accessibility
-behavior, and finally focused visual foundations:
+For the Core 1.0 release line, Nerio exposes one ordered Foundations group for designers, engineers,
+and coding agents. The order moves from system architecture through visual roles and composition,
+then runtime and accessibility behavior, and finally focused visual foundations:
 
 1. Tokens
 2. Color
@@ -12,11 +12,10 @@ behavior, and finally focused visual foundations:
 4. Spacing & layout
 5. Themes
 6. Accessibility
-7. Localization
-8. Radius
-9. Effects
-10. Motion
-11. Icons
+7. Radius
+8. Effects
+9. Motion
+10. Icons
 
 `apps/docs/content/foundations.json` is the canonical typed-data source for each foundation's path,
 navigation label, page title, search/SEO description, order, and legacy aliases. The generated
@@ -34,10 +33,12 @@ canonical order exactly.
 - **Themes** owns composition of the supported theme, mode, and density runtime axes. It links to
   Tokens, Color, Spacing & layout, and Accessibility instead of restating their contracts.
 - **Accessibility** owns system invariants, evidence boundaries, and the shared review model.
-- **Localization** owns direction, locale-sensitive component behavior, and consumer setup. A future
-  Content & localization foundation may be added directly after Localization without restructuring
-  the navigation shell; product voice, translation infrastructure, and domain copy remain
-  consumer-owned.
+
+The post-1.0 Localization foundation owns direction, locale-sensitive component behavior, and
+consumer setup under #342; it is not part of the Core 1.0 route set. Its position remains reserved
+directly after Accessibility, and the future Content & localization foundation from #491 may follow
+it without restructuring the navigation shell. Product voice, translation infrastructure, and
+domain copy remain consumer-owned.
 
 Every canonical page remains server-rendered and follows a bounded content shell: Foundation
 kicker, one page heading, a lede, section headings that feed the dynamic table of contents, and

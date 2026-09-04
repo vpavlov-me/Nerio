@@ -75,6 +75,7 @@ test("routes beta feedback and stable readiness to the manual contract", () => {
   for (const path of [
     "quality/stable-accessibility-smoke.json",
     "docs/audits/core-1-0-stable-accessibility-smoke.md",
+    "scripts/stable-accessibility-evidence-paths.mjs",
     "scripts/validate-stable-accessibility-smoke.mjs",
     "scripts/validate-stable-accessibility-smoke.test.mjs",
     "quality/beta-feedback.json",
