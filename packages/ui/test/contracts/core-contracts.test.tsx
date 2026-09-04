@@ -2946,7 +2946,7 @@ describe("Core interactive action contracts", () => {
     await user.click(trigger);
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
-    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("renders Select size hooks, an empty state, and constrained popup styling", async () => {
