@@ -17,20 +17,36 @@ against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployme
 `0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
 
 The observations carry forward to final source candidate
-`7494f5a3bc89d7f3477db4db1eaf8d270bb996a4` and deployment
-<https://nerio-akdywfa6o-dquality.vercel.app>. The explicit
-[final review carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311),
+`23e514c9a331ee06d7c60acf0a301b575f791604` and deployment
+<https://nerio-o348xkit3-dquality.vercel.app>. The explicit
+[Dialog RTL and API snapshot carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438),
 building on the
-[CLI lock-race review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264),
-[documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241), and
-[previous review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277), confirms
-that the last range contains only the two allowlisted evidence and readiness commits, a static Core
-1.0 Foundation information-architecture correction, and a CI manual-audit scope correction with its
-focused test. The Foundation correction aligns the decision record with the already frozen ten-route
-stable set; the CI correction makes changes to the evidence-path helper select the manual audit gate.
-Neither changes an audited runtime interaction. The range changes no UI component, package or
-Registry payload, token, CSS, public API snapshot, docs component or layout, browser fixture, or
-audited interaction. This record does not claim that the maintainer repeated the manual smoke.
+[final review carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311),
+[CLI lock-race review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264), and
+[earlier documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241),
+binds the record to the new candidate without claiming another manual run.
+
+The newly reviewed range
+`7494f5a3bc89d7f3477db4db1eaf8d270bb996a4..23e514c9a331ee06d7c60acf0a301b575f791604`
+contains the two-file evidence relock, the six-file Dialog/README/Registry/test/parity correction,
+and the three-file public API snapshot/approval/parity synchronization. The prior final-review
+carry-forward already covers the earlier evidence/readiness and Foundation/CI scope corrections
+through `7494f5a3bc89d7f3477db4db1eaf8d270bb996a4`.
+
+The recorded human sessions used the default horizontal LTR presentation; they did not include a
+human RTL Dialog run. In that LTR presentation, `start-1/2` and `left-1/2` resolve to the same
+physical 50% left anchor with the unchanged `-translate-x-1/2`, so the recorded Dialog placement,
+interaction, dismissal, and focus behavior remain applicable. The source correction changes only
+RTL centering. Candidate-bound unit coverage locks the physical anchor, while the Chromium,
+Firefox, and WebKit gate sets the root direction to RTL and verifies horizontal centering within one
+pixel, viewport containment, Escape dismissal, and trigger focus restoration. This is automated RTL
+evidence, not a claim of human RTL verification.
+
+The Registry and public API snapshot changes synchronize the corrected Dialog source integrity and
+their current parity hashes; the API approval classifies that derivative snapshot update as a fix
+under #148. They change no exported API shape. The README change corrects the already-completed
+bounded-smoke status. No additional component behavior, dependency, token, CSS contract, or audited
+LTR interaction changes in this range.
 
 ## Required environments
 
