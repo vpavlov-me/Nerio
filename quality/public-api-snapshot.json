@@ -7963,7 +7963,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac",
+            "integrity": "sha256-36a07d2b42ecf9b47546ecd43aca560a64b5e3abdb61b6ac7356b664c8b1a991",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
