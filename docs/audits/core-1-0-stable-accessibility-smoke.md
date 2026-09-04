@@ -17,18 +17,20 @@ against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployme
 `0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
 
 The observations carry forward to final source candidate
-`b4c25c85f9dd8422ae0bfd1f186c6cdcbfc10169` and deployment
-<https://nerio-nzbqpmdwb-dquality.vercel.app>. The explicit
-[final carry-forward review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264),
+`7494f5a3bc89d7f3477db4db1eaf8d270bb996a4` and deployment
+<https://nerio-akdywfa6o-dquality.vercel.app>. The explicit
+[final review carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311),
 building on the
-[documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241) and
+[CLI lock-race review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264),
+[documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241), and
 [previous review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277), confirms
-that the last range contains only the prior evidence relock plus a narrowly scoped CLI stale-lock
-cleanup race correction and its deterministic fixture. That CLI transaction path is outside the
-audited documentation, browser, component, focus, form, overlay, calendar, feedback, responsive,
-touch, zoom, reflow, and contrast scenarios. The range changes no UI component, Registry payload,
-token, CSS, public API snapshot, docs component or layout, browser fixture, or audited interaction.
-This record does not claim that the maintainer repeated the manual smoke.
+that the last range contains only the two allowlisted evidence and readiness commits, a static Core
+1.0 Foundation information-architecture correction, and a CI manual-audit scope correction with its
+focused test. The Foundation correction aligns the decision record with the already frozen ten-route
+stable set; the CI correction makes changes to the evidence-path helper select the manual audit gate.
+Neither changes an audited runtime interaction. The range changes no UI component, package or
+Registry payload, token, CSS, public API snapshot, docs component or layout, browser fixture, or
+audited interaction. This record does not claim that the maintainer repeated the manual smoke.
 
 ## Required environments
 
