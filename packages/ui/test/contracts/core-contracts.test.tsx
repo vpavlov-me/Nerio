@@ -4678,6 +4678,8 @@ describe("Core interactive action contracts", () => {
     expect(componentSource("tooltip")).toContain("bg-(--n-overlay-glass-background)");
     expect(componentSource("tooltip")).toContain("text-(--n-overlay-glass-foreground)");
     expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    expect(componentSource("dialog")).toContain("fixed left-1/2 top-1/2");
+    expect(componentSource("dialog")).not.toContain("fixed start-1/2 top-1/2");
     for (const name of ["select", "popover", "tooltip", "dropdown-menu"]) {
       expect(componentSource(name), name).toContain("z-(--n-overlay-floating-z-index)");
     }

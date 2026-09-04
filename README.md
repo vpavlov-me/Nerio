@@ -11,7 +11,8 @@ Nerio is an open-source React design system built for teams that need a reliable
 
 > Status: `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API; it is not published.
 > npm `latest` and `beta` still resolve to `1.0.0-beta.1`, while protected `alpha` remains on
-> `0.1.0-alpha.2`. The bounded maintainer-run accessibility smoke is the remaining human gate.
+> `0.1.0-alpha.2`. The bounded maintainer-run accessibility smoke is complete; stable publication
+> remains subject to separate explicit maintainer approval.
 > The broader device matrix and external-consumer program continue after stable publication.
 
 | Package                                     | npm                                                                                                                           | Purpose                                 |
@@ -238,10 +239,10 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 The coordinated `1.0.0` packages, Registry revision, CLI, and MCP server are prepared but not
 published. npm `latest` and `beta` remain on `1.0.0-beta.1`; protected `alpha` remains on
 `0.1.0-alpha.2`, and no `v1.0.0` tag or stable GitHub Release exists yet. Packed package/source,
-CLI, MCP, and clean-consumer verification belongs to the candidate gate. The bounded
-maintainer-run accessibility smoke must pass before the final release decision. The broader device
-matrix and external-consumer program continue after stable publication. The frozen contract is
-defined by the
+CLI, MCP, and clean-consumer verification belongs to the candidate gate. The bounded maintainer-run
+accessibility smoke is complete. Stable publication remains subject to separate explicit maintainer
+approval. The broader device matrix and external-consumer program continue after stable publication.
+The frozen contract is defined by the
 [public API stability policy](./docs/public-api-stability.md); beta.1 consumers should use the
 [Core 1.0 migration guide](./docs/migrations/beta-1-to-1-0.md). Consumers still on alpha should first
 follow the [alpha-to-beta guide](./docs/migrations/alpha-to-beta.md). See

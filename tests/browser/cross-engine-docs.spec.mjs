@@ -62,6 +62,19 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   await page.keyboard.press("Escape");
   await expect(dialogTrigger).toBeFocused();
 
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await dialogTrigger.click();
+  await expect(dialog).toBeVisible();
+  const rtlDialogBox = await dialog.boundingBox();
+  expect(rtlDialogBox).not.toBeNull();
+  expect(
+    Math.abs(rtlDialogBox.x + rtlDialogBox.width / 2 - viewport.width / 2),
+  ).toBeLessThanOrEqual(1);
+  await expectInsideViewport(dialog, viewport);
+  await page.keyboard.press("Escape");
+  await expect(dialogTrigger).toBeFocused();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "ltr"));
+
   await page.getByRole("button", { name: "Open popover" }).click();
   const popover = page.getByRole("dialog", { name: "Share settings" });
   await expect(popover).toBeVisible();
