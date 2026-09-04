@@ -501,7 +501,7 @@ function SecuritySettingsPreview() {
         <Heading as="h2" size="lg">
           Security settings
         </Heading>
-        <Text tone="secondary">Manage sign-in protection and sensitive account actions.</Text>
+        <Text tone="secondary">Manage sign-in protection and active sessions.</Text>
       </CardHeader>
       <CardContent className="composition-security-settings">
         <Item className="composition-security-settings__item" size="lg">
@@ -1277,7 +1277,7 @@ const blocks: Record<string, Composition> = {
     accessibility:
       "Each security control has a named action and supporting context without prescribing a sensitive confirmation pattern.",
     responsive:
-      "The bounded card remains one readable column while item and dialog actions wrap without changing source order.",
+      "The bounded card remains one readable column while item actions wrap without changing source order.",
     notes:
       "Authorization, reauthentication, audit history, session revocation, and sensitive confirmation policy remain product responsibilities.",
     code: "<Card><Item><ItemContent>Password</ItemContent><ItemActions><Button>Change password</Button></ItemActions></Item><Item><ItemContent>Two-factor authentication</ItemContent><ItemActions><Button>Set up</Button></ItemActions></Item><Item><ItemContent>Active sessions</ItemContent><ItemActions><Button>Review sessions</Button></ItemActions></Item></Card>",
