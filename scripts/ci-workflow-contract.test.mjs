@@ -37,11 +37,26 @@ test("requires all supported release browser engines", () => {
 
 test("requires the production dependency audit in the release gate", () => {
   const sources = readCiWorkflowSources(root);
-  sources.releaseGate = sources.releaseGate.replace("      - run: pnpm audit:prod\n", "");
+  sources.releaseGate = sources.releaseGate.replace(
+    "        run: pnpm audit:prod --ignore-registry-errors\n",
+    "",
+  );
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
-      `${ciWorkflowPaths.releaseGate}: missing pnpm audit:prod`,
+      `${ciWorkflowPaths.releaseGate}: missing pnpm audit:prod --ignore-registry-errors`,
     ),
+  );
+});
+
+test("keeps registry transport tolerance out of the strict publication audit", () => {
+  const manifest = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
+  const release = readFileSync(resolve(root, "RELEASE.md"), "utf8");
+  assert.equal(manifest.scripts["audit:prod"], "pnpm audit --prod --audit-level low");
+  assert.match(release, /pre-merge release workflow appends `--ignore-registry-errors`/);
+  assert.match(release, /pnpm still performs its bounded\s+registry retries/);
+  assert.match(
+    release,
+    /Immediately before publication approval in #151, run the bare `pnpm audit:prod`/,
   );
 });
 

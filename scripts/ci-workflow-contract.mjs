@@ -68,7 +68,7 @@ const releaseCommands = [
   "pnpm test:beta-feedback",
   "pnpm validate:stable-readiness",
   "pnpm validate:platform-support",
-  "pnpm audit:prod",
+  "pnpm audit:prod --ignore-registry-errors",
   "pnpm validate:package-budgets",
   "pnpm validate:release:metadata",
   "pnpm test:consumer:${{ matrix.profile }}",

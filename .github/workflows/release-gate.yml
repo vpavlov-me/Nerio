@@ -239,7 +239,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm validate:platform-support
-      - run: pnpm audit:prod
+      - name: Audit production dependencies (registry transport tolerated)
+        run: pnpm audit:prod --ignore-registry-errors
       - run: pnpm validate:package-budgets
       - run: pnpm validate:release:metadata
       - run: pnpm pack:check

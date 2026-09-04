@@ -157,6 +157,16 @@ vulnerabilities before a release candidate can pass. `validate:package-budgets` 
 packed/unpacked package, CSS, named component/icon import, and optional adapter budgets. Threshold
 changes follow the reviewed override policy in `docs/quality-gates.md`.
 
+The pre-merge release workflow appends `--ignore-registry-errors`. pnpm still performs its bounded
+registry retries before treating an npm advisory-endpoint transport failure as non-blocking so the
+failure does not invalidate the candidate's other checks. A successful registry response containing
+any production advisory at `low` or above still fails. This transport-tolerant CI result is not
+clean-audit evidence and never authorizes publication.
+
+Immediately before publication approval in #151, run the bare `pnpm audit:prod` command against the
+exact approved candidate. It must receive a successful registry response and report no known
+production vulnerabilities; a timeout or other registry error blocks publication.
+
 Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
 contain only named shared keyframes and the documented scoped no-Preflight box-sizing and
 native-control typography rules; the Tailwind contract test rejects visual component selectors or a
