@@ -89,7 +89,7 @@ export const snippets: Record<string, string> = {
   "date-picker":
     'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date">\n  <DatePicker defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
-    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
+    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
@@ -3293,8 +3293,7 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   dialog: {
     category: "Overlays",
-    purpose:
-      "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
+    purpose: "Use Dialog to focus a short task or reversible decision above the current surface.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
       { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
@@ -3325,7 +3324,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     variants: [
       { title: "Task", description: "Short focused task with clear completion." },
-      { title: "Confirmation", description: "Decision point for sensitive actions." },
+      { title: "Decision", description: "Reversible choice with an obvious escape path." },
     ],
     states: [
       { title: "Open", description: "Focus moves into the dialog." },
@@ -3356,7 +3355,9 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     guidance: {
       do: ["Use for short decisions that need context without a route change."],
-      dont: ["Do not use Dialog for long, multi-page workflows."],
+      dont: [
+        "Do not use Dialog for long, multi-page workflows or sensitive confirmations; keep confirmation policy consumer-owned until the dedicated primitive ships.",
+      ],
     },
     tokens: [
       "--n-dialog-width-md",
