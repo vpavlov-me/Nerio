@@ -3,8 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/%40nerio-ui%2Fui)](https://www.npmjs.com/package/@nerio-ui/ui)
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fui)](https://www.npmjs.com/package/@nerio-ui/ui)
 
-Accessible React components, utilities, and styles for Nerio Core. The current coordinated release
-is `1.0.0-beta.1`.
+Accessible React components, utilities, and styles for Nerio Core `1.0.0`.
 
 ## Install
 

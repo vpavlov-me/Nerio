@@ -92,8 +92,6 @@
     { "name": "item", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "search-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -109,12 +107,9 @@
     { "name": "checkbox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "switch", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "tabs", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "collapsible", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "accordion", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "breadcrumbs", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "pagination", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "alert-dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sidebar-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "command-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sheet", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -361,14 +356,14 @@
     },
     {
       "id": "dialog",
-      "surface": "Dialog and AlertDialog",
-      "catalogComponents": ["Dialog", "AlertDialog"],
+      "surface": "Dialog",
+      "catalogComponents": ["Dialog"],
       "coverageMode": "dedicated-component",
       "status": "covered",
       "issue": null,
-      "capability": "modal dialog and explicit confirmation",
-      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, restoration, and a conservative alert-dialog mode that native styling alone does not standardize.",
-      "boundary": "Core owns modal and confirmation primitives. Consumers own task content, mutation orchestration, permissions, routing, and confirmation copy."
+      "capability": "modal dialog",
+      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, and restoration that native styling alone does not standardize.",
+      "boundary": "Core owns the modal primitive. Consumers own task content and confirmation policy."
     },
     {
       "id": "popover",
@@ -658,22 +653,6 @@
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
     },
     {
-      "name": "Combobox",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "forms",
-      "status": "implemented-initial",
-      "description": "Client-only bounded single-select Combobox with synchronous filtering, generic string value identity, options or composed item modes, independent query, value, and popup state, form metadata, groups, clear, empty, and loading presentation hooks."
-    },
-    {
-      "name": "SearchField",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "forms",
-      "status": "implemented-initial",
-      "description": "Client-only native search composition with one controlled or uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events, form reset, Field relationships, and loading presentation."
-    },
-    {
       "name": "Slider",
       "tier": "core",
       "package": "@nerio-ui/ui/client",
@@ -711,15 +690,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible viewport-bounded modal primitive with a compatible convenience API, additive compound anatomy, neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
-    },
-    {
-      "name": "AlertDialog",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "overlays",
-      "status": "implemented-initial",
-      "description": "Client-only Base UI confirmation primitive with alertdialog semantics, pointer-dismissal protection, explicit cancel and action boundaries, controlled state, and consumer-owned mutation policy."
+      "description": "Accessible viewport-bounded modal primitive with a neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
     },
     {
       "name": "Sheet",
@@ -752,22 +723,6 @@
       "category": "overlays",
       "status": "stable-core",
       "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
-    },
-    {
-      "name": "Collapsible",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "data-display",
-      "status": "implemented-initial",
-      "description": "Client-only Base UI disclosure primitive with one controlled or uncontrolled open state, disabled behavior, stable trigger and panel anatomy, tokenized height motion, and explicit native details guidance."
-    },
-    {
-      "name": "Accordion",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "data-display",
-      "status": "implemented-initial",
-      "description": "Client-only Base UI grouped disclosure primitive with stable item values, single or multiple expansion, disabled items, semantic headings, tokenized height motion, and consumer-owned content."
     },
     {
       "name": "Card",

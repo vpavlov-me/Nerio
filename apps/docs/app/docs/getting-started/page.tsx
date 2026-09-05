@@ -49,8 +49,9 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>1.0.0-beta.1</code> is the current public beta. Unqualified installs and
-          the <code>beta</code> dist-tag both resolve to this coordinated version.
+          Nerio Core <code>1.0.0</code> is the prepared stable candidate; it is not published yet.
+          Until the separately approved release, unqualified installs and the <code>beta</code>{" "}
+          dist-tag resolve to <code>1.0.0-beta.1</code>.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />

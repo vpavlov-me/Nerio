@@ -99,7 +99,7 @@ test("links the homepage badge to the latest changelog post", async ({ page }) =
   await expect(latestPost.locator('[data-slot="leading-icon"]')).toHaveCount(0);
   await latestPost.click();
   await expect(page).toHaveURL(new RegExp(`${latestPostHref}$`));
-  await expect(page.getByRole("heading", { name: latestPostTitle })).toBeVisible();
+  await expect(page.getByRole("heading", { name: latestPostTitle, exact: true })).toBeVisible();
   await expectHealthyPage(page, problems);
 });
 
@@ -385,82 +385,6 @@ test("keeps Command to one preview and focuses only its search control", async (
   await expectHealthyPage(page, problems);
 });
 
-test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/docs/components/combobox");
-
-  const preview = page.getByRole("region", { name: "combobox preview" });
-  const input = preview.getByRole("combobox", { name: "City" });
-  const toggle = preview.getByRole("button", { name: "Toggle options" });
-  const listbox = page.getByRole("listbox");
-  await toggle.click();
-  await expect(listbox).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(listbox).toHaveCount(0);
-  await input.fill("tbi");
-  const option = page.getByRole("option", { name: "Tbilisi" });
-  await expect(option).toBeVisible();
-  await expect(page.getByRole("option", { name: "Paris" })).toHaveCount(0);
-  await page.keyboard.press("ArrowDown");
-  await page.keyboard.press("Enter");
-  await expect(input).toHaveValue("Tbilisi");
-
-  await preview.getByRole("button", { name: "Clear selection" }).click();
-  await expect(input).toHaveValue("");
-  await page.locator("html").evaluate((root) => {
-    root.dir = "rtl";
-  });
-  await toggle.click();
-  await expect(listbox).toBeVisible();
-  await expect(page.locator('[data-slot="content"]')).toHaveAttribute("data-align", "start");
-  await expectHealthyPage(page, problems);
-});
-
-test("keeps SearchField native query, clear focus, loading, RTL, and narrow layout bounded", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto("/docs/components/search-field");
-
-  const preview = page.getByRole("region", { name: "search-field preview" });
-  const input = preview.getByRole("searchbox", { name: "Search projects" });
-  await expect(input).toHaveAttribute("type", "search");
-  await expect(input).toHaveValue("Roadmap");
-  await preview.getByRole("button", { name: "Clear search" }).click();
-  await expect(input).toHaveValue("");
-  await expect(input).toBeFocused();
-  await input.fill("Nerio");
-  await input.press("Enter");
-  await expect(input).toHaveValue("Nerio");
-  await expect(preview.getByRole("status")).toContainText("Searching activity");
-
-  await page.locator("html").evaluate((root) => {
-    root.dir = "rtl";
-  });
-  const positions = await preview
-    .locator('[data-slot="input-group"]')
-    .first()
-    .evaluate((group) => {
-      const searchIcon = group.querySelector('[data-slot="search-icon"]')?.getBoundingClientRect();
-      const clear = group.querySelector('[data-slot="clear"]')?.getBoundingClientRect();
-      const bounds = group.getBoundingClientRect();
-      return searchIcon && clear
-        ? {
-            clearCenter: clear.left + clear.width / 2,
-            iconCenter: searchIcon.left + searchIcon.width / 2,
-            overflow: group.scrollWidth - bounds.width,
-          }
-        : null;
-    });
-  expect(positions).not.toBeNull();
-  expect(positions.iconCenter).toBeGreaterThan(positions.clearCenter);
-  expect(positions.overflow).toBeLessThanOrEqual(1);
-  await expectHealthyPage(page, problems);
-});
-
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");
@@ -473,25 +397,6 @@ test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
       .getByRole("complementary", { name: "On this page" })
       .getByRole("link", { name: "Preview", exact: true }),
   ).toHaveCount(0);
-  await expectHealthyPage(page, problems);
-});
-
-test("keeps AlertDialog conservative and focuses the safe action", async ({ page }) => {
-  const problems = monitorPage(page);
-  await page.goto("/docs/components/alert-dialog");
-
-  const trigger = page.getByRole("button", { name: "Delete project" }).first();
-  await trigger.click();
-  const dialog = page.getByRole("alertdialog", { name: "Delete project?" });
-  const cancel = dialog.getByRole("button", { name: "Cancel" });
-  await expect(dialog).toBeVisible();
-  await expect(cancel).toBeFocused();
-
-  await page.mouse.click(8, 8);
-  await expect(dialog).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(dialog).toBeHidden();
-  await expect(trigger).toBeFocused();
   await expectHealthyPage(page, problems);
 });
 
@@ -697,7 +602,6 @@ test("keeps canonical foundation discovery ordered and aliases non-competing", a
     "Spacing & layout",
     "Themes",
     "Accessibility",
-    "Localization",
     "Radius",
     "Effects",
     "Motion",
@@ -710,7 +614,6 @@ test("keeps canonical foundation discovery ordered and aliases non-competing", a
     "/docs/foundations/spacing-layout",
     "/docs/foundations/themes",
     "/docs/foundations/accessibility",
-    "/docs/foundations/localization",
     "/docs/foundations/radius",
     "/docs/foundations/effects",
     "/docs/foundations/motion",
@@ -774,11 +677,6 @@ test("discovers the Accessibility foundation through navigation and search", asy
       exact: true,
     }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Localization foundation" })).toHaveAttribute(
-    "href",
-    "/docs/foundations/localization",
-  );
-
   await page.getByRole("button", { name: "Search documentation" }).click();
   const search = page
     .getByRole("dialog", { name: "Search documentation" })

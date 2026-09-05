@@ -100,6 +100,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test:branch-policy
       - run: pnpm test:ci-scopes
+      - run: pnpm test:repo-artifacts
+      - run: pnpm validate:repo-artifacts
       - run: pnpm test:ui
       - run: pnpm test:a11y
       - run: pnpm test:catalog
@@ -117,6 +119,14 @@ jobs:
       - run: pnpm test:consumer:vite
       - run: pnpm build
       - run: pnpm validate:route-budgets
+      - name: Upload docs route bundle report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: docs-route-bundle-report-${{ needs.candidate.outputs.candidate_sha }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: artifacts/docs-route-bundle-report.json
 
   release_browser:
     name: release-browser-${{ matrix.engine }}
@@ -229,7 +239,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm validate:platform-support
-      - run: pnpm audit:prod
+      - name: Audit production dependencies (registry transport tolerated)
+        run: pnpm audit:prod --ignore-registry-errors
       - run: pnpm validate:package-budgets
       - run: pnpm validate:release:metadata
       - run: pnpm pack:check

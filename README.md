@@ -9,10 +9,11 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `1.0.0-beta.1` is the current public beta for the frozen Core 1.0 API. All six public
-> packages resolve from npm under both `latest` and `beta`; protected `alpha` remains on
-> `0.1.0-alpha.2`. External feedback and manual accessibility/device evidence remain required before
-> stable 1.0.
+> Status: `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API; it is not published.
+> npm `latest` and `beta` still resolve to `1.0.0-beta.1`, while protected `alpha` remains on
+> `0.1.0-alpha.2`. The bounded maintainer-run accessibility smoke is complete; stable publication
+> remains subject to separate explicit maintainer approval.
+> The broader device matrix and external-consumer program continue after stable publication.
 
 | Package                                     | npm                                                                                                                           | Purpose                                 |
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
@@ -110,7 +111,7 @@ not a runtime axis.
 
 ## Core scope
 
-The current beta establishes the token foundation and Core component categories: actions, forms,
+Core 1.0 establishes the token foundation and component categories: actions, forms,
 overlays, navigation, feedback, data display, layout primitives, and common reusable building
 blocks. The approved visual language remains neutral-first, compact, alpha-neutral, and restrained
 in its use of brand color.
@@ -133,8 +134,8 @@ their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
-Install the current coordinated release. Unqualified package requests resolve through npm
-`latest`, which tracks the newest public Nerio version:
+The prepared candidate is version-pinned in the lifecycle examples below. Until approved stable
+publication, unqualified package requests resolve through npm `latest` to `1.0.0-beta.1`:
 
 ```bash
 pnpm add @nerio-ui/ui @nerio-ui/tokens @nerio-ui/adapters
@@ -173,11 +174,12 @@ import "@nerio-ui/ui/styles.css";
 
 ## Registry CLI
 
-Install the version-aligned Registry and CLI in the consuming project. The `nerio` CLI then installs
-editable source files through the project-local bin:
+The commands below pin the prepared `1.0.0` Registry and CLI candidate for packed release
+verification. They become public npm commands only after the separately approved publication. The
+`nerio` CLI installs editable source files through the project-local bin:
 
 ```bash
-pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1
+pnpm add -D @nerio-ui/registry@1.0.0 @nerio-ui/cli@1.0.0
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
@@ -189,8 +191,8 @@ pnpm exec nerio doctor
 ```
 
 For one-off initialization or installation, use the real package name:
-`pnpm dlx @nerio-ui/cli@1.0.0-beta.1 init` or
-`pnpm dlx @nerio-ui/cli@1.0.0-beta.1 add button`. Prefer the local installation for repeatable
+`pnpm dlx @nerio-ui/cli@1.0.0 init` or
+`pnpm dlx @nerio-ui/cli@1.0.0 add button`. Prefer the local installation for repeatable
 updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
@@ -220,28 +222,30 @@ imports, no-Preflight compatibility, and stale legacy CSS.
 
 ## MCP server
 
-Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@1.0.0-beta.1`, then configure the
-client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
-package-qualified one-off configuration may use command `pnpm` and arguments
-`["dlx", "@nerio-ui/mcp@1.0.0-beta.1"]`. The server version comes from coordinated package
+Install the packed read-only MCP candidate with `pnpm add -D @nerio-ui/mcp@1.0.0`, then configure
+the client to run its package-local bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`.
+After publication, a package-qualified one-off configuration may use command `pnpm` and arguments
+`["dlx", "@nerio-ui/mcp@1.0.0"]`. The server version comes from coordinated package
 metadata, and its Registry tools report the exact Registry version, source revision, schema, and
 style contract. Every tool declares an output schema and returns equivalent structured content and
 JSON text; missing components use the stable `COMPONENT_NOT_FOUND` error code.
 
-## Pre-release status
+## Stable candidate status
 
 The root workspace, apps, and `@nerio-ui/config` remain private. The public Core packages are
-`@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
+`@nerio-ui/tokens`, `@nerio-ui/adapters`, `@nerio-ui/ui`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The coordinated `1.0.0-beta.1` packages, Registry revision, CLI, and MCP server are published under
-npm `latest` and `beta` from the signed `v1.0.0-beta.1` release. Protected `alpha` remains on
-`0.1.0-alpha.2`. Public metadata, clean package/source installation, the CLI lifecycle, MCP startup,
-and a clean Next.js consumer were verified after publication. The external-feedback and manual
-accessibility/device gates remain open before stable documentation begins. The frozen contract is
-defined by the
-[public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
-[Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
+The coordinated `1.0.0` packages, Registry revision, CLI, and MCP server are prepared but not
+published. npm `latest` and `beta` remain on `1.0.0-beta.1`; protected `alpha` remains on
+`0.1.0-alpha.2`, and no `v1.0.0` tag or stable GitHub Release exists yet. Packed package/source,
+CLI, MCP, and clean-consumer verification belongs to the candidate gate. The bounded maintainer-run
+accessibility smoke is complete. Stable publication remains subject to separate explicit maintainer
+approval. The broader device matrix and external-consumer program continue after stable publication.
+The frozen contract is defined by the
+[public API stability policy](./docs/public-api-stability.md); beta.1 consumers should use the
+[Core 1.0 migration guide](./docs/migrations/beta-1-to-1-0.md). Consumers still on alpha should first
+follow the [alpha-to-beta guide](./docs/migrations/alpha-to-beta.md). See
 [RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), the
 [beta technical gap-closure report](./docs/core-1-0-beta-gap-closure.md), and the
 [beta feedback cycle](./docs/beta-feedback-cycle.md).

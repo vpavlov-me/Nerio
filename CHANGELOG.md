@@ -6,36 +6,20 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+## 1.0.0 — 2026-09-02
+
 ### Added
 
-- Added a bounded Core 1.1 SearchField on `dev` with native search semantics, one controlled or
-  uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events,
-  Field relationships, form/reset support, loading presentation, and localizable action/status
-  labels. Results, requests, debounce, filtering, ranking, routing, global shortcuts, analytics,
-  and product search workflows remain consumer or Pro responsibilities.
-- Added a bounded Core 1.1 single-select Combobox on `dev` with synchronous locale-aware filtering,
-  generic string value identity, options and composed-item modes, independent query, selection, and
-  popup state, form/reset support, groups, disabled items, clear behavior, and consumer-provided
-  empty and loading presentation. Fetching, debounce, ranking, creation, virtualization,
-  multi-selection, routing, analytics, and persistence remain consumer or Pro responsibilities.
-- Added additive compound Dialog anatomy and a separate AlertDialog confirmation primitive on
-  `dev`. The existing convenience Dialog remains compatible, while AlertDialog adds conservative
-  pointer-dismissal behavior, deliberate safe-action focus, explicit cancel/action boundaries,
-  Registry/source-install parity, and consumer-owned mutation policy. This Core 1.1 feature remains
-  outside the isolated Core 1.0 release candidate.
-- Added Core 1.1 Collapsible and Accordion primitives on `dev`, with bounded controlled and
-  uncontrolled disclosure state, single or multiple grouped expansion, disabled items, semantic
-  headings, tokenized height motion, RTL and reduced-motion support, Registry/source-install
-  parity, and explicit native `details`/`summary` guidance. This forward feature remains outside
-  the isolated Core 1.0 release candidate.
-- Added the Core 1.1 direction and localization contract on `dev`, including deterministic locale
-  defaults, consumer setup for HTML direction and Base UI behavior, audited component guidance,
-  public Foundation documentation, and machine-readable drift validation. This forward contract
-  remains outside the isolated Core 1.0 release candidate.
-- Added a deterministic source-backed foundation metadata projection and drift validator. Typography
-  and Themes now render token scales, presets, runtime mappings, and density aliases from canonical
-  CSS and catalog sources, while foundation navigation, search, sitemap, and `llms.txt` discovery
-  share one validated route contract.
+- Added a bounded maintainer-run accessibility smoke for stable 1.0, tied to one exact candidate SHA
+  and reviewed deployment. The broader assistive-technology and real-device matrix and the external
+  consumer program remain explicitly tracked as post-release work.
+- Added a repository artifact-retention policy and source-control validator so reproducible QA
+  reports and screenshots are regenerated when needed instead of being retained as release source.
+- Added source-backed Accessibility, Color, and Spacing & layout foundation pages plus a
+  deterministic foundation metadata projection and drift validator. Typography and Themes now
+  render token scales, presets, runtime mappings, and density aliases from canonical CSS and
+  catalog sources, while foundation navigation, search, sitemap, and `llms.txt` discovery share one
+  validated route contract.
 - Added a public documentation changelog with the official Nerio X announcement and summaries of
   every published Core release. Each release now renders its canonical Added, Changed, Fixed, and
   Migration notes directly from this file so the public page cannot drift from the technical
@@ -43,32 +27,22 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Prepared all six public packages, the immutable Registry identity, CLI and MCP metadata,
+  version-pinned installation commands, and candidate documentation for coordinated `1.0.0`. This
+  preparation does not publish packages, move npm dist-tags, create `v1.0.0`, or publish a stable
+  GitHub Release.
+- Updated the stable publication flow to stage all six coordinated packages under the non-default
+  `stable` dist-tag before moving only `latest`; protected `alpha` and `beta` remain unchanged, and
+  partial publication recovers through the next coordinated patch version.
+- Refined the maintainer-only Playground appearance controls and component canvas so experiments
+  stay local to the preview, scenarios keep their full content, and light and dark presentations
+  remain aligned with the canonical runtime axes.
 - Raised the raw token CSS ceiling from 75,000 to 83,000 bytes and its gzip ceiling from 11,000
   to 11,500 bytes for the canvas-scoped theme selectors and complete semantic token axes used by
-  the refreshed Playground. The measured stylesheet is 82,040 raw bytes and 11,081 gzip bytes;
+  the refreshed Playground. In the stable-only candidate the measured stylesheet is 79,688 raw
+  bytes and 10,744 gzip bytes. The shared documentation CSS measures 348,636 bytes, so its route
+  ceiling moves from 346,112 to 352,733 bytes with the policy's 4 KiB maintenance headroom;
   package tarball, unpacked, residual CSS, and named-import bundle ceilings remain unchanged.
-- Raised the UI tarball ceiling from 76,000 to 78,000 bytes for the additive SearchField source;
-  the measured tarball is 76,291 bytes. The Registry tarball ceiling moves from 34,000 to 36,000
-  bytes for the new installable metadata, measured at 34,486 bytes. Existing unpacked, CSS,
-  named-import bundle, and runtime ceilings remain unchanged.
-- Raised the UI tarball ceiling from 72,000 to 76,000 bytes for the additive Combobox source; the
-  measured tarball is 74,722 bytes. Existing unpacked, CSS, named-import bundle, and runtime
-  ceilings remain unchanged.
-- Raised only the measured documentation route JS and deterministic transfer ceilings needed for
-  the public Combobox API, preview, and reference metadata. The largest affected route is `/` at
-  787,214 raw JS bytes and 290,484 gzip-transfer bytes; CSS and browser-runtime ceilings remain
-  unchanged.
-- Raised the UI tarball ceiling from 70,000 to 72,000 bytes for the additive Dialog compound API
-  and separate AlertDialog source; the measured tarball is 70,585 bytes. Existing unpacked, CSS,
-  named-import bundle, and runtime ceilings remain unchanged.
-- Raised the root documentation route JS ceiling from 752,640 to 764,000 bytes for the new public
-  AlertDialog export and isolated preview chunk; the measured production manifest is 759,535 bytes.
-  CSS, deterministic transfer, and browser runtime ceilings remain unchanged.
-- Raised only the measured additive budgets needed for the disclosure family: the UI tarball is
-  68,421 bytes against a 70,000-byte ceiling, the Registry tarball is 32,079 bytes against a
-  34,000-byte ceiling, raw token CSS is 74,025 bytes against a 75,000-byte ceiling, and shared docs
-  CSS is 346,903 bytes against a 350,208-byte ceiling. Named-import bundle probes and existing
-  unpacked, gzip, and runtime ceilings remain within their prior limits.
 - Updated the exact `@base-ui/react` runtime pin from 1.6.0 to 1.7.0 after reviewing the current
   public primitive inventory and validating the UI, accessibility, browser, and packed-consumer
   contracts. Nerio-owned public props and event-detail aliases remain unchanged.
@@ -87,6 +61,17 @@ Items under `Unreleased` may change before the next public release.
   ceiling moves from 65,500 to 67,000 bytes. The measured CLI tarball grows to 19,377 bytes, so its
   tarball and unpacked ceilings move from 19,000 to 20,000 bytes and from 80,000 to 82,000 bytes;
   runtime source and bundle budgets are unchanged.
+
+### Fixed
+
+- Hardened the stable accessibility evidence contract so incomplete, inconsistent, stale, or
+  non-evidence records cannot produce a `release-ready` decision for the stable candidate.
+
+### Migration
+
+- Upgrade all six coordinated packages from `1.0.0-beta.1` to `1.0.0` together and follow
+  [`docs/migrations/beta-1-to-1-0.md`](./docs/migrations/beta-1-to-1-0.md). Stable 1.0 introduces no
+  new breaking removals relative to beta.1.
 
 ## 1.0.0-beta.1 — 2026-08-09
 

@@ -1,15 +1,15 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const metadataPath = resolve(root, "quality/release-metadata.json");
 const packagePaths = {
   "@nerio-ui/tokens": "packages/tokens/package.json",
   "@nerio-ui/adapters": "packages/adapters/package.json",
-  "@nerio-ui/registry": "packages/registry/package.json",
   "@nerio-ui/ui": "packages/ui/package.json",
+  "@nerio-ui/registry": "packages/registry/package.json",
   "@nerio-ui/cli": "packages/cli/package.json",
   "@nerio-ui/mcp": "packages/mcp/package.json",
 };
@@ -50,6 +50,91 @@ function validateVersion(value, label) {
   );
 }
 
+export function releaseSemanticsForVersion(version) {
+  validateVersion(version, "prepared version");
+  const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(alpha|beta)\.(0|[1-9]\d*))?$/.exec(
+    version,
+  );
+  assert(
+    match,
+    "Prepared version must be stable SemVer or use an alpha.<number> or beta.<number> prerelease.",
+  );
+
+  const [, major, minor, patch, prereleaseChannel, prereleaseNumber] = match;
+  const channel = prereleaseChannel ?? "stable";
+  const stableLabel = patch === "0" ? `${major}.${minor}` : `${major}.${minor}.${patch}`;
+
+  return {
+    channel,
+    migrationTarget: version,
+    protectedDistTags: ["alpha", "beta"].filter((tag) => tag !== channel),
+    docsStatusLabel:
+      channel === "stable"
+        ? `Prepared stable ${stableLabel} candidate`
+        : `Prepared ${channel}.${prereleaseNumber} candidate`,
+  };
+}
+
+export function replaceExactVersion(source, currentVersion, nextVersion) {
+  const exactVersion = exactVersionPattern(currentVersion, "g");
+  return source.replace(exactVersion, (_match, prefix) => `${prefix}${nextVersion}`);
+}
+
+function exactVersionPattern(version, flags = "") {
+  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![0-9A-Za-z.-])(v?)${escapedVersion}(?![0-9A-Za-z.-])`, flags);
+}
+
+export function containsExactVersion(source, version) {
+  return exactVersionPattern(version).test(source);
+}
+
+export function replaceCliPackageVersions(source, currentVersion, nextVersion) {
+  return source
+    .replaceAll(`@nerio-ui/registry@${currentVersion}`, `@nerio-ui/registry@${nextVersion}`)
+    .replaceAll(`@nerio-ui/cli@${currentVersion}`, `@nerio-ui/cli@${nextVersion}`);
+}
+
+export function assertCoordinatedReleaseSemantics(metadata) {
+  const expected = releaseSemanticsForVersion(metadata.coreVersion);
+  const publishedStatusLabel = expected.docsStatusLabel
+    .replace(/^Prepared /, "Published ")
+    .replace(/ candidate$/, "");
+  assert(
+    metadata.channel === expected.channel,
+    `channel must match the ${expected.channel} channel derived from coreVersion.`,
+  );
+  assert(
+    metadata.registryVersion === metadata.coreVersion,
+    "registryVersion must match the coordinated coreVersion.",
+  );
+  assert(
+    metadata.migrationTarget === expected.migrationTarget,
+    "migrationTarget must match the coordinated coreVersion.",
+  );
+  assert(
+    JSON.stringify(metadata.protectedDistTags) === JSON.stringify(expected.protectedDistTags),
+    "Protected dist-tags must match the release channel semantics.",
+  );
+  assert(
+    [expected.docsStatusLabel, publishedStatusLabel].includes(metadata.docsStatusLabel),
+    "docsStatusLabel must identify the prepared candidate or published release for coreVersion.",
+  );
+}
+
+export function assertDependencyAwarePackageOrder(packages, manifests) {
+  const packageOrder = new Map(packages.map((name, index) => [name, index]));
+  for (const manifest of manifests) {
+    for (const dependency of Object.keys(manifest.dependencies ?? {})) {
+      if (!packageOrder.has(dependency)) continue;
+      assert(
+        packageOrder.get(dependency) < packageOrder.get(manifest.name),
+        `${dependency} must precede dependent package ${manifest.name} in publication order.`,
+      );
+    }
+  }
+}
+
 export function validateReleaseMetadata() {
   const metadata = readJson("quality/release-metadata.json");
   validateVersion(metadata.coreVersion, "coreVersion");
@@ -61,6 +146,7 @@ export function validateReleaseMetadata() {
     "channel must be alpha, beta, or stable.",
   );
   assert(metadata.defaultDistTag === "latest", "defaultDistTag must be latest.");
+  assertCoordinatedReleaseSemantics(metadata);
   assert(
     metadata.registrySourceRevision === `v${metadata.registryVersion}`,
     "Registry source revision must be the immutable v-prefixed Registry version.",
@@ -79,14 +165,17 @@ export function validateReleaseMetadata() {
     "The default dist-tag must move with the newest coordinated publication.",
   );
 
+  const manifests = [];
   for (const [name, path] of Object.entries(packagePaths)) {
     const manifest = readJson(path);
+    manifests.push(manifest);
     assert(manifest.name === name, `${path} has an unexpected package name.`);
     assert(
       manifest.version === metadata.coreVersion,
       `${name} must use coordinated version ${metadata.coreVersion}.`,
     );
   }
+  assertDependencyAwarePackageOrder(metadata.packages, manifests);
 
   const registry = readJson("packages/registry/src/manifest.json");
   assert(
@@ -104,7 +193,7 @@ export function validateReleaseMetadata() {
 
   for (const path of activeVersionSurfaces) {
     assert(
-      read(path).includes(metadata.publicInstallationVersion),
+      containsExactVersion(read(path), metadata.publicInstallationVersion),
       `${path} must include the current public installation version.`,
     );
   }
@@ -113,7 +202,7 @@ export function validateReleaseMetadata() {
 }
 
 function replacementPlan(nextVersion) {
-  validateVersion(nextVersion, "prepared version");
+  const releaseSemantics = releaseSemanticsForVersion(nextVersion);
   const metadata = validateReleaseMetadata();
   assert(
     nextVersion !== metadata.coreVersion,
@@ -124,6 +213,7 @@ function replacementPlan(nextVersion) {
   next.registryVersion = nextVersion;
   next.registrySourceRevision = `v${nextVersion}`;
   next.publicInstallationVersion = nextVersion;
+  Object.assign(next, releaseSemantics);
 
   const replacements = new Map([[metadataPath, formattedJson(next)]]);
   for (const path of Object.values(packagePaths)) {
@@ -141,9 +231,12 @@ function replacementPlan(nextVersion) {
 
   for (const path of activeVersionSurfaces) {
     const absolute = resolve(root, path);
+    const source = readFileSync(absolute, "utf8");
     replacements.set(
       absolute,
-      readFileSync(absolute, "utf8").replaceAll(metadata.coreVersion, nextVersion),
+      path === "packages/cli/src/index.js"
+        ? replaceCliPackageVersions(source, metadata.coreVersion, nextVersion)
+        : replaceExactVersion(source, metadata.coreVersion, nextVersion),
     );
   }
   return replacements;
@@ -164,19 +257,23 @@ function printPlan(replacements) {
   return changes;
 }
 
-const [command, version, writeFlag] = process.argv.slice(2);
-if (!command || command === "validate") {
-  const metadata = validateReleaseMetadata();
-  console.log(`Release metadata is aligned for ${metadata.coreVersion} (${metadata.channel}).`);
-} else if (command === "prepare" && version) {
-  const replacements = replacementPlan(version);
-  const changes = printPlan(replacements);
-  if (writeFlag === "--write") {
-    for (const [path, content] of replacements) writeFileSync(path, content);
-    console.log(`Applied ${changes.length} coordinated version update(s) after the dry-run diff.`);
-  } else if (writeFlag) {
-    throw new Error("Usage: release-metadata.mjs prepare <version> [--write]");
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const [command, version, writeFlag] = process.argv.slice(2);
+  if (!command || command === "validate") {
+    const metadata = validateReleaseMetadata();
+    console.log(`Release metadata is aligned for ${metadata.coreVersion} (${metadata.channel}).`);
+  } else if (command === "prepare" && version) {
+    const replacements = replacementPlan(version);
+    const changes = printPlan(replacements);
+    if (writeFlag === "--write") {
+      for (const [path, content] of replacements) writeFileSync(path, content);
+      console.log(
+        `Applied ${changes.length} coordinated version update(s) after the dry-run diff.`,
+      );
+    } else if (writeFlag) {
+      throw new Error("Usage: release-metadata.mjs prepare <version> [--write]");
+    }
+  } else {
+    throw new Error("Usage: release-metadata.mjs [validate | prepare <version> [--write]]");
   }
-} else {
-  throw new Error("Usage: release-metadata.mjs [validate | prepare <version> [--write]]");
 }

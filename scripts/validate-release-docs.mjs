@@ -34,6 +34,8 @@ const requiredReleaseCommands = [
   "pnpm typecheck",
   "pnpm test:branch-policy",
   "pnpm test:ci-scopes",
+  "pnpm test:repo-artifacts",
+  "pnpm validate:repo-artifacts",
   "pnpm test:ui",
   "pnpm test:a11y",
   "pnpm test:catalog",
@@ -78,31 +80,58 @@ const requiredReleaseCommands = [
   "pnpm pack:check",
 ];
 
+const requiredReadinessSections = [
+  "# Core 1.0 release readiness",
+  "## Decision",
+  "## Candidate identity",
+  "## Scope and contract",
+  "## Package, Registry, and supply-chain evidence",
+  "## Consumer and migration evidence",
+  "## Browser, visual, performance, and human evidence",
+  "## Documentation and governance evidence",
+  "## Known non-blocking limitations",
+  "## Publication plan",
+  "## Verification and rollback",
+];
+
+const allowedReadinessDecisions = [
+  "**Pending exact candidate evidence.**",
+  "**Ready for separately approved manual `1.0.0` release.**",
+  "**Blocked before 1.0.**",
+];
+
 const paths = parsePathOptions(process.argv.slice(2), {
   "--changelog": resolve(root, "CHANGELOG.md"),
   "--release": resolve(root, "RELEASE.md"),
+  "--readiness": resolve(root, "docs/core-1-0-release-readiness.md"),
   "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
   "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
   "--branch-policy": resolve(root, ".github/workflows/branch-policy.yml"),
   "--playwright-canary": resolve(root, ".github/workflows/playwright-canary.yml"),
 });
 
-const [changelog, release, prGate, releaseGate, branchPolicy, playwrightCanary] = await Promise.all(
-  [
+const [changelog, release, readiness, prGate, releaseGate, branchPolicy, playwrightCanary] =
+  await Promise.all([
     readFile(paths["--changelog"], "utf8"),
     readFile(paths["--release"], "utf8"),
+    readFile(paths["--readiness"], "utf8"),
     readFile(paths["--pr-gate"], "utf8"),
     readFile(paths["--release-gate"], "utf8"),
     readFile(paths["--branch-policy"], "utf8"),
     readFile(paths["--playwright-canary"], "utf8"),
-  ],
-);
+  ]);
 
 const missingChangelogHeadings = requiredChangelogHeadings.filter(
   (heading) => !changelog.includes(heading),
 );
 const missingReleaseCommands = requiredReleaseCommands.filter(
   (command) => !release.includes(command),
+);
+const missingReadinessSections = requiredReadinessSections.filter(
+  (section) => !readiness.includes(section),
+);
+const readinessDecisions = allowedReadinessDecisions.filter((decision) =>
+  readiness.includes(decision),
 );
 const workflowFailures = ciWorkflowContractFailures({
   prGate,
@@ -111,13 +140,27 @@ const workflowFailures = ciWorkflowContractFailures({
   playwrightCanary,
 });
 
-if (missingChangelogHeadings.length || missingReleaseCommands.length || workflowFailures.length) {
+if (
+  missingChangelogHeadings.length ||
+  missingReleaseCommands.length ||
+  missingReadinessSections.length ||
+  readinessDecisions.length !== 1 ||
+  workflowFailures.length
+) {
   if (missingChangelogHeadings.length) {
     console.error(`CHANGELOG.md is missing: ${missingChangelogHeadings.join(", ")}`);
   }
 
   if (missingReleaseCommands.length) {
     console.error(`RELEASE.md is missing: ${missingReleaseCommands.join(", ")}`);
+  }
+
+  if (missingReadinessSections.length) {
+    console.error(`Core 1.0 readiness report is missing: ${missingReadinessSections.join(", ")}`);
+  }
+
+  if (readinessDecisions.length !== 1) {
+    console.error("Core 1.0 readiness report must contain exactly one allowed decision.");
   }
 
   if (workflowFailures.length) {

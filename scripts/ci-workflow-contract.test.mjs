@@ -37,14 +37,51 @@ test("requires all supported release browser engines", () => {
 
 test("requires the production dependency audit in the release gate", () => {
   const sources = readCiWorkflowSources(root);
-  sources.releaseGate = sources.releaseGate.replace("      - run: pnpm audit:prod\n", "");
+  sources.releaseGate = sources.releaseGate.replace(
+    "        run: pnpm audit:prod --ignore-registry-errors\n",
+    "",
+  );
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
-      `${ciWorkflowPaths.releaseGate}: missing pnpm audit:prod`,
+      `${ciWorkflowPaths.releaseGate}: missing pnpm audit:prod --ignore-registry-errors`,
     ),
   );
 });
 
+test("keeps registry transport tolerance out of the strict publication audit", () => {
+  const manifest = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
+  const release = readFileSync(resolve(root, "RELEASE.md"), "utf8");
+  assert.equal(manifest.scripts["audit:prod"], "pnpm audit --prod --audit-level low");
+  assert.match(release, /pre-merge release workflow appends `--ignore-registry-errors`/);
+  assert.match(release, /pnpm still performs its bounded\s+registry retries/);
+  assert.match(
+    release,
+    /Immediately before publication approval in #151, run the bare `pnpm audit:prod`/,
+  );
+});
+
+test("requires the repository artifact guard in the development gate", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate.replace("      - run: pnpm validate:repo-artifacts\n", "");
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: missing pnpm validate:repo-artifacts`,
+    ),
+  );
+});
+
+test("retains the route bundle diagnostic from the existing docs build", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.prGate = sources.prGate.replace(
+    "docs-route-bundle-report-${{ github.event.pull_request.head.sha }}",
+    "missing-route-report-artifact",
+  );
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.prGate}: missing docs-route-bundle-report-\${{ github.event.pull_request.head.sha }}`,
+    ),
+  );
+});
 test("keeps each workflow on its intended pull-request base", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate = sources.prGate.replace("      - dev", "      - main");

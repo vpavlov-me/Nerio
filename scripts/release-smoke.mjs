@@ -12,12 +12,13 @@ import {
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { containsExactVersion } from "./release-metadata.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const packageNames = [
   "@nerio-ui/tokens",
-  "@nerio-ui/ui",
   "@nerio-ui/adapters",
+  "@nerio-ui/ui",
   "@nerio-ui/registry",
   "@nerio-ui/cli",
   "@nerio-ui/mcp",
@@ -180,7 +181,7 @@ function validatePackedPackage(name, tarball) {
     throw new Error(`${name} must include a package README.`);
   }
   const packageReadme = run("tar", ["-xOf", tarball, "package/README.md"]);
-  if (!packageReadme.includes(name) || !packageReadme.includes(expectedVersion)) {
+  if (!packageReadme.includes(name) || !containsExactVersion(packageReadme, expectedVersion)) {
     throw new Error(`${name} README must identify the package and coordinated version.`);
   }
   assertKeys(name, "exports", packageJson.exports, contract.exports);

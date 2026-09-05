@@ -4,8 +4,8 @@ This policy applies to the coordinated Core packages:
 
 - `@nerio-ui/tokens`
 - `@nerio-ui/adapters`
-- `@nerio-ui/registry`
 - `@nerio-ui/ui`
+- `@nerio-ui/registry`
 - `@nerio-ui/cli`
 - `@nerio-ui/mcp`
 

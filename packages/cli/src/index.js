@@ -107,9 +107,9 @@ function help(commandName) {
       "  nerio info     Show metadata for one component",
       "  nerio doctor   Validate configuration and registry metadata",
       "",
-      "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
+      "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0 @nerio-ui/cli@1.0.0",
       "Run local commands with: pnpm exec nerio <command> [options]",
-      "One-off example: pnpm dlx @nerio-ui/cli@1.0.0-beta.1 init",
+      "One-off example: pnpm dlx @nerio-ui/cli@1.0.0 init",
       "",
       "Run nerio <command> --help for command options.",
     ],
@@ -670,10 +670,15 @@ function activeLockArtifact(target) {
   }
   const now = Date.now();
   if (now - stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return true;
-  if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
-  else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
-    fs.rmSync(target);
-    return false;
+  try {
+    if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
+    else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+      fs.rmSync(target);
+      return false;
+    }
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
   }
   return true;
 }

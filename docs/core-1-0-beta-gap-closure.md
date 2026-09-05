@@ -24,7 +24,7 @@ change `main`; those separately authorized publication actions occurred afterwar
 | Change window                | 154 files, 12,857 insertions, 2,760 deletions                                                       |
 | Prepared version             | `1.0.0-beta.1` across all six public packages                                                       |
 | Published version            | npm `beta` resolves to `1.0.0-beta.1`                                                               |
-| Manual accessibility gate    | [#143](https://github.com/vpavlov-me/Nerio/issues/143), open; evidence pending                      |
+| Manual accessibility gate    | [#143](https://github.com/vpavlov-me/Nerio/issues/143), closed; scoped smoke release-ready          |
 | External beta gate           | [#146](https://github.com/vpavlov-me/Nerio/issues/146), open; evidence pending                      |
 
 The report itself follows the verified candidate as documentation-only evidence. The exact
@@ -270,12 +270,11 @@ At the time of beta.1, technical automation could not close either human evidenc
 stable 1.0 plan later narrowed the publication prerequisite to the maintainer-run smoke recorded in
 `quality/stable-accessibility-smoke.json`; the broader work below continues after stable:
 
-- [#143](https://github.com/vpavlov-me/Nerio/issues/143) remains open with
-  `manual-evidence-pending`. The broader post-release audit still requires a locked candidate plus real VoiceOver, NVDA,
-  TalkBack, physical iOS/Android device, 200%/400% zoom and reflow, reduced-motion, high-contrast,
-  native-control, and scenario-level evidence. The issue was reopened because its canonical record
-  had no candidate, CI/Vercel lock, environment results, finding dispositions, or allowed final
-  decision.
+- [#143](https://github.com/vpavlov-me/Nerio/issues/143) later closed with the bounded stable smoke
+  recorded as `release-ready`. The broader post-release audit moved to
+  [#585](https://github.com/vpavlov-me/Nerio/issues/585) and still requires a locked candidate plus
+  real VoiceOver, NVDA, TalkBack, physical iOS/Android device, 200%/400% zoom and reflow,
+  reduced-motion, high-contrast, native-control, and scenario-level evidence.
 - [#146](https://github.com/vpavlov-me/Nerio/issues/146) remains open for the external feedback
   window, at least three independent consumers, package and source modes, date controls, Registry
   update evidence, and finding dispositions.
@@ -294,4 +293,5 @@ truthful until their post-release programs close.
 - Vite evidence covers the maintained fixture, not every Vite/plugin combination.
 - Windows and mobile operating systems do not have native CI runners; their assistive-technology
   and real-device claims remain manual.
-- No automated result in this report substitutes for the human evidence tracked by #143 or #146.
+- No automated result in this report substitutes for the broader human evidence tracked by #585 or
+  #146.

@@ -73,33 +73,10 @@ import {
   Textarea,
 } from "../../src/index";
 import {
-  Accordion,
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogBackdrop,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogPortal,
-  AlertDialogTitle,
-  AlertDialogTrigger,
   Button,
   Calendar,
   type CalendarDate,
   Checkbox,
-  Combobox,
-  ComboboxGroup,
-  ComboboxGroupLabel,
-  ComboboxItem,
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
   Command,
   CommandEmpty,
   CommandInput,
@@ -107,24 +84,13 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
-  DialogBackdrop,
-  DialogBody,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogPortal,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
   DatePicker,
   DropdownMenu,
   LabelHint,
   Popover,
   RadioGroup,
   RadioGroupItem,
-  SearchField,
   Select,
   SelectGroup,
   SelectGroupLabel,
@@ -2223,7 +2189,9 @@ describe("Core static contracts", () => {
     );
 
     const viewport = screen.getByRole("region", { name: "RTL notifications" });
-    expect(viewport).toHaveClass("[inset-inline-end:var(--toast-viewport-inline-inset)]");
+    expect(viewport).toHaveClass(
+      "right-[max(var(--n-toast-viewport-inset),env(safe-area-inset-right))]",
+    );
     expect(viewport).not.toHaveClass("left-1/2", "-translate-x-1/2");
   });
 
@@ -2817,94 +2785,6 @@ describe("Core interactive action contracts", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
   });
 
-  it("supports compound Dialog anatomy without changing Base UI focus behavior", async () => {
-    const user = userEvent.setup();
-    render(
-      <DialogRoot>
-        <DialogTrigger render={<Button>Open composed dialog</Button>} />
-        <DialogPortal>
-          <DialogBackdrop />
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Move collection</DialogTitle>
-              <DialogDescription>Choose a destination workspace.</DialogDescription>
-            </DialogHeader>
-            <DialogBody>Destination picker</DialogBody>
-            <DialogFooter>
-              <DialogClose render={<Button variant="secondary">Cancel</Button>} />
-            </DialogFooter>
-          </DialogContent>
-        </DialogPortal>
-      </DialogRoot>,
-    );
-
-    const trigger = screen.getByRole("button", { name: "Open composed dialog" });
-    await user.click(trigger);
-    const dialog = await screen.findByRole("dialog", { name: "Move collection" });
-    expect(dialog).toHaveAttribute("aria-describedby");
-    expect(within(dialog).getByText("Destination picker")).toHaveAttribute("data-slot", "body");
-    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(trigger).toHaveFocus();
-  });
-
-  it("keeps AlertDialog conservative and focuses the safe response", async () => {
-    const user = userEvent.setup();
-    const onAction = vi.fn();
-
-    function Confirmation() {
-      const cancelRef = React.useRef<HTMLButtonElement>(null);
-      return (
-        <AlertDialog>
-          <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />
-          <AlertDialogPortal>
-            <AlertDialogBackdrop data-testid="alert-backdrop" />
-            <AlertDialogContent initialFocus={cancelRef}>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete project?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This permanently removes the project and cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel
-                  ref={cancelRef}
-                  render={<Button variant="secondary">Cancel</Button>}
-                />
-                <AlertDialogAction
-                  render={
-                    <Button variant="danger" onClick={onAction}>
-                      Delete project
-                    </Button>
-                  }
-                />
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogPortal>
-        </AlertDialog>
-      );
-    }
-
-    render(<Confirmation />);
-    const trigger = screen.getByRole("button", { name: "Delete project" });
-    await user.click(trigger);
-    const alertDialog = await screen.findByRole("alertdialog", { name: "Delete project?" });
-    expect(alertDialog.querySelector('[data-slot="header"]')).toHaveClass(
-      "flex-col",
-      "justify-start",
-      "gap-(--n-dialog-header-gap)",
-    );
-    await waitFor(() =>
-      expect(within(alertDialog).getByRole("button", { name: "Cancel" })).toHaveFocus(),
-    );
-    await user.click(screen.getByTestId("alert-backdrop"));
-    expect(screen.getByRole("alertdialog", { name: "Delete project?" })).toBeInTheDocument();
-    await user.click(within(alertDialog).getByRole("button", { name: "Delete project" }));
-    expect(onAction).toHaveBeenCalledOnce();
-    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
-    expect(trigger).toHaveFocus();
-  });
-
   it("supports controlled Select values, labels, descriptions, and invalid state", () => {
     render(
       <Select
@@ -3066,7 +2946,7 @@ describe("Core interactive action contracts", () => {
     await user.click(trigger);
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
-    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("renders Select size hooks, an empty state, and constrained popup styling", async () => {
@@ -3085,297 +2965,6 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("No options available.")).toHaveAttribute("data-slot", "empty");
     expect(document.querySelector(".n-select-positioner")).toBeInTheDocument();
     expect(document.querySelector(".n-select-list")).toBeInTheDocument();
-  });
-
-  it("keeps Combobox query, value, open, form, and reset state independently owned", async () => {
-    const user = userEvent.setup();
-    const valueChanges = vi.fn();
-    const queryChanges = vi.fn();
-    const openChanges = vi.fn();
-    const { container } = render(
-      <form
-        onReset={(event) => {
-          if (event.currentTarget.dataset.cancelReset === "true") event.preventDefault();
-          if (event.currentTarget.dataset.stopResetPropagation === "true") {
-            event.stopPropagation();
-          }
-        }}
-      >
-        <Combobox
-          defaultValue="paris"
-          label="City"
-          name="city"
-          onOpenChange={openChanges}
-          onQueryChange={queryChanges}
-          onValueChange={valueChanges}
-          options={[
-            { value: "paris", label: "Paris", textValue: "Paris" },
-            { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
-          ]}
-        />
-        <button type="reset">Reset</button>
-      </form>,
-    );
-
-    const input = screen.getByRole("combobox", { name: "City" });
-    expect(screen.getByRole("button", { name: "Clear selection" })).toHaveClass(
-      "forced-colors:focus-visible:outline-[Highlight]",
-    );
-    expect(screen.getByRole("button", { name: "Toggle options" })).toHaveClass(
-      "forced-colors:focus-visible:outline-[Highlight]",
-    );
-    expect(input).toHaveValue("Paris");
-    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
-    await user.clear(input);
-    await user.type(input, "tbi");
-    expect(queryChanges).toHaveBeenLastCalledWith(
-      "tbi",
-      expect.objectContaining({ reason: "input-change" }),
-    );
-    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
-    expect(valueChanges).toHaveBeenLastCalledWith(
-      "tbilisi",
-      expect.objectContaining({ reason: "item-press" }),
-    );
-    expect(openChanges).toHaveBeenCalled();
-    expect(new FormData(container.querySelector("form")!).get("city")).toBe("tbilisi");
-    await user.click(screen.getByRole("button", { name: "Reset" }));
-    await waitFor(() =>
-      expect(screen.getByRole("combobox", { name: "City" })).toHaveValue("Paris"),
-    );
-    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
-
-    await user.clear(input);
-    await user.type(input, "tbi");
-    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
-    const form = container.querySelector("form")!;
-    form.dataset.cancelReset = "true";
-    await user.click(screen.getByRole("button", { name: "Reset" }));
-    await act(async () => new Promise((resolve) => setTimeout(resolve, 0)));
-    expect(input).toHaveValue("Tbilisi");
-    expect(new FormData(form).get("city")).toBe("tbilisi");
-
-    delete form.dataset.cancelReset;
-    form.dataset.stopResetPropagation = "true";
-    await user.click(screen.getByRole("button", { name: "Reset" }));
-    await waitFor(() => expect(input).toHaveValue("Paris"));
-    expect(new FormData(form).get("city")).toBe("paris");
-  });
-
-  it("preserves pending Combobox resets across synchronous consumer rerenders", async () => {
-    const user = userEvent.setup();
-
-    function ResetRerenderCombobox() {
-      const [, rerender] = React.useReducer((count: number) => count + 1, 0);
-      return (
-        <form onReset={rerender}>
-          <Combobox
-            defaultValue="paris"
-            label="Rerender city"
-            options={[
-              { value: "paris", label: "Paris", textValue: "Paris" },
-              { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
-            ]}
-          />
-          <button type="reset">Reset rerender city</button>
-        </form>
-      );
-    }
-
-    render(<ResetRerenderCombobox />);
-    const input = screen.getByRole("combobox", { name: "Rerender city" });
-    await user.clear(input);
-    await user.type(input, "tbi");
-    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
-    await user.click(screen.getByRole("button", { name: "Reset rerender city" }));
-    await waitFor(() => expect(input).toHaveValue("Paris"));
-  });
-
-  it("resets Combobox state without replacing the focused input or reopening defaultOpen", async () => {
-    const user = userEvent.setup();
-    const { container } = render(
-      <form>
-        <Combobox
-          defaultOpen
-          defaultValue="paris"
-          label="Reset city"
-          name="city"
-          options={[
-            { value: "paris", label: "Paris", textValue: "Paris" },
-            { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
-          ]}
-        />
-      </form>,
-    );
-
-    const input = screen.getByRole("combobox", { name: "Reset city" });
-    await user.clear(input);
-    await user.type(input, "tbi");
-    await user.keyboard("{Escape}");
-    input.focus();
-    expect(input).toHaveFocus();
-
-    act(() => container.querySelector("form")!.reset());
-
-    await waitFor(() => expect(input).toHaveValue("Paris"));
-    expect(input).toHaveFocus();
-    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
-    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
-  });
-
-  it("filters Combobox by textValue and supports groups, composition, disabled items, empty, and loading", async () => {
-    const user = userEvent.setup();
-    const items = [
-      { value: "design", label: "Design systems", textValue: "Design systems" },
-      { value: "research", label: "Research", textValue: "User research", disabled: true },
-    ] as const;
-    const { rerender } = render(
-      <Combobox label="Discipline" items={items}>
-        <ComboboxGroup>
-          <ComboboxGroupLabel>Product</ComboboxGroupLabel>
-          <ComboboxItem value="design">Design systems</ComboboxItem>
-          <ComboboxItem disabled value="research">
-            Research
-          </ComboboxItem>
-        </ComboboxGroup>
-      </Combobox>,
-    );
-    const input = screen.getByRole("combobox", { name: "Discipline" });
-    await user.type(input, "user");
-    expect(await screen.findByRole("option", { name: "Research" })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    expect(screen.queryByRole("option", { name: "Design systems" })).not.toBeInTheDocument();
-    await user.clear(input);
-    await user.type(input, "missing");
-    expect(await screen.findByText("No matching options.")).toBeInTheDocument();
-
-    await user.keyboard("{Escape}");
-    rerender(<Combobox label="Discipline" loading options={items} />);
-    await user.click(screen.getByRole("combobox", { name: "Discipline" }));
-    expect(await screen.findByText("Loading options…")).toBeInTheDocument();
-    expect(document.querySelector('[data-slot="loading"]')).toHaveAttribute("role", "status");
-  });
-
-  it("keeps controlled Combobox state consumer-owned and exposes truthful read-only hooks", async () => {
-    const user = userEvent.setup();
-    const onValueChange = vi.fn();
-    const options = [{ value: "draft", label: "Draft", textValue: "Draft" }] as const;
-    const { rerender } = render(
-      <Combobox
-        label="Status"
-        onValueChange={onValueChange}
-        options={options}
-        readOnly
-        value="draft"
-      />,
-    );
-    const input = screen.getByRole("combobox", { name: "Status" });
-    expect(input).toHaveAttribute("readonly");
-    expect(input.closest('[data-slot="root"]')).toHaveAttribute("data-readonly", "");
-    await user.click(input);
-    expect(onValueChange).not.toHaveBeenCalled();
-    rerender(
-      <Combobox label="Status" onValueChange={onValueChange} options={options} value={null} />,
-    );
-    expect(input).toHaveValue("");
-  });
-
-  it("owns one SearchField query with bounded clear, search, form, and reset behavior", async () => {
-    const user = userEvent.setup();
-    const valueChanges = vi.fn();
-    const searches = vi.fn();
-    const inputRef = React.createRef<HTMLInputElement>();
-    const { container } = render(
-      <form
-        onReset={(event) => {
-          if (event.currentTarget.dataset.cancelReset === "true") event.preventDefault();
-        }}
-      >
-        <SearchField
-          id="project-search"
-          inputRef={inputRef}
-          label="Search projects"
-          description="Search by project name."
-          message="Results stay consumer-owned."
-          name="query"
-          defaultValue="Roadmap"
-          onSearch={searches}
-          onValueChange={valueChanges}
-        />
-        <button type="reset">Reset search</button>
-      </form>,
-    );
-
-    const input = screen.getByRole("searchbox", { name: "Search projects" });
-    expect(input).toBe(inputRef.current);
-    expect(input).toHaveAttribute("id", "project-search");
-    expect(screen.getByText("Search projects")).toHaveAttribute("for", "project-search");
-    expect(input).toHaveAttribute("type", "search");
-    expect(input).toHaveAttribute("aria-describedby");
-    expect(new FormData(container.querySelector("form")!).get("query")).toBe("Roadmap");
-
-    await user.clear(input);
-    await user.type(input, "Nerio");
-    expect(valueChanges).toHaveBeenLastCalledWith(
-      "Nerio",
-      expect.objectContaining({ reason: "input" }),
-    );
-    await user.keyboard("{Enter}");
-    expect(searches).toHaveBeenCalledWith("Nerio", expect.objectContaining({ reason: "enter" }));
-    searches.mockClear();
-    fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
-    expect(searches).not.toHaveBeenCalled();
-
-    await user.click(screen.getByRole("button", { name: "Clear search" }));
-    expect(valueChanges).toHaveBeenLastCalledWith("", expect.objectContaining({ reason: "clear" }));
-    expect(input).toHaveValue("");
-    expect(input).toHaveFocus();
-
-    await user.type(input, "Changed");
-    await user.click(screen.getByRole("button", { name: "Reset search" }));
-    await waitFor(() => expect(input).toHaveValue("Roadmap"));
-    expect(input).toBe(inputRef.current);
-
-    await user.clear(input);
-    await user.type(input, "Keep this query");
-    const form = container.querySelector("form")!;
-    form.dataset.cancelReset = "true";
-    await user.click(screen.getByRole("button", { name: "Reset search" }));
-    await waitFor(() => expect(input).toHaveValue("Keep this query"));
-  });
-
-  it("keeps controlled, disabled, read-only, invalid, and loading SearchField state truthful", async () => {
-    const user = userEvent.setup();
-    const onValueChange = vi.fn();
-    const { rerender } = render(
-      <SearchField
-        label="Search records"
-        value="Fixed"
-        onValueChange={onValueChange}
-        invalid
-        loading
-        loadingLabel="Loading records"
-      />,
-    );
-
-    const input = screen.getByRole("searchbox", { name: "Search records" });
-    expect(input).toHaveValue("Fixed");
-    expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toHaveAttribute("aria-busy", "true");
-    expect(screen.getByRole("status")).toHaveTextContent("Loading records");
-    await user.click(screen.getByRole("button", { name: "Clear search" }));
-    expect(onValueChange).toHaveBeenCalledWith("", expect.objectContaining({ reason: "clear" }));
-    expect(input).toHaveValue("Fixed");
-
-    rerender(<SearchField key="read-only" label="Search records" defaultValue="Fixed" readOnly />);
-    expect(screen.getByRole("searchbox", { name: "Search records" })).toHaveAttribute("readonly");
-    expect(screen.getByRole("button", { name: "Clear search" })).toBeDisabled();
-
-    rerender(<SearchField key="disabled" label="Search records" defaultValue="Fixed" disabled />);
-    expect(screen.getByRole("searchbox", { name: "Search records" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Clear search" })).toBeDisabled();
   });
 
   it("supports checkbox, radio group, and switch state contracts", async () => {
@@ -4790,43 +4379,6 @@ describe("Core interactive action contracts", () => {
     );
   });
 
-  it("inherits Sidebar direction by default and keeps the explicit override", async () => {
-    const previousDirection = document.documentElement.getAttribute("dir");
-    document.documentElement.dir = "rtl";
-    const view = render(
-      <SidebarProvider data-testid="inherited-sidebar-provider">
-        <Sidebar aria-label="Inherited direction sidebar" />
-      </SidebarProvider>,
-    );
-
-    try {
-      const provider = screen.getByTestId("inherited-sidebar-provider");
-      const sidebar = screen.getByRole("complementary", {
-        name: "Inherited direction sidebar",
-      });
-      await waitFor(() => expect(provider).toHaveAttribute("data-direction", "rtl"));
-      expect(provider).not.toHaveAttribute("dir");
-      expect(provider.className).toContain("[direction:ltr]");
-      const content = provider.querySelector('[data-slot="sidebar-provider-content"]');
-      expect(content).toHaveClass("contents");
-      expect(content?.className).toContain("[direction:var(--n-inherited-direction,ltr)]");
-      expect(sidebar).toHaveAttribute("data-direction", "rtl");
-
-      view.rerender(
-        <SidebarProvider data-testid="inherited-sidebar-provider" direction="ltr">
-          <Sidebar aria-label="Inherited direction sidebar" />
-        </SidebarProvider>,
-      );
-      expect(provider).toHaveAttribute("dir", "ltr");
-      expect(provider).toHaveAttribute("data-direction", "ltr");
-      expect(sidebar).toHaveAttribute("data-direction", "ltr");
-    } finally {
-      view.unmount();
-      if (previousDirection === null) document.documentElement.removeAttribute("dir");
-      else document.documentElement.setAttribute("dir", previousDirection);
-    }
-  });
-
   it("filters Command items, skips disabled values, and emits stable selections", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
@@ -5921,155 +5473,5 @@ describe("Core interactive action contracts", () => {
     expect(input).toHaveAttribute("type", "file");
     expect(input).toHaveAttribute("data-slot", "file-input");
     expect(screen.getByLabelText("Unavailable files")).toBeDisabled();
-  });
-
-  it("keeps Collapsible uncontrolled, controlled, disabled, ref, and hidden-panel contracts", async () => {
-    const user = userEvent.setup();
-    const rootRef = React.createRef<HTMLDivElement>();
-    const triggerRef = React.createRef<HTMLElement>();
-    const onOpenChange = vi.fn();
-    render(
-      <>
-        <Collapsible ref={rootRef} defaultOpen>
-          <CollapsibleTrigger ref={triggerRef}>Details</CollapsibleTrigger>
-          <CollapsiblePanel keepMounted>
-            <button type="button">Nested action</button>
-          </CollapsiblePanel>
-        </Collapsible>
-        <Collapsible disabled>
-          <CollapsibleTrigger>Unavailable details</CollapsibleTrigger>
-          <CollapsiblePanel>Unavailable content</CollapsiblePanel>
-        </Collapsible>
-        <Collapsible open={false} onOpenChange={onOpenChange}>
-          <CollapsibleTrigger>Controlled details</CollapsibleTrigger>
-          <CollapsiblePanel>Controlled content</CollapsiblePanel>
-        </Collapsible>
-      </>,
-    );
-
-    const trigger = screen.getByRole("button", { name: "Details" });
-    const panel = screen.getByText("Nested action").closest('[data-slot="panel"]');
-    expect(rootRef.current).toHaveAttribute("data-slot", "root");
-    expect(triggerRef.current).toBe(trigger);
-    expect(trigger).toHaveAttribute("type", "button");
-    expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(trigger).toHaveAttribute("aria-controls", panel?.id);
-    expect(panel).toHaveAttribute("data-slot", "panel");
-    await user.click(trigger);
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-    expect(panel).toHaveAttribute("hidden");
-    expect(screen.getByRole("button", { name: "Unavailable details" })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    await user.click(screen.getByRole("button", { name: "Controlled details" }));
-    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
-    expect(screen.getByRole("button", { name: "Controlled details" })).toHaveAttribute(
-      "aria-expanded",
-      "false",
-    );
-  });
-
-  it("keeps Accordion single, multiple, controlled, disabled, and heading contracts", async () => {
-    const user = userEvent.setup();
-    const onValueChange = vi.fn();
-    const { unmount } = render(
-      <Accordion defaultValue={["profile"]} onValueChange={onValueChange}>
-        <AccordionItem value="profile">
-          <AccordionHeader>
-            <AccordionTrigger>Profile</AccordionTrigger>
-          </AccordionHeader>
-          <AccordionPanel>Profile content</AccordionPanel>
-        </AccordionItem>
-        <AccordionItem disabled value="billing">
-          <AccordionHeader>
-            <AccordionTrigger>Billing</AccordionTrigger>
-          </AccordionHeader>
-          <AccordionPanel>Billing content</AccordionPanel>
-        </AccordionItem>
-        <AccordionItem value="security">
-          <AccordionHeader>
-            <AccordionTrigger>Security</AccordionTrigger>
-          </AccordionHeader>
-          <AccordionPanel>Security content</AccordionPanel>
-        </AccordionItem>
-      </Accordion>,
-    );
-
-    const profile = screen.getByRole("button", { name: "Profile" });
-    const security = screen.getByRole("button", { name: "Security" });
-    expect(profile.parentElement?.tagName).toBe("H3");
-    expect(profile).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByRole("button", { name: "Billing" })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    await user.click(security);
-    expect(profile).toHaveAttribute("aria-expanded", "false");
-    expect(security).toHaveAttribute("aria-expanded", "true");
-    expect(onValueChange).toHaveBeenCalledWith(["security"], expect.anything());
-
-    unmount();
-    render(
-      <Accordion multiple value={["profile"]} onValueChange={onValueChange}>
-        {[
-          ["profile", "Profile"],
-          ["security", "Security"],
-        ].map(([value, label]) => (
-          <AccordionItem key={value} value={value!}>
-            <AccordionHeader>
-              <AccordionTrigger>{label}</AccordionTrigger>
-            </AccordionHeader>
-            <AccordionPanel>{label} content</AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>,
-    );
-    await user.click(screen.getByRole("button", { name: "Security" }));
-    expect(onValueChange).toHaveBeenLastCalledWith(["profile", "security"], expect.anything());
-    expect(screen.getByRole("button", { name: "Profile" })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
-  });
-
-  it("preserves semantic children when disclosure panels use custom render targets", () => {
-    const collapsibleListRef = React.createRef<HTMLUListElement>();
-    const accordionListRef = React.createRef<HTMLUListElement>();
-    render(
-      <>
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger>Collapsible list</CollapsibleTrigger>
-          <CollapsiblePanel
-            ref={collapsibleListRef}
-            render={<ul aria-label="Collapsible options" />}
-          >
-            <li>First option</li>
-          </CollapsiblePanel>
-        </Collapsible>
-        <Accordion defaultValue={["options"]}>
-          <AccordionItem value="options">
-            <AccordionHeader>
-              <AccordionTrigger>Accordion list</AccordionTrigger>
-            </AccordionHeader>
-            <AccordionPanel ref={accordionListRef} render={<ul aria-label="Accordion options" />}>
-              <li>Second option</li>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-      </>,
-    );
-
-    const collapsibleList = screen.getByRole("list", { name: "Collapsible options" });
-    const accordionList = document.querySelector('ul[aria-label="Accordion options"]');
-    expect(accordionList).not.toBeNull();
-    expect(collapsibleList.firstElementChild?.tagName).toBe("LI");
-    expect(accordionList?.firstElementChild?.tagName).toBe("LI");
-    expect(collapsibleList).toHaveAttribute("data-slot", "panel");
-    expect(accordionList).toHaveAttribute("data-slot", "panel");
-    expect(collapsibleListRef.current).toBe(collapsibleList);
-    expect(accordionListRef.current).toBe(accordionList);
-    expect(collapsibleList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
-    expect(accordionList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
   });
 });

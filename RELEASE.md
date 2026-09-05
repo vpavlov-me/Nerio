@@ -1,25 +1,41 @@
 # Release Process
 
-Nerio Core `1.0.0-beta.1` is the published public beta for the frozen Core 1.0 API. The reviewed
-frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact published `main` commit
-is `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages are available under npm `beta` and
-`latest`. The protected `alpha` tag intentionally remains on `0.1.0-alpha.2`.
+Nerio Core `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API. It is not published,
+does not move any npm dist-tag, and does not create `v1.0.0` or a stable GitHub Release. The reviewed
+frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`.
+
+The current public release remains `1.0.0-beta.1` from exact published `main` commit
+`a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages remain available under npm `beta` and
+`latest`; the protected `alpha` tag intentionally remains on `0.1.0-alpha.2`.
 
 The signed `v1.0.0-beta.1` tag and GitHub prerelease point to the exact publish candidate. Public
 metadata and a clean package/source, CLI, MCP, and Next.js consumer smoke passed after publication.
 
-The beta.1 publication completed after explicit maintainer approval, the exact-candidate gate, and
-tarball inspection. Every future release action remains manual and requires separate explicit
-maintainer approval. This document does not authorize another publication, dist-tag change, tag,
-or GitHub Release.
+The candidate-bound readiness record is maintained in
+[`docs/core-1-0-release-readiness.md`](./docs/core-1-0-release-readiness.md). It must record the
+bounded maintainer-run accessibility smoke, exact-candidate release gate, tarball inspection,
+known limitations, and exactly one explicit readiness decision. Every public release action remains
+manual and requires separate explicit maintainer approval. Neither that decision nor this document
+authorizes publication, a dist-tag change, a tag, or a GitHub Release.
 
 ## Release-candidate checks
 
 The `release-gate` workflow runs the complete gate for a separately reviewed approved release-line
 pull request into `main`. Stable `1.0.0` uses `release/1.0`; later release trains may use `dev` only
 when that branch is the explicitly approved release line. To reproduce it, use a clean checkout
-with Node 22 and the pinned pnpm version. First run the same always-on development commands and
-focused Chromium smoke:
+with Node 22 and the pinned pnpm version.
+
+When creating the candidate from the beta metadata, inspect the coordinated version diff before
+applying it:
+
+```bash
+pnpm prepare:release-version 1.0.0
+pnpm prepare:release-version 1.0.0 --write
+```
+
+Once the worktree already identifies itself as `1.0.0`, do not rerun that one-time preparation
+command: it intentionally rejects a no-op version. Run the always-on development commands and
+focused Chromium smoke instead:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -27,6 +43,8 @@ pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test:ci-scopes
+pnpm test:repo-artifacts
+pnpm validate:repo-artifacts
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
@@ -68,7 +86,6 @@ pnpm test:sbom
 pnpm validate:platform-support
 pnpm test:release-metadata
 pnpm validate:release-metadata
-pnpm prepare:release-version 1.0.0-beta.1
 pnpm test:consumer:minimum
 pnpm test:consumer:current
 pnpm test:consumer:vite
@@ -140,6 +157,16 @@ vulnerabilities before a release candidate can pass. `validate:package-budgets` 
 packed/unpacked package, CSS, named component/icon import, and optional adapter budgets. Threshold
 changes follow the reviewed override policy in `docs/quality-gates.md`.
 
+The pre-merge release workflow appends `--ignore-registry-errors`. pnpm still performs its bounded
+registry retries before treating an npm advisory-endpoint transport failure as non-blocking so the
+failure does not invalidate the candidate's other checks. A successful registry response containing
+any production advisory at `low` or above still fails. This transport-tolerant CI result is not
+clean-audit evidence and never authorizes publication.
+
+Immediately before publication approval in #151, run the bare `pnpm audit:prod` command against the
+exact approved candidate. It must receive a successful registry response and report no known
+production vulnerabilities; a timeout or other registry error blocks publication.
+
 Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
 contain only named shared keyframes and the documented scoped no-Preflight box-sizing and
 native-control typography rules; the Tailwind contract test rejects visual component selectors or a
@@ -169,29 +196,33 @@ The separately reviewed approved release-line pull request into `main` requires 
 WebKit jobs, package consumers, visual regression, release smoke, and pack inspection. Direct
 pushes, force pushes, and branch deletion are
 prohibited for `main` and `dev`. `main` remains the default stable branch, and `dev` remains the
-permanent integration branch after a release. After stable publication, synchronize `main` back
-into `dev` before preparing the 1.1 prerelease. Release pull requests and merges to `main` are
-manual maintainer actions; coding agents must not merge them without a separate, direct request
-from the maintainer. Dependabot's reserved `dependabot/*` branches are the only automated
-development-branch exception and target `dev`.
+permanent integration branch after a release. After stable publication, synchronize the stable-only
+fixes back into `dev` through a reviewed development pull request before preparing the 1.1
+prerelease. Record the pre-sync `dev` SHA and preserve every forward 1.1 surface from #342–#370:
+the stable release intentionally removes those surfaces from `main`, so a blind merge or cherry-pick
+must not delete them from `dev`. Apply the stable release delta without committing, restore the
+forward scope from the recorded `dev` SHA, and review the resulting diff before committing the
+sync. Release pull requests and merges to `main` are manual maintainer actions; coding agents must
+not merge them without a separate, direct request from the maintainer. Dependabot's reserved
+`dependabot/*` branches are the only automated development-branch exception and target `dev`.
 
 ## Versioning and package order
 
-Keep the root workspace, apps, and `@nerio-ui/config` private. The six public package manifests are
-coordinated at the current published prerelease. A future release PR must bump all six packages,
-their internal dependency references, Registry metadata, and release-smoke expectation to the same
+Keep the root workspace, apps, and `@nerio-ui/config` private. The six already-public package
+manifests are coordinated at the prepared stable candidate. A release PR must keep all six packages,
+their internal dependency references, Registry metadata, and release-smoke expectation on the same
 approved version. Publish in dependency order:
 
 1. `@nerio-ui/tokens`
 2. `@nerio-ui/adapters`
-3. `@nerio-ui/registry`
-4. `@nerio-ui/ui`
+3. `@nerio-ui/ui`
+4. `@nerio-ui/registry`
 5. `@nerio-ui/cli`
 6. `@nerio-ui/mcp`
 
-The six public package manifests use `private: false` only after the dedicated release PR and
-explicit maintainer approval. Package consumers receive TypeScript source; supported Next.js
-consumers configure `transpilePackages` as documented in Getting started.
+The six public package manifests remain `private: false`; changing package visibility is not part of
+the stable release. Package consumers receive TypeScript source; supported Next.js consumers
+configure `transpilePackages` as documented in Getting started.
 
 ## Credentials and dry run
 
@@ -214,24 +245,30 @@ keeps Lucide as the icon implementation dependency, and marks TanStack Table, Re
 Form, Zod, and Motion as optional peers. The unsupported package root must not statically aggregate
 adapter implementations.
 
-## Manual approval and publish sequence
+## Candidate lock, approval, and publish sequence
 
-Do not perform any step in this section without an explicit maintainer approval recorded after CI,
-browser verification, changelog review, and tarball inspection.
+Steps 1–3 finalize and review the candidate; they do not authorize publication. Do not perform
+step 4 or any later public action without explicit maintainer approval recorded after CI, browser
+verification, changelog review, tarball inspection, and the bounded accessibility smoke.
 
-1. Record the release-readiness decision and any accepted non-blocking limitations.
-2. Convert `Unreleased` in [CHANGELOG.md](./CHANGELOG.md) to
+1. Before locking the exact candidate SHA, convert `Unreleased` in
+   [CHANGELOG.md](./CHANGELOG.md) to
    `## <approved-version> — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
-3. In a dedicated release PR, bump only the six public package manifests and their coordinated
-   internal dependency references to the approved version. Keep them public. Update the Registry
-   top-level `version` and immutable `sourceRevision` to the same release tag, update the release
-   smoke expectation, rerun the complete gate with
-   `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
-   does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
-4. Publish one package at a time in the documented dependency order with the `beta` dist-tag, for
-   example `pnpm --filter @nerio-ui/tokens publish --access public --tag beta --no-git-checks`.
-   During this per-package publication phase, do not move `alpha` or `latest`. Never make a
-   partially published coordinated version the default install target.
+2. Confirm the already-prepared six package manifests, their coordinated internal dependencies,
+   Registry `version` and immutable `sourceRevision`, release metadata, migration guide, and smoke
+   expectation all use the approved version. If the version changes, prepare a new candidate in the
+   release PR and lock a new SHA and deployment before collecting human evidence.
+3. Run the complete exact-candidate gate with
+   `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, complete the bounded smoke, and record its
+   evidence only in the permitted evidence files. Rerun the gate on that evidence-only commit,
+   record the release-readiness decision and accepted non-blocking limitations, and obtain explicit
+   publication approval. The override does not weaken version, metadata, contents, runtime,
+   source-install, or consumer-build checks.
+4. Publish one package at a time in the documented dependency order with the non-default `stable`
+   staging dist-tag, for example
+   `pnpm --filter @nerio-ui/tokens publish --access public --tag stable --no-git-checks`. During this
+   per-package publication phase, do not move protected `alpha` or `beta`, and do not move `latest`.
+   Never make a partially published coordinated version the default install target.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
 6. After all six packages exist, run the published exact-version smoke before changing `latest`:
@@ -243,16 +280,18 @@ browser verification, changelog review, and tarball inspection.
    This makes the documented package-qualified CLI and MCP `pnpm dlx` paths resolve the published
    coordinated dependency graph and verifies both bins against the exact approved version. The
    candidate gate intentionally omits this network-only assertion because an unpublished exact
-   prerelease dependency cannot resolve from npm.
+   release version cannot resolve from npm.
 
-7. Move `latest` for all six packages to the approved version only after the published-package
-   smoke passes, then verify both the release-channel tag and `latest` for every package.
+7. Move only `latest` for all six packages to the approved version after the published-package
+   smoke passes. Verify `stable` and `latest` for every package, and confirm that protected `alpha`
+   and `beta` remain unchanged.
 8. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
 
 ## Post-release verification
 
-- Confirm `npm view <package>@<approved-version> version dist-tags files` for every package and
-  verify both the release-channel tag and `latest` still resolve to the approved version.
+- Confirm `npm view <package>@<approved-version> version dist-tags files` for every package, verify
+  both `stable` and `latest` resolve to the approved version, and confirm that protected `alpha` and
+  `beta` remain unchanged.
 
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
@@ -271,12 +310,13 @@ browser verification, changelog review, and tarball inspection.
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prepare and publish the next coordinated prerelease version.
-After the replacement passes coordinated verification, move both `beta` and `latest` to it. If a
-verified replacement is not ready, explicitly restore both tags to the previous safe coordinated
-version when one exists. If the registry permits and policy requires it, deprecate the faulty
-version with a concise install warning. Document affected packages and consumers, and avoid npm
-unpublish except for a security incident or an explicit maintainer/legal decision.
+incomplete. Do not reuse the version. Prepare and publish the next coordinated patch version, verify
+all six replacement packages through the `stable` staging tag, and only then move `latest`. Keep
+protected `alpha` and `beta` unchanged. If a verified replacement is not ready, keep or explicitly
+restore `latest` to the previous safe coordinated version and correct any partial `stable` staging
+state. If the registry permits and policy requires it, deprecate the faulty version with a concise
+install warning. Document affected packages and consumers, and avoid npm unpublish except for a
+security incident or an explicit maintainer/legal decision.
 
 ## Public changelog page
 

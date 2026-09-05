@@ -476,9 +476,9 @@ export default function Page() {
           </Table>
         </TableContainer>
         <p>
-          See the <a href="/docs/foundations/localization">Localization foundation</a> for the
-          inherited <Code>dir</Code> contract, DirectionProvider boundary, deterministic locale
-          output, and consumer-owned translation policy.
+          Use inherited <Code>dir</Code> values and CSS logical properties for resilient layout.
+          Consumer applications own translation catalogs, locale-sensitive product output, and
+          routing policy.
         </p>
       </section>
 

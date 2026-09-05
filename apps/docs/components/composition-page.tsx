@@ -495,26 +495,13 @@ function NotificationPreferencesPreview() {
 }
 
 function SecuritySettingsPreview() {
-  const accountName = "Vladimir Pavlov";
-  const [confirmation, setConfirmation] = React.useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [confirmed, setConfirmed] = React.useState(false);
-  const canDelete = confirmation === accountName;
-
-  function handleDialogOpenChange(open: boolean) {
-    setDialogOpen(open);
-    if (!open) {
-      setConfirmation("");
-    }
-  }
-
   return (
     <Card className="composition-security-settings-card">
       <CardHeader>
         <Heading as="h2" size="lg">
           Security settings
         </Heading>
-        <Text tone="secondary">Manage sign-in protection and sensitive account actions.</Text>
+        <Text tone="secondary">Manage sign-in protection and active sessions.</Text>
       </CardHeader>
       <CardContent className="composition-security-settings">
         <Item className="composition-security-settings__item" size="lg">
@@ -552,70 +539,6 @@ function SecuritySettingsPreview() {
             </Button>
           </ItemActions>
         </Item>
-
-        <Item className="composition-security-settings__item" size="lg">
-          <ItemContent>
-            <ItemTitle className="composition-security-settings__danger-title">
-              Delete account
-            </ItemTitle>
-            <ItemDescription>
-              Permanently remove your account and personal data. This action cannot be undone.
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <Dialog
-              open={dialogOpen}
-              onOpenChange={handleDialogOpenChange}
-              trigger={
-                <Button data-preview-interaction="allowed" type="button" variant="danger">
-                  Delete account
-                </Button>
-              }
-              title="Delete your account?"
-              description="This permanently removes your Nerio account, profile, and personal data. This action cannot be undone."
-            >
-              <Field
-                label={`Type ${accountName} to confirm`}
-                description="Enter the account name exactly as shown."
-              >
-                <Input
-                  autoFocus
-                  autoComplete="off"
-                  placeholder={accountName}
-                  value={confirmation}
-                  onChange={(event) => setConfirmation(event.currentTarget.value)}
-                />
-              </Field>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => handleDialogOpenChange(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  disabled={!canDelete}
-                  type="button"
-                  variant="danger"
-                  onClick={() => {
-                    if (!canDelete) return;
-                    setConfirmed(true);
-                    handleDialogOpenChange(false);
-                  }}
-                >
-                  Delete account
-                </Button>
-              </DialogFooter>
-            </Dialog>
-          </ItemActions>
-        </Item>
-
-        {confirmed ? (
-          <Alert role="status" title="Preview only" tone="info">
-            No account was deleted.
-          </Alert>
-        ) : null}
       </CardContent>
     </Card>
   );
@@ -1349,16 +1272,15 @@ const blocks: Record<string, Composition> = {
     Preview: ProfileSettingsPreview,
   },
   "security-settings": {
-    purpose:
-      "Combines credential, two-factor, and session controls with a guarded, demo-safe destructive confirmation.",
-    components: ["Card", "Item", "Alert", "Dialog", "Field", "Input", "Button"],
+    purpose: "Combines credential, two-factor, and session controls in one bounded settings card.",
+    components: ["Card", "Item", "Button"],
     accessibility:
-      "The confirmation dialog is labelled, keeps consequences visible, and requires an exact account-name match before enabling deletion.",
+      "Each security control has a named action and supporting context without prescribing a sensitive confirmation pattern.",
     responsive:
-      "The bounded card remains one readable column while the status item and dialog actions wrap without changing source order.",
+      "The bounded card remains one readable column while item actions wrap without changing source order.",
     notes:
-      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities; the confirmed action only shows a preview status.",
-    code: '<Card><Item><ItemContent>Password</ItemContent><ItemActions><Button>Change password</Button></ItemActions></Item><Item><ItemContent>Two-factor authentication</ItemContent><ItemActions><Button>Set up</Button></ItemActions></Item><Item><ItemContent>Active sessions</ItemContent><ItemActions><Button>Review sessions</Button></ItemActions></Item><Item><ItemContent>Delete account</ItemContent><ItemActions><Dialog title="Delete your account?">...</Dialog></ItemActions></Item></Card>',
+      "Authorization, reauthentication, audit history, session revocation, and sensitive confirmation policy remain product responsibilities.",
+    code: "<Card><Item><ItemContent>Password</ItemContent><ItemActions><Button>Change password</Button></ItemActions></Item><Item><ItemContent>Two-factor authentication</ItemContent><ItemActions><Button>Set up</Button></ItemActions></Item><Item><ItemContent>Active sessions</ItemContent><ItemActions><Button>Review sessions</Button></ItemActions></Item></Card>",
     Preview: SecuritySettingsPreview,
   },
   "notification-preferences": {

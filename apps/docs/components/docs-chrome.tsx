@@ -8,7 +8,6 @@ import { SiClaude, SiCursor } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 import {
   ArrowLeft,
-  ArrowLeftRight,
   ArrowRight,
   BookOpen,
   Box,
@@ -74,7 +73,6 @@ const foundationIcons: Record<(typeof foundationPages)[number]["path"], IconComp
   "/docs/foundations/typography": Type,
   "/docs/foundations/themes": Palette,
   "/docs/foundations/color": Palette,
-  "/docs/foundations/localization": ArrowLeftRight,
   "/docs/foundations/accessibility": Eye,
   "/docs/foundations/spacing-layout": PanelLeft,
   "/docs/foundations/motion": Sparkles,
@@ -149,8 +147,6 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
-      { href: "/docs/components/combobox", label: "Combobox", icon: Search },
-      { href: "/docs/components/search-field", label: "SearchField", icon: Search },
       { href: "/docs/components/slider", label: "Slider", icon: Circle },
       { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
       { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },
@@ -162,8 +158,6 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/typography", label: "Typography", icon: Type },
       { href: "/docs/components/card", label: "Card", icon: PanelLeft },
       { href: "/docs/components/separator", label: "Separator", icon: Circle },
-      { href: "/docs/components/collapsible", label: "Collapsible", icon: ChevronDown },
-      { href: "/docs/components/accordion", label: "Accordion", icon: ListTree },
     ],
   },
   {
@@ -192,7 +186,6 @@ const navGroups: NavGroup[] = [
     title: "Overlays",
     items: [
       { href: "/docs/components/dialog", label: "Dialog", icon: PanelLeft },
-      { href: "/docs/components/alert-dialog", label: "AlertDialog", icon: PanelLeft },
       { href: "/docs/components/sheet", label: "Sheet", icon: PanelLeft },
       { href: "/docs/components/popover", label: "Popover", icon: PanelLeft },
       { href: "/docs/components/tooltip", label: "Tooltip", icon: Circle },
@@ -326,15 +319,6 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "custom-themes", label: "Custom themes" },
     { id: "do-do-not", label: "Do / do not" },
     { id: "review-checklist", label: "Review checklist" },
-  ],
-  "/docs/foundations/localization": [
-    { id: "direction", label: "Direction" },
-    { id: "base-ui-behavior", label: "Base UI behavior" },
-    { id: "rtl-fixture", label: "RTL fixture" },
-    { id: "locale", label: "Locale-sensitive output" },
-    { id: "labels", label: "Labels and copy" },
-    { id: "keyboard", label: "Keyboard direction" },
-    { id: "consumer-boundary", label: "Consumer boundary" },
   ],
   "/docs/foundations/accessibility": [
     { id: "responsibility-model", label: "Responsibility model" },

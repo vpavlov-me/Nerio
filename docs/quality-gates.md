@@ -90,10 +90,13 @@ speed claims or a substitute for production observability.
 - each optional adapter subpath with its peer externalized.
 
 `pnpm validate:route-budgets` reads production Next.js client-reference manifests and enforces raw
-JavaScript, raw CSS, and deterministic gzip transfer allowances per reviewed route. The checked-in
-report covers the home page, Getting Started, Button, Select, Calendar, DatePicker, Command
-Primitive, one template detail, and one full-screen view, including major chunks, duplicated package
-ownership, and the measured delta from the pre-split baseline.
+JavaScript, raw CSS, and deterministic gzip transfer allowances per reviewed route. The tracked
+baseline in `quality/docs-route-bundle-baseline.json` covers the home page, Getting Started, Button,
+Select, Calendar, DatePicker, Command Primitive, one template detail, and one full-screen view. A
+current full diagnostic, including major chunks, duplicated package ownership, and measured deltas,
+is written to ignored `artifacts/docs-route-bundle-report.json` and uploaded by CI from the existing
+production build. See the [artifact retention policy](./artifact-retention.md) for inspection,
+baseline refresh, and budget-review commands.
 
 `pnpm test:consumer:vite` packs the public artifacts and builds a clean Vite + React + TypeScript +
 Tailwind CSS v4 fixture with explicit dependencies, representative server-safe and client imports,
@@ -131,7 +134,8 @@ channel requires `pnpm validate:stable-accessibility-smoke --expect-pass` agains
 candidate and deployment, with evidence for every result and no unresolved accepted blocker.
 
 [`quality/manual-audit-plan.json`](../quality/manual-audit-plan.json) defines the required
-environments, evidence fields, stable routes, steps, and expected outcomes for issue #143.
+environments, evidence fields, stable routes, steps, and expected outcomes for post-release issue
+[#585](https://github.com/vpavlov-me/Nerio/issues/585).
 [`docs/audits/core-1-0-accessibility-device-audit.md`](./audits/core-1-0-accessibility-device-audit.md)
 is the human evidence record. `pnpm test:manual-audit-plan` and
 `pnpm validate:manual-audit-plan` prevent the plan and report from drifting or claiming a manual
@@ -148,6 +152,12 @@ validate the broader manual-audit and external-feedback records in their truthfu
 consumers complete the post-release cycle. The optional strict completion validators remain
 available for closing those follow-up programs; they are not stable 1.0 publication prerequisites.
 
+After the source candidate is locked, only the stable-smoke record, its human-readable audit, and
+[`core-1-0-release-readiness.md`](./core-1-0-release-readiness.md) may change before final approval.
+The candidate-lock validator rejects every other post-candidate path, including release policy,
+application, package, Registry, component, and test changes. Those changes require a new candidate
+and an explicit evidence refresh or documented non-runtime carry-forward.
+
 ## Local gate
 
 Focused development reproduction:
@@ -157,6 +167,8 @@ pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test:ci-scopes
+pnpm test:repo-artifacts
+pnpm validate:repo-artifacts
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog

@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-export const packageDirectories = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+export const packageDirectories = ["tokens", "adapters", "ui", "registry", "cli", "mcp"];
 
 export function npmPurl(name, version) {
   const separator = name.indexOf("/");

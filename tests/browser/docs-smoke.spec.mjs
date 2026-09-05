@@ -164,7 +164,7 @@ test("covers public docs routes, standardized component docs, and the restrained
     await expect(page.getByRole("heading", { name: heading })).toBeAttached();
   }
 
-  await expect(page.getByText("v1.0.0-beta.1", { exact: true })).toBeVisible();
+  await expect(page.getByText("v1.0.0", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Purple", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Comfortable", exact: true })).toHaveCount(0);
   const search = page.getByRole("button", { name: "Search documentation" });
@@ -1104,7 +1104,8 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     "data-nerio-theme-scope",
     "",
   );
-  await page.keyboard.press("Escape");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(dialog).toBeHidden();
 
   await page.getByRole("button", { name: "Show success toast" }).click();
   const toast = page.locator(".n-toast").filter({ hasText: "Changes saved" });
@@ -1194,7 +1195,10 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(await robots.text()).toContain("Disallow: /views/");
   expect(await robots.text()).toContain("Disallow: /visual-test/");
   const llmsText = await llms.text();
-  expect(llmsText).toContain("1.0.0-beta.1");
+  expect(llmsText).toContain("Core `1.0.0` is the prepared stable candidate; it is not published.");
+  expect(llmsText).toContain(
+    "npm `latest` and `beta` still resolve to `1.0.0-beta.1`, while protected `alpha` remains on `0.1.0-alpha.2`.",
+  );
   expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
   expect(llmsText).not.toContain("/playground");
   expect(llmsText).not.toContain("nerio-preview-surfaces");

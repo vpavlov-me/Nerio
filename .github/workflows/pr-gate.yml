@@ -78,6 +78,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test:ci-scopes
+      - run: pnpm test:repo-artifacts
+      - run: pnpm validate:repo-artifacts
       - run: pnpm test:branch-policy
       - run: node --test scripts/check-dco.test.mjs scripts/validate-release-candidate.test.mjs
       - name: Validate Markdown-only documentation
@@ -107,6 +109,14 @@ jobs:
       - run: pnpm test:docs-examples
       - run: pnpm build
       - run: pnpm validate:route-budgets
+      - name: Upload docs route bundle report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: docs-route-bundle-report-${{ github.event.pull_request.head.sha }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: artifacts/docs-route-bundle-report.json
 
   ui:
     name: ui-contract

@@ -1,111 +1,212 @@
 {
   "schemaVersion": 1,
-  "status": "evidence-pending",
+  "status": "complete",
   "trackingIssue": 143,
   "candidate": {
     "version": "1.0.0",
-    "commit": null,
-    "deployment": null,
-    "recordedAt": null
+    "commit": "c318f0760a340a0c5949e604b8381d7fef83c1f1",
+    "deployment": "https://nerio-f6yjsyqij-dquality.vercel.app",
+    "recordedAt": "2026-09-05T06:37:36Z"
   },
   "environments": [
     {
       "id": "macos-safari-voiceover",
-      "result": "Pending",
-      "operatingSystem": null,
-      "browser": null,
-      "assistiveTechnology": null,
-      "device": null,
-      "viewport": null,
-      "zoom": null,
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "operatingSystem": "macOS 27.0",
+      "browser": "Safari 27.0",
+      "assistiveTechnology": "VoiceOver",
+      "device": "MacBook Air M4",
+      "viewport": "1470x956 logical display",
+      "zoom": "100% baseline",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "The maintainer verified the six scoped scenario groups with Safari and VoiceOver; no release-blocking finding was reported."
     },
     {
       "id": "macos-chromium-keyboard",
-      "result": "Pending",
-      "operatingSystem": null,
-      "browser": null,
-      "assistiveTechnology": null,
-      "device": null,
-      "viewport": null,
-      "zoom": null,
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "operatingSystem": "macOS 27.0",
+      "browser": "Chrome 152.0.7977.65",
+      "assistiveTechnology": "Keyboard-only navigation",
+      "device": "MacBook Air M4",
+      "viewport": "1470x956 logical display",
+      "zoom": "100% baseline",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "The maintainer verified the six scoped scenario groups with keyboard-only navigation in Chrome; no release-blocking finding was reported."
     },
     {
       "id": "zoom-reflow-contrast",
-      "result": "Pending",
+      "result": "Pass",
       "operatingSystem": null,
-      "operatingSystemFamily": null,
-      "operatingSystemVersion": null,
-      "browser": null,
-      "assistiveTechnology": null,
-      "device": null,
-      "viewport": null,
-      "zoom": null,
-      "zoomLevelsTested": null,
-      "increasedOrHighContrastEnabled": null,
-      "evidence": [],
-      "notes": null
+      "operatingSystemFamily": "macos",
+      "operatingSystemVersion": "27.0",
+      "browser": "Safari 27.0",
+      "assistiveTechnology": "Not applicable",
+      "device": "MacBook Air M4",
+      "viewport": "1470x956 logical display",
+      "zoom": "200% and 400% in Safari 27.0; cross-checked in Chrome 152.0.7977.65",
+      "zoomLevelsTested": ["200%", "400%"],
+      "increasedOrHighContrastEnabled": true,
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "The maintainer verified reflow at both required zoom levels and checked macOS Increase Contrast in Safari and Chrome."
     },
     {
       "id": "mobile-touch",
-      "result": "Pending",
-      "operatingSystem": null,
-      "browser": null,
-      "assistiveTechnology": null,
-      "device": null,
-      "deviceClass": null,
-      "physicalDeviceUsed": null,
-      "viewport": null,
-      "zoom": null,
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "operatingSystem": "iOS 26.6",
+      "browser": "Safari 26.6",
+      "assistiveTechnology": "Touch-only navigation",
+      "device": "iPhone 15",
+      "deviceClass": "phone",
+      "physicalDeviceUsed": true,
+      "viewport": "Device-default iPhone 15 viewport",
+      "zoom": "100%",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599",
+        "https://support.apple.com/en-asia/100100"
+      ],
+      "notes": "The maintainer verified the physical-touch smoke on iPhone 15 and additionally checked Safari on a physical iPad Air (5th generation, 2022)."
     }
   ],
   "scenarios": [
     {
       "id": "docs-navigation",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Documentation navigation and visible focus passed the maintainer smoke."
     },
     {
       "id": "forms-and-native-controls",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Forms and representative native controls passed the maintainer smoke."
     },
     {
       "id": "overlays-and-focus",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Default-LTR overlay interaction, focus movement, and focus restoration passed the maintainer smoke; RTL Dialog centering is candidate-bound automated evidence and is not a human-run claim."
     },
     {
       "id": "calendar-and-date-picker",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Calendar and DatePicker interaction passed the maintainer smoke."
     },
     {
       "id": "feedback-and-status",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Feedback and status behavior passed the maintainer smoke."
     },
     {
       "id": "responsive-touch-and-reflow",
-      "result": "Pending",
-      "evidence": [],
-      "notes": null
+      "result": "Pass",
+      "evidence": [
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529488388",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5529289963",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530212277",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394",
+        "https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599"
+      ],
+      "notes": "Responsive touch, zoom, reflow, and increased-contrast behavior passed the maintainer smoke."
     }
   ],
   "findings": [],
   "decision": {
-    "recommendation": "pending",
-    "recordedAt": null,
-    "summary": "The scoped internal stable accessibility smoke has not yet run against an exact 1.0.0 candidate."
+    "recommendation": "release-ready",
+    "recordedAt": "2026-09-05T06:37:36Z",
+    "summary": "The maintainer completed the bounded smoke on da3923f38f91f38b77f890ad28e043ab16f45fe1 in the default horizontal LTR presentation with no release-blocking finding. The observations carry forward through the prior reviewed candidates to c318f0760a340a0c5949e604b8381d7fef83c1f1 after explicit diff review. The preceding source changes include pre-merge audit transport policy, route-report tooling, a test-only Select focus wait, and narrow documentation corrections covered by exact-source automated tests. The latest range adds the prior evidence relock and publication-safe wording in the six packed package READMEs. Those tarballs change only in README text; package implementation, manifests, exports, dependencies, public API, Registry payload, tokens, CSS, lockfile, and audited interactions are unchanged. The prior candidate-bound Chromium, Firefox, and WebKit RTL tests remain automated evidence only. This does not claim a repeated human smoke or a human RTL run."
   }
 }

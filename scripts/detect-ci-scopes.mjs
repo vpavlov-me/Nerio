@@ -88,6 +88,7 @@ function isManualAuditContract(path) {
     "quality/beta-feedback.json",
     "docs/audits/core-1-0-stable-accessibility-smoke.md",
     "docs/audits/core-1-0-accessibility-device-audit.md",
+    "scripts/stable-accessibility-evidence-paths.mjs",
     "scripts/validate-stable-accessibility-smoke.mjs",
     "scripts/validate-stable-accessibility-smoke.test.mjs",
     "scripts/validate-manual-audit-plan.mjs",
@@ -146,7 +147,7 @@ export function detectCiScopes(inputPaths) {
       /^apps\/docs\//,
       /^docs\//,
       /^.*\.md$/,
-      /^scripts\/(?:validate-(?:catalog|docs|onboarding|typography)|docs-route-bundle-report)\.mjs$/,
+      /^scripts\/(?:validate-(?:catalog|docs|onboarding|typography)|docs-route-bundle-report(?:-options)?(?:\.test)?)\.mjs$/,
       /^quality\/docs-route-/,
     ]);
     scopes.ui ||= matchesAny(path, [

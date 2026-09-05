@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isPostCandidateEvidencePath } from "./stable-accessibility-evidence-paths.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -57,11 +58,7 @@ const evidenceFields = [
   "notes",
 ];
 const allowedResults = ["Pending", "Pass", "Fail", "Blocked"];
-const allowedPostCandidateEvidencePaths = new Set([
-  "docs/audits/core-1-0-stable-accessibility-smoke.md",
-  "quality/stable-accessibility-smoke.json",
-]);
-const coordinatedPackages = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
+const coordinatedPackages = ["tokens", "adapters", "ui", "registry", "cli", "mcp"];
 const macHardwareQualifierSource =
   "(?:M\\d+(?:\\s+(?:Max|Pro|Ultra))?|Retina\\s+\\dK|\\d{2,4}(?:-inch)?|Late\\s+\\d{4}|Pro|with(?:out)?\\s+Touch\\s+Bar)";
 const macDeviceFamilyPattern = new RegExp(
@@ -588,7 +585,7 @@ if (record.status === "evidence-pending") {
       const disallowedPaths = changedPathOutput
         .split("\n")
         .filter(Boolean)
-        .filter((path) => !allowedPostCandidateEvidencePaths.has(path));
+        .filter((path) => !isPostCandidateEvidencePath(path));
       if (changedPaths.status !== 0 || disallowedPaths.length > 0) {
         errors.push(
           `Completed smoke candidate is stale after non-evidence changes: ${disallowedPaths.join(", ") || "unable to inspect candidate diff"}.`,

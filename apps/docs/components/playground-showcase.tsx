@@ -946,12 +946,16 @@ function PasswordReset() {
 }
 
 function InviteDialogCard() {
+  const [open, setOpen] = React.useState(false);
+
   return (
     <ScenarioCard
       title="Invite teammates"
       description="Open a focused dialog without leaving the canvas."
     >
       <Dialog
+        open={open}
+        onOpenChange={setOpen}
         trigger={<Button leadingIcon={UserPlus}>Open invite dialog</Button>}
         title="Invite teammates"
         description="Share this workspace with your product team."
@@ -968,8 +972,10 @@ function InviteDialogCard() {
           ]}
         />
         <DialogFooter>
-          <Button variant="secondary">Cancel</Button>
-          <Button>Send invite</Button>
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => setOpen(false)}>Send invite</Button>
         </DialogFooter>
       </Dialog>
       <Text tone="secondary">The dialog uses the current theme and density.</Text>

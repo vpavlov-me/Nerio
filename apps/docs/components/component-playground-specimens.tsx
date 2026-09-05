@@ -36,7 +36,6 @@ import {
   CardTitle,
   CardVisual,
   Checkbox,
-  Combobox,
   Command,
   CommandEmpty,
   CommandInput,
@@ -82,7 +81,6 @@ import {
   Progress,
   RadioGroup,
   RadioGroupItem,
-  SearchField,
   Select,
   Separator,
   Sheet,
@@ -305,13 +303,6 @@ const commandItems = [
   { value: "disabled", label: "Unavailable", disabled: true },
 ] as const;
 
-const cityOptions = [
-  { value: "paris", label: "Paris", textValue: "Paris" },
-  { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
-  { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
-  { value: "unavailable", label: "Unavailable", textValue: "Unavailable", disabled: true },
-] as const;
-
 function SheetExample({
   side,
   size,
@@ -382,6 +373,9 @@ function SheetExample({
 }
 
 export function ComponentPlayground() {
+  const [signInDialogOpen, setSignInDialogOpen] = React.useState(false);
+  const [privacyDialogOpen, setPrivacyDialogOpen] = React.useState(false);
+
   return (
     <>
       <SpecimenSection id="kbd" title="Kbd" api="Keyboard hint · single key · shortcut sequence">
@@ -848,70 +842,6 @@ export function ComponentPlayground() {
         />
       </SpecimenSection>
       <SpecimenSection
-        id="combobox"
-        title="Combobox"
-        api="query · selected value · options · groups · disabled · readOnly · invalid · empty · loading"
-      >
-        <Matrix
-          columns={["Default", "Selected", "Read only", "Invalid", "Disabled"]}
-          rows={[
-            {
-              label: "State",
-              cells: [
-                <Combobox key="default" label="City" options={cityOptions} />,
-                <Combobox
-                  key="selected"
-                  label="City"
-                  defaultValue="tbilisi"
-                  options={cityOptions}
-                />,
-                <Combobox
-                  key="readonly"
-                  label="City"
-                  defaultValue="paris"
-                  options={cityOptions}
-                  readOnly
-                />,
-                <Combobox
-                  key="invalid"
-                  label="City"
-                  message="Choose a supported city."
-                  options={cityOptions}
-                  invalid
-                />,
-                <Combobox key="disabled" label="City" options={cityOptions} disabled />,
-              ],
-            },
-          ]}
-        />
-      </SpecimenSection>
-      <SpecimenSection
-        id="search-field"
-        title="SearchField"
-        api="native search · value · clear · Enter search · loading · disabled · readOnly · invalid"
-      >
-        <Matrix
-          columns={["Default", "Value", "Loading", "Invalid", "Disabled"]}
-          rows={[
-            {
-              label: "State",
-              cells: [
-                <SearchField key="default" label="Search projects" />,
-                <SearchField key="value" label="Search projects" defaultValue="Roadmap" />,
-                <SearchField key="loading" label="Search projects" defaultValue="Nerio" loading />,
-                <SearchField
-                  key="invalid"
-                  label="Search projects"
-                  message="Enter a project name."
-                  invalid
-                />,
-                <SearchField key="disabled" label="Search projects" disabled />,
-              ],
-            },
-          ]}
-        />
-      </SpecimenSection>
-      <SpecimenSection
         id="slider"
         title="Slider"
         api="single value · horizontal · vertical · disabled · readOnly"
@@ -1041,6 +971,8 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-inline">
           <Dialog
+            open={signInDialogOpen}
+            onOpenChange={setSignInDialogOpen}
             trigger={<Button>Open dialog</Button>}
             title="Sign in"
             description="Use your workspace credentials to continue."
@@ -1058,11 +990,15 @@ export function ComponentPlayground() {
               />
             </div>
             <DialogFooter>
-              <Button variant="secondary">Cancel</Button>
-              <Button>Sign in</Button>
+              <Button variant="secondary" onClick={() => setSignInDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => setSignInDialogOpen(false)}>Sign in</Button>
             </DialogFooter>
           </Dialog>
           <Dialog
+            open={privacyDialogOpen}
+            onOpenChange={setPrivacyDialogOpen}
             trigger={<Button variant="secondary">Long content</Button>}
             title="Privacy policy"
             description="Last updated August 7, 2026."
@@ -1133,7 +1069,7 @@ export function ComponentPlayground() {
               </Text>
             </div>
             <DialogFooter>
-              <Button>I understand</Button>
+              <Button onClick={() => setPrivacyDialogOpen(false)}>I understand</Button>
             </DialogFooter>
           </Dialog>
         </div>

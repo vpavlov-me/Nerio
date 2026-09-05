@@ -40,7 +40,8 @@ state relies on color alone. Compact density remaps the cell and padding aliases
   with full `abbr` values, polite month announcements, one tab stop, grid-owned focus continuity,
   pointer selection, forced colors, reduced motion, narrow layout, touch, and zoom are covered by
   automated evidence.
-- Real VoiceOver, iOS, NVDA, and physical-device evidence remains part of manual issue #143.
+- Wider VoiceOver, iOS, NVDA, and physical-device evidence remains part of the post-release audit in
+  [#585](https://github.com/vpavlov-me/Nerio/issues/585).
 
 ## Distribution evidence
 

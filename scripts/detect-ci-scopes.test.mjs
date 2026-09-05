@@ -41,6 +41,16 @@ test("keeps ordinary Markdown changes out of runtime scopes", () => {
   assert.equal(result.packages, false);
 });
 
+test("routes docs route report tooling through the docs gate", () => {
+  for (const path of [
+    "scripts/docs-route-bundle-report.mjs",
+    "scripts/docs-route-bundle-report-options.mjs",
+    "scripts/docs-route-bundle-report.test.mjs",
+  ]) {
+    assert.equal(scopes(path).docs, true, path);
+  }
+});
+
 test("treats the rendered changelog as a docs build and browser surface", () => {
   const result = scopes("CHANGELOG.md");
   assert.equal(result.docs, true);
@@ -65,6 +75,7 @@ test("routes beta feedback and stable readiness to the manual contract", () => {
   for (const path of [
     "quality/stable-accessibility-smoke.json",
     "docs/audits/core-1-0-stable-accessibility-smoke.md",
+    "scripts/stable-accessibility-evidence-paths.mjs",
     "scripts/validate-stable-accessibility-smoke.mjs",
     "scripts/validate-stable-accessibility-smoke.test.mjs",
     "quality/beta-feedback.json",

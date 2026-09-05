@@ -195,6 +195,17 @@ test("renders the complete Profile settings structure as a static preview", asyn
   expect(problems).toEqual([]);
 });
 
+test("keeps Security settings free of a destructive confirmation pattern", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/security-settings");
+
+  await expect(page.getByText("Delete account")).toHaveCount(0);
+  await expect(page.getByText("This action cannot be undone.")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Review sessions" })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
 test("keeps internal fixtures unindexed and outside the public catalog", async ({ page }) => {
   const problems = monitorPage(page);
 

@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "9264c5b288bf9dd789c131ec287c63768cfc1c90c4c8510ebad919442678da63",
-  "currentCoreVersion": "1.0.0-beta.1",
+  "currentComponentCatalogSha256": "3d4509ef89d74b51993e0f9918ab0ceaee7f0fa97dd8ca6241542c3de67dd0f2",
+  "currentCoreVersion": "1.0.0",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 51,
-  "currentRegistryManifestSha256": "53d370dcce75751528738bace048ae8bb31318e463b93a5a1a75fc2aa121f3ed",
-  "currentPublicApiSnapshotSha256": "17da538ac54764fa4a9d32802eba8e45c32a64c311054a395f48abb2085ebc7f",
+  "currentRegistryItemCount": 46,
+  "currentRegistryManifestSha256": "8de0514a1f7eccfc62ae2dc16677ddd3fa2d1aa06b46d3de273af9f089d6b42c",
+  "currentPublicApiSnapshotSha256": "3ecaa4f308634ab925cafba35ab6447ad742735878cd09535c81408c3b96595f",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -190,9 +190,9 @@
     {
       "id": "shared-direction-contract",
       "target": "Core 1.1",
-      "mayStart": "now on dev",
+      "mayStart": "after #151",
       "issues": [342],
-      "dependsOn": [341],
+      "dependsOn": [341, 151],
       "rule": "Establish the minimum direction and localization contract first; the full repository audit is a parallel shared track, not a global serialization barrier."
     },
     {
@@ -200,7 +200,7 @@
       "target": "Core 1.1",
       "mayStart": "after the relevant #342 contract foundation",
       "issues": [343, 344, 345, 346, 347, 370],
-      "dependsOn": [341, 342],
+      "dependsOn": [151, 341, 342],
       "rule": "Disclosure, dialog, single-selection, search, OTP, and number work may proceed in parallel after their shared direction decisions are accepted."
     },
     {
@@ -252,7 +252,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341],
+      "dependsOn": [341, 151],
       "decision": "Shared foundation, but not a requirement to finish the entire repository audit before every component PR. Each new direction-sensitive API must wait for the relevant accepted contract."
     },
     {
@@ -272,7 +272,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342],
+      "dependsOn": [341, 342, 151],
       "decision": "Additive compound anatomy and a separate confirmation responsibility are justified; the current convenience Dialog must remain compatible."
     },
     {
@@ -282,7 +282,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342],
+      "dependsOn": [341, 342, 151],
       "decision": "Accept one synchronous, single-select, form-backed primitive; fetching, creation, virtualization, and product search remain outside Core."
     },
     {
@@ -292,7 +292,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342],
+      "dependsOn": [341, 342, 151],
       "decision": "Retain #346 for SearchField only. NumberField has a different value, locale, form, and primitive contract and moves to #370."
     },
     {
@@ -583,7 +583,7 @@
       "classification": "existing-core",
       "priority": "none",
       "target": "current",
-      "nerioComponents": ["Sheet", "Popover", "Tooltip"],
+      "nerioComponents": ["Dialog", "Sheet", "Popover", "Tooltip"],
       "baseUiPrimitives": ["dialog", "drawer", "popover", "tooltip"],
       "platformCoverageIds": ["dialog", "popover"],
       "competitorEvidence": [
@@ -728,7 +728,7 @@
       "competitorEvidence": ["shadcn-components:Direction", "heroui-components:localized controls"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [341],
+      "dependencies": [151, 341],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "Inherit document direction by default; add a provider or locale prop only where evidence proves inheritance or Intl is insufficient.",
       "nonGoals": ["Translation framework", "Product message catalogs"],
@@ -741,7 +741,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": ["Accordion", "Collapsible"],
+      "nerioComponents": [],
       "baseUiPrimitives": ["accordion", "collapsible"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -763,7 +763,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": ["Dialog", "AlertDialog"],
+      "nerioComponents": [],
       "baseUiPrimitives": ["alert-dialog"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -772,7 +772,7 @@
       ],
       "value": "high",
       "complexity": "high",
-      "dependencies": [341, 342],
+      "dependencies": [151, 341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "Preserve the current Dialog API; add meaningful compound parts and a separate conservative confirmation responsibility.",
       "nonGoals": ["Mutation orchestration", "Permission checks", "Routing guards"],
@@ -785,13 +785,13 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": ["Combobox"],
+      "nerioComponents": [],
       "baseUiPrimitives": ["combobox"],
       "platformCoverageIds": [],
       "competitorEvidence": ["shadcn-components:Combobox", "heroui-components:ComboBox"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [341, 342],
+      "dependencies": [151, 341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One synchronous selected value with consumer-supplied data and bounded filtering.",
       "nonGoals": ["Remote fetching", "Creation", "Multiple selection", "Virtualization"],
@@ -804,7 +804,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": ["SearchField"],
+      "nerioComponents": [],
       "baseUiPrimitives": [],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -813,7 +813,7 @@
       ],
       "value": "high",
       "complexity": "medium",
-      "dependencies": [341, 342],
+      "dependencies": [151, 341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One query input, clear action, and search event composed from existing form primitives.",
       "nonGoals": ["Results", "Requests", "Debounce", "Global shortcuts"],

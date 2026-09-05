@@ -171,7 +171,6 @@ function uiEntrypointFailures() {
   const packageJson = JSON.parse(read("packages/ui/package.json"));
   const failures = [];
   const clientOnlyExports = [
-    "alert-dialog",
     "button",
     "checkbox",
     "dialog",
@@ -273,6 +272,7 @@ function tailwindDocumentationFailures() {
   const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const migrationPage = read("apps/docs/app/docs/migration/page.tsx");
+  const stableMigrationGuide = read("docs/migrations/beta-1-to-1-0.md");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
   const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
   const failures = [];
@@ -314,13 +314,33 @@ function tailwindDocumentationFailures() {
     ],
     [
       migrationPage,
-      'aria-label="Beta.0 to beta.1 migration changes"',
-      "Migration must use the Nerio Table for the current beta changes",
+      'aria-label="Beta.1 to stable 1.0 migration changes"',
+      "Migration must use the Nerio Table for the stable 1.0 changes",
     ],
     [
       migrationPage,
-      "It is not a stable release",
-      "Migration must distinguish the prepared beta candidate from stable Core 1.0",
+      'aria-label="Beta.0 to beta.1 migration changes"',
+      "Migration must retain the Nerio Table for historical beta changes",
+    ],
+    [
+      migrationPage,
+      "is the prepared stable candidate",
+      "Migration must distinguish the prepared stable candidate from a published release",
+    ],
+    [
+      migrationPage,
+      "Missing completion of either broad program is not a stable 1.0 publication blocker",
+      "Migration must keep broad human and external testing post-release",
+    ],
+    [
+      stableMigrationGuide,
+      "Do not mix stable and beta package versions",
+      "Stable migration guide must require a coordinated package upgrade",
+    ],
+    [
+      stableMigrationGuide,
+      "continue after stable publication",
+      "Stable migration guide must keep broad evidence post-release",
     ],
     [
       progressPage,
@@ -430,13 +450,18 @@ function accessibilityFoundationFailures() {
     ["320 CSS pixel", "Accessibility Foundation must cover narrow reflow"],
     ["Text resize and spacing", "Accessibility Foundation must cover text resizing and spacing"],
     ["Direction and locale", "Accessibility Foundation must cover RTL and localization"],
+    [
+      "Set or inherit the document direction",
+      "Accessibility Foundation must keep stable direction guidance provider-neutral",
+    ],
     ["Reduced motion", "Accessibility Foundation must cover reduced motion"],
     ["Forced colors", "Accessibility Foundation must cover forced colors"],
     ["Increased contrast", "Accessibility Foundation must cover increased contrast"],
     ["pnpm test:a11y", "Accessibility Foundation must document automated a11y evidence"],
     ["pnpm typecheck", "Accessibility Foundation must document typecheck evidence separately"],
     ["pnpm test:browser:pr", "Accessibility Foundation must document browser evidence"],
-    ["GitHub issue #143", "Accessibility Foundation must link the manual evidence gate"],
+    ["GitHub issue #143", "Accessibility Foundation must link the bounded manual evidence gate"],
+    ["GitHub issue #585", "Accessibility Foundation must link the broader post-release audit"],
     ["Known limitations", "Accessibility Foundation must expose known limitations"],
   ];
 
@@ -446,6 +471,9 @@ function accessibilityFoundationFailures() {
 
   if (accessibilityPage.includes('"use client"')) {
     failures.push("Accessibility Foundation must remain server-rendered");
+  }
+  if (accessibilityPage.includes("DirectionProvider")) {
+    failures.push("Accessibility Foundation must not depend on the post-1.0 DirectionProvider");
   }
   if (
     !foundationPages.some(

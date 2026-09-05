@@ -34,5 +34,6 @@ The public ref targets the trigger. Meaningful slots are `root`, `trigger`, `con
 ## Verification boundary
 
 Automated contract, accessibility, browser, visual, Registry, CLI, MCP, package, source-install, and
-release gates cover the implementation. Real VoiceOver, iOS, and NVDA evidence remains part of the
-manual complete-surface audit in issue #143.
+release gates cover the implementation. Wider real VoiceOver, iOS, and NVDA evidence remains part
+of the post-release complete-surface audit in
+[#585](https://github.com/vpavlov-me/Nerio/issues/585).

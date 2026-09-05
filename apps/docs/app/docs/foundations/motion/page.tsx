@@ -225,10 +225,7 @@ export default function Page() {
           orchestration fragile. Nerio Core never imports Motion, and unrelated adapter subpaths do
           not resolve the optional peer.
         </p>
-        <CodeExample
-          code="pnpm add motion @nerio-ui/adapters@1.0.0-beta.1"
-          label="Package installation"
-        />
+        <CodeExample code="pnpm add motion @nerio-ui/adapters@1.0.0" label="Package installation" />
         <CodeExample code={adapterUsage} label="LazyMotion package usage" />
         <p>
           The adapter entrypoint is client-only. Keep the <Code>use client</Code> boundary at the

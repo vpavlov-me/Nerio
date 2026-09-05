@@ -73,10 +73,10 @@ export default function Page() {
           consumers can find them.
         </p>
         <p>
-          A public comment informs the external-feedback gate, but does not by itself satisfy
-          release evidence. Stable readiness still requires the recorded independent-consumer
-          evaluations and manual accessibility and physical-device results defined by the release
-          plan.
+          A public comment feeds the post-release external-consumer record, but does not by itself
+          satisfy release evidence. Before stable publication, readiness requires the bounded
+          maintainer-run accessibility smoke against the exact candidate. The broader independent
+          consumer and physical-device programs continue after release.
         </p>
       </section>
 

@@ -1,6 +1,6 @@
 # Core 1.0 accessibility and real-device audit
 
-- Issue: [#143](https://github.com/vpavlov-me/Nerio/issues/143)
+- Issue: [#585](https://github.com/vpavlov-me/Nerio/issues/585)
 - Status: **Prepared — manual evidence pending**
 - Plan: [`quality/manual-audit-plan.json`](../../quality/manual-audit-plan.json)
 - Candidate commit: **Pending**

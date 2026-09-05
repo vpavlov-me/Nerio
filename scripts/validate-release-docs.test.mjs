@@ -34,6 +34,18 @@ test("release documentation validator fails when focused tests disappear from RE
   invalidFixture("--release", "RELEASE.md", "pnpm validate:stable-accessibility-smoke");
 });
 
+test("release documentation validator requires the Core 1.0 readiness report", () => {
+  invalidFixture(
+    "--readiness",
+    "docs/core-1-0-release-readiness.md",
+    "## Verification and rollback",
+  );
+});
+
+test("release documentation validator requires the repository artifact guard", () => {
+  invalidFixture("--release", "RELEASE.md", "pnpm validate:repo-artifacts");
+});
+
 test("release documentation validator fails when focused tests disappear from the release gate", () => {
   invalidFixture("--release-gate", ".github/workflows/release-gate.yml", "pnpm test:tokens");
 });
