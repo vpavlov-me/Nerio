@@ -17,17 +17,18 @@ against source candidate `da3923f38f91f38b77f890ad28e043ab16f45fe1` and deployme
 `0ec50fdc6a92ccf177ddf27e97eff7fc60846766`.
 
 The observations carry forward to final source candidate
-`9a812072e11dff10dbf4cdd29c9685769e62e4e2` and deployment
-<https://nerio-h1s2jebyb-dquality.vercel.app>. The explicit
-[final release-hardening carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394),
+`c318f0760a340a0c5949e604b8381d7fef83c1f1` and deployment
+<https://nerio-f6yjsyqij-dquality.vercel.app>. The explicit
+[package README carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5550022599),
 building on the
+[final release-hardening carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5549958394),
 [Dialog RTL and API snapshot carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5538121438),
 [final review carry-forward](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5537768311),
 [CLI lock-race review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530878264), and
 [earlier documentation review](https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-5530590241),
 binds the record to the new candidate without claiming another manual run.
 
-The newly reviewed range
+The preceding reviewed range
 `23e514c9a331ee06d7c60acf0a301b575f791604..9a812072e11dff10dbf4cdd29c9685769e62e4e2`
 contains seven commits and 17 unique changed paths: the prior two-file evidence relock; pre-merge
 audit transport handling and its release/workflow contracts; Windows-separator normalization for
@@ -41,11 +42,22 @@ offers an irreversible account action through an ordinary Dialog. The existing P
 now close their controlled Dialogs. Exact-source Chromium coverage asserts that the Security block
 has no destructive confirmation pattern and that Playground `Cancel` closes its Dialog. These are
 automated checks for the changed LTR documentation paths, not repeated human observations. The
-source workflow passed all 11 technical jobs, branch policy passed, and the exact-SHA Vercel
-deployment is ready. Its production audit ended in a registry transport timeout after bounded
+`9a812072` source workflow passed all 11 technical jobs, branch policy passed, and the exact-SHA
+Vercel deployment is ready. Its production audit ended in a registry transport timeout after bounded
 retries, so that transport-tolerant result is not clean-audit or publication evidence; #151 still
 requires the bare strict `pnpm audit:prod` with a successful registry response and no production
 advisory at `low` or above.
+
+The latest range
+`9a812072e11dff10dbf4cdd29c9685769e62e4e2..c318f0760a340a0c5949e604b8381d7fef83c1f1`
+contains the prior two-file evidence relock and publication-safe wording in the six public package
+READMEs. Package tarball contents change only in their embedded README text. Package implementation,
+manifests, exports, dependencies, public API, Registry payload and integrity, tokens, CSS, lockfile,
+documentation application behavior, browser fixtures, and audited interactions are unchanged. The
+exact-source workflow passed all 11 technical jobs, including all six pack inspections, all three
+isolated consumers, Chromium 111/111, Firefox 17/17, WebKit 17/17, and visual 22/22. Its production
+audit received `No known vulnerabilities found`; branch policy passed and the exact-SHA Vercel
+deployment is ready. This latest wording-only package change does not invalidate the human scenarios.
 
 The recorded human sessions used the default horizontal LTR presentation; they did not include a
 human RTL Dialog run. In that LTR presentation, `start-1/2` and `left-1/2` resolve to the same
