@@ -4,8 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Ftokens)](https://www.npmjs.com/package/@nerio-ui/tokens)
 
 Design tokens, themes, modes, density, typography recipes, and CSS variable contracts for Nerio
-Core. The prepared coordinated stable candidate is `1.0.0`; npm `latest` remains on
-`1.0.0-beta.1` until approved publication.
+Core `1.0.0`.
 
 ## Install
 

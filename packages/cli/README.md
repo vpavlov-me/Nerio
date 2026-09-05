@@ -3,9 +3,8 @@
 [![npm version](https://img.shields.io/npm/v/%40nerio-ui%2Fcli)](https://www.npmjs.com/package/@nerio-ui/cli)
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fcli)](https://www.npmjs.com/package/@nerio-ui/cli)
 
-Command-line tools for installing, inspecting, diffing, and safely updating editable Nerio source.
-The prepared coordinated stable candidate is `1.0.0`; npm `latest` remains on `1.0.0-beta.1` until
-approved publication.
+Command-line tools for installing, inspecting, diffing, and safely updating editable Nerio Core
+`1.0.0` source.
 
 ## Install
 

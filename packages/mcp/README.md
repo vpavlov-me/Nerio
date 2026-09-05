@@ -3,9 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/%40nerio-ui%2Fmcp)](https://www.npmjs.com/package/@nerio-ui/mcp)
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fmcp)](https://www.npmjs.com/package/@nerio-ui/mcp)
 
-Read-only Model Context Protocol server for Nerio component and Registry discovery. The prepared
-coordinated stable candidate is `1.0.0`; npm `latest` remains on `1.0.0-beta.1` until approved
-publication.
+Read-only Model Context Protocol server for Nerio Core `1.0.0` component and Registry discovery.
 
 ## Install
 

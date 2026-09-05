@@ -3,8 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/%40nerio-ui%2Fadapters)](https://www.npmjs.com/package/@nerio-ui/adapters)
 [![npm downloads](https://img.shields.io/npm/dw/%40nerio-ui%2Fadapters)](https://www.npmjs.com/package/@nerio-ui/adapters)
 
-Responsibility-scoped adapters for Nerio Core. The prepared coordinated stable candidate is
-`1.0.0`; npm `latest` remains on `1.0.0-beta.1` until approved publication.
+Responsibility-scoped adapters for the coordinated Nerio Core `1.0.0` release.
 
 ## Install
 
