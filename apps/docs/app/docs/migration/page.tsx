@@ -14,7 +14,7 @@ import { createPageMetadata } from "../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Migration",
   description:
-    "Prepare a coordinated Nerio 1.0.0-beta.1 to 1.0.0 migration while stable remains unpublished.",
+    "Migrate coordinated package and editable-source consumers from Nerio 1.0.0-beta.1 to stable 1.0.0.",
   path: "/docs/migration",
 });
 
@@ -95,32 +95,32 @@ export default function Page() {
       <header>
         <h1>Migration</h1>
         <p className="doc-lede">
-          Prepare coordinated package and editable-source consumers for stable Core 1.0 without
-          presenting the candidate as an already published release.
+          Migrate coordinated package and editable-source consumers from beta.1 to the published
+          stable Core 1.0 release.
         </p>
       </header>
 
       <section className="doc-section" id="status">
         <h2>Current status</h2>
         <p className="doc-decision-boundary">
-          <Code>1.0.0</Code> is the prepared stable candidate. It is not a stable release available
-          from npm yet. Until separately approved publication and public verification, npm{" "}
-          <Code>latest</Code> and <Code>beta</Code> resolve to <Code>1.0.0-beta.1</Code>; the
-          protected <Code>alpha</Code> tag remains on <Code>0.1.0-alpha.2</Code>.
+          <Code>1.0.0</Code> is the published stable release. npm <Code>latest</Code> and{" "}
+          <Code>stable</Code> resolve to <Code>1.0.0</Code> for all six packages. Historical{" "}
+          <Code>beta</Code> remains on <Code>1.0.0-beta.1</Code> and <Code>alpha</Code> on{" "}
+          <Code>0.1.0-alpha.2</Code>.
         </p>
         <p>
-          Do not update production lockfiles to <Code>1.0.0</Code> or resolve Registry source from{" "}
-          <Code>v1.0.0</Code> until the packages, tag, Registry revision, and GitHub Release are
-          public from the same exact candidate.
+          Update all Nerio packages used by your project together. The immutable Registry revision{" "}
+          <Code>v1.0.0</Code>, signed tag, packages, and GitHub Release identify the same approved
+          release. Review source diffs and preserve local modifications when migrating.
         </p>
       </section>
 
       <section className="doc-section" id="stable-changes">
         <h2>Beta.1 to stable 1.0</h2>
         <p>
-          The stable candidate keeps the frozen beta.1 Core contract compatible. Consumers already
-          on beta.1 do not need to repeat the earlier Calendar, Tabs, interactive-type, Registry,
-          CLI, or MCP migration.
+          The stable release keeps the frozen beta.1 Core contract compatible. Consumers already on
+          beta.1 do not need to repeat the earlier Calendar, Tabs, interactive-type, Registry, CLI,
+          or MCP migration.
         </p>
         <TableContainer aria-label="Beta.1 to stable 1.0 migration changes">
           <Table>

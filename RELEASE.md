@@ -1,15 +1,17 @@
 # Release Process
 
-Nerio Core `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API. It is not published,
-does not move any npm dist-tag, and does not create `v1.0.0` or a stable GitHub Release. The reviewed
-frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`.
+Nerio Core `1.0.0` is published from exact approved candidate
+`6bc7962f20f1d09f186d89d9ed0294a4b2630482`, identified by the signed `v1.0.0` tag and
+[stable GitHub Release](https://github.com/vpavlov-me/Nerio/releases/tag/v1.0.0). All six packages
+resolve to `1.0.0` through npm `latest` and `stable`. Historical `beta` remains on
+`1.0.0-beta.1`; `alpha` remains on `0.1.0-alpha.2`.
 
-The current public release remains `1.0.0-beta.1` from exact published `main` commit
-`a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages remain available under npm `beta` and
-`latest`; the protected `alpha` tag intentionally remains on `0.1.0-alpha.2`.
-
-The signed `v1.0.0-beta.1` tag and GitHub prerelease point to the exact publish candidate. Public
-metadata and a clean package/source, CLI, MCP, and Next.js consumer smoke passed after publication.
+Public archives, hashes, registry signatures, CLI/MCP, minimum/current Next.js package/source
+consumers, and the maintained Vite consumer passed. Manual npm 2FA publication without CI
+provenance was explicitly approved for this release. The
+[publication record](./docs/core-1-0-publication.md) documents the evidence and the bounded
+post-publication status-update policy. Immutable release artifacts and human evidence are not
+rewritten by later documentation updates.
 
 The candidate-bound readiness record is maintained in
 [`docs/core-1-0-release-readiness.md`](./docs/core-1-0-release-readiness.md). It must record the

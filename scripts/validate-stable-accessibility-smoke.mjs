@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isPostCandidateEvidencePath } from "./stable-accessibility-evidence-paths.mjs";
+import { publishedDocumentationAnchor } from "./published-release-documentation.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -21,6 +22,7 @@ const {
 });
 
 const errors = [];
+let publishedAnchor = null;
 const isJsonObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 let platformSupport;
@@ -577,10 +579,33 @@ if (record.status === "evidence-pending") {
     if (object.status !== 0 || ancestry.status !== 0) {
       errors.push("Completed smoke candidate.commit must be contained by the current history.");
     } else {
-      const changedPaths = spawnSync("git", ["diff", "--name-only", `${candidate.commit}..HEAD`], {
-        cwd: root,
-        encoding: "utf8",
-      });
+      try {
+        publishedAnchor = publishedDocumentationAnchor({
+          root,
+          releaseMetadataPath,
+          recordPath,
+          platformSupportPath,
+          packagesRoot,
+        });
+      } catch (error) {
+        errors.push(error.message);
+      }
+      const comparisonHead = publishedAnchor ?? "HEAD";
+      const releaseAncestry = spawnSync(
+        "git",
+        ["merge-base", "--is-ancestor", candidate.commit, comparisonHead],
+        { cwd: root },
+      );
+      if (releaseAncestry.status !== 0)
+        errors.push("Smoke candidate must precede the verified release anchor.");
+      const changedPaths = spawnSync(
+        "git",
+        ["diff", "--name-only", `${candidate.commit}..${comparisonHead}`],
+        {
+          cwd: root,
+          encoding: "utf8",
+        },
+      );
       const changedPathOutput = typeof changedPaths.stdout === "string" ? changedPaths.stdout : "";
       const disallowedPaths = changedPathOutput
         .split("\n")
@@ -837,7 +862,9 @@ if (errors.length) {
 } else {
   console.log(
     complete
-      ? "Scoped stable accessibility smoke is complete and internally approved."
+      ? publishedAnchor
+        ? "Historical stable accessibility evidence is preserved at v1.0.0; current changes are limited to publication-status documentation. No new human smoke is claimed."
+        : "Scoped stable accessibility smoke is complete and internally approved."
       : "Scoped stable accessibility smoke record is valid and evidence remains pending.",
   );
 }

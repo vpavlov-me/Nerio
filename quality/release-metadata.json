@@ -13,7 +13,7 @@
   ],
   "defaultDistTag": "latest",
   "protectedDistTags": ["alpha", "beta"],
-  "docsStatusLabel": "Prepared stable 1.0 candidate",
+  "docsStatusLabel": "Published stable 1.0",
   "publicInstallationVersion": "1.0.0",
   "migrationTarget": "1.0.0"
 }
