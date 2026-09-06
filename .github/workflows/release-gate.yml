@@ -91,7 +91,7 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           import { execFileSync } from "node:child_process";
-          const policyCommit = "cd54c866c3de1f6eac40d2dee9a351288148f95b";
+          const policyCommit = "cbf5089bebc5ceac3fdd540eb3333c10cf947cdc";
           const source = execFileSync("git", ["show", policyCommit + ":scripts/published-release-documentation.mjs"], { encoding: "utf8" });
           const { publishedDocumentationAnchor } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
           publishedDocumentationAnchor({ root: process.cwd(), policyCommit });
