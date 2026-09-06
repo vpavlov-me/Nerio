@@ -1195,10 +1195,11 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(await robots.text()).toContain("Disallow: /views/");
   expect(await robots.text()).toContain("Disallow: /visual-test/");
   const llmsText = await llms.text();
-  expect(llmsText).toContain("Core `1.0.0` is the prepared stable candidate; it is not published.");
+  expect(llmsText).toContain("Core `1.0.0` is published across all six public packages.");
   expect(llmsText).toContain(
-    "npm `latest` and `beta` still resolve to `1.0.0-beta.1`, while protected `alpha` remains on `0.1.0-alpha.2`.",
+    "npm `latest` and `stable` resolve to `1.0.0`; historical `beta` remains on `1.0.0-beta.1` and `alpha` on `0.1.0-alpha.2`.",
   );
+  expect(llmsText).not.toContain("it is not published");
   expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
   expect(llmsText).not.toContain("/playground");
   expect(llmsText).not.toContain("nerio-preview-surfaces");

@@ -67,6 +67,11 @@ For the explicit `Published stable 1.0` status only, the validator additionally 
    The two executable TSX documents must additionally match the exact reviewed publication-copy
    hashes; their paths cannot admit later behavioral changes under this exception.
 
+The current-repository boundary is also checked by `pnpm validate:repo-artifacts`, which runs
+unconditionally with full Git history in the PR gate's `always-fast` job and the Release gate's
+`release-quality` job. It does not depend on the optional manual-audit scope. The narrowly
+allowlisted browser-test change only aligns discovery assertions with the published status.
+
 The output explicitly describes preserved historical evidence and never claims a new human smoke
 for the documentation commit. Missing/moved/lightweight tags, changed release identity, alternate
 evidence paths, metadata drift, and changes outside this boundary fail validation. Prepared or

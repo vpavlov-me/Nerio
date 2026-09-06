@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSyn
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
+import { validateRepositoryArtifacts } from "./validate-repository-artifacts.mjs";
 import {
   publishedDocumentationAnchor,
   publishedDocumentationPaths,
@@ -131,8 +132,50 @@ test("published docs require the released commit in current history", () => {
     git("checkout", "--orphan", "unrelated");
     git("add", ".");
     git("commit", "-qm", "Unrelated history");
-    assert.throws(() => publishedDocumentationAnchor({ root }));
+    assert.throws(
+      () => publishedDocumentationAnchor({ root }),
+      /Published documentation: released commit must be contained by current history/,
+    );
   });
+});
+
+test("NUL-delimited paths preserve whitespace in untracked, staged and committed changes", () => {
+  for (const path of [" README.md", "\tREADME.md", "README.md "]) {
+    fixture(({ root, git, write }) => {
+      write(path, "Not an allowlisted status document\n");
+      const reject = () =>
+        assert.throws(
+          () => publishedDocumentationAnchor({ root }),
+          /outside the status-documentation boundary/,
+        );
+      reject();
+      git("add", "--", path);
+      reject();
+      git("commit", "-qm", "Whitespace path");
+      reject();
+    });
+  }
+});
+
+test("the unconditional repository validator enforces publication boundaries", () => {
+  fixture(({ root, write }) => {
+    assert.doesNotThrow(() => validateRepositoryArtifacts(root));
+    write("docs/unreviewed.md", "Unexpected post-publication documentation\n");
+    assert.throws(
+      () => validateRepositoryArtifacts(root),
+      /Published documentation: changes outside the status-documentation boundary/,
+    );
+  });
+  for (const [path, job, nextJob] of [
+    [".github/workflows/pr-gate.yml", "always_fast", "docs"],
+    [".github/workflows/release-gate.yml", "release_quality", "release_browser"],
+  ]) {
+    const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+    const body = source.split(`\n  ${job}:`)[1].split(`\n  ${nextJob}:`)[0];
+    assert.match(body, /fetch-depth: 0/);
+    assert.match(body, /\n      - run: pnpm validate:repo-artifacts\n/);
+    assert.doesNotMatch(body.split("    steps:")[0], /\bif:/);
+  }
 });
 
 test("published docs reject missing, replaced, and lightweight release tags", () => {

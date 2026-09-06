@@ -13,13 +13,15 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-Nerio Core `1.0.0` is the prepared stable candidate for the frozen Core 1.0 API on the isolated
-`release/1.0` line. It is not published and does not change the public npm channels. Until the
-separately approved release, `1.0.0-beta.1` remains available under npm `beta` and `latest`, and the
-protected `alpha` tag remains on `0.1.0-alpha.2`. The candidate's human release gate is a bounded
-maintainer-run accessibility smoke against its exact SHA and deployment; the broader real-device
-matrix and external-consumer cycle continue after stable publication. Every publication remains
-manual and is governed by the roadmap and `RELEASE.md`.
+Nerio Core `1.0.0` is published for the frozen Core 1.0 API. All six public packages resolve to
+`1.0.0` through npm `latest` and `stable`; historical `beta` remains on `1.0.0-beta.1` and protected
+`alpha` on `0.1.0-alpha.2`. The signed `v1.0.0` tag and GitHub Release identify approved commit
+`6bc7962f20f1d09f186d89d9ed0294a4b2630482`. The bounded maintainer-run accessibility smoke remains
+historical evidence for that released candidate. The broader real-device matrix and external
+consumer cycle remain post-release work. Manual npm 2FA publication without CI provenance was
+explicitly approved; see [`docs/core-1-0-publication.md`](./docs/core-1-0-publication.md) for the
+release receipt and verification boundaries. Future publication remains manual and governed by
+the roadmap and `RELEASE.md`.
 
 Post-1.0 scope is governed by
 [`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md). That decision

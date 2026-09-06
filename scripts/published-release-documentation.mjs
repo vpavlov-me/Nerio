@@ -8,6 +8,7 @@ import { isDeepStrictEqual } from "node:util";
 // Do not add runtime, dependency, snapshot, workflow, or human-evidence files.
 export const publishedDocumentationPaths = Object.freeze([
   "README.md",
+  "PROJECT.md",
   "RELEASE.md",
   "docs/core-1-0-publication.md",
   "docs/migrations/beta-1-to-1-0.md",
@@ -21,6 +22,8 @@ export const publishedDocumentationPaths = Object.freeze([
   "scripts/published-release-documentation.test.mjs",
   "scripts/validate-stable-accessibility-smoke.mjs",
   "scripts/validate-stable-accessibility-smoke.test.mjs",
+  "scripts/validate-repository-artifacts.mjs",
+  "tests/browser/docs-smoke.spec.mjs",
 ]);
 
 // These are the reviewed copy-only page revisions. A path allowlist alone must
@@ -66,7 +69,8 @@ export function publishedDocumentationAnchor({
       cwd: root,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
-    }).trim();
+    });
+  const gitValue = (...args) => git(...args).trim();
   const receipt = JSON.parse(
     readFileSync(resolve(root, "quality/core-1-0-publication.json"), "utf8"),
   );
@@ -95,13 +99,20 @@ export function publishedDocumentationAnchor({
     "valid past publication time is required.",
   );
   const ref = "refs/tags/v1.0.0";
-  assertPublished(git("cat-file", "-t", ref) === "tag", "an annotated release tag is required.");
   assertPublished(
-    git("rev-parse", ref) === receipt.tagObject &&
-      git("rev-parse", `${ref}^{commit}`) === receipt.commit,
+    gitValue("cat-file", "-t", ref) === "tag",
+    "an annotated release tag is required.",
+  );
+  assertPublished(
+    gitValue("rev-parse", ref) === receipt.tagObject &&
+      gitValue("rev-parse", `${ref}^{commit}`) === receipt.commit,
     "release tag identity differs from the publication receipt.",
   );
-  git("merge-base", "--is-ancestor", receipt.commit, "HEAD");
+  try {
+    git("merge-base", "--is-ancestor", receipt.commit, "HEAD");
+  } catch {
+    assertPublished(false, "released commit must be contained by current history.");
+  }
 
   const releasedMetadata = JSON.parse(
     git("show", `${receipt.commit}:quality/release-metadata.json`),
