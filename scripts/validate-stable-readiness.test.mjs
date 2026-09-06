@@ -29,3 +29,10 @@ test("prerelease channels preserve truthful pending validation", () => {
     ["validate:stable-accessibility-smoke", "validate:manual-audit-plan", "validate:beta-feedback"],
   );
 });
+
+test("dev validates historical records without claiming current stable readiness", () => {
+  assert.deepEqual(
+    commandsForChannel("stable", { scope: "development" }).map(([, , args]) => args),
+    [undefined, undefined, undefined],
+  );
+});

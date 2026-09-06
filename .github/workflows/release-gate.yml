@@ -87,6 +87,15 @@ jobs:
         with:
           ref: ${{ needs.candidate.outputs.candidate_sha }}
           fetch-depth: 0
+      - name: Validate immutable publication policy
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          const policyCommit = "9e5e8007b2bbc6d944244d9d9039ec11e317e14b";
+          const source = execFileSync("git", ["show", policyCommit + ":scripts/published-release-documentation.mjs"], { encoding: "utf8" });
+          const { publishedDocumentationAnchor } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
+          publishedDocumentationAnchor({ root: process.cwd(), policyCommit, scope: "release" });
+          NODE
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0

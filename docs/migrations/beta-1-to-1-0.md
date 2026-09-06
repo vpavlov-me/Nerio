@@ -1,21 +1,20 @@
 # Migrate from Core 1.0.0-beta.1 to 1.0.0
 
-Nerio Core `1.0.0` is a prepared stable candidate. It is not published yet. Until a separately
-approved publication is complete and publicly verified, npm `latest` and `beta` continue to resolve
-to `1.0.0-beta.1`, and the protected `alpha` tag remains on `0.1.0-alpha.2`.
-
-Do not change a production lockfile to `1.0.0` or resolve Registry source from `v1.0.0` before the
-stable packages, tag, Registry revision, and GitHub Release are public from the same exact
-candidate.
+Nerio Core `1.0.0` is published. All six packages resolve to `1.0.0` through npm `latest` and
+`stable`; historical `beta` remains on `1.0.0-beta.1` and `alpha` on `0.1.0-alpha.2`.
+The packages, immutable Registry revision `v1.0.0`, signed tag, and
+[GitHub Release](https://github.com/vpavlov-me/Nerio/releases/tag/v1.0.0) identify exact approved
+candidate `6bc7962f20f1d09f186d89d9ed0294a4b2630482`. See the
+[publication record](../core-1-0-publication.md) for public verification and limitations.
 
 ## Compatibility from beta.1
 
-The stable candidate keeps the frozen Core 1.0 component and source-install contract compatible
+The stable release keeps the frozen Core 1.0 component and source-install contract compatible
 with beta.1. Consumers already on `1.0.0-beta.1` do not need to repeat the beta.0 migration for
 Calendar `today`, Tabs string values, Nerio-owned interactive types, Registry integrity and HTTPS,
 atomic CLI updates, or MCP structured output.
 
-The stable candidate includes these compatible updates:
+The stable release includes these compatible updates:
 
 - all six coordinated packages and the immutable Registry identity move to `1.0.0` and
   `v1.0.0`;
@@ -31,7 +30,7 @@ The supported consumer baseline remains Node.js 22 or 24, React `>=19 <20`, Next
 
 ## Package consumers after publication
 
-After the stable release is publicly verified, update every Nerio package already used by the
+Update every Nerio package already used by the
 consumer to `1.0.0` in one change. Do not mix stable and beta package versions.
 
 For the standard UI package set:

@@ -324,8 +324,8 @@ function tailwindDocumentationFailures() {
     ],
     [
       migrationPage,
-      "is the prepared stable candidate",
-      "Migration must distinguish the prepared stable candidate from a published release",
+      "is the published stable release",
+      "Migration must describe the verified published stable release",
     ],
     [
       migrationPage,

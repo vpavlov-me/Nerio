@@ -2,6 +2,10 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  publishedDocumentationAnchor,
+  publicationValidationScope,
+} from "./published-release-documentation.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const allowMarker = "repo-artifacts-allow";
@@ -194,13 +198,20 @@ export function trackedRepositoryFiles(repositoryRoot = root) {
     .filter(Boolean);
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const failures = repositoryArtifactFailures(trackedRepositoryFiles(root), (path) =>
-    readFileSync(resolve(root, path), "utf8"),
+export function validateRepositoryArtifacts(repositoryRoot = root, scope = "release") {
+  // This command runs unconditionally in both PR and Release gates with full history.
+  // Publication boundaries must not depend on the optional manual-audit scope.
+  publishedDocumentationAnchor({ root: repositoryRoot, scope });
+  const failures = repositoryArtifactFailures(trackedRepositoryFiles(repositoryRoot), (path) =>
+    readFileSync(resolve(repositoryRoot, path), "utf8"),
   );
   if (failures.length) {
     throw new Error(`Repository artifact retention validation failed:\n- ${failures.join("\n- ")}`);
   }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  validateRepositoryArtifacts(root, publicationValidationScope(root));
   console.log(
     "Repository artifact retention passed: tracked evidence is portable and in canonical locations.",
   );
