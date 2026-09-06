@@ -25,7 +25,7 @@ function fixture(callback) {
     writeFileSync(join(root, path), typeof value === "string" ? value : JSON.stringify(value));
   };
   try {
-    git("init", "--quiet");
+    git("init", "--quiet", "--initial-branch=main");
     git("config", "user.email", "fixture@example.invalid");
     git("config", "user.name", "Release fixture");
     git("config", "commit.gpgsign", "false");
@@ -357,6 +357,52 @@ test("dev sync retains forward runtime work without certifying a new release", (
     assert.equal(publicationValidationScope(root, { GITHUB_BASE_REF: "main" }), "release");
     assert.equal(publicationValidationScope(root, { GITHUB_BASE_REF: "dev" }), "development");
     assert.equal(publicationValidationScope(root, { GITHUB_ACTIONS: "true" }), "release");
+    git("update-ref", "refs/remotes/origin/dev", "HEAD");
+    for (const branch of [
+      "feat/local",
+      "fix/local",
+      "refactor/local",
+      "docs/local",
+      "test/local",
+      "chore/local",
+    ]) {
+      git("switch", "-c", branch);
+      assert.equal(publicationValidationScope(root, {}), "development");
+      assert.equal(
+        publicationValidationScope(root, {
+          GITHUB_BASE_REF: "main",
+          NERIO_VALIDATION_BASE_REF: "dev",
+        }),
+        "release",
+      );
+      assert.equal(
+        publicationValidationScope(root, {
+          GITHUB_ACTIONS: "true",
+          NERIO_VALIDATION_BASE_REF: "dev",
+        }),
+        "release",
+      );
+    }
+    git("update-ref", "-d", "refs/remotes/origin/dev");
+    assert.equal(publicationValidationScope(root, {}), "release");
+    assert.equal(
+      publicationValidationScope(root, { NERIO_VALIDATION_BASE_REF: "dev" }),
+      "development",
+    );
+    for (const branch of ["main", "release/1.0"]) {
+      if (branch === "main") git("switch", branch);
+      else git("switch", "-c", branch);
+      assert.equal(
+        publicationValidationScope(root, { NERIO_VALIDATION_BASE_REF: "dev" }),
+        "release",
+      );
+    }
+    git("update-ref", "refs/remotes/origin/dev", "dev");
+    git("switch", "-c", "feat/not-from-dev");
+    assert.equal(publicationValidationScope(root, {}), "release");
+    git("checkout", "--detach");
+    assert.equal(publicationValidationScope(root, { NERIO_VALIDATION_BASE_REF: "dev" }), "release");
+    git("switch", "dev");
     assert.equal(publishedDocumentationAnchor({ root, scope: "development" }), commit);
     assert.doesNotThrow(() => validateRepositoryArtifacts(root, "development"));
     assert.throws(

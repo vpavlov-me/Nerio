@@ -93,7 +93,16 @@ export function publicationValidationScope(root, environment = process.env) {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     }).trim();
-    return branch === "dev" ? "development" : "release";
+    if (branch === "main" || branch.startsWith("release/")) return "release";
+    if (branch === "dev" || environment.NERIO_VALIDATION_BASE_REF === "dev") {
+      return "development";
+    }
+    // Normal local working branches inherit dev even before their PR exists.
+    execFileSync("git", ["merge-base", "--is-ancestor", "refs/remotes/origin/dev", "HEAD"], {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return "development";
   } catch {
     return "release";
   }

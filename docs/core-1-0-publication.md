@@ -85,14 +85,18 @@ for the documentation commit. Missing/moved/lightweight tags, changed release id
 evidence paths, metadata drift, and changes outside this boundary fail validation. Prepared or
 future versions do not enter this mode and retain the exact-candidate gate.
 
-Pull requests targeting `dev` (and local checks on the `dev` branch) instead validate the preserved
+Pull requests targeting `dev`, local checks on `dev`, and local working branches descended from
+`origin/dev` instead validate the preserved
 1.0 record against its annotated release tag. The smoke record and its historical audit/readiness
 documents must remain byte-identical to that tag. The historical platform, metadata, and package
 contracts are read from the tag, not from the forward development tree. Runtime, package versions,
 and platform policy may therefore advance on `dev` without falsely inheriting 1.0 human approval.
 Normal repository and scoped PR checks still run. A `dev -> main` PR uses the release scope because
-the target branch takes precedence; detached or otherwise unknown contexts default to release
-validation. This permits the reviewed stable-to-dev sync described in `RELEASE.md` and is not
+the target branch takes precedence. A local working branch whose checkout lacks `origin/dev`
+can explicitly use `NERIO_VALIDATION_BASE_REF=dev pnpm validate:repo-artifacts` and
+`NERIO_VALIDATION_BASE_REF=dev pnpm validate:stable-readiness`. This local override never changes
+CI, `main`, `release/*`, or detached-checkout validation. Detached or otherwise unknown contexts
+default to release validation. This permits the reviewed stable-to-dev sync described in `RELEASE.md` and is not
 approval to release 1.1 or to rewrite the published 1.0 evidence.
 
 This receipt is reviewed release bookkeeping, not a substitute for online npm/GitHub verification
