@@ -8,6 +8,7 @@ import { validateRepositoryArtifacts } from "./validate-repository-artifacts.mjs
 import {
   publishedDocumentationAnchor,
   publishedDocumentationPaths,
+  withPublicationPolicyStep,
 } from "./published-release-documentation.mjs";
 
 function fixture(callback) {
@@ -88,7 +89,6 @@ for (const path of [
   "docs/core-1-0-release-readiness.md",
   "docs/audits/core-1-0-stable-accessibility-smoke.md",
   "quality/public-api.json",
-  ".github/workflows/release-gate.yml",
   "apps/docs/app/page.tsx",
 ]) {
   test(`published docs reject changes to ${path}`, () => {
@@ -244,10 +244,71 @@ test("prepared or future releases do not enter the historical evidence mode", ()
     "Published stable 1.1",
   ]) {
     fixture(({ root, metadata, write }) => {
+      rmSync(join(root, "quality/core-1-0-publication.json"));
       write("quality/release-metadata.json", { ...metadata, docsStatusLabel });
       assert.equal(publishedDocumentationAnchor({ root }), null);
     });
   }
+});
+
+test("published 1.0.0 cannot bypass the boundary by reverting its status", () => {
+  for (const removeReceipt of [false, true]) {
+    fixture(({ root, git, metadata, write }) => {
+      git("add", ".");
+      git("commit", "-qm", "Record publication");
+      if (removeReceipt) rmSync(join(root, "quality/core-1-0-publication.json"));
+      write("quality/release-metadata.json", metadata);
+      write("packages/ui/src/index.ts", "Unapproved runtime change\n");
+      assert.throws(() => publishedDocumentationAnchor({ root }), /cannot return to a prepared/);
+    });
+  }
+});
+
+test("immutable bootstrap rejects a modified guard, caller, receipt or workflow", () => {
+  fixture(({ root, git, write, commit }) => {
+    const protectedFiles = [
+      "scripts/published-release-documentation.mjs",
+      "scripts/published-release-documentation.test.mjs",
+      "scripts/validate-repository-artifacts.mjs",
+      "scripts/validate-stable-accessibility-smoke.mjs",
+      "scripts/validate-stable-accessibility-smoke.test.mjs",
+    ];
+    for (const path of protectedFiles) write(path, "Reviewed policy source\n");
+    for (const [path, job] of [
+      [".github/workflows/pr-gate.yml", "always_fast"],
+      [".github/workflows/release-gate.yml", "release_quality"],
+    ])
+      write(
+        path,
+        `jobs:\n  ${job}:\n    steps:\n      - uses: checkout\n        with:\n          fetch-depth: 0\n`,
+      );
+    git("add", ".");
+    git("commit", "-qm", "Reviewed immutable policy");
+    const policyCommit = git("rev-parse", "HEAD");
+    for (const [path, job] of [
+      [".github/workflows/pr-gate.yml", "always_fast"],
+      [".github/workflows/release-gate.yml", "release_quality"],
+    ])
+      write(
+        path,
+        withPublicationPolicyStep(git("show", `${policyCommit}:${path}`) + "\n", job, policyCommit),
+      );
+    git("add", ".");
+    assert.equal(publishedDocumentationAnchor({ root, policyCommit }), commit);
+    for (const path of [
+      ...protectedFiles,
+      "quality/core-1-0-publication.json",
+      ".github/workflows/pr-gate.yml",
+    ]) {
+      const approved = readFileSync(join(root, path), "utf8");
+      write(path, "Policy bypass\n");
+      assert.throws(() => publishedDocumentationAnchor({ root, policyCommit }), /differs from/);
+      git("add", path);
+      write(path, approved);
+      assert.throws(() => publishedDocumentationAnchor({ root, policyCommit }), /differs from/);
+      git("add", path);
+    }
+  });
 });
 
 test("allowlisted TSX pages accept the reviewed copy but reject later executable changes", () => {

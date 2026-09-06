@@ -63,7 +63,7 @@ For the explicit `Published stable 1.0` status only, the validator additionally 
 4. Every tracked or untracked, staged or unstaged change relative to the tag is restricted to the
    exact status-documentation/validator files listed in `published-release-documentation.mjs`.
    Changed status files must remain regular files. Runtime, public packages, dependencies,
-   lockfiles, API/Registry snapshots, CI workflows, and other docs routes are not allowlisted.
+   lockfiles, API/Registry snapshots, and other docs routes are not allowlisted.
    The two executable TSX documents must additionally match the exact reviewed publication-copy
    hashes; their paths cannot admit later behavioral changes under this exception.
 
@@ -71,6 +71,12 @@ The current-repository boundary is also checked by `pnpm validate:repo-artifacts
 unconditionally with full Git history in the PR gate's `always-fast` job and the Release gate's
 `release-quality` job. It does not depend on the optional manual-audit scope. The narrowly
 allowlisted browser-test change only aligns discovery assertions with the published status.
+The two workflow files may add only the exact mandatory bootstrap derived from the reviewed
+immutable policy commit. That bootstrap loads the guard from Git, not the candidate worktree,
+and checks the guard, callers, tests, receipt, and workflow bytes against that immutable anchor.
+The receipt keeps the 1.0.0 boundary active if a later change attempts to revert the status label.
+Changing protected GitHub workflow settings or replacing the policy anchor itself remains a
+maintainer-reviewed policy change, not an authority granted by this documentation exception.
 
 The output explicitly describes preserved historical evidence and never claims a new human smoke
 for the documentation commit. Missing/moved/lightweight tags, changed release identity, alternate

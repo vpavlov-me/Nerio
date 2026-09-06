@@ -1,11 +1,11 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { lstatSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 // This is a bounded post-publication status update, not a new candidate approval.
-// Do not add runtime, dependency, snapshot, workflow, or human-evidence files.
+// Do not add runtime, dependency, snapshot, or human-evidence files.
 export const publishedDocumentationPaths = Object.freeze([
   "README.md",
   "PROJECT.md",
@@ -24,7 +24,42 @@ export const publishedDocumentationPaths = Object.freeze([
   "scripts/validate-stable-accessibility-smoke.test.mjs",
   "scripts/validate-repository-artifacts.mjs",
   "tests/browser/docs-smoke.spec.mjs",
+  ".github/workflows/pr-gate.yml",
+  ".github/workflows/release-gate.yml",
 ]);
+
+const policyFiles = [
+  "scripts/published-release-documentation.mjs",
+  "scripts/published-release-documentation.test.mjs",
+  "scripts/validate-repository-artifacts.mjs",
+  "scripts/validate-stable-accessibility-smoke.mjs",
+  "scripts/validate-stable-accessibility-smoke.test.mjs",
+  "quality/core-1-0-publication.json",
+];
+
+export function publicationPolicyStep(policyCommit) {
+  if (!/^[a-f0-9]{40}$/.test(policyCommit)) throw new Error("Invalid policy commit.");
+  return `      - name: Validate immutable publication policy
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          const policyCommit = "${policyCommit}";
+          const source = execFileSync("git", ["show", policyCommit + ":scripts/published-release-documentation.mjs"], { encoding: "utf8" });
+          const { publishedDocumentationAnchor } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
+          publishedDocumentationAnchor({ root: process.cwd(), policyCommit });
+          NODE
+`;
+}
+
+export function withPublicationPolicyStep(source, job, policyCommit) {
+  const start = source.indexOf(`\n  ${job}:`);
+  if (start < 0) throw new Error(`Missing publication policy job: ${job}`);
+  const marker = "          fetch-depth: 0\n";
+  const index = source.indexOf(marker, start);
+  if (index < 0) throw new Error(`Missing full-history checkout: ${job}`);
+  const position = index + marker.length;
+  return source.slice(0, position) + publicationPolicyStep(policyCommit) + source.slice(position);
+}
 
 // These are the reviewed copy-only page revisions. A path allowlist alone must
 // not permit a later behavioral change in either executable TSX document.
@@ -37,22 +72,72 @@ const publicationPageHashes = Object.freeze({
 
 export function publishedDocumentationAnchor({
   root,
+  policyCommit,
   releaseMetadataPath = resolve(root, "quality/release-metadata.json"),
   recordPath = resolve(root, "quality/stable-accessibility-smoke.json"),
   platformSupportPath = resolve(root, "quality/platform-support.json"),
   packagesRoot = resolve(root, "packages"),
 }) {
+  const assertPublished = (condition, message) => {
+    if (!condition) throw new Error(`Published documentation: ${message}`);
+  };
+  const git = (...args) =>
+    execFileSync("git", args, {
+      cwd: root,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  const gitValue = (...args) => git(...args).trim();
+  if (policyCommit !== undefined) {
+    assertPublished(/^[a-f0-9]{40}$/.test(policyCommit), "invalid immutable policy commit.");
+    for (const path of policyFiles) {
+      const expected = git("show", `${policyCommit}:${path}`);
+      assertPublished(
+        readFileSync(resolve(root, path), "utf8") === expected &&
+          git("show", `:${path}`) === expected,
+        `policy file differs from the immutable reviewed anchor: ${path}`,
+      );
+    }
+    for (const [path, job] of [
+      [".github/workflows/pr-gate.yml", "always_fast"],
+      [".github/workflows/release-gate.yml", "release_quality"],
+    ]) {
+      const expected = withPublicationPolicyStep(
+        git("show", `${policyCommit}:${path}`),
+        job,
+        policyCommit,
+      );
+      assertPublished(
+        readFileSync(resolve(root, path), "utf8") === expected &&
+          git("show", `:${path}`) === expected,
+        `workflow differs from the reviewed mandatory policy bootstrap: ${path}`,
+      );
+    }
+  }
+  let publicationRecorded = existsSync(resolve(root, "quality/core-1-0-publication.json"));
+  if (!publicationRecorded) {
+    try {
+      git("cat-file", "-e", "HEAD:quality/core-1-0-publication.json");
+      publicationRecorded = true;
+    } catch {
+      // The original pre-publication branch has no receipt in its tree or history tip.
+    }
+  }
   let metadata;
   try {
     metadata = JSON.parse(readFileSync(releaseMetadataPath, "utf8"));
   } catch {
+    assertPublished(!publicationRecorded, "published release metadata must remain readable.");
     // The main validator reports malformed/missing metadata in every mode.
     return null;
   }
+  if (publicationRecorded && metadata?.coreVersion === "1.0.0") {
+    assertPublished(
+      metadata.docsStatusLabel === "Published stable 1.0",
+      "published 1.0.0 cannot return to a prepared or other status.",
+    );
+  }
   if (metadata?.docsStatusLabel !== "Published stable 1.0") return null;
-  const assertPublished = (condition, message) => {
-    if (!condition) throw new Error(`Published documentation: ${message}`);
-  };
   for (const [actual, expected] of [
     [releaseMetadataPath, "quality/release-metadata.json"],
     [recordPath, "quality/stable-accessibility-smoke.json"],
@@ -64,13 +149,6 @@ export function publishedDocumentationAnchor({
       "canonical evidence paths are required.",
     );
   }
-  const git = (...args) =>
-    execFileSync("git", args, {
-      cwd: root,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-  const gitValue = (...args) => git(...args).trim();
   const receipt = JSON.parse(
     readFileSync(resolve(root, "quality/core-1-0-publication.json"), "utf8"),
   );
