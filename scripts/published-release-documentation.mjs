@@ -52,6 +52,11 @@ export function publicationPolicyStep(policyCommit) {
 }
 
 export function withPublicationPolicyStep(source, job, policyCommit) {
+  // A separately reviewed policy revision replaces its predecessor's pinned step.
+  source = source.replace(
+    /      - name: Validate immutable publication policy\n[\s\S]*?          NODE\n/g,
+    "",
+  );
   const start = source.indexOf(`\n  ${job}:`);
   if (start < 0) throw new Error(`Missing publication policy job: ${job}`);
   const marker = "          fetch-depth: 0\n";
@@ -114,8 +119,11 @@ export function publishedDocumentationAnchor({
       );
     }
   }
-  let publicationRecorded = existsSync(resolve(root, "quality/core-1-0-publication.json"));
-  if (!publicationRecorded) {
+  const canonicalMetadata =
+    resolve(releaseMetadataPath) === resolve(root, "quality/release-metadata.json");
+  let publicationRecorded =
+    canonicalMetadata && existsSync(resolve(root, "quality/core-1-0-publication.json"));
+  if (canonicalMetadata && !publicationRecorded) {
     try {
       git("cat-file", "-e", "HEAD:quality/core-1-0-publication.json");
       publicationRecorded = true;

@@ -264,6 +264,33 @@ test("published 1.0.0 cannot bypass the boundary by reverting its status", () =>
   }
 });
 
+test("prepared test fixtures do not inherit the enclosing repository publication receipt", () => {
+  fixture(({ root, metadata, write }) => {
+    write("prepared-fixture.json", metadata);
+    assert.equal(
+      publishedDocumentationAnchor({
+        root,
+        releaseMetadataPath: join(root, "prepared-fixture.json"),
+      }),
+      null,
+    );
+    assert.throws(
+      () => publishedDocumentationAnchor({ root }),
+      /outside the status-documentation boundary/,
+    );
+  });
+});
+
+test("reviewed policy revisions replace rather than duplicate the immutable bootstrap", () => {
+  const source =
+    "jobs:\n  always_fast:\n    steps:\n      - uses: checkout\n        with:\n          fetch-depth: 0\n";
+  const first = withPublicationPolicyStep(source, "always_fast", "a".repeat(40));
+  assert.equal(
+    withPublicationPolicyStep(first, "always_fast", "b".repeat(40)),
+    withPublicationPolicyStep(source, "always_fast", "b".repeat(40)),
+  );
+});
+
 test("immutable bootstrap rejects a modified guard, caller, receipt or workflow", () => {
   fixture(({ root, git, write, commit }) => {
     const protectedFiles = [
