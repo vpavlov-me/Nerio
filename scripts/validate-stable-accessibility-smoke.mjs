@@ -1,9 +1,12 @@
 import { readFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isPostCandidateEvidencePath } from "./stable-accessibility-evidence-paths.mjs";
-import { publishedDocumentationAnchor } from "./published-release-documentation.mjs";
+import {
+  publishedDocumentationAnchor,
+  publicationValidationScope,
+} from "./published-release-documentation.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -22,12 +25,47 @@ const {
 });
 
 const errors = [];
-let publishedAnchor = null;
 const isJsonObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
+let record;
+try {
+  record = JSON.parse(await readFile(recordPath, "utf8"));
+} catch (error) {
+  errors.push(`Stable accessibility smoke record must be readable JSON: ${error.message}`);
+  record = {};
+}
+if (!isJsonObject(record)) {
+  errors.push("Stable accessibility smoke record must be a JSON object.");
+  record = {};
+}
+let publishedAnchor = null;
+const scope = publicationValidationScope(root);
+try {
+  if (record.status === "complete")
+    publishedAnchor = publishedDocumentationAnchor({
+      root,
+      scope,
+      releaseMetadataPath,
+      recordPath,
+      platformSupportPath,
+      packagesRoot,
+    });
+} catch (error) {
+  errors.push(error.message);
+}
+const historicalDevelopment = scope === "development" && publishedAnchor !== null;
+const readContract = async (path, releasePath) =>
+  historicalDevelopment
+    ? execFileSync("git", ["show", `${publishedAnchor}:${releasePath}`], {
+        cwd: root,
+        encoding: "utf8",
+      })
+    : readFile(path, "utf8");
 let platformSupport;
 try {
-  platformSupport = JSON.parse(await readFile(platformSupportPath, "utf8"));
+  platformSupport = JSON.parse(
+    await readContract(platformSupportPath, "quality/platform-support.json"),
+  );
 } catch (error) {
   errors.push(`Platform support policy must be readable JSON: ${error.message}`);
 }
@@ -429,18 +467,6 @@ const environmentMetadataRequirements = {
   },
 };
 
-let record;
-try {
-  record = JSON.parse(await readFile(recordPath, "utf8"));
-} catch (error) {
-  errors.push(`Stable accessibility smoke record must be readable JSON: ${error.message}`);
-  record = {};
-}
-if (!isJsonObject(record)) {
-  errors.push("Stable accessibility smoke record must be a JSON object.");
-  record = {};
-}
-
 const isIsoUtc = (value) =>
   typeof value === "string" &&
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(value) &&
@@ -579,17 +605,6 @@ if (record.status === "evidence-pending") {
     if (object.status !== 0 || ancestry.status !== 0) {
       errors.push("Completed smoke candidate.commit must be contained by the current history.");
     } else {
-      try {
-        publishedAnchor = publishedDocumentationAnchor({
-          root,
-          releaseMetadataPath,
-          recordPath,
-          platformSupportPath,
-          packagesRoot,
-        });
-      } catch (error) {
-        errors.push(error.message);
-      }
       const comparisonHead = publishedAnchor ?? "HEAD";
       const releaseAncestry = spawnSync(
         "git",
@@ -632,7 +647,9 @@ const complete = record.status === "complete";
 if (complete) {
   let releaseMetadata;
   try {
-    releaseMetadata = JSON.parse(await readFile(releaseMetadataPath, "utf8"));
+    releaseMetadata = JSON.parse(
+      await readContract(releaseMetadataPath, "quality/release-metadata.json"),
+    );
   } catch (error) {
     errors.push(`Release metadata must be readable JSON: ${error.message}`);
   }
@@ -661,7 +678,9 @@ if (complete) {
     for (const packageDirectory of coordinatedPackages) {
       const manifestPath = join(packagesRoot, packageDirectory, "package.json");
       try {
-        const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+        const manifest = JSON.parse(
+          await readContract(manifestPath, `packages/${packageDirectory}/package.json`),
+        );
         if (manifest.version !== candidate.version) {
           errors.push(
             `${manifestPath} version must match completed smoke candidate.version ${candidate.version}.`,
@@ -863,7 +882,9 @@ if (errors.length) {
   console.log(
     complete
       ? publishedAnchor
-        ? "Historical stable accessibility evidence is preserved at v1.0.0; current changes are limited to publication-status documentation. No new human smoke is claimed."
+        ? historicalDevelopment
+          ? "Historical v1.0.0 accessibility evidence is intact. Forward development changes are not covered by this evidence; no current release readiness or new human smoke is claimed."
+          : "Historical stable accessibility evidence is preserved at v1.0.0; current changes are limited to publication-status documentation. No new human smoke is claimed."
         : "Scoped stable accessibility smoke is complete and internally approved."
       : "Scoped stable accessibility smoke record is valid and evidence remains pending.",
   );

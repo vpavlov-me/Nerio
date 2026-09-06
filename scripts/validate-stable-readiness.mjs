@@ -2,11 +2,12 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { publicationValidationScope } from "./published-release-documentation.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-export function commandsForChannel(channel) {
-  return channel === "stable"
+export function commandsForChannel(channel, { scope = "release" } = {}) {
+  return channel === "stable" && scope !== "development"
     ? [
         [
           "validate:stable-accessibility-smoke",
@@ -25,8 +26,9 @@ export function commandsForChannel(channel) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const metadata = JSON.parse(readFileSync(resolve(root, "quality/release-metadata.json"), "utf8"));
+  const scope = publicationValidationScope(root);
   const strict = metadata.channel === "stable";
-  for (const [script, label, args = []] of commandsForChannel(metadata.channel)) {
+  for (const [script, label, args = []] of commandsForChannel(metadata.channel, { scope })) {
     const result = spawnSync("pnpm", [script, ...args], {
       cwd: root,
       encoding: "utf8",
@@ -39,8 +41,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   }
 
   console.log(
-    strict
-      ? "Stable channel selected: scoped internal accessibility evidence passed; exhaustive device and external validation remain tracked post-release."
-      : `Release channel is ${metadata.channel}: scoped stable evidence remains pending and deferred records remain truthful.`,
+    scope === "development"
+      ? "Development evidence records validated. Historical release evidence does not certify the current dev tree; release readiness is enforced separately for main."
+      : strict
+        ? "Stable channel selected: scoped internal accessibility evidence passed; exhaustive device and external validation remain tracked post-release."
+        : `Release channel is ${metadata.channel}: scoped stable evidence remains pending and deferred records remain truthful.`,
   );
 }

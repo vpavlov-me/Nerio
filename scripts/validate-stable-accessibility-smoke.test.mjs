@@ -27,6 +27,57 @@ function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
 }
 
+test("published dev sync validates the original release contract despite forward package versions", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-published-dev-smoke-"));
+  const git = (...args) => execFileSync("git", args, { cwd: directory, stdio: "pipe" });
+  try {
+    git("clone", "--shared", "--quiet", root, ".");
+    git("switch", "-c", "dev");
+    for (const path of [
+      "scripts/published-release-documentation.mjs",
+      "scripts/validate-stable-accessibility-smoke.mjs",
+    ])
+      writeFileSync(resolve(directory, path), readFileSync(resolve(root, path)));
+    const metadataPath = resolve(directory, "quality/release-metadata.json");
+    const metadata = JSON.parse(readFileSync(metadataPath, "utf8"));
+    writeFileSync(
+      metadataPath,
+      JSON.stringify({
+        ...metadata,
+        coreVersion: "1.1.0-beta.0",
+        channel: "beta",
+        docsStatusLabel: "Prepared beta 1.1",
+      }),
+    );
+    const manifestPath = resolve(directory, "packages/ui/package.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, version: "1.1.0-beta.0" }));
+    writeFileSync(
+      resolve(directory, "packages/ui/forward-dev.ts"),
+      "export const forward = true;\n",
+    );
+    const invoke = (base) =>
+      spawnSync(
+        process.execPath,
+        [resolve(directory, "scripts/validate-stable-accessibility-smoke.mjs")],
+        {
+          cwd: directory,
+          encoding: "utf8",
+          env: { ...process.env, GITHUB_BASE_REF: base, GITHUB_ACTIONS: "true" },
+        },
+      );
+    const development = invoke("dev");
+    assert.equal(development.status, 0, development.stdout + development.stderr);
+    assert.match(development.stdout, /Forward development changes are not covered/);
+    assert.doesNotMatch(development.stdout, /current changes are limited|internally approved/);
+    const release = invoke("main");
+    assert.notEqual(release.status, 0);
+    assert.match(release.stderr, /stale after non-evidence changes/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 const coordinatedPackages = ["tokens", "adapters", "ui", "registry", "cli", "mcp"];
 
 function withRecord(record, callback, release = {}) {

@@ -8,6 +8,7 @@ import { validateRepositoryArtifacts } from "./validate-repository-artifacts.mjs
 import {
   publishedDocumentationAnchor,
   publishedDocumentationPaths,
+  publicationValidationScope,
   withPublicationPolicyStep,
 } from "./published-release-documentation.mjs";
 
@@ -38,6 +39,8 @@ function fixture(callback) {
     write("quality/release-metadata.json", metadata);
     write("quality/stable-accessibility-smoke.json", { status: "complete" });
     write("quality/platform-support.json", { node: "22" });
+    write("docs/audits/core-1-0-stable-accessibility-smoke.md", "Historical audit\n");
+    write("docs/core-1-0-release-readiness.md", "Historical readiness\n");
     write("README.md", "Candidate\n");
     write("packages/ui/src/index.ts", "export const stable = true;\n");
     git("add", ".");
@@ -283,12 +286,13 @@ test("prepared test fixtures do not inherit the enclosing repository publication
 
 test("reviewed policy revisions replace rather than duplicate the immutable bootstrap", () => {
   const source =
-    "jobs:\n  always_fast:\n    steps:\n      - uses: checkout\n        with:\n          fetch-depth: 0\n";
-  const first = withPublicationPolicyStep(source, "always_fast", "a".repeat(40));
+    "jobs:\n  release_quality:\n    steps:\n      - uses: checkout\n        with:\n          fetch-depth: 0\n";
+  const first = withPublicationPolicyStep(source, "release_quality", "a".repeat(40));
   assert.equal(
-    withPublicationPolicyStep(first, "always_fast", "b".repeat(40)),
-    withPublicationPolicyStep(source, "always_fast", "b".repeat(40)),
+    withPublicationPolicyStep(first, "release_quality", "b".repeat(40)),
+    withPublicationPolicyStep(source, "release_quality", "b".repeat(40)),
   );
+  assert.equal(withPublicationPolicyStep(first, "always_fast", "b".repeat(40)), source);
 });
 
 test("immutable bootstrap rejects a modified guard, caller, receipt or workflow", () => {
@@ -299,6 +303,8 @@ test("immutable bootstrap rejects a modified guard, caller, receipt or workflow"
       "scripts/validate-repository-artifacts.mjs",
       "scripts/validate-stable-accessibility-smoke.mjs",
       "scripts/validate-stable-accessibility-smoke.test.mjs",
+      "scripts/validate-stable-readiness.mjs",
+      "scripts/validate-stable-readiness.test.mjs",
     ];
     for (const path of protectedFiles) write(path, "Reviewed policy source\n");
     for (const [path, job] of [
@@ -335,6 +341,33 @@ test("immutable bootstrap rejects a modified guard, caller, receipt or workflow"
       assert.throws(() => publishedDocumentationAnchor({ root, policyCommit }), /differs from/);
       git("add", path);
     }
+  });
+});
+
+test("dev sync retains forward runtime work without certifying a new release", () => {
+  fixture(({ root, git, write, commit }) => {
+    git("add", ".");
+    git("commit", "-qm", "Publication sync");
+    git("switch", "-c", "dev");
+    write("packages/ui/src/index.ts", "export const forwardDevelopment = true;\n");
+    write("quality/platform-support.json", { node: "24" });
+    git("add", ".");
+    git("commit", "-qm", "Preserve forward development");
+    assert.equal(publicationValidationScope(root, {}), "development");
+    assert.equal(publicationValidationScope(root, { GITHUB_BASE_REF: "main" }), "release");
+    assert.equal(publicationValidationScope(root, { GITHUB_BASE_REF: "dev" }), "development");
+    assert.equal(publicationValidationScope(root, { GITHUB_ACTIONS: "true" }), "release");
+    assert.equal(publishedDocumentationAnchor({ root, scope: "development" }), commit);
+    assert.doesNotThrow(() => validateRepositoryArtifacts(root, "development"));
+    assert.throws(
+      () => publishedDocumentationAnchor({ root }),
+      /outside the status-documentation boundary/,
+    );
+    write("quality/stable-accessibility-smoke.json", { status: "rewritten" });
+    assert.throws(
+      () => publishedDocumentationAnchor({ root, scope: "development" }),
+      /historical release evidence differs/,
+    );
   });
 });
 

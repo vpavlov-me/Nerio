@@ -23,6 +23,8 @@ export const publishedDocumentationPaths = Object.freeze([
   "scripts/validate-stable-accessibility-smoke.mjs",
   "scripts/validate-stable-accessibility-smoke.test.mjs",
   "scripts/validate-repository-artifacts.mjs",
+  "scripts/validate-stable-readiness.mjs",
+  "scripts/validate-stable-readiness.test.mjs",
   "tests/browser/docs-smoke.spec.mjs",
   ".github/workflows/pr-gate.yml",
   ".github/workflows/release-gate.yml",
@@ -34,6 +36,8 @@ const policyFiles = [
   "scripts/validate-repository-artifacts.mjs",
   "scripts/validate-stable-accessibility-smoke.mjs",
   "scripts/validate-stable-accessibility-smoke.test.mjs",
+  "scripts/validate-stable-readiness.mjs",
+  "scripts/validate-stable-readiness.test.mjs",
   "quality/core-1-0-publication.json",
 ];
 
@@ -46,7 +50,7 @@ export function publicationPolicyStep(policyCommit) {
           const policyCommit = "${policyCommit}";
           const source = execFileSync("git", ["show", policyCommit + ":scripts/published-release-documentation.mjs"], { encoding: "utf8" });
           const { publishedDocumentationAnchor } = await import("data:text/javascript;base64," + Buffer.from(source).toString("base64"));
-          publishedDocumentationAnchor({ root: process.cwd(), policyCommit });
+          publishedDocumentationAnchor({ root: process.cwd(), policyCommit, scope: "release" });
           NODE
 `;
 }
@@ -57,6 +61,8 @@ export function withPublicationPolicyStep(source, job, policyCommit) {
     /      - name: Validate immutable publication policy\n[\s\S]*?          NODE\n/g,
     "",
   );
+  // PR gate targets dev: forward runtime work is not a 1.0 publication delta.
+  if (job === "always_fast") return source;
   const start = source.indexOf(`\n  ${job}:`);
   if (start < 0) throw new Error(`Missing publication policy job: ${job}`);
   const marker = "          fetch-depth: 0\n";
@@ -75,9 +81,28 @@ const publicationPageHashes = Object.freeze({
     "fbcf989f5c263e825e400f69c46a25038fd5518eff53b08f97e7ab75fc2cabce",
 });
 
+export function publicationValidationScope(root, environment = process.env) {
+  // The PR base wins over the checked-out source branch, including dev -> main.
+  if (environment.GITHUB_BASE_REF) {
+    return environment.GITHUB_BASE_REF === "dev" ? "development" : "release";
+  }
+  if (environment.GITHUB_ACTIONS === "true") return "release";
+  try {
+    const branch = execFileSync("git", ["symbolic-ref", "--short", "HEAD"], {
+      cwd: root,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    }).trim();
+    return branch === "dev" ? "development" : "release";
+  } catch {
+    return "release";
+  }
+}
+
 export function publishedDocumentationAnchor({
   root,
   policyCommit,
+  scope = "release",
   releaseMetadataPath = resolve(root, "quality/release-metadata.json"),
   recordPath = resolve(root, "quality/stable-accessibility-smoke.json"),
   platformSupportPath = resolve(root, "quality/platform-support.json"),
@@ -93,6 +118,8 @@ export function publishedDocumentationAnchor({
       stdio: ["ignore", "pipe", "pipe"],
     });
   const gitValue = (...args) => git(...args).trim();
+  assertPublished(["release", "development"].includes(scope), "invalid validation scope.");
+  assertPublished(!policyCommit || scope === "release", "immutable policy is release-only.");
   if (policyCommit !== undefined) {
     assertPublished(/^[a-f0-9]{40}$/.test(policyCommit), "invalid immutable policy commit.");
     for (const path of policyFiles) {
@@ -139,13 +166,17 @@ export function publishedDocumentationAnchor({
     // The main validator reports malformed/missing metadata in every mode.
     return null;
   }
-  if (publicationRecorded && metadata?.coreVersion === "1.0.0") {
+  if (scope === "release" && publicationRecorded && metadata?.coreVersion === "1.0.0") {
     assertPublished(
       metadata.docsStatusLabel === "Published stable 1.0",
       "published 1.0.0 cannot return to a prepared or other status.",
     );
   }
-  if (metadata?.docsStatusLabel !== "Published stable 1.0") return null;
+  if (
+    metadata?.docsStatusLabel !== "Published stable 1.0" &&
+    !(scope === "development" && publicationRecorded)
+  )
+    return null;
   for (const [actual, expected] of [
     [releaseMetadataPath, "quality/release-metadata.json"],
     [recordPath, "quality/stable-accessibility-smoke.json"],
@@ -207,6 +238,23 @@ export function publishedDocumentationAnchor({
     releasedMetadata.coreVersion === "1.0.0" && releasedMetadata.channel === "stable",
     "tag must identify the stable 1.0.0 contract.",
   );
+  if (scope === "development") {
+    // Validate the preserved historical evidence, never certify the forward dev tree.
+    for (const path of [
+      "quality/stable-accessibility-smoke.json",
+      "docs/audits/core-1-0-stable-accessibility-smoke.md",
+      "docs/core-1-0-release-readiness.md",
+    ]) {
+      const expected = git("show", `${receipt.commit}:${path}`);
+      assertPublished(
+        lstatSync(resolve(root, path)).isFile() &&
+          readFileSync(resolve(root, path), "utf8") === expected &&
+          git("show", `:${path}`) === expected,
+        `historical release evidence differs from v1.0.0: ${path}`,
+      );
+    }
+    return receipt.commit;
+  }
   assertPublished(
     isDeepStrictEqual(metadata, {
       ...releasedMetadata,

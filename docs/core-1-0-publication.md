@@ -53,7 +53,8 @@ rewriting human evidence.
 The existing pre-publication guard remains unchanged: only the three evidence files in
 `stable-accessibility-evidence-paths.mjs` may follow the smoke candidate before a release is approved.
 
-For the explicit `Published stable 1.0` status only, the validator additionally requires:
+On the isolated release line, for the explicit `Published stable 1.0` status only, the validator
+additionally requires:
 
 1. The canonical publication receipt in `quality/core-1-0-publication.json` identifies the exact
    annotated `v1.0.0` tag object and commit, and that commit is contained by current history.
@@ -67,12 +68,13 @@ For the explicit `Published stable 1.0` status only, the validator additionally 
    The two executable TSX documents must additionally match the exact reviewed publication-copy
    hashes; their paths cannot admit later behavioral changes under this exception.
 
-The current-repository boundary is also checked by `pnpm validate:repo-artifacts`, which runs
-unconditionally with full Git history in the PR gate's `always-fast` job and the Release gate's
-`release-quality` job. It does not depend on the optional manual-audit scope. The narrowly
+The current-repository boundary is also checked by `pnpm validate:repo-artifacts` on the release
+line, unconditionally with full Git history in the Release gate's `release-quality` job.
+It does not depend on the optional manual-audit scope. The narrowly
 allowlisted browser-test change only aligns discovery assertions with the published status.
-The two workflow files may add only the exact mandatory bootstrap derived from the reviewed
-immutable policy commit. That bootstrap loads the guard from Git, not the candidate worktree,
+The release workflow uses the exact mandatory bootstrap derived from the reviewed immutable
+policy commit; the development PR workflow does not install this release-only bootstrap.
+The bootstrap loads the guard from Git, not the candidate worktree,
 and checks the guard, callers, tests, receipt, and workflow bytes against that immutable anchor.
 The receipt keeps the 1.0.0 boundary active if a later change attempts to revert the status label.
 Changing protected GitHub workflow settings or replacing the policy anchor itself remains a
@@ -82,6 +84,16 @@ The output explicitly describes preserved historical evidence and never claims a
 for the documentation commit. Missing/moved/lightweight tags, changed release identity, alternate
 evidence paths, metadata drift, and changes outside this boundary fail validation. Prepared or
 future versions do not enter this mode and retain the exact-candidate gate.
+
+Pull requests targeting `dev` (and local checks on the `dev` branch) instead validate the preserved
+1.0 record against its annotated release tag. The smoke record and its historical audit/readiness
+documents must remain byte-identical to that tag. The historical platform, metadata, and package
+contracts are read from the tag, not from the forward development tree. Runtime, package versions,
+and platform policy may therefore advance on `dev` without falsely inheriting 1.0 human approval.
+Normal repository and scoped PR checks still run. A `dev -> main` PR uses the release scope because
+the target branch takes precedence; detached or otherwise unknown contexts default to release
+validation. This permits the reviewed stable-to-dev sync described in `RELEASE.md` and is not
+approval to release 1.1 or to rewrite the published 1.0 evidence.
 
 This receipt is reviewed release bookkeeping, not a substitute for online npm/GitHub verification
 or cryptographic provenance. Existing CI checks, protected-branch rules, and separate maintainer
