@@ -90,11 +90,11 @@
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
-    "@playwright/test": "1.62.1",
-    "esbuild": "0.28.1",
-    "prettier": "^3.9.6",
-    "terser": "5.50.0",
-    "turbo": "^2.10.7",
-    "typescript": "^5.9.3"
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "prettier": "^3.9.7",
+    "terser": "5.51.2",
+    "turbo": "^2.10.13",
+    "typescript": "^7.0.2"
   }
 }
