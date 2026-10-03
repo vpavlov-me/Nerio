@@ -1,34 +1,14 @@
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
-import { ExternalLink } from "@nerio-ui/adapters/icons";
 import { createPageMetadata } from "../../../lib/seo";
 
-const utmParameters = "utm_source=nerio&utm_medium=referral&utm_campaign=docs_sponsorships";
-
-const sponsorships = [
-  {
-    id: "founder",
-    kicker: "Founder",
-    title: "Vladimir Pavlov",
-    description:
-      "Founder and maintainer of Nerio. Vladimir designs and builds the system end to end, from tokens and Core components to the Registry, CLI, and documentation, and supports its development independently.",
-    href: `https://vpavlov.com?${utmParameters}&utm_content=founder`,
-    linkLabel: "vpavlov.com",
-  },
-  {
-    id: "refs-gallery",
-    kicker: "Main project",
-    title: "Refs.Gallery",
-    description:
-      "Refs.Gallery is the founder's main product and the project that sustains work on Nerio. Visiting and using it is the most direct way to support the design system.",
-    href: `https://refs.gallery?${utmParameters}&utm_content=refs-gallery`,
-    linkLabel: "refs.gallery",
-  },
-];
+const sponsorsUrl = "https://github.com/sponsors/vpavlov-me";
+const refsGalleryUrl =
+  "https://refs.gallery?utm_source=nerio&utm_medium=referral&utm_campaign=docs_sponsorships";
+const contactEmail = "vpavlov@gmail.com";
 
 export const metadata = createPageMetadata({
   title: "Sponsorships",
   description:
-    "Learn who builds Nerio and how the founder's main project, Refs.Gallery, supports the design system.",
+    "Support the development of Nerio through GitHub Sponsors, learn about related projects, and get in touch about sponsorship.",
   path: "/docs/sponsorships",
 });
 
@@ -39,36 +19,48 @@ export default function Page() {
         <p className="doc-kicker">Community</p>
         <h1>Sponsorships</h1>
         <p className="doc-lede">
-          Nerio is an independent open-source project. Its development is supported by the founder
-          and by the products the founder builds.
+          Nerio is an independent open-source design system. Sponsorship keeps Nerio Core free, its
+          documentation public, and its releases maintained.
         </p>
       </header>
 
-      <section className="doc-section" id="supporters">
-        <h2>Who supports Nerio</h2>
-        <div className="sponsorship-grid">
-          {sponsorships.map((sponsorship) => (
-            <Card
-              key={sponsorship.id}
-              href={sponsorship.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${sponsorship.title}: visit ${sponsorship.linkLabel} (opens in a new tab)`}
-            >
-              <CardHeader>
-                <p className="sponsorship-kicker">{sponsorship.kicker}</p>
-                <CardTitle as="h3">{sponsorship.title}</CardTitle>
-                <CardDescription>{sponsorship.description}</CardDescription>
-              </CardHeader>
-              <CardFooter>
-                <span className="sponsorship-link">
-                  {sponsorship.linkLabel}
-                  <Icon icon={ExternalLink} />
-                </span>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+      <section className="doc-section" id="become-a-sponsor">
+        <h2>Become a sponsor</h2>
+        <p>
+          Sponsor Nerio through{" "}
+          <a href={sponsorsUrl} target="_blank" rel="noopener noreferrer">
+            GitHub Sponsors
+          </a>
+          . Individual and company sponsorships are both welcome, as one-time or recurring
+          contributions.
+        </p>
+        <p>Sponsorship funds the ongoing work that keeps Nerio dependable:</p>
+        <ul className="doc-list">
+          <li>Maintenance of Core components, tokens, themes, and the Registry.</li>
+          <li>Accessibility testing across browsers, devices, and assistive technologies.</li>
+          <li>Documentation, examples, and the CLI and MCP tooling.</li>
+          <li>Compatibility with new React, Next.js, and Tailwind CSS releases.</li>
+        </ul>
+      </section>
+
+      <section className="doc-section" id="projects">
+        <h2>Projects</h2>
+        <p>
+          Nerio is developed alongside{" "}
+          <a href={refsGalleryUrl} target="_blank" rel="noopener noreferrer">
+            Refs.Gallery
+          </a>
+          . Both projects are built and maintained independently, and supporting either one helps
+          sustain the other.
+        </p>
+      </section>
+
+      <section className="doc-section" id="contact">
+        <h2>Get in touch</h2>
+        <p>
+          To discuss a company sponsorship, a partnership, or another way to support Nerio, email{" "}
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+        </p>
       </section>
     </article>
   );
