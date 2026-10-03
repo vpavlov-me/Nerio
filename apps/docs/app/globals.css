@@ -2464,7 +2464,7 @@ pre {
 .sponsorship-grid {
   display: grid;
   gap: var(--n-space-4);
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--n-docs-card-wide-min-width), 1fr));
   inline-size: 100%;
 }
 
