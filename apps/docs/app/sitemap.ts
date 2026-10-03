@@ -12,6 +12,7 @@ const staticRoutes = [
   "/docs/registry",
   "/docs/ai",
   "/docs/feedback",
+  "/docs/sponsorships",
   ...foundationPages.map((page) => page.path),
 ];
 
