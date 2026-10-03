@@ -1687,6 +1687,12 @@ pre {
   min-inline-size: 0;
 }
 
+.doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+}
+
 .changelog-list {
   display: grid;
 }

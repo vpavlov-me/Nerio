@@ -120,6 +120,7 @@
     "/docs/getting-started",
     "/docs/migration",
     "/docs/registry",
+    "/docs/sponsorships",
     "/llms.txt"
   ],
   "entrypoints": {
